@@ -1,8 +1,12 @@
 
 TODO (to get v0.2 released)
-  - why isn't smurp_web_log an app_instance?
+  - figure out how to display a NooronApp instance
+    - app_front_object
+    - app_front_template
+
+  - figure out how to display the nooron_site_config (is it a NooronApp?)
   - create topicmap_as_svg
-  - restrict python code
+  - create topicmap_as_ps
 
   - add 'type' sensitivity to GWApp:
         def getOccurringTopics(self,scopes = [], type = None):

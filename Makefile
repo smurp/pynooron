@@ -1,6 +1,6 @@
 
-# $Revision: 1.4 $
-# $Id: Makefile,v 1.4 2002/08/15 18:17:42 smurp Exp $
+# $Revision: 1.5 $
+# $Id: Makefile,v 1.5 2002/08/23 03:39:14 smurp Exp $
 
 PWD     = $(shell /bin/pwd)
 XTMTMP=$(shell mktemp /tmp/xtm.XXXXXX)
@@ -27,7 +27,7 @@ distribution:
 all: xtm mysql
 
 mysql: empty_mysql psi 
-	~/bin/gwq -i -g "type=MySQL,name=nooron,user=smurp,pass=trivialpw" file://$(PWD)/nooron.xtm;
+	~/bin/gwq -i -g "type=MySQL,name=nooron,user=smurp,pass=trivialpw" file://$(PWD)/topicmap/smurp_web_log.xtm;
 
 xtm:
 	astma2xtm.pl < nooron.atm > nooron.xtm

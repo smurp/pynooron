@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.13 2002/08/14 20:47:42 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.14 2002/08/23 03:39:15 smurp Exp $'
 
 import string
 
@@ -241,9 +241,11 @@ class topicmap_handler:
                       nameContains and nameContains[0] or \
                       app.getTopicWithAnchor(topic_name)
 
-
-        if not obj:
-            obj = app
-            NooronRoot.NooronRoot().publish(request,obj)
-        else:
+        if 1:
             app.publish(request,obj)
+        else:
+            if not obj:
+                obj = app
+                NooronRoot.NooronRoot().publish(request,obj)
+            else:
+                app.publish(request,obj)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: web_log_skeleton.xtm,v 1.3 2002/08/15 18:17:43 smurp Exp $ -->
+<!-- $Id: web_log_skeleton.xtm,v 1.4 2002/08/23 03:39:15 smurp Exp $ -->
 
 <topicMap id="web_log_skeleton" 
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -19,14 +19,15 @@
   </subjectIdentity>
   <occurrence>
     <resourceData>
-      This is a skeleton for 'Web Log' apps in Nooron.  As all skeletons must, it makes 
-      reference to a schema and as all skeletons should, it includes some templates,
-      ('skins' if you prefer)  for the classes in the schema.  It also provides a 
-      template for the starting screen for visitors to instances of the app.  Of 
-      course, any and all of these things can be overridden (or augmented in some
-      way) by topicmaps which specify particular instances of apps of this kind. 
-      Such app_instance topicmaps merge in this skeleton as well as a topicmap
-      which happens to contain web_log data.
+      This is a skeleton for 'Web Log' apps in Nooron.  As all skeletons 
+      must, it makes reference to a schema and as all skeletons should, 
+      it includes some templates, ('skins' if you prefer)  for the classes 
+      in the schema.  It also provides a template for the starting screen 
+      for visitors to instances of the app.  Of course, any and all of 
+      these things can be overridden (or augmented in some way) by 
+      topicmaps which specify particular instances of apps of this kind. 
+      Such app_instance topicmaps merge in this skeleton as well as a 
+      topicmap which happens to contain web_log data.
     </resourceData>
   </occurrence>
   <occurrence>
@@ -41,7 +42,7 @@
     <instanceOf>
       <subjectIndicatorRef xlink:href="nooron_app_architecture#cvs_id"/>
     </instanceOf>
-    <resourceData>$Id: web_log_skeleton.xtm,v 1.3 2002/08/15 18:17:43 smurp Exp $</resourceData>
+    <resourceData>$Id: web_log_skeleton.xtm,v 1.4 2002/08/23 03:39:15 smurp Exp $</resourceData>
   </occurrence>
 </topic>
 
