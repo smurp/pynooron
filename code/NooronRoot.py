@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.25 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.25 2003/01/07 18:39:15 smurp Exp $'
+__version__='$Revision: 1.26 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.26 2003/01/31 07:57:03 smurp Exp $'
 
 DEBUG = 0
 
@@ -30,8 +30,8 @@ import os
 def npts_for_self_and_instances(here):
     npt_for_self = get_slot_values(here,'npt_for_self',
                                    slot_type=Node._all)[0] or \
-                                   ['frame_details.html',
-                                    'frame.html',
+                                   ['frame.html',
+                                    'frame_details.html',
                                     'kb_ancestry.dot'];
 
     if class_p(here):
@@ -78,10 +78,10 @@ class NooronRoot:
                         kb=prim_kb,
                         slot_type=Node._template)
 
-        put_slot_values(':THING','npt_for_self',
-                        ['frame_details.html','frame.html'],
-                        kb=prim_kb,
-                        slot_type=Node._template)
+#        put_slot_values(':THING','npt_for_self',
+#                        ['frame.html','frame_details.html'],
+#                        kb=prim_kb,
+#                        slot_type=Node._template)
 
 
 

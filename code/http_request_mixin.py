@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.12 2003/01/07 18:38:15 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.13 2003/01/31 07:57:03 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -179,7 +179,7 @@ def breadcrumbs(self):
     pth = ''
     crumbs = ''
     for part in parts:
-        pth = pth + '/' + part
+        pth = pth + '/' + part + '/'
         atag = """<a href="%s">%s</a>""" % (pth,part)
         crumbs = crumbs + '&nbsp;/&nbsp;' + atag
     return crumbs
