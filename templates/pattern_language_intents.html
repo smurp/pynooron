@@ -19,7 +19,7 @@
        tal:condition="items">
   <span tal:repeat="item items"
         tal:omit-tag="">
-    <dt><a href="booger"
+    <dt><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></dt>
@@ -30,7 +30,7 @@
 </dl>
 
 <hr>
-$Id: pattern_language_intents.html,v 1.2 2003/01/31 07:57:56 smurp Exp $
+$Id: pattern_language_intents.html,v 1.3 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

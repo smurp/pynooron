@@ -13,7 +13,7 @@
 <ul tal:define="items python:get_kb_direct_parents(here)" 
        tal:condition="items">
   <span tal:repeat="item items">
-    <li><a href="booger"
+    <li><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></li>
@@ -60,7 +60,7 @@ business.
 
 
 <hr>
-$Id: kb_ancestry.html,v 1.1 2002/12/05 16:42:36 smurp Exp $
+$Id: kb_ancestry.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

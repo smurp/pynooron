@@ -135,7 +135,7 @@
   This looks like a bug/mangled feature
   in ZPT where it tries to do some automagic
   stuff with the HTML unary LINK tag.
-   (link linkend="booger")youch(/link)
+   (link linkend="link")youch(/link)
    (link linkend="" 
          tal:condition="isin" 
          tal:content="val" 

@@ -13,7 +13,7 @@
        tal:condition="items">
   <strong>classes:</strong>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="url">click me</a></em>
@@ -31,7 +31,7 @@
   <strong>subclasses:</strong>
   <ul>
   <span tal:repeat="item items">
-    <li	><a href="booger"
+    <li	><a href="link"
             tal:define="url python:get_frame_name(item)"
 	    tal:attributes="href url"
             tal:content="python:get_frame_pretty_name(item) or url">click me</a></li>	
@@ -46,7 +46,7 @@
 </div>
 
 <hr>
-$Id: class_and_subclasses.html,v 1.2 2002/12/12 14:00:20 smurp Exp $
+$Id: class_and_subclasses.html,v 1.3 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

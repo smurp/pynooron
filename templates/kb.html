@@ -49,7 +49,7 @@ frames which are directly in this KB you will notice that
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></em>, 
@@ -62,7 +62,7 @@ frames which are directly in this KB you will notice that
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_children)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></em>, 
@@ -75,7 +75,7 @@ frames which are directly in this KB you will notice that
   <dt><strong tal:content="structure python:get_doc_for(get_instance_types)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
            tal:define="url python:get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></em>, 
@@ -95,7 +95,7 @@ frames which are directly in this KB you will notice that
     <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
   </tr>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -113,7 +113,7 @@ frames which are directly in this KB you will notice that
     <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
   </tr>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -131,7 +131,7 @@ frames which are directly in this KB you will notice that
     <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
   </tr>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -148,7 +148,7 @@ frames which are directly in this KB you will notice that
     <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
   </tr>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -164,7 +164,7 @@ frames which are directly in this KB you will notice that
 </div>
 
 <hr>
-$Id: kb.html,v 1.1 2002/12/05 12:51:44 smurp Exp $
+$Id: kb.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

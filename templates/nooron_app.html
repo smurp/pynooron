@@ -16,7 +16,7 @@
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></em>, 
@@ -29,7 +29,7 @@
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_children)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></em>
@@ -43,7 +43,7 @@
        tal:condition="items">
   <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -58,7 +58,7 @@
        tal:condition="items">
   <caption><strong tal:content="structure python:get_doc_for(get_class_instances)">link</strong></caption>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -74,7 +74,7 @@
 </div>
 
 <hr>
-$Id: nooron_app.html,v 1.2 2003/01/31 08:20:18 smurp Exp $
+$Id: nooron_app.html,v 1.3 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

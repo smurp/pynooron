@@ -31,7 +31,7 @@
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
   <dd>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href python:'../'+url"
            	   tal:content="url">click me</a></em>, 
@@ -49,7 +49,7 @@
     <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
   </tr>
   <tr tal:repeat="item items">
-    <td><a href="booger"
+    <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
@@ -65,7 +65,7 @@
 </div>
 
 <hr>
-$Id: openable_kbs.html,v 1.1 2002/12/17 08:34:29 smurp Exp $
+$Id: openable_kbs.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

@@ -15,7 +15,7 @@
        tal:condition="items">
   <strong>classes:</strong>
   <span tal:repeat="item items">
-    <em><a href="booger"
+    <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="url">click me</a></em>
@@ -29,7 +29,7 @@
   <!-- better would be some sort of slot value e.g. plural_for_instances-->
   <ul>
   <span tal:repeat="item items">
-    <li	><a href="booger"
+    <li	><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></li>
@@ -49,7 +49,7 @@
 </div>
 
 <hr>
-$Id: web_log_category.html,v 1.1 2002/12/05 16:42:37 smurp Exp $
+$Id: web_log_category.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>

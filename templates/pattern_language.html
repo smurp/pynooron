@@ -14,7 +14,7 @@
 
 <ul tal:define="items python:get_class_instances('pattern')[0]" 
     tal:condition="items">
-  <li tal:repeat="item items"><a href="booger"
+  <li tal:repeat="item items"><a href="link"
      	 tal:define="url python:get_frame_name(item)"
          tal:attributes="href url"
          tal:content="python:get_frame_pretty_name(item) or 
@@ -26,7 +26,7 @@
 
 
 <hr>
-$Id: pattern_language.html,v 1.4 2003/01/31 07:57:56 smurp Exp $
+$Id: pattern_language.html,v 1.5 2003/02/07 23:41:10 smurp Exp $
 </div>
   </body>
 </html>
