@@ -1,6 +1,5 @@
 
 
-
 <metal:block metal:define-macro="text_widget">
 <tr>
   <td><strong tal:content="slot_pretty_name">slot_name</strong></td>
@@ -29,11 +28,18 @@
 
 
 
+
+auto_widget expects the following arguments:
+  slot_name
+  slot_pretty_name
+  slot_values (optional)
+
 <metal:block metal:define-macro="auto_widget">
+
 <tal:block 
   define="svt python:get_slot_values(slot_name,
                                      ':SLOT-VALUE-TYPE')[0];
-          slot_value_type python:svt and str(svt[0]) or ':INTEGER'">
+          slot_value_type python:svt and str(svt[0]) or ':INTEGER';">
 
   <tr>
     <td valign="top">
@@ -42,12 +48,33 @@
        <em tal:content="slot_value_type"></em>
     </td>
     <td>
-  <tal:block condition="python:slot_value_type == ':STRING'">
-  <input type="text" name="" tal:attributes="name slot_name" size="31"/>
+
+
+  <tal:block condition="python:slot_value_type == ':STRING'"
+             define="text_value python:slot_values and str(slot_values[0]) or '';
+                     len_text_value python:len(text_value)">
+
+     <textarea
+          cols="60"
+          rows="5"
+          tal:condition="python:len_text_value > textarea_threshold"
+          tal:content="text_value"></textarea>
+
+
+     <input type="text"
+         tal:condition="python:len_text_value <= textarea_threshold"
+         name="" value="" size=""         
+         tal:attributes="name slot_name;
+                         size python:slot_value_type == ':STRING' and 31 or 10;
+                         value text_value"/>
   </tal:block>
 
+
   <tal:block condition="python:slot_value_type == ':INTEGER'">
-  <input type="text" name="" tal:attributes="name slot_name"/>
+  <input type="text" 
+         name="" value="" size="10"
+         tal:attributes="name slot_name;
+                         value python:slot_values and slot_values[0] or ''"/>
   </tal:block>
 
   <tal:block condition="python:slot_value_type != None and
@@ -69,16 +96,21 @@
               size python:len(options) > select_size and select_size
                                    or len(options)">
 
+
     <tal:dummy 
         replace="structure string:<select name=&quot;$slot_name&quot; $multiple size=&quot;$size&quot;>"/>
 
-      <option 
-          tal:repeat="opt options" 
-          tal:content="opt">
-      </option>
-
+      <tal:block 
+         repeat="opt options">
+         <tal:block
+           define="selected python:str(opt) in slot_values and ' SELECTED' or ''">
+           <tal:dummy replace="structure string:<option$selected>$opt</option>"/>
+         </tal:block>
+      </tal:block>
 
     <tal:dummy replace="structure string:</select>"/>
+    <br/>
+    --<tal:dummy replace="slot_values"/>--
     </tal:dummy>
   </tal:block>
 
@@ -90,4 +122,16 @@
 </metal:block>
 
 
-$Id: form_master,v 1.4 2003/02/27 18:26:19 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+
+
+
+
+
+
+
+
+
+
+
+
+$Id: form_master,v 1.5 2003/03/07 14:11:29 smurp Exp $ <a href="/templates/form_master">Show Source</a>

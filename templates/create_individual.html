@@ -49,7 +49,8 @@
                                    get_procedure('names_and_pretty_names'),
                                    arguments=(slots,None,this_kb))">
       <tal:block define="slot_name        python:zlot[0];
-                         slot_pretty_name python:zlot[1]">
+                         slot_pretty_name python:zlot[1];
+		         slot_values      python:[]">
 
         <input type="hidden" name="own_slots" value=""
            tal:attributes="value slot_name">
@@ -60,14 +61,15 @@
     </tal:block>
   </tal:block>
 
+
 </table>
-<input type="submit" name="create"/>
+<input type="submit" name="button_label" value="Create"/>
 
 </form>
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.5 2003/02/27 18:24:55 smurp Exp $
+$Id: create_individual.html,v 1.6 2003/03/07 14:11:30 smurp Exp $
 </div>
 
   </body>
