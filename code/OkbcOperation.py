@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.16 2003/06/19 21:48:08 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.17 2003/06/28 21:48:21 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -22,6 +22,7 @@ from pyokbc import *
 import re
 import time
 import base64
+
 
 def detail_preprocessor(form,kb,arg):
     """Used by OkbcOperation to obtain a properly constructed detail arg from
@@ -79,13 +80,6 @@ def detail_preprocessor(form,kb,arg):
 put_frame_details.http_argument_preprocessors = {'details':
                                                  detail_preprocessor}
 
-def make_wiki_word(input):
-    words = re.findall('\w*',input)
-    words = [(i) for i in words if i != ''] # remove blanks
-    #print "words =",words    
-    words = [(string.upper(i[0])+i[1:]) for i in words ] # initial caps
-    #print "words =",words
-    return string.join(words,'')
 
 def make_good_name(form,kb,arg):
     """If name is absent, then make it by compressing the pretty_name
@@ -97,7 +91,12 @@ def make_good_name(form,kb,arg):
     the_name = form.get('name','')
     pretty_name = ''
     if the_name in ('',None,['']):
-        the_name = make_wiki_word(form.get('pretty_name',[''])[0])
+        the_name = WikiWord.make_wiki_word(form.get('pretty_name',[''])[0])
+    elif type(the_name) == type([]):
+        the_name = the_name[0]
+    if kb:
+        if frame_in_kb_p(the_name,kb=kb):
+            the_name = ''
     if the_name == '':
         # the time to hundredths of seconds
         the_bin = long(time.time() * 100.0)
