@@ -1,0 +1,6 @@
+# -*-mode: python -*-
+put_direct_parents(['PeopleSchema','evenmore/SillyParent'])
+create_individual('GeorgeWalkerBush',
+                  pretty_name='George Walker Bush',
+                  direct_types=['AdultHuman'],
+                  own_slots=[['Father','GeorgeBushSr']])
