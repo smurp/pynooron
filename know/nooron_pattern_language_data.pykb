@@ -1,34 +1,34 @@
-
+# -*-mode: python -*-
 put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-
+create_class('technology')
 create_individual('KnowledgeRepresentation',
+                  pretty_name='Knowledge Representation',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Represent knowledge in the form of
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Represent knowledge in the form of
                               conceptual categories (called classes) and
                               instances of those classes (called individuals)
                               in such a way that computers can manipulate the
                               knowledge by storing it, retrieving it and
                               performing inferences on it."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses','OKBC','PyOKBC','Cyc'], 
-                             ['RelatedPatterns']],
-                  pretty_name = 'Knowledge Representation'
-                  )
-
+                             ['KnownUses', 'OKBC', 'PyOKBC', 'Cyc'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', ],
+                             ['Variations', ],
+                            ])
 create_individual('Versioning',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Keep track of the distinct, successive
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Keep track of the distinct, successive
                               (possibly branching) states that information
                               goes through."""],
-                             ['Motivation',
-                              """Digital information is typically frequently
+                             ['KnownUses', 'http://www.gnu.org/software/rcs/rcs.html', 'http://www.gnu.org/software/cvs/', 'http://nodal.sourceforge.net/'],
+                             ['Method', ],
+                             ['Motivation', """Digital information is typically frequently
                               copied and revised.  It is often the case that
                               useful information is lost in this process or
                               that the very history of successive versions
@@ -42,23 +42,16 @@ create_individual('Versioning',
                               people involved with the data in question and
                               also when there are a large number of digital
                               objects under management."""],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',
-                              'http://www.gnu.org/software/rcs/rcs.html',
-                              'http://www.gnu.org/software/cvs/',
-                              'http://nodal.sourceforge.net/'], 
-                             ['RelatedPatterns']],
-                  )
-
+                             ['RelatedPatterns', ],
+                             ['Variations', ],
+                            ])
 create_individual('CriteriaAndEvaluations',
-  pretty_name='Criteria and Evaluations',
-  direct_types=['pattern'],
-  own_slots=[['AKA',],
-             ['Intent',
-              """The implicit criterion in most rating systems is
+                  pretty_name='Criteria and Evaluations',
+                  direct_types=['pattern'],
+                  own_slots=[['AKA', ],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """The implicit criterion in most rating systems is
               'goodness'.  Every adjectival phrase is a potential
               criterion and hence a potential dimension along which
               evaluations may occur.  This infinitely extensible
@@ -67,42 +60,36 @@ create_individual('CriteriaAndEvaluations',
               and inform rich representations of information.
               Goodness is not enough.
               """],
-             ['Motivation',],
-             ['Applicability',],
-             ['Method',],
-             ['Consequences',],
-             ['Variations',], 
-             ['KnownUses','PICS'],
-             ['References',
-              'http://www.w3.org/PICS/'],
-             ['RelatedPatterns','PeerReview']])
-
+                             ['KnownUses', 'PICS'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.w3.org/PICS/'],
+                             ['RelatedPatterns', 'PeerReview'],
+                             ['Variations', ],
+                            ])
 create_individual('REST',
+                  pretty_name='REpresentational State Transfer',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Make URLs a powerful part of the user
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Make URLs a powerful part of the user
                               interface for a web-based application by
                               ensuring that clearly understandable
                               parts of the URL are equivalent to subject,
                               verb and object."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',],
-                             ['References',
-                              'http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm',
-                              'http://internet.conveyor.com/RESTwiki/moin.cgi/FrontPage'],
-                             ['KnownUses',
-                              'http://www.amazon.com',
-                              'http://www.yahoo.com'], 
-                             ['RelatedPatterns','URLsHaveMeaning']],
-                  pretty_name = 'REpresentational State Transfer',
-                  )
-
-create_individual('WorldViews', pretty_name = 'World Views',
+                             ['KnownUses', 'http://www.amazon.com', 'http://www.yahoo.com'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm', 'http://internet.conveyor.com/RESTwiki/moin.cgi/FrontPage'],
+                             ['RelatedPatterns', 'URLsHaveMeaning'],
+                             ['Variations', ],
+                            ])
+create_individual('WorldViews',
+                  pretty_name='World Views',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',"""An information system
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """An information system
                   which specifically supports the creation and
                   improvement of caricatured 'Points of View',
                   'Perspectives' or 'World Views' makes possible
@@ -114,73 +101,67 @@ create_individual('WorldViews', pretty_name = 'World Views',
                   they may accelerate the evolution of knowledge,
                   the identification of the roots of conflict and the
                   creation of consensus."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns',
-                              'PeerReview',
-                              'CriteriaAndEvaluations']],
-                  )
-
-create_individual('NotSoBasicAuthentication', pretty_name = 'Not So Basic Authentication',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'PeerReview', 'CriteriaAndEvaluations'],
+                             ['Variations', ],
+                            ])
+create_individual('NotSoBasicAuthentication',
+                  pretty_name='Not So Basic Authentication',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',"""Users own and maintain
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Users own and maintain
                   their identity and preference information at a location
                   of their choosing and minimize registration effort at
                   sites they visit."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',"""Users enter an URL instead of
+                             ['KnownUses', ],
+                             ['Method', """Users enter an URL instead of
                   a username at a BasicAuthentication prompt."""],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns',
-                              'FullyConfigurable',
-                              'KnowledgeRepresentation']],
-                  )
-
-create_individual('AggressivelyFreeSoftware',pretty_name = 'Aggressively Free Software',
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'FullyConfigurable', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
+create_individual('AggressivelyFreeSoftware',
+                  pretty_name='Aggressively Free Software',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Free Software (ala the GPL)
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Free Software (ala the GPL)
                               as opposed to narrowly
                               Open Source Software is unambiguous about
                               its availability and clearly committed to the
                               creation of a digital commons."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',],
-                             ['References','http://www.gnu.org/copyleft/gpl.html'],
-                             ['RelatedPatterns','RadicalOpenness']],
-                  )
-
-create_individual('URLsHaveMeaning', pretty_name = 'URLs Have Meaning',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.gnu.org/copyleft/gpl.html'],
+                             ['RelatedPatterns', 'RadicalOpenness'],
+                             ['Variations', ],
+                            ])
+create_individual('URLsHaveMeaning',
+                  pretty_name='URLs Have Meaning',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Enable users to request output in
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Enable users to request output in
                               particular file formats simply by
                               tacking appropriate sequences of file
                               extensions onto the ends of URLs."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns','REST']])
-
-create_individual('FullyAutomatic',pretty_name = 'Fully Automatic',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'REST'],
+                             ['Variations', ],
+                            ])
+create_individual('FullyAutomatic',
+                  pretty_name='Fully Automatic',
                   direct_types=['pattern'],
-                  own_slots=[['AKA','Batteries Included'],
-                             ['Intent',
-                              """For new or casual users the utility of
+                  own_slots=[['AKA', 'Batteries Included'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """For new or casual users the utility of
                               software is grounded in its clarity,
                               predictability and reliability.  Making
                               every aspect of a system 'good enough'
@@ -189,20 +170,19 @@ create_individual('FullyAutomatic',pretty_name = 'Fully Automatic',
                               from power users automatically is one
                               way to provide usability for everyone.
                               """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns',
-                              'FullyConfigurable',
-                              'KnowledgeRepresentation']])
-
-create_individual('FullyConfigurable',pretty_name = 'Fully Configurable',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'FullyConfigurable', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
+create_individual('FullyConfigurable',
+                  pretty_name='Fully Configurable',
                   direct_types=['pattern'],
-                  own_slots=[['AKA','Mass Customization'],
-                             ['Intent',"""For technical or 'power' users
+                  own_slots=[['AKA', 'Mass Customization'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """For technical or 'power' users
                              the utility of software is grounded in its
                              openness, automatability, and
                              customizability.  Making every aspect
@@ -213,25 +193,16 @@ create_individual('FullyConfigurable',pretty_name = 'Fully Configurable',
                              in some contexts can still appreciate
                              simplicity during more mundane tasks.
                              """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses','SmallTalk','Squeak'], 
-                             ['RelatedPatterns',
-                              'FullyAutomatic',
-                              'NotSoBasicAuthentication',
-                              'KnowledgeRepresentation']])
-
+                             ['KnownUses', 'SmallTalk', 'Squeak'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'FullyAutomatic', 'NotSoBasicAuthentication', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
 create_individual('ExtensibleArchitecture',
+                  pretty_name='Extensible Architecture',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',"""Build flexibility into
-                  the very nature of a system by basing it on
-                  well-defined interfaces and simple interactions."""],
-                             ['Motivation',],
-                             ['Applicability',
-                              """Nooron benefits
+                  own_slots=[['Applicability', """Nooron benefits
                               from the Extensible Architecture approach
                               first by attempting to make as much of
                               the system as possible be knowledge-based
@@ -258,8 +229,7 @@ create_individual('ExtensibleArchitecture',
                               datastores into knowledge stores is hence
                               the fundamental mode of extensibility in
                               Nooron.
-                              """,
-                              """By using knowledge-based techniques
+                              """, """By using knowledge-based techniques
                               to generate XML output, Nooron makes
                               the generation of a vast range of useful
                               portrayals of knowledge to be possible with
@@ -268,20 +238,22 @@ create_individual('ExtensibleArchitecture',
                               will be the reward of careful
                               and diligent authors of NooronPageTemplates.
                               """],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns',
-                              'KnowledgeRepresentation',
-                              'REST']],
-                  pretty_name = 'Extensible Architecture',
-                  )
-
-create_individual('RadicalOpenness', pretty_name = 'Radical Openness',
+                             ['Consequences', ],
+                             ['Intent', """Build flexibility into
+                  the very nature of a system by basing it on
+                  well-defined interfaces and simple interactions."""],
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'KnowledgeRepresentation', 'REST'],
+                             ['Variations', ],
+                            ])
+create_individual('RadicalOpenness',
+                  pretty_name='Radical Openness',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Permit a system to benefit from the
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Permit a system to benefit from the
                               contributions of all comers by erring
                               in the direction of open write permissions
                               and relying on trust, peer review,
@@ -291,103 +263,85 @@ create_individual('RadicalOpenness', pretty_name = 'Radical Openness',
                               to be the responsibility of a moderator
                               or administrator.
                               """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',
-                              'http://c2.com/cgi/wiki?WikiWikiWeb',
-                              'http://www.everything2.com'], 
-                             ['RelatedPatterns',
-                              'PeerReview',
-                              'NotSoBasicAuthentication',
-                              'ExtensibleArchitecture',
-                              'Versioning',
-                              'REST']],
-                  )
-
+                             ['KnownUses', 'http://c2.com/cgi/wiki?WikiWikiWeb', 'http://www.everything2.com'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'PeerReview', 'NotSoBasicAuthentication', 'ExtensibleArchitecture', 'Versioning', 'REST'],
+                             ['Variations', ],
+                            ])
 create_individual('PeerReview',
+                  pretty_name='Peer Review',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Filter and improve human intellectual
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Filter and improve human intellectual
                               efforts by having fellow lovers of quality
                               provide feedback and rating."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns',
-                              'CriteriaAndEvaluations',
-                              'RadicalOpenness']],
-                  pretty_name='Peer Review'
-                  )
-
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'CriteriaAndEvaluations', 'RadicalOpenness'],
+                             ['Variations', ],
+                            ])
 create_individual('SemanticWeb',
+                  pretty_name='Semantic Web',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Transform the experience of users
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Transform the experience of users
                               of the World Wide Web from
                               surfing-between-interlinked-statically-formatted-pages,
                               to
                               interacting-meaningfully-with-meaning."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',],
-                             ['References',
-                              'http://www.semanticweb.org/'],
-                             ['RelatedPatterns',
-                              'KnowledgeRepresentation']],
-                  pretty_name='Semantic Web'
-                  )
-
-create_individual('P2P', pretty_name='Peer To Peer',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.semanticweb.org/'],
+                             ['RelatedPatterns', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
+create_individual('P2P',
+                  pretty_name='Peer To Peer',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """Facilitate system scalability 
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Facilitate system scalability 
                               and self-organization
                               by permitting or requiring that
                               the computing resources of the users
                               are contributed to the overall system.
                               """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['RelatedPatterns','RadicalOpenness']],
-                  )
-
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'RadicalOpenness'],
+                             ['Variations', ],
+                            ])
 create_individual('LiterateProgramming',
+                  pretty_name='Literate Programming',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',"""Generate the documentation
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Generate the documentation
                   for a system from the source code for the system
                   so programmers are supported by
                   their tools to create and learn from better
                   documentation, and probably create better and
                   more understandable code."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',
-                              'http://www.literateprogramming.com/ftools.html'],
-                             ['References','http://www.literateprogramming.com'],
-                             ['RelatedPatterns','CitizenScientist']],
-                  pretty_name='Literate Programming'
-                  )
-
-create_individual('SelfOrganization', pretty_name='Self Organization',
+                             ['KnownUses', 'http://www.literateprogramming.com/ftools.html'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.literateprogramming.com'],
+                             ['RelatedPatterns', 'CitizenScientist'],
+                             ['Variations', ],
+                            ])
+create_individual('SelfOrganization',
+                  pretty_name='Self Organization',
                   direct_types=['pattern'],
-                  own_slots=[['AKA','Fast, Cheap and Out of Control'],
-                             ['Intent',"""Self-organization is the
+                  own_slots=[['AKA', 'Fast, Cheap and Out of Control'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Self-organization is the
                              basis for the most complex, powerful systems
                              known.  Brains, life, and the universe
                              itself exhibit the properties of spontaneous
@@ -396,82 +350,71 @@ create_individual('SelfOrganization', pretty_name='Self Organization',
                              self-organization.  Software systems which
                              embrace these design principles can similarly
                              be sources of surprising novelty."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses','Life','Brains','Universe'], 
-                             ['RelatedPatterns',
-                              'RadicalOpenness',
-                              'LiterateProgramming']],
-                  )
-
-create_individual('Agile', pretty_name='Agile Software Development',
+                             ['KnownUses', 'Life', 'Brains', 'Universe'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['RelatedPatterns', 'RadicalOpenness', 'LiterateProgramming'],
+                             ['Variations', ],
+                            ])
+create_individual('Agile',
+                  pretty_name='Agile Software Development',
                   direct_types=['pattern'],
-                  own_slots=[['AKA','Extreme Programming'],
-                             ['Intent',
-                              """Individuals and interactions over processes and tools. 
+                  own_slots=[['AKA', 'Extreme Programming'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Individuals and interactions over processes and tools. 
                                  Working software over comprehensive documentation. 
                                  Customer collaboration over contract negotiation. 
                                  Responding to change over following a plan."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',], 
-                             ['References','http://agilemanifesto.org/'],
-                             ['RelatedPatterns','RadicalOpenness']],
-                  )
-
-create_individual('CitizenScientist', pretty_name='Citizen Scientist',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://agilemanifesto.org/'],
+                             ['RelatedPatterns', 'RadicalOpenness'],
+                             ['Variations', ],
+                            ])
+create_individual('CitizenScientist',
+                  pretty_name='Citizen Scientist',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',
-                              """The professionalization
+                  own_slots=[['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """The professionalization
                               of science interposes scientists
                               between us and our participation in
                               the improvement of knowledge. Citizen
                               Scientists take an active role in
                               creating their understanding of the
                               world."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',],
-                             ['References',
-                              'http://www.amazon.com/exec/obidos/ASIN/0714525103'],
-                             ['RelatedPatterns','LiterateProgramming']],
-                  )
-
-create_individual('CollectiveIntelligence', pretty_name='Collective Intelligence',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.amazon.com/exec/obidos/ASIN/0714525103'],
+                             ['RelatedPatterns', 'LiterateProgramming'],
+                             ['Variations', ],
+                            ])
+create_individual('CollectiveIntelligence',
+                  pretty_name='Collective Intelligence',
                   direct_types=['pattern'],
-                  own_slots=[['AKA',
-                              'Hive Mind','Noosphere','Global Brain'],
-                             ['Intent',"""Maybe together we have enough
+                  own_slots=[['AKA', 'Hive Mind', 'Noosphere', 'Global Brain'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Maybe together we have enough
                               intelligence to solve some of the really
                               big problems."""],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',],
-                             ['References',
-                              'http://bootstrap.org/',
-                              'http://www.noosphere.org',
-                              'http://pespmc1.vub.ac.be/'],
-                             ['RelatedPatterns',
-                              'CitizenScientist','SelfOrganization',
-                              'RadicalOpenness','KnowledgeRepresentation']],
-                  )
-
-create_individual('TextConsideredHarmful', pretty_name='Text Considered Harmful',
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://bootstrap.org/', 'http://www.noosphere.org', 'http://pespmc1.vub.ac.be/'],
+                             ['RelatedPatterns', 'CitizenScientist', 'SelfOrganization', 'RadicalOpenness', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
+create_individual('TextConsideredHarmful',
+                  pretty_name='Text Considered Harmful',
                   direct_types=['pattern'],
-                  own_slots=[['AKA','AssertionTheUnitOfSelection'],
-                             ['Intent',"""When people make the effort to
+                  own_slots=[['AKA', 'AssertionTheUnitOfSelection'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """When people make the effort to
                              express themselves in knowledge rather than
                              text, they make it easier for machines
                              (without AI) to process their utterences
@@ -487,89 +430,53 @@ create_individual('TextConsideredHarmful', pretty_name='Text Considered Harmful'
                              crafting fully machine-understandable
                              knowledge in Cyc.
                              """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations',], 
-                             ['KnownUses',],
-                             ['References',''],
-                             ['RelatedPatterns',
-                              'KnowledgeRepresentation']],
-                  )
-
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', ''],
+                             ['RelatedPatterns', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
 create_individual('RecombinatoryKnowledge',
                   pretty_name='Recombinatory Knowledge',
                   direct_types=['pattern'],
-                  own_slots=[['AKA',
-                              'Modularization',
-                              'Law Of Demeter',],
-                             ['Intent',"""Keep different kinds of
+                  own_slots=[['AKA', 'Modularization', 'Law Of Demeter'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Keep different kinds of
                              knowledge properly separated into containers
                              which can be 'composed' with other knowledge 
                              to support multiple uses, and diverse
                              purposes unimagined by their creators.
                              """],
-                             ['Motivation',],
-                             ['Applicability',],
-                             ['Method',],
-                             ['Consequences',],
-                             ['Variations','transclusion'], 
-                             ['KnownUses',
-                              'http://www.nooron.org/know/nooron_app_architecture.pykb'],
-                             ['RelatedPatterns',
-                              'KnowledgeRepresentation',
-                              'DontRepeat'],
-                             ['References',
-                              'http://www.ccs.neu.edu/home/lieber/LoD.html'],]
-                  )
-
-create_individual('DontRepeat', pretty_name="Don't Repeat Yourself",
-   direct_types=['pattern'],
-   own_slots=[['AKA','DRY'],
-              ['Intent',"""Every piece of knowledge must
+                             ['KnownUses', 'http://www.nooron.org/know/nooron_app_architecture.pykb'],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.ccs.neu.edu/home/lieber/LoD.html'],
+                             ['RelatedPatterns', 'KnowledgeRepresentation', 'DontRepeat'],
+                             ['Variations', 'transclusion'],
+                            ])
+create_individual('DontRepeat',
+                  pretty_name="""Don't Repeat Yourself""",
+                  direct_types=['pattern'],
+                  own_slots=[['AKA', 'DRY'],
+                             ['Applicability', ],
+                             ['Consequences', ],
+                             ['Intent', """Every piece of knowledge must
               have a single, unambiguous,
               authoritative representation within a
               system."""],
-              ['Motivation',],
-              ['Applicability',],
-              ['Method',],
-              ['Consequences',],
-              ['Variations',], 
-              ['KnownUses',],
-              ['RelatedPatterns',
-               'RecombinatoryKnowledge',
-               'Versioning',
-               'LiterateProgramming',
-               'KnowledgeRepresentation'],
-              ['References',
-               'http://www.pragmaticprogrammer.com/ppbook/extracts/rule_list.html']],
-                  )
-
-##create_individual('', pretty_name='',
-##                  direct_types=['pattern'],
-##                  own_slots=[['AKA',''],
-##                             ['Intent',],
-##                             ['Motivation',],
-##                             ['Applicability',],
-##                             ['Method',],
-##                             ['Consequences',],
-##                             ['Variations',], 
-##                             ['KnownUses',],
-##                             ['RelatedPatterns']],
-##                  )
-
-create_class('technology')
-
+                             ['KnownUses', ],
+                             ['Method', ],
+                             ['Motivation', ],
+                             ['References', 'http://www.pragmaticprogrammer.com/ppbook/extracts/rule_list.html'],
+                             ['RelatedPatterns', 'RecombinatoryKnowledge', 'Versioning', 'LiterateProgramming', 'KnowledgeRepresentation'],
+                             ['Variations', ],
+                            ])
 create_individual('OKBC',
-                  direct_types=['technology'],
-                  pretty_name='Open KnowledgeBase Connectivity'
-                  )
-
+                  pretty_name='Open KnowledgeBase Connectivity',
+                  direct_types=['technology'])
 create_individual('PyOKBC',
-                  direct_types=['technology'],                  
-                  )
-
+                  direct_types=['technology'])
 create_individual('Cyc',
-                  direct_types=['technology'],                  
-                  )
+                  direct_types=['technology'])
