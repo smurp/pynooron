@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.18 2003/04/13 19:45:43 smurp Exp $'
+_version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.19 2003/04/28 14:06:44 smurp Exp $'
 
 
 from PyOkbc import *
@@ -641,7 +641,8 @@ def local_connection():
         place = os.environ.get('LOCAL_CONNECTION_PLACE')
         if place != None:
             from FileSystemConnection import FileSystemConnection
-            LOCAL_CONNECTION = FileSystemConnection({'default_place':place})
+            LOCAL_CONNECTION = establish_connection(FileSystemConnection,
+                                                    {'default_place':place})
         else:
             LOCAL_CONNECTION = Connection()
     return LOCAL_CONNECTION

@@ -1,0 +1,35 @@
+<!-- auth_status -->
+<tal:dummy condition="python:1" define="sep string:&lt;b&gt;||&lt;/b&gt;">
+  <tal:dummy 
+       condition="python: AUTHENTICATED_USER != AnonymousUser">
+    <b tal:content="AUTHENTICATED_USER"></b>
+    <tal:dummy replace="structure sep"/>
+    <a href="/whoami">my preferences</a> 
+    <tal:dummy replace="structure sep"/>
+    my stuff
+    <tal:dummy replace="structure sep"/>
+    <a tal:attributes="href python:'/logout?OnSuccessRedirTo='+request.object_request()">/logout</a> 
+  </tal:dummy>
+
+  <tal:dummy 
+       condition="python:AUTHENTICATED_USER == AnonymousUser">
+    <table><tr><td>
+    <b tal:content="AUTHENTICATED_USER"></b>
+    <tal:dummy replace="structure sep"/>
+    </td><td>
+    <form action="/login" method="PUT">
+       User: <input name="the_user_id" type="text" size="6"/>
+       Pass: <input name="the_user_pw" type="password" size="6"/>
+       <input type="submit" value="Login"/>
+       <input type="hidden" name="OnSuccessRedirTo" 
+              tal:attributes="value python:request.object_request()"/>
+    </form>
+    </td>
+    <td>
+    <tal:dummy replace="structure sep"/>
+    join
+    </td>
+    </tr>
+  </tal:dummy>
+</tal:dummy>
+

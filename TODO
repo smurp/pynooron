@@ -3,6 +3,28 @@
 TODO for Nooron
 
 * possible priorities
+** flesh out AUTHENTICATED_USER
+*** make it an instance of a class wrapped around a kb? a frame?
+** flesh out login/identity creation
+*** per-user-kbs:
+**** use cases:
+***** publish identity for NSBA (NotSoBasicAuthentication) /know/user/bob/identity
+***** store overriding garments for own use: /know/user/bob/standard_master
+***** store new garments for own use: /know/user/bob/pattern_language_cartoon.html
+***** publish evaluations for everyone's heeding:
+****** access by subject:   /know/user/bob/ratings/subj/www.it.com/path/to/subject
+****** access by class:     /know/user/bob/ratings/clas/www.it.com/path/to/class
+****** access by criterion: /know/user/bob/ratings/crit/www.it.com/path/to/criterion
+***** access garments (new and overriding) within the Nooron instance:
+****** put $identity at the beginning of the FileSystemConnection path
+
+*** save FF goodies like firstname, lastname, groups, etc in per-user kbs
+**** create an identity-kb upon first successful (non-NSBA) login
+**** create mapping between FF fields and Nooron identity-kb fields
+**** the mapping should exist in the friendly_favors_authenticator python class
+*** authentication path=local_identity_auth:not_so_basic_auth:friendly_favors_auth
+
+
 ** ontologize criteria
 ** knowledge-driven security
 ** login against favors.org (relation to NotSoBasicAuthentication?)

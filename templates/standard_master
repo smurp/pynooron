@@ -15,16 +15,19 @@
   <tbody>
     <tr>
       <td bgcolor="white"><b><a href="http://www.nooron.org">Nooron<a/></b></td>
-      <td>
+      <td bgcolor="white">
          <tal:dummy replace="structure container/breadcrumbs"/>
       </td>
     </tr>
-
     <tr>
-      <td bgcolor="#CCFFFF" valign="top">
+      <td colspan="2" align="right" bgcolor="#CCFFFF">
          <metal:block define-slot="auth_status">
            <tal:dummy replace="structure container/auth_status"/>
-         </metal:block>
+         </metal:block>        
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#CCFFFF" valign="top">
          <metal:block define-slot="priority_options">
          </metal:block>
          <div metal:define-slot="available_garments" tal:omit-tag="">
@@ -75,6 +78,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.28 2003/04/23 23:32:22 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.29 2003/04/28 14:06:44 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
