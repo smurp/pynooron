@@ -6,6 +6,7 @@ put_instance_types(current_kb(),['nooron_app_wardrobe'])
 create_class('Task',
              template_slots=[['slot_display_order',
                               'TaskDescription',
+                              'TaskMotivation',
                               'EstimatedHours',
                               'Predecessors',
                               'Status',

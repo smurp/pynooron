@@ -15,6 +15,12 @@ create_slot('TaskDescription',
             pretty_name = 'Task Description',
             own_slots=[[':SLOT-COLLECTION-TYPE','list'],
                        [':SLOT-VALUE-TYPE',':PARAGRAPH']])
+
+create_slot('TaskMotivation',
+            pretty_name = 'Task Motivation',
+            own_slots=[[':SLOT-COLLECTION-TYPE','list'],
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH']])
+
 create_slot('Status',
             own_slots=[[':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE','TaskStatus']])
@@ -31,8 +37,9 @@ create_class('Task',
              direct_types=['pert_class'],
              template_slots=[['Predecessors'],
                              ['TaskDescription'],
+                             ['TaskMotivation'],
                              ['EstimatedHours'],
-                             ['Status'],
+                             ['Status','future'],
                              ['References']])
 
 create_class('TaskStatus',
@@ -46,3 +53,5 @@ create_class('pert_app',
 
 create_individual('complete',direct_types=['TaskStatus'])
 create_individual('future',direct_types=['TaskStatus'])
+create_individual('deferred',direct_types=['TaskStatus'])
+create_individual('cancelled',direct_types=['TaskStatus'])
