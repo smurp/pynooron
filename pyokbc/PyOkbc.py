@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.35 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.35 2003/03/03 21:19:56 smurp Exp $'
+__version__='$Revision: 1.36 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.36 2003/03/06 09:41:39 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -62,6 +62,36 @@ def trayce(args=[],format=None,indent=None):
 def warn(mess,level=10):
     if WARNINGS >= level:
         print mess
+
+def get_slot_specification(frame,slots,
+                           slot_type,kb,
+                           inference_level,
+                           number_of_values,
+                           kb_local_only_p):
+    inexact_p = None
+    exact_p = None
+    vals = None
+    dvals = None
+    more_status = None
+    slot_specs = []
+    for slot in slots:
+        (vals,exact_p,more_status) =\
+              kb.get_slot_values_internal(frame,slot,slot_type,
+                                          number_of_values,
+                                          Node._known_true,
+                                          kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        # FIXME dvals are ignored in get_slot_specification
+        (dvals,exact_p,more_status) =\
+              kb.get_slot_values_internal(frame,slot,slot_type,
+                                          number_of_values,
+                                          Node._default_only,
+                                          kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        slot_spec = [slot]
+        slot_spec.extend(vals)
+        slot_specs.append(slot_spec)
+    return (slot_specs,not inexact_p)
 
 def uniquify_specs(list_of_specs):
     seen_vals = []
@@ -854,6 +884,72 @@ class KB(FRAME,Programmable):
         #if Node._INDIVIDUAL in superclasses: print klass, "sub of INDIVIDUAL",superclasses
         return (superclasses,exact_p,more_status)
 
+    def get_frame_details(kb,frame,inference_level=Node._taxonomic,
+                          number_of_values=Node._all,kb_local_only_p=0):
+        (found_frame,
+         frame_found_p)\
+         = kb.get_frame_in_kb_internal(frame,error_p=1,kb_local_only_p=kb_local_only_p)
+        details = {}
+        inexact_p = 0
+        # :handle get-frame-handle
+        details[':name'] = kb.get_frame_name_internal(frame)
+        details[':pretty-name'] = kb.get_frame_pretty_name_internal(frame)
+        # FIXME get_frame_details ignoring :handle, :frame-type and :primitive_p
+        #details[':frame-type'] = kb.get_frame_type_internal(frame)
+        #details[':primitive-p'] = kb.primitive_p_internal(frame)
+        details[':superclasses'],exact_p,ignore_more =\
+                        kb.get_class_superclasses_internal(frame,
+                                                           inference_level)
+        if not exact_p: inexact_p = 1
+        details[':subclasses'],exact_p,ignore_more = \
+                        kb.get_class_subclasses_internal(frame,
+                                                         inference_level,
+                                                         number_of_values)
+        if not exact_p: inexact_p = 1
+        details['types'],exact_p,ignore_more = \
+                        kb.get_instance_types_internal(frame,
+                                                       inference_level,
+                                                       number_of_values,
+                                                       kb_local_only_p)
+        own_slots,exact_p = kb.get_frame_slots_internal(frame,
+                                                        inference_level,
+                                                        Node._own,
+                                                        kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        template_slots,exact_p = kb.get_frame_slots_internal(frame,
+                                                             inference_level,
+                                                             Node._template,
+                                                             kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        details[':own-slots'],exact_p = \
+               get_slot_specification(frame,
+                                      own_slots,
+                                      Node._own,
+                                      kb,inference_level,
+                                      number_of_values,
+                                      kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        details[':template-slots'],exact_p = \
+               get_slot_specification(frame,
+                                      template_slots,
+                                      Node._template,
+                                      kb,inference_level,
+                                      number_of_values,
+                                      kb_local_only_p)
+        if not exact_p: inexact_p = 1
+        # FIXME get_frame_details ignoring :own-facets and :template-facets
+        #details[':own-facets']
+        #details[':template-facets']
+        if not exact_p: inexact_p = 1
+        details[':sentences'],exact_p,ignore_status = \
+                        kb.get_frame_sentences_internal(frame,
+                                                        number_of_values,
+                                                        kb_local_only_p = kb_local_only_p)
+
+        if not exact_p: inexact_p = 1
+        return (details,not inexact_p)
+    get_frame_details_internal = get_frame_details
+        
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
                         checked_kbs=None): # FIXME shouldn't add arg!
         (found_frame,
@@ -870,15 +966,16 @@ class KB(FRAME,Programmable):
                                               checked_kbs)
                 if rets[1]: return rets
         return (None,None)
+    get_frame_in_kb_internal = get_frame_in_kb
         
-    def get_frame_name_internal(kb,frame,kb_local_only_p=0):
+    def get_frame_name(kb,frame,kb_local_only_p=0):
         # FIXME get_frame_name_internal needs fixing
         #frame = kb.get_frame_in_kb(frame)[0]
         if frame != None:
             return str(frame)
             return frame._name
         return None
-    get_frame_name = get_frame_name_internal
+    get_frame_name_internal = get_frame_name
 
     def get_frame_pretty_name(kb,frame,kb_local_only_p=0):
         pretty_name = kb.get_frame_pretty_name_internal(frame,
@@ -953,6 +1050,7 @@ class KB(FRAME,Programmable):
         pretty_name = kb.get_frame_pretty_name(frame)
 
         return (lines,exact_p,more_status)
+    get_frame_sentences_internal = get_frame_sentences
 
     def get_frame_slots(kb,frame,
                         inference_level = Node._taxonomic,
@@ -1036,10 +1134,11 @@ class KB(FRAME,Programmable):
         #print "  returning",list_of_slots
         return (list_of_slots,exact_p)
 
+
     def get_frame_type_internal(kb,thing,kb_local_only_p=0):
         return thing.get_frame_type()
     get_frame_type = get_frame_type_internal
-
+    
     def CACHING_get_instance_types(kb,frame,
                            inference_level = Node._taxonomic,
                            number_of_values = Node._all,
@@ -1312,7 +1411,7 @@ class KB(FRAME,Programmable):
                                            kb_local_only_p)
         list_of_values = map(lambda x:x[0],list_of_specs)
         return (list_of_values,exact_p,more_status)
-
+    get_slot_values_internal = get_slot_values
 
     def CACHING_get_slot_values_in_detail(kb,frame,slot,
                                   inference_level = Node._taxonomic,
@@ -1435,6 +1534,9 @@ class KB(FRAME,Programmable):
         typs_str = map(str,typs)
         isit = str(klass) in typs_str
         return (isit,1)
+
+    def primitive_p(kb,klass,kb_local_only_p=0):
+        return kb.primitive_p_internal(klass,kb_local_only_p)
 
     def print_frame(kb,frame,
                     slots = Node._filled,
@@ -1638,6 +1740,7 @@ class TupleKb(KB,Constrainable):
                                  kb_local_only_p = 0):
         retarray = []
         slot_name = ''
+        frame = kb.get_frame_in_kb(frame)[0] # FIXME what if not found?
         if slot_type in [Node._all,Node._own]:
             #print frame,slot_type,type(frame)
             for slot_name in frame._own_slots.keys():
@@ -2160,5 +2263,6 @@ goto_kb(Node._primordial_kb)
 PRIMORDIAL_KB = Node._primordial_kb
 
 for f in primordials:
+    #print "adding %s (%s) to primordial_kb"%(f,type(f) and f.__class__)
     Node._primordial_kb._add_frame_to_store(f)
     
