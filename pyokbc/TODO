@@ -2,8 +2,9 @@
 TODO for PyOKBC
 
 * PyOkbc must support operations minimally required by Nooron:
-** PERFORMANCE
+** get_class_instances should work a little bit
 ** get_class_subclasses should work a little bit
+** PERFORMANCE
 
 ** enforce DOMAIN constraints on slot values 
 ** enforce slot-based constraints first
@@ -14,6 +15,8 @@ TODO for PyOKBC
 *** /know/SomeKB/ surfs the kb as usual
 
 * features not absolutely required by Nooron
+** clean out old, unused methods and unused recursion cruft
+** implement all mandatory OKBC functions
 ** meaningful implementation of default values
 ** value_selector sensitivity in get_slot_values
 
@@ -30,4 +33,4 @@ coerce slot values appropriately (so they are frames too)
 ** clean up Node._*_all and make them into a dict keyed by _*
 ** improve Getting Started section of INSTALL
 
-$Id: TODO,v 1.8 2002/11/11 22:47:18 smurp Exp $
+$Id: TODO,v 1.9 2002/11/16 11:58:37 smurp Exp $

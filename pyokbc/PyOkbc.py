@@ -1,5 +1,5 @@
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.15 2002/11/16 00:04:16 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.16 2002/11/16 11:58:36 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -417,6 +417,16 @@ class KB(FRAME):
             # a kb is being read in.
             raise GenericError()
 
+        if frame_type == Node._slot:
+            if not (Node._SLOT in direct_types) and \
+               not (':SLOT' in direct_types):
+                direct_types.append(Node._SLOT)
+            
+        if frame_type == Node._facet:
+            if not (Node._facet in direct_types) and \
+               not (':FACET' in direct_types):
+                direct_types.append(Node._FACET)
+
         if frame_type == Node._class:
             if not (Node._CLASS in direct_types) and \
                not (':CLASS' in direct_types):
@@ -426,6 +436,10 @@ class KB(FRAME):
                 direct_superclasses.append(Node._THING)
             kb.put_class_superclasses(frame,direct_superclasses,
                                       kb_local_only_p = klop)
+        else:
+            if not (Node._INDIVIDUAL in direct_types) and \
+               not (':INDIVIDUAL' in direct_types):
+                direct_types.append(Node._INDIVIDUAL)
 
         kb.put_instance_types(frame,direct_types,
                               kb_local_only_p = kb_local_only_p)
@@ -659,6 +673,7 @@ class KB(FRAME):
         return (None,None)
         
     def get_frame_name_internal(kb,frame,kb_local_only_p=0):
+        # FIXME get_frame_name_internal needs fixing
         #frame = kb.get_frame_in_kb(frame)[0]
         if frame != None:
             return str(frame)
@@ -666,14 +681,18 @@ class KB(FRAME):
         return None
     get_frame_name = get_frame_name_internal
 
-    def get_frame_pretty_name_internal(kb,frame,kb_local_only_p=0):
-        #if isinstance(kb,META_KB):
-        #    return frame._pretty_name
-        try:
-            return frame._pretty_name
-        except:
-            return None
-    get_frame_pretty_name = get_frame_pretty_name_internal
+    def get_frame_pretty_name(kb,frame,kb_local_only_p=0):
+        pretty_name = kb.get_frame_pretty_name_internal(frame,
+                                                        kb_local_only_p)
+        if pretty_name != None:
+            return pretty_name
+        if not kb_local_only_p:
+            for kaybee in kb.get_kb_parents():
+                kaybee_pn = kaybee.get_frame_pretty_name(frame,
+                                                         kb_local_only_p=1)
+                if kaybee_pn != None:
+                    return kb_pn
+        return pretty_name
 
     def get_frame_sentences(kb, frame,
                             number_of_values=Node._all,
@@ -1376,6 +1395,13 @@ class TupleKb(KB,Constrainable):
             return (found_frame,found_frame != None)
         else:
             return (None,None)
+
+    def get_frame_pretty_name_internal(kb,frame,kb_local_only_p=0):
+        found_frame = kb.get_frame_in_kb(frame)[0]
+        if found_frame == None:
+            return None
+        else:
+            return found_frame._pretty_name
 
     def get_frame_slots_internal(kb,frame,
                                  inference_level = Node._taxonomic,

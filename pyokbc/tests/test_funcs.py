@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.10 2002/11/11 22:47:18 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.11 2002/11/16 11:58:37 smurp Exp $'
 
 import os
 import sys
@@ -34,9 +34,16 @@ class ReadOnlyTestCase(unittest.TestCase):
         good = "[:THING, Agent, Animal, Human, Mammal, Primate]"
         self.assertEquals(good,str(resp))
 
+    def test_get_class_subclasses(self):
+        resp = list(get_class_subclasses('Agent')[0])
+        resp.sort(str_sort)
+        good = "[AdultHuman, Child, Human]"
+        self.assertEquals(good,str(resp))
+
     def test_get_frame_sentences(self):
         good = \
              """(individual SamuelBeckett)\n""" + \
+             """(instance-of SamuelBeckett :INDIVIDUAL)\n""" + \
              """(instance-of SamuelBeckett AdultHuman)\n""" + \
              """(slot Age SamuelBeckett 83)\n""" + \
              """(slot BirthTime SamuelBeckett "1906-04-13 GMT")\n""" + \
@@ -125,7 +132,8 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_get_instance_types_all(self):
         mykb = find_kb('Addenda.pykb')        
-        good = '[:THING, AdultHuman, Agent, Animal, Human, Mammal, Primate]'
+        good = '[:INDIVIDUAL, :THING, AdultHuman, Agent, Animal,' +\
+               ' Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
                                        kb = mykb,
                                        inference_level=Node._all)[0])
@@ -133,14 +141,15 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_instance_types_direct(self):
-        good = '[AdultHuman]'
+        good = '[:INDIVIDUAL, AdultHuman]'
         resp = list(get_instance_types('SamuelBeckett',
                                        inference_level=Node._direct)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_instance_types_taxonomic(self):
-        good = '[:THING, AdultHuman, Agent, Animal, Human, Mammal, Primate]'
+        good = '[:INDIVIDUAL, :THING, AdultHuman, Agent,' + \
+               ' Animal, Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
                                        inference_level=Node._taxonomic)[0])
         resp.sort(str_sort)
@@ -228,9 +237,10 @@ class ReadOnlyTestCase(unittest.TestCase):
                               slot_type=Node._own)[0]
         self.assertEquals(good, str(resp))
 
-    def test_stayup(self):
-        first = len(get_class_instances('Human')[0])
-        second = len(get_class_instances('Human')[0])        
+    def skip_test_stayup(self):
+        # this was to check for one of those no-recursion-setup bugs
+        first = len(get_class_instances('gear')[0])
+        second = len(get_class_instances('gear')[0])        
         self.assertEquals(first,second)
 
 

@@ -134,10 +134,9 @@ def find_kb(name_or_kb_or_kb_locator,connection = None):
     if not connection: connection = local_connection()
     return connection.find_kb(name_or_kb_or_kb_locator)
 
-def frame_in_kb_p(kb,thing, kb_local_only_p = 0):
+def frame_in_kb_p(thing, kb=None, kb_local_only_p = 0):
     if not kb: kb = current_kb()
-    print "kb:",kb
-    return kb.frame_in_kb_p_internal(thing,kb_local_only_p)
+    return kb.frame_in_kb_p(thing,kb_local_only_p)
 
 def get_class_instances(klass,kb=None,inference_level=Node._taxonomic,
                         number_of_values = Node._all, kb_local_only_p=0):
@@ -313,7 +312,6 @@ def local_connection():
     global LOCAL_CONNECTION
     if not LOCAL_CONNECTION:
         place = os.environ.get('LOCAL_CONNECTION_PLACE')
-        #print "place =",place
         if place != None:
             from FileSystemConnection import FileSystemConnection
             LOCAL_CONNECTION = FileSystemConnection({'default_place':place})
@@ -334,7 +332,6 @@ def open_kb(kb_locator,
 
 def openable_kbs(kb_type=None,connection = None,place=None):
     if not connection: connection = local_connection()
-    print "openable_kbs connection =",connection
     return connection.openable_kbs(kb_type,place)
 
 def print_frame(frame,
@@ -364,6 +361,10 @@ def procedure_p(thing):
 def put_class_superclasses(klass,new_superclasses,kb=0,kb_local_only_p=0):
     if not kb: kb = current_kb()
     kb.put_class_superclasses(klass,new_superclasses,kb_local_only_p)
+
+def put_frame_pretty_name(frame,name,kb=0,kb_local_only_p=0):
+    if not kb: kb = current_kb()
+    kb.put_frame_pretty_name(frame,name,kb_local_only_p)
 
 def put_instance_types(frame,new_types,kb=0,kb_local_only_p = 0):
     if not kb: kb = current_kb()
