@@ -74,6 +74,7 @@ class FileSystemConnection(Connection):
         #print "_lines_and_stats place =",place,filename
         if place != '':
             path = [place]
+        lines = []
         for a_place in path:
             if __builtins__.has_key('nooron_root'): # FIXME bad hack
                 fname = _make_allowed_fname(a_place,filename)
