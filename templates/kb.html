@@ -140,7 +140,9 @@ frames which are directly in this KB you will notice that
 </table>
 
 <table border="1"
-       tal:define="items python:get_kb_individuals(kb_local_only_p=1)" 
+       tal:define="item_unsorted python:get_kb_individuals(kb_local_only_p=1);
+                   items python:[get_frame_name(itm) for itm in item_unsorted];
+                   doh python:items.sort()"
        tal:condition="items">
   <caption><strong tal:content="structure python:get_doc_for(get_kb_individuals)">link</strong></caption>
   <tr>
@@ -164,7 +166,7 @@ frames which are directly in this KB you will notice that
 </div>
 
 <hr>
-$Id: kb.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
+$Id: kb.html,v 1.3 2003/06/28 22:36:56 smurp Exp $
 </div>
   </body>
 </html>
