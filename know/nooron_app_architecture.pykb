@@ -1,3 +1,4 @@
+# -*-mode: python -*-
 put_direct_parents(['convenience_procedures',
                     #'transformer_ontology',
                     'common_transformers'
@@ -101,7 +102,7 @@ create_class('nooron_app_wardrobe',
 create_class('nooron_app_instance',
              direct_superclasses=['nooron_app_component'],
              template_slots=[['npt_for_self','nooron_app.html'],
-                             ['actions_for_self','Save_Kb.html']],
+                             ['actions_for_self','save_data.html']],
              own_slots=[['merges_in','nooron_app_wardrobe','nooron_app_data']],
              doc="""A nooron_app_instance is an actual runnable app.
              It is the combination of two things: a nooron_app_wardrobe
@@ -123,18 +124,23 @@ create_class(':THING',
              template_slots=[['npt_for_self',
                               'frame.html',
                               'frame_details.html',
-                              ]])
+                              ],
+                             ['actions_for_self',                              
+                              'change_pretty_name.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
                               'class_and_instances.html',
                               #'class_and_subclasses.html'
                               ],
                              ['actions_for_instances',
-                              'create_individual.html']])
+                              'create_individual.html',
+                              'delete_frame.html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
                               'classes_in_kb.dot',
                               'class_hierarchy.dot',
                               'kb_ancestry.dot',
-                              'kb.html'
-                              ]])
+                              'kb.html'],
+                             ['actions_for_self',
+                              'save_kb_as.html',
+                              'put_direct_parents.html']])
