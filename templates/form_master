@@ -1,0 +1,78 @@
+
+
+
+<metal:block metal:define-macro="text_widget">
+<tr>
+  <td><strong tal:content="slot_pretty_name">slot_name</strong></td>
+  <td>
+    <input type="text" name="" tal:attributes="name slot_name" size="31"/>
+  </td>
+</tr>
+</metal:block>
+
+
+
+
+<metal:block metal:define-macro="auto_widget">
+<tal:block 
+  define="slot_value_type python:get_slot_values(slot_name,
+                                                 ':SLOT-VALUE-TYPE')[0][0]">
+
+  <tr>
+    <td valign="top">
+       <strong tal:content="slot_pretty_name">slot_name</strong>
+       <br/>
+       <em tal:content="slot_value_type"></em>
+    </td>
+    <td>
+  <tal:block condition="python:slot_value_type == ':STRING'">
+  <input type="text" name="" tal:attributes="name slot_name" size="31"/>
+  </tal:block>
+
+  <tal:block condition="python:slot_value_type == ':INTEGER'">
+  <input type="text" name="" tal:attributes="name slot_name"/>
+  </tal:block>
+
+  <tal:block condition="python:slot_value_type != None and
+                               not (slot_value_type in [':INTEGER',':STRING'])">
+    <tal:dummy 
+      define="slot_cardinality python:get_slot_value(slot_name,
+                                                     ':SLOT-CARDINALITY');
+              slot_collection_type python:get_slot_value(slot_name,
+                                                     ':SLOT-COLLECTION-TYPE');
+              select_size python:slot_cardinality != None and 
+                                   slot_cardinality > 1 and 5
+                                 or slot_collection_type != None and 5
+                                 or 1;
+              options python:get_class_instances(slot_value_type)[0]">
+
+
+
+
+    <select 
+       name="" 
+       multiple 
+       size="" 
+       tal:attributes="name slot_name;
+                       size python:len(options) > select_size and select_size
+                                   or len(options)">
+
+      <option 
+          tal:repeat="opt options" 
+          tal:content="opt">
+      </option>
+
+    </select>
+    </tal:dummy>
+  </tal:block>
+
+
+    </td>
+  </tr>
+</tal:block>
+
+<br/>
+</metal:block>
+
+
+$Id: form_master,v 1.1 2002/12/06 20:45:07 smurp Exp $ <a href="/templates/form_master">Show Source</a>

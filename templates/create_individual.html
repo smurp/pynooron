@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>kb as html</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+
+<form>
+
+<table border="1">
+<tal:block define="slot_name string:name;
+                   slot_pretty_name string:Frame Name">
+<tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+</tal:block>
+
+
+<tal:block repeat="zlot python:call_procedure(get_procedure('names_and_pretty_names'),
+                           arguments=(get_slot_values(here,
+                                                      'slot_display_order',
+                                                      slot_type=ALL)[0],
+                                      None,this_kb))">
+
+<tal:block define="slot_name python:zlot[0];
+                   slot_pretty_name python:zlot[1]">
+<tal:block metal:use-macro="container/form_master/macros/auto_widget"/>
+</tal:block>
+
+
+</tal:block>
+</table>
+<input type="submit" name="create"/>
+
+</form>
+<div tal:define="test python:0" tal:condition="test">
+</div>
+<hr>
+$Id: create_individual.html,v 1.1 2002/12/06 20:45:07 smurp Exp $
+</div>
+
+  </body>
+</html>

@@ -3,20 +3,21 @@
   size="8,10"
   URL="<tal:dummy replace="this"/>"
 <span tal:condition="python:1" 
-      tal:define="all_patterns python:get_class_instances('pattern')[0]"
+      tal:define="all_patterns python:call_procedure(get_procedure('names_and_pretty_names'),
+                                                     arguments=(get_class_instances('pattern')[0],
+                                                               '\\n',this_kb))"
       tal:omit-tag="">
   <span tal:repeat="a_pattern all_patterns"
         tal:omit-tag="">
-	<tal:dummy replace="a_pattern"/> 
-          [label="<tal:dummy replace="python:get_frame_pretty_name(a_pattern) or get_frame_name(a_pattern)"/>",
-           URL="<tal:dummy replace="a_pattern"/>",
-           shape=plaintext];
-        <span tal:repeat="a_relative python:get_slot_values(a_pattern,'RelatedPatterns')[0]"
+	<tal:dummy replace="python:a_pattern[0]"/> 
+          [label="<tal:dummy replace="python:a_pattern[1]"/>",
+           URL="<tal:dummy replace="python:a_pattern[0]"/>",
+           shape=box];
+        <span tal:repeat="a_relative python:get_slot_values(a_pattern[0],'RelatedPatterns')[0]"
               tal:omit-tag="">
-          <hr tal:replace="a_pattern"/> -> <hr tal:replace="a_relative"/>;
+          <hr tal:replace="python:a_pattern[0]"/> -> <hr tal:replace="python:a_relative"/>;
         </span>
   </span>
 </span>
 </metal:block>
 </metal:block>
-
