@@ -2,18 +2,41 @@
 <tal:dummy replace="python:request.set_header('Content-Type','text/xml')"/>
  <article>
     <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
+    <artheader>
+       <title tal:content="python:get_frame_pretty_name(here) or 
+                                  get_frame_name(here)"></title>
+
+	<tal:dummy condition="string:">
+	<revhistory>
+	<revision>
+        <date>01 April 2003</date>
+	</revision>
+	</revhistory>
+        </tal:dummy>
+
+       <abstract>
+        <para><ulink url=""
+                 tal:define="url python:server_absolute_url+request.object_request()"
+                 tal:attributes="url url"
+                 tal:content="url"></ulink></para>
+        <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
+       </abstract>
+
+    </artheader>
+
+
+
     <sect1 id="introduction">
        <title tal:content="python:get_frame_pretty_name(here) or 
                                   get_frame_name(here)"></title>
 
         <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
-  
+        
 
     </sect1>
 
 
-    <sect1 id="main-body">
-      <title>The Patterns</title>
+
       <tal:dummy 
          define="global pat_slots python:get_slot_values('pattern',
                                                          'slot_display_order',
@@ -24,15 +47,15 @@
             tal:omit-tag="">
         <span tal:repeat="pattern patterns"
               tal:omit-tag="">
-         <sect2 id="" tal:attributes="id pattern">
+         <sect1 id="" tal:attributes="id pattern">
             <title tal:content="python:get_frame_pretty_name(pattern) or
                                        get_frame_name(pattern)">pattern</title>
             <span tal:repeat="pat_slot pat_slots"
                   tal:omit-tag="">
 
-	      <sect3 id="" 
+	      <sect2 id="" 
                      tal:define="vals python:get_slot_values(pattern,pat_slot)[0]"
-                     tal:condition="vals"
+                     tal:condition="python: vals and not (len(vals) == 1 and vals[0] == ' ' or vals[0] =='')"
                      tal:attributes="id python:str(pattern)+'-'+str(pat_slot)">
                 <title tal:content="pat_slot">pat_slot</title>
                 <span tal:repeat="val vals"
@@ -52,17 +75,18 @@
                                 tal:condition="isin"/>
                    </para>
                 </span>
-              </sect3>
+              </sect2>
 
 
             </span>
-         </sect2>
+         </sect1>
         </span>
       </span>
-    </sect1>
  </article>
 
 <metal:block tal:condition="nothing">
+http://newbiedoc.sourceforge.net/metadoc/docbook-guide.html
+	<date tal:content="python:get_slot_value(here,'ModificationTime')[0]"></date>
   The following code is what I wanted to use
   to make links from one pattern to another
   within a docbook instance.  But... ZPT raised 
