@@ -1,0 +1,32 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+  size="10,7.5"
+  rotate=90
+  URL="<tal:dummy replace="this"/>"
+<span tal:condition="python:1" 
+      tal:define="all_states python:call_procedure(get_procedure('names_and_pretty_names'),
+                                                  arguments=(get_class_instances('State')[0],
+                                                             '\\n',this_kb))"
+      tal:omit-tag="">
+  <span tal:repeat="a_state all_states"
+        tal:omit-tag="">
+	<tal:dummy replace="python:a_state[0]"/> 
+          [label="<tal:dummy replace="python:a_state[1]"/>",
+           URL="<tal:dummy replace="python:a_state[0]"/>"];
+  </span>
+
+</span>
+
+<tal:dummy condition="nothing">
+
+  <span tal:repeat="a_transition python:get_class_instances('Transition')[0]"
+        tal:omit-tag="">
+    <tal:dummy replace="python:get_slot_value(a_transition,'from_state')[0]"/> -> <tal:dummy replace="python:get_slot_value(a_transition,'to_state')[0]"/>
+      [label="<tal:dummy replace="python:get_frame_pretty_name(a_transition) or get_frame_name(a_transition)"/>"];
+  </span>
+
+</tal:dummy>
+
+</metal:block>
+</metal:block>
+
