@@ -10,13 +10,27 @@
 
 This page summarizes the various aspects of this software project:
 <ul>
+
+
 <li><a href="#PERT_Chart">PERT Chart</a></li>
-<li><a href="#Tasks">Tasks</a></li>
-<li><a href="#UseCases">Use Cases</a></li>
-<li><a href="#AgentTypes">Agent Types</a></li>
+<li><a href="#ActorTypes">The Actors</a></li>
+<li><a href="#UseCases">The Use Cases</a></li>
+<li><a href="#Tasks">The Tasks</a></li>
+
+
 </ul>
 
-<a name="PERT_Chart"></a>
+<a name="PERT_Chart"><h2>PERT Chart</h2></a>
+See PERT as: 
+<tal:block repeat="extension python:[['ps','ps'],
+                                     ['svg','svg'],
+                                     ['gif','gif']]">
+  <a tal:attributes="href 
+                     python:request.object_request()+
+                            '__pert_chart.dot.'+extension[1];"
+     tal:content="python:extension[0]"></a>
+</tal:block>
+
 <img 
    tal:attributes="src python:request.object_request()+'__pert_chart.dot.jpg';
                    alt python:(get_frame_pretty_name(here) 
@@ -25,27 +39,31 @@ This page summarizes the various aspects of this software project:
 
 
 
+
 <tal:dummy
-    define="app_class string:Task">
+    define="app_class string:ActorType">
 
-
-<h2><a name="Tasks" 
-         tal:attributes="href app_class">The Tasks</a></h2>
+<h2><a name="ActorTypes"
+         tal:attributes="href app_class">The Actors</a></h2>
 <p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
+
+<tal:block
+    define="items python:get_class_instances(app_class)[0];
+            instances python:[get_frame_name(itm) for itm in items];
+            ignore python:instances.sort()"
+    condition="instances">
+
 <table border="1">
-  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+  <tr tal:repeat="instance instances">
     <td><a href="link"
-           tal:define="url python:here.get_frame_name(instance)"
+           tal:define="url instance"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
   </tr>
 </table>
+</tal:block>
 
 </tal:dummy>
-
-
-
 
 
 
@@ -56,41 +74,69 @@ This page summarizes the various aspects of this software project:
 <h2><a name="UseCases" 
          tal:attributes="href app_class">The Use Cases</a></h2>
 <p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
+
+<tal:block
+    define="items python:get_class_instances(app_class)[0];
+            instances python:[get_frame_name(itm) for itm in items];
+            ignore python:instances.sort()"
+    condition="instances">
+
 <table border="1">
-  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+  <tr tal:repeat="instance instances">
     <td><a href="link"
-           tal:define="url python:here.get_frame_name(instance)"
+           tal:define="url instance"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
+    <td tal:content="structure python:get_slot_value(instance,'UseCaseDescription')[0] or '&nbsp;'">link</td>
   </tr>
 </table>
 
-</tal:dummy>
+</tal:block>
 
+</tal:dummy>
 
 
 
 
 
 <tal:dummy
-    define="app_class string:AgentType">
+    define="app_class string:Task">
 
-<h2><a name="AgentTypes"
-         tal:attributes="href app_class">The Agent Types</a></h2>
+<h2><a name="Tasks" 
+         tal:attributes="href app_class">The Tasks</a></h2>
 <p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
 
+<tal:block
+    define="items python:get_class_instances(app_class)[0];
+            instances python:[get_frame_name(itm) for itm in items];
+            ignore python:instances.sort()"
+    condition="instances">
+
 <table border="1">
-  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+  <tr tal:repeat="instance instances">
     <td><a href="link"
-           tal:define="url python:here.get_frame_name(instance)"
+           tal:define="url instance"
 	   tal:attributes="href url"
            tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
+    <td tal:content="structure python:get_slot_value(instance,'Status')[0] or '&nbsp;'">link</td>
   </tr>
 </table>
+</tal:block>
 
 </tal:dummy>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -102,6 +148,6 @@ This page summarizes the various aspects of this software project:
 </div>
 
 <hr/>
-$Id: software_project_overview.html,v 1.4 2003/07/09 20:43:00 smurp Exp $
+$Id: software_project_overview.html,v 1.5 2003/07/11 12:53:05 smurp Exp $
 </div>
 </tal:block>
