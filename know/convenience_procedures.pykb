@@ -134,6 +134,17 @@ register_procedure('hierarchy_of_nooron_app_instances',
                    procedure=create_procedure(body=hierarchy_of_nooron_app_instances))
 del hierarchy_of_nooron_app_instances
 
+####################################################################
+
+def make_uml_record_label_for_dot(app_class='',atts=[],kb=None):
+    return """{%s\l|%s}""" % (
+        str(app_class),string.join(atts,''))
+register_procedure('make_uml_record_label_for_dot',
+                   procedure=create_procedure(body=make_uml_record_label_for_dot))
+del make_uml_record_label_for_dot
+
+
+
 
 
 ####################################################################

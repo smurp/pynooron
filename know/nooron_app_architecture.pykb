@@ -96,6 +96,7 @@ create_class('nooron_app_component',
              """)
 create_class('nooron_app_ontology',
              own_slots=[['merges_in',]],
+             template_slots=[['npt_for_self','uml_class_diagram.dot']],
              direct_superclasses=['nooron_app_component'],
              doc="""This is the ontology for a nooron app, equivalent to a
              relational database schema or to a set of class 
