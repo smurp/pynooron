@@ -141,7 +141,12 @@ create_class(':THING',
                              ['actions_for_self',                              
                               #'change_pretty_name.html',
                               'put_frame_details.html',
-                              #'delete_frame.html'
+                              ]])
+create_class(':INDIVIDUAL',
+             template_slots=[['actions_for_self',
+                              #'change_pretty_name.html',
+                              'put_frame_details.html',
+                              'delete_frame.html'
                               ]])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
