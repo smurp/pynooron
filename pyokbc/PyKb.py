@@ -2,6 +2,7 @@
 import string
 
 from PyOkbc import *
+from CachingMixin import CachingMixin
 import string
 import os
 
@@ -49,7 +50,7 @@ def to_slot_spec(frame,slot,slot_type):
     #    die("we get here")
     return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
 
-class PyKb(AbstractFileKb):
+class PyKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'pykb'
     def __init__(self,filename,place='',connection=None,name=None):
         if name == None:
@@ -61,6 +62,7 @@ class PyKb(AbstractFileKb):
             filename = filename + '.' + ext
         (raw_kb,stats) = connection._lines_and_stats(filename,place)
         AbstractFileKb.__init__(self,name,connection=connection)
+        CachingMixin.__init__(self)
         #if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
         #    place = connection._default_place        
@@ -69,7 +71,7 @@ class PyKb(AbstractFileKb):
         goto_kb(self)
         for (key,val) in stats.items():
             #print "putting",key,val
-            put_slot_value(self,str(key),val)
+            self.put_slot_value(self,str(key),val)
         orig_allow_caching_p = self.allow_caching_p()
         self._allow_caching_p = 0
         try:

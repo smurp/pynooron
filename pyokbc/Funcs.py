@@ -1,4 +1,8 @@
 
+_version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.12 2002/12/16 21:00:10 smurp Exp $'
+
+
 from PyOkbc import *
 CURRENT_KB = None
 LOCAL_CONNECTION = None
@@ -844,3 +848,36 @@ unregister_procedure.write=1
 def put_direct_parents(parent_kbs,kb=None):
     if not kb: kb = current_kb()
     kb.put_direct_parents(parent_kbs)
+
+
+import inspect
+import types
+okbc_functions={}
+for lname,lobj in locals().items():
+    #print lname,type(lobj)
+    if type(lobj) in [types.FunctionType,types.MethodType]:
+        #print lname,"is a function"
+        okbc_functions[lname] = lobj
+
+okbc_readonly_kb_functions = []
+for fname,func in okbc_functions.items():
+    #print type(func)
+    #print dir(func)
+    #print "checking",fname,
+    if func.__dict__ and func.__dict__.get('read',None):
+        (args,varargs,varkb) = inspect.getargs(func.func_code)
+        #print fname,args
+        if 'kb' in args:
+            okbc_readonly_kb_functions.append(fname)
+            #print "READONLY"
+        else:
+            pass
+            #print "not"
+    else:
+        pass
+        #print "not"
+#print okbc_readonly_kb_functions
+del inspect
+del types
+
+

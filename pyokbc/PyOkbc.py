@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.29 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.29 2002/12/16 17:35:02 smurp Exp $'
+_version__='$Revision: 1.30 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.30 2002/12/16 21:00:10 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -618,17 +618,24 @@ class KB(FRAME,Programmable):
         return kb._behavior_values.get(behavior,[])
     get_behavior_values = get_behavior_values_internal
 
-    def get_class_instances_internal(kb,klass,
-                                     inference_level=Node._taxonomic,
-                                     number_of_values=Node._all,
-                                     kb_local_only_p=1):
-        (list_of_instances,exact_p,more_status) = ([],1,0)
-        for frame in kb.get_kb_frames():
-            if kb.instance_of_p(frame,klass,
-                                inference_level,
-                                kb_local_only_p)[0]:
-                list_of_instances.append(frame)
-        return (list_of_instances,exact_p,more_status)
+    def CACHING_get_class_instances(kb,klass,
+                            inference_level=Node._taxonomic,
+                            number_of_values=Node._all,
+                            kb_local_only_p=0):
+        if kb.allow_caching_p():
+            cache_key = 'get_class_instances ' + \
+                        str(klass) +\
+                        str(inference_level) +\
+                        str(number_of_values) + \
+                        str(kb_local_only_p)
+            if kb._cache.has_key(cache_key):
+                return kb._cache[cache_key]        
+        retval = kb.get_class_instances_recurse(klass,
+                                              inference_level,
+                                              number_of_values,
+                                              kb_local_only_p,[])
+        if kb.allow_caching_p(): kb._cache[cache_key] = retval
+        return retval
 
     def get_class_instances(kb,klass,
                             inference_level=Node._taxonomic,
@@ -638,7 +645,7 @@ class KB(FRAME,Programmable):
                                               inference_level,
                                               number_of_values,
                                               kb_local_only_p,[])
-    
+
     def get_class_instances_recurse(kb,klass,
                                     inference_level=Node._taxonomic,
                                     number_of_values=Node._all,
@@ -665,8 +672,18 @@ class KB(FRAME,Programmable):
                             list_of_instances.append(inst)
         return (list_of_instances,exact_p,more_status)
 
-
-
+    def get_class_instances_internal(kb,klass,
+                                     inference_level=Node._taxonomic,
+                                     number_of_values=Node._all,
+                                     kb_local_only_p=1):
+        (list_of_instances,exact_p,more_status) = ([],1,0)
+        for frame in kb.get_kb_frames():
+            if kb.instance_of_p(frame,klass,
+                                inference_level,
+                                kb_local_only_p)[0]:
+                list_of_instances.append(frame)
+        return (list_of_instances,exact_p,more_status)
+    
     def get_class_subclasses(kb,klass,
                              inference_level = Node._taxonomic,
                              number_of_values = Node._all,
