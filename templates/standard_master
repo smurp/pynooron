@@ -15,47 +15,21 @@
     <tr>
       <td bgcolor="white"><a href="http://www.noosphere.org/discuss/zwiki/Nooron">Nooron<a/></td>
       <td>
-          <span 
-            tal:omit-tag=""
-            tal:content="structure container/breadcrumbs">breadcrumbs</span>
+         <tal:dummy replace="structure container/breadcrumbs"/>
       </td>
     </tr>
 
     <tr>
       <td bgcolor="green" valign="top">
-         <div metal:define-slot="other_skins" tal:omit-tag="">
-	<em>available garments:</em><br/>
-           <tal:dummy
-                define="global npts_proc
-                        python:get_procedure('npts_for_self_and_instances')"
-                condition="nocall:npts_proc">
-           <div tal:define="all_skins 
-                    python:call_procedure(npts_proc,
-                                          arguments=[here]);
-                    baseurl python:request.object_request()"
-	        tal:condition="all_skins"
-     	        tal:repeat="skin all_skins"
-                tal:omit-tag="">
-             <span tal:omit-tag=""
-                   tal:define="current_skin_p python:template_title == str(skin)">
-	     <a tal:condition="python: not current_skin_p"
-                tal:attributes="href python:baseurl+'__'+skin" 
-                tal:content="skin"></a>
-             <span tal:omit-tag=""
-                   tal:condition="current_skin_p"
-                   tal:content="skin"></span>
-             </span>
-             &nbsp; <br/>
-           </div>
-
-           </tal:dummy>
+         <div metal:define-slot="available_garments" tal:omit-tag="">
+           <tal:dummy replace="structure container/available_garments"/>
          </div>
 	<hr/>
-
-
+         <metal:block metal:define-slot="available_actions">
+           <tal:dummy replace="structure container/available_actions"/>
+         </metal:block>
       </td>
-      <td bgcolor="white" >
-
+      <td bgcolor="white">
          <div metal:define-slot="main">
            The main content of the pages goes here.
          </div>
@@ -93,6 +67,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.18 2002/12/12 14:00:20 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.19 2002/12/12 18:34:22 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

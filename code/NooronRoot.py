@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.20 2002/12/12 14:00:19 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.21 2002/12/12 18:34:21 smurp Exp $'
 
 DEBUG = 0
 
@@ -79,6 +79,8 @@ class NooronRoot:
                         kb=prim_kb,
                         slot_type=Node._template)
 
+
+
         register_procedure('npts_for_self_and_instances',
                            kb=prim_kb,
                            procedure=\
@@ -89,11 +91,18 @@ class NooronRoot:
                            kb=prim_kb,
                            procedure=create_procedure(body=sort_frames))
 
+
+
         meta = meta_kb()
         meta_direct_parents = get_kb_direct_parents(kb=meta)
         meta_direct_parents.append(open_kb('nooron_app_architecture'))
         
         meta.put_direct_parents(meta_direct_parents)
+
+        #put_slot_values(meta,'npt_for_self',
+        #                ['openable_kbs.html'],
+        #                kb=meta)
+
         #print "get_kb_direct_parents()",get_kb_direct_parents(kb=meta)
 
         #print "local_connection =",local_connection()

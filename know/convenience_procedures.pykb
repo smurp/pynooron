@@ -36,6 +36,24 @@ register_procedure('npts_for_self_and_instances',
 del npts_for_self_and_instances
 
 
+
+####################################################################
+
+def actions_for_self_and_instances(here):
+    #actions_for_self = get_slot_values(here,'actions_for_self',
+    #                               slot_type=Node._all)[0]
+    actions_for_self = [] # not yet implemented in nooron_app_architecture
+    if class_p(here):
+        actions_for_instances = get_slot_values(here,'actions_for_instances',
+                                            slot_type=Node._template)[0]
+    else:
+        actions_for_instances = []
+    return actions_for_self + actions_for_instances
+register_procedure('actions_for_self_and_instances',
+                   procedure=create_procedure(body=actions_for_self_and_instances))
+del actions_for_self_and_instances
+
+
 ####################################################################
 def names_and_pretty_names(frame_list,split=None,kb=None):
     """Return a list of frame_name, (maybe split) pretty_name pairs.

@@ -1,0 +1,19 @@
+
+put_direct_parents(['fsa/fsa_ontology'])
+put_instance_types(current_kb(),['nooron_app_wardrobe'])
+
+create_class('State',
+             template_slots=[['slot_display_order',
+                              'TaskDescription',
+                              'EstimatedHours',
+                              'Predecessors',
+                              'References']])
+
+create_class('Transition',
+             template_slots=[['slot_display_order',
+                              'from_state',
+                              'to_state']])
+
+create_class('fsa_app',
+             template_slots=[['npt_for_self',
+                              'fsa.dot']])

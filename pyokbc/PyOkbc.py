@@ -1,5 +1,5 @@
-_version__='$Revision: 1.25 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.25 2002/12/12 14:00:19 smurp Exp $'
+_version__='$Revision: 1.26 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.26 2002/12/12 18:34:22 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -296,6 +296,8 @@ Node._SYMBOL. _direct_superclasses.append(Node._SEXPR)
 Node._LIST.   _direct_superclasses.append(Node._INDIVIDUAL)
 Node._DOCUMENTATION._own_slots[str(Node._SLOT_VALUE_TYPE)] = \
                UNIT_SLOT(Node._SLOT_VALUE_TYPE ,[Node._STRING])
+Node._DOCUMENTATION._own_slots[str(Node._SLOT_CARDINALITY)] = \
+               UNIT_SLOT(Node._SLOT_CARDINALITY ,1)
 
 def class_dump(which):
     for w in which:

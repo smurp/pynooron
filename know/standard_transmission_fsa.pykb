@@ -1,0 +1,62 @@
+
+put_direct_parents(['fsa/fsa_wardrobe'])
+put_instance_types(current_kb(),['fsa_app'])
+put_frame_pretty_name(current_kb(),"Manual Transmission FSA")
+put_slot_values(current_kb(),':DOCUMENTATION',
+                ["""This is an experimental application of the FSA
+                Nooron App which demonstrates simple Finite State
+                Automata visualization."""])
+
+create_individual('Start',direct_types=['State'])
+create_individual('Stop',direct_types=['State'])
+create_individual('R',direct_types=['State'])
+create_individual('N',direct_types=['State'])
+create_individual('first',direct_types=['State'])
+create_individual('second',direct_types=['State'])
+create_individual('third',direct_types=['State'])
+create_individual('fourth',direct_types=['State'])
+create_individual('fifth',direct_types=['State'])
+
+
+create_individual('Start_N',direct_types=['Transition'],
+                  own_slots=[['from_state','Start'],['to_state','N']])
+create_individual('N_Stop',direct_types=['Transition'],
+                  own_slots=[['from_state','N'],['to_state','Stop']])
+
+
+create_individual('N_R',direct_types=['Transition'],
+                  own_slots=[['from_state','N'],['to_state','R']])
+create_individual('R_N',direct_types=['Transition'],
+                  own_slots=[['from_state','R'],['to_state','N']])
+
+create_individual('N_1',direct_types=['Transition'],
+                  own_slots=[['from_state','N'],['to_state','first']])
+create_individual('1_N',direct_types=['Transition'],
+                  own_slots=[['from_state','first'],['to_state','N']])
+
+create_individual('1_2',direct_types=['Transition'],
+                  own_slots=[['from_state','first'],['to_state','second']])
+create_individual('2_1',direct_types=['Transition'],
+                  own_slots=[['from_state','second'],['to_state','first']])
+
+create_individual('2_3',direct_types=['Transition'],
+                  own_slots=[['from_state','second'],['to_state','third']])
+create_individual('3_2',direct_types=['Transition'],
+                  own_slots=[['from_state','third'],['to_state','second']])
+
+create_individual('3_4',direct_types=['Transition'],
+                  own_slots=[['from_state','third'],['to_state','fourth']])
+create_individual('4_3',direct_types=['Transition'],
+                  own_slots=[['from_state','fourth'],['to_state','third']])
+
+create_individual('4_5',direct_types=['Transition'],
+                  own_slots=[['from_state','fourth'],['to_state','fifth']])
+create_individual('5_4',direct_types=['Transition'],
+                  own_slots=[['from_state','fifth'],['to_state','fourth']])
+
+create_individual('N_R',direct_types=['Transition'],
+                  own_slots=[['from_state','N'],['to_state','R']])
+
+create_individual('R_N',direct_types=['Transition'],
+                  own_slots=[['from_state','R'],['to_state','N']])
+

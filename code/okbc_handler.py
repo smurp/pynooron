@@ -1,5 +1,5 @@
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.14 2002/12/12 14:00:19 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.15 2002/12/12 18:34:21 smurp Exp $'
 
 
 from pyokbc import *
@@ -76,10 +76,11 @@ class okbc_handler:
             if str(elem) == str(path_list[0]):
                 path_list.pop(0)
         #print "path_list",path_list
-
+        elem = None
         latest_kb = meta_kb()
         pipe = []
         for elem in path_list:
+            print "checking elem",elem
             frag = string.split(elem,wedge)
             if len(frag) == 2:
                 elem = frag[0]
@@ -95,6 +96,7 @@ class okbc_handler:
                     #print elem,"is a kb"
                     latest_kb = frame
                     kb_request = object_request
+                    elem = None
                 else:
                     pass
                     #print elem,"is a frame"
@@ -102,8 +104,8 @@ class okbc_handler:
                 pass
                 #print elem,"was not found in",latest_kb
 
-        #print "kb",latest_kb,"frame",elem
-        #print "object_request",object_request 
+        print "kb =",latest_kb,"  frame=",elem
+        print "object_request =",object_request 
         request.set_object_request(object_request)
         request.set_kb_request(kb_request)
         app = NooronApp.GenericFrame(latest_kb)

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.10 2002/12/12 14:00:19 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.11 2002/12/12 18:34:21 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -61,6 +61,15 @@ def set_base_request(request,base_request):
     request._base_request = base_request
 http_request.set_base_request = set_base_request
 def base_request(self):
+    """The base_request fully specifies the object and garment to publish.
+    It is the path the user could (or might) have
+    visited to be explicit about which GARMENT to use.  If the
+    actual_request is not a base_request (bacause it does not specify
+    a garment) then some algorithm (such
+    as pick-the-first-possible-garment-which-produces-.html) is
+    used to determine the base_request.  Notice that no transforming
+    or encoding extensions (such as .ps, .pdf, .gz) are included.
+    THING__GARMENT  eg /know/nooron_faq/faq__details.html"""
     return self.__dict__.get('_base_request','')
 http_request.base_request = base_request
 
@@ -79,6 +88,19 @@ def name_request(request):
     return string.split(slashes[-1],'.')[0]
 http_request.name_request = name_request
 
+################################
+def name_of_garmie(request):
+    """The name of the garment (including its one native extension).
+    
+    Motivation:
+       Handy for comparing with other available garments.
+    Examples:
+       aon.dot
+       """
+    br = request.base_request()
+    wedgies = string.split(br,'__')
+    return wedgies[-1]
+http_request.name_of_garmie = name_of_garmie
 
 ################################
 def set_kb_request(request,kb_request):

@@ -1,0 +1,25 @@
+<em>available garments<a href="/templates/available_garments">:</a></em><br/>
+   <tal:dummy
+        define="npts_proc
+                  python:get_procedure('npts_for_self_and_instances');
+                template_title python:request.name_of_garmie()"
+        condition="nocall:npts_proc">           
+   <div tal:define="all_skins 
+            python:call_procedure(npts_proc,
+                                  arguments=[here]);
+            baseurl python:request.object_request()"
+        tal:condition="all_skins"
+     	tal:repeat="skin all_skins"
+        tal:omit-tag="">
+     <span tal:omit-tag=""
+           tal:define="current_skin_p python:template_title == str(skin)">
+       <a tal:condition="python: not current_skin_p"
+          tal:attributes="href python:baseurl+'__'+skin" 
+          tal:content="skin"></a>
+       <span tal:omit-tag=""
+             tal:condition="current_skin_p"
+             tal:content="skin"></span>
+       </span>
+       &nbsp; <br/>
+   </div>
+   </tal:dummy>

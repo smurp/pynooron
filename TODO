@@ -14,6 +14,7 @@ TODO for Nooron
 ** log errors to separate error log
 ** some authorization stubbed in
 ** make /know/pert/ a surfable thing (kb?, place?)
+** implement proper cache flushing, tee hee
 * useability
 ** make /know --> /know__openable_kbs.html
 ** fix available garments defaults for site_front.html and other weirdos
@@ -22,7 +23,6 @@ TODO for Nooron
    such as dot.jpg, dot.ps, dot.pdf, dbk.ps, dbk.pdf and so on
    e.g   aon.dot (.jpg) (.ps) (.ps.pdf)
          -------  ----   ---   ------- 
-** add "available actions" to standard_master
 ** put "available actions" and "available garments" in better places
    Probably redo entire layout of standard_master
 *** put "main" across entire window to permit rendering before trailing
