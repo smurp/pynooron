@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.27 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.27 2003/03/08 12:58:54 smurp Exp $'
+__version__='$Revision: 1.28 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.28 2003/03/28 07:44:01 smurp Exp $'
 
 DEBUG = 0
 
@@ -66,10 +66,12 @@ class NooronRoot:
                  log_to=None,
                  use_auth = 0, initargs = {},
                  site_front='site_front.html',
-                 title = ''):
+                 title = '',
+                 security_engine=None):
         #self.__dict__ = self.__shared_state
         self._initargs = initargs
         self._site_front = site_front
+        self._security_engine = security_engine
         # set up
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
@@ -166,6 +168,9 @@ class NooronRoot:
             sh = status_handler.status_extension(statusable_handlers)
             hs.install_handler(sh)            
             hs.install_handler(self)
+
+    def security_engine(self):
+        return self._security_engine
 
     def make_fname(self,frag):
         #if DEBUG: print "make_fname",frag
