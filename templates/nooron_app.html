@@ -9,6 +9,8 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
+
+
 <dl tal:define="items python:get_kb_direct_parents(here)" 
        tal:condition="items">
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
@@ -72,7 +74,7 @@
 </div>
 
 <hr>
-$Id: nooron_app.html,v 1.1 2002/12/12 19:23:36 smurp Exp $
+$Id: nooron_app.html,v 1.2 2003/01/31 08:20:18 smurp Exp $
 </div>
   </body>
 </html>
