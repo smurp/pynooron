@@ -12,6 +12,20 @@ create_individual('Nooron_0_2_1',
               which was current when nooron_pert was started."""],
              ['EstimatedHours',0]])
 
+create_individual('PyOkbcCorrectness',direct_types=['Task'],
+  pretty_name='PyOkbc Correctness',
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Fix bugs in get_slot_values, etc.."""],
+             ['EstimatedHours',3]])
+
+create_individual('RunOnPort80',direct_types=['Task'],
+  pretty_name='Run On Port 80',
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Solve the 'starting on port 80' problem."""],
+             ['EstimatedHours',2]])
+
 create_individual('FleshOutPrimordialSlots',direct_types=['Task'],
   pretty_name='Flesh Out Primordial Slots',
   own_slots=[['Predecessors','Nooron_0_2_1'],
@@ -73,7 +87,9 @@ create_individual('PyKb_save_kb',
 create_individual('ThroughTheWebEditing',
   pretty_name="Through-the-web editing",
   direct_types=['Task'],
-  own_slots=[['Predecessors','PyKb_save_kb','FormActions'],
+  own_slots=[['Predecessors',
+              'PyKb_save_kb','FormActions',
+              'RunOnPort80','PyOkbcCorrectness'],
              ['TaskDescription',
               """Make it possible to at least add and edit frames."""],
              ['EstimatedHours',3]])
@@ -139,7 +155,8 @@ create_individual('SubdirsAsKBs',
 create_individual('EncodingPipelines',
   pretty_name='Encoding Pipelines',
   direct_types=['Task'],
-  own_slots=[['Predecessors','DownloadableKBFiles'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['Status','complete'],
              ['TaskDescription',
               """Ensure that sequences of extensions (e.g. tar.gz,
               .dot.svg, or .dbk.pdf) properly transform the output.
@@ -151,6 +168,7 @@ create_individual('CachedOutput',
   pretty_name="Cached Output",
   direct_types=['Task'],
   own_slots=[['Predecessors','EncodingPipelines'],
+             ['Status','complete'],
              ['TaskDescription',
               """Devise a system of request parameter hashing
               so that output is only regenerated when needed and
@@ -224,11 +242,11 @@ create_individual('UserBasedAuthorization',
              ['References','http://www.erights.org'],
              ['EstimatedHours',50]])
 
-
 create_individual('HTMLWithPictures',
   pretty_name="HTML with Pictures",
   direct_types=['Task'],
   own_slots=[['Predecessors','CachedOutput'],
+             ['Status','complete'],
              ['TaskDescription',
               """Put pictures (.jpg,.svg) from graphviz in html."""],
              ['EstimatedHours',2]])

@@ -3,12 +3,16 @@ put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
 create_slot('EstimatedHours',
+            pretty_name = 'Estimated Hours',
             own_slots=[[':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE',':INTEGER']])
 create_slot('Predecessors',
-            own_slots=[[':SLOT-VALUE-TYPE','Task']])
+            own_slots=[[':SLOT-VALUE-TYPE','Task'],
+                       [':SLOT-MINIMUM-CARDINALITY',1],
+                       [':SLOT-COLLECTION-TYPE','set']])
 
 create_slot('TaskDescription',
+            pretty_name = 'Task Description',
             own_slots=[[':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE',':STRING']])
 create_slot('Status',
@@ -17,7 +21,8 @@ create_slot('Status',
 
 create_slot('References',
             doc="""URLs to specifications or supporting material.""",
-            own_slots=[[':SLOT-VALUE-TYPE',':STRING']])
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']])
 
 create_class('pert_class',
              direct_types=['nooron_app_class'])

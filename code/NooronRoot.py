@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.18 2002/12/05 16:42:35 smurp Exp $'
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.19 2002/12/06 20:46:18 smurp Exp $'
 
 DEBUG = 0
 
@@ -29,9 +29,9 @@ import os
 def npts_for_self_and_instances(here):
     npt_for_self = get_slot_values(here,'npt_for_self',
                                    slot_type=Node._all)[0] or \
-                                   ['frame_details_as_html',
-                                    'frame_as_html',
-                                    'kb_ancestry_as_dot'];
+                                   ['frame_details.html',
+                                    'frame.html',
+                                    'kb_ancestry.dot'];
 
     if class_p(here):
         npt_for_instances = get_slot_values(here,'npt_for_instances',
@@ -88,6 +88,12 @@ class NooronRoot:
                            kb=prim_kb,
                            procedure=create_procedure(body=sort_frames))
 
+        meta = meta_kb()
+        meta_direct_parents = get_kb_direct_parents(kb=meta)
+        meta_direct_parents.append(open_kb('nooron_app_architecture'))
+        
+        meta.put_direct_parents(meta_direct_parents)
+        print "get_kb_direct_parents()",get_kb_direct_parents(kb=meta)
 
         #print "local_connection =",local_connection()
         #print "current_kb =",current_kb()        
@@ -106,6 +112,7 @@ class NooronRoot:
                 hs = http_server.http_server(server_name,server_port,
                                              logger_object = lg)
                 self.http_server = hs
+                #print dir(hs)
                 statusable_handlers.append(hs)                
             else:
                 raise "IncompleteNooronRootSetup", \
@@ -113,7 +120,7 @@ class NooronRoot:
 
             self.pipeline_factory = PipeLineFactory.PipeLineFactory()
             statusable_handlers.append(self.pipeline_factory)
-
+            
             if publishing_root:
                 self.fsroot = publishing_root
                 fs = filesys.os_filesystem(self.fsroot)

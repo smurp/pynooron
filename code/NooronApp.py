@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.20 2002/12/05 16:42:35 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.21 2002/12/06 20:46:18 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -69,7 +69,7 @@ class GenericFrame(AbstractApp):
         #      "publish() npt_name:",npt_name,\
         #      "for frame:",frame
 
-        print "npt_name",npt_name
+        #print "npt_name",npt_name
 
         template = nooron_root.template_root().obtain(npt_name,
                                                       request=request,
@@ -84,7 +84,7 @@ class GenericFrame(AbstractApp):
 
         app.calc_canonical_request(request,frame,npt_name,template)
         canonical_request = request.canonical_request()
-        print "canonical_request",canonical_request
+        #print "canonical_request",canonical_request
         
         cp = CachingPipeliningProducer()
         cp.set_canonical_request(canonical_request)
@@ -100,7 +100,7 @@ class GenericFrame(AbstractApp):
             cp.append_pipe(pipesection)
 
         request['Content-Type'] = cp.mimetype()
-        print         request['Content-Type'] 
+        #print         request['Content-Type'] 
 
         cmds = cp.source_and_commands()[1]
         (src_prod,cmds) = cp.source_and_commands()
@@ -115,7 +115,7 @@ class GenericFrame(AbstractApp):
         else:
             final_producer = medusa.producers.file_producer(os.popen(cmds,'r'))
 
-        resp = cmds or 'no commands'
+        #resp = cmds or 'no commands'
         request.push(final_producer)        
         #request.push(dummy_producer())
 

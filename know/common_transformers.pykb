@@ -20,13 +20,18 @@ create_individual('transform_ps_2_pdf',
                   own_slots=[['EmitsExtension','pdf_extension'],
                              ['RequiresProgram','ps2pdf'],
                              ['LiteralExternalCommand','ps2pdf - -']])
-
 create_individual('transform_ps_2_jpg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','jpg_extension'],
                              ['RequiresProgram','gs'],
                              ['LiteralExternalCommand',
                               'gs -sDEVICE=jpeg -q -sOutputFile=- -']])
+create_individual('transform_ps_2_lpr',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','jpg_extension'],
+                             ['RequiresProgram','lpr'],
+                             ['LiteralExternalCommand',
+                              "lpr | echo 'queued for printing'"]])
 
 ##########################################################
 
@@ -79,3 +84,10 @@ create_individual('pdf_extension',
                              ['LiteralExtension','.pdf'],
                              ['ApplicableTransformers',
                               'transform_pdf_2_ps']])
+
+##########################################################
+
+create_individual('lpr_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/plain'],])
+

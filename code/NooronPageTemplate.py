@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.11 2002/11/18 23:45:13 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.12 2002/12/06 20:46:18 smurp Exp $'
 
 SAFETY = 1 # safety off means that python in NPTs is omnipotent
 
@@ -60,6 +60,8 @@ class NooronPageTemplate(PageTemplate):
         self.root = nooron_root
 
     def pt_getContext(self):
+
+        #absolute_url = 'http://'+nooron_root.server_name+nooron_root.
         c = {'template': self,
              'here': self.obj,
              'this': self.obj,             
@@ -68,6 +70,7 @@ class NooronPageTemplate(PageTemplate):
              'nothing': None,
              'options': {},
              'root': self.root,
+             'server_absolute_url':nooron_root.http_server.absolute_url(),
              'request': self.request,
              #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,

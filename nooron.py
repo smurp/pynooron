@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.22 2002/11/26 21:52:40 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.23 2002/12/06 20:46:17 smurp Exp $'
 
 
 """
@@ -30,7 +30,7 @@ import __main__
 
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
-                    server_name = '',
+                    server_name = '192.168.1.11',
                     server_port = 8081,
                     log_to = sys.stdout,
                     initargs = {'default_place':default_place})

@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.4 2002/12/05 16:42:35 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.5 2002/12/06 20:46:17 smurp Exp $'
 
 import string
 import md5
@@ -159,7 +159,7 @@ class PipeSection:
                     return (pipesection._producer,
                             "%s | tee %s" % (pipesection._command or 'cat',
                                              fullpath),0)
-        return (cmd_or_prod,0)
+        return (None,cmd_or_prod,0)  #bugged?
 
 
 

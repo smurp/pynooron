@@ -1,5 +1,5 @@
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.12 2002/12/05 16:42:35 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.13 2002/12/06 20:46:18 smurp Exp $'
 
 
 from pyokbc import *
@@ -101,7 +101,6 @@ class okbc_handler:
         print "kb",latest_kb,"frame",elem
         print "object_request",object_request 
         request.set_object_request(object_request)
-        
         app = NooronApp.GenericFrame(latest_kb)
         app.publish(request,elem,npt_name,extensions=pipe)
 

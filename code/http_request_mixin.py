@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.8 2002/12/05 12:51:44 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.9 2002/12/06 20:46:18 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -14,7 +14,16 @@ if __name__ == "__main__":
         pass
 else:
     from medusa.http_server import http_request
+    from medusa.http_server import http_server
     from NooronUser import NooronUser, NullUser
+
+
+def absolute_url(server):
+    retval = 'http://'+str(server.ip)
+    if server.port != 80:
+        retval = retval + ':' + str(server.port)
+    return retval
+http_server.absolute_url = absolute_url
 
 def split_uri (self):
     if self._split_uri is None:

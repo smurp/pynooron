@@ -111,6 +111,7 @@ create_class(':THING',
                               'frame.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
+                              'create_individual.html',
                               'class_and_instances.html',
                               'class_and_subclasses.html']])
 create_class(':KB',
