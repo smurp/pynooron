@@ -1,15 +1,17 @@
 
-<!-- auto_create_links $Id: auto_create_links,v 1.6 2003/07/09 16:12:45 smurp Exp $ -->
+<!-- auto_create_links $Id: auto_create_links,v 1.7 2003/07/17 22:05:54 smurp Exp $ -->
 <tal:block
      condition="python:AUTHENTICATED_USER != AnonymousUser">
 
+
 <tal:dummy
      define="app_classes python:get_class_instances('nooron_app_class')[0]"
-     condition="python:app_classes and not instance_of_p(here,'nooron_app_ontology')">
+     condition="python:app_classes and (instance_of_p(here,'nooron_app_instance')[0])">
   <tal:block
        repeat="app_class app_classes">
     <tal:dummy
          condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
+
 
 <form method="GET"
       action=""
