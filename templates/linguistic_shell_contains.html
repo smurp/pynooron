@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
+
+<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+
+
+
+<dl tal:define="items python:get_kb_direct_parents()" 
+       tal:condition="items">
+
+  <tal:dummy repeat="item items">
+    <tal:dummy condition="python:instance_of_p(item,'pattern_language_app')[0]">
+      <dt><a href="link"
+          	   tal:define="url python:get_frame_name(item)"
+	  	   tal:attributes="href url"
+           	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></dt>
+      <dd tal:content="python:get_slot_value(item,':DOCUMENTATION')[0]">
+      </dd>
+     </tal:dummy>
+  </tal:dummy>
+</dl>
+
+<hr>
+$Id: linguistic_shell_contains.html,v 1.1 2003/03/26 21:05:09 smurp Exp $
+</div>
+  </body>
+</html>
