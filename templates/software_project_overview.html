@@ -21,22 +21,18 @@ This page summarizes the various aspects of this software project:
 <li><a href="#AgentTypes">Agent Types</a></li>
 </ul>
 
-<a name="PERT_Chart">
+<a name="PERT_Chart"></a>
 <img tal:attributes="src python:request.object_request()+'__pert_chart.dot.jpg'"/>
-</a>
+
 
 <tal:dummy
     define="app_class string:Task">
 
-<a name="Tasks"></a>
-<table border="1">
-  <caption>
-    <strong>
-      <a href=""
-         tal:attributes="href app_class"
-         tal:content="app_class"></a>&nbsp;instances</strong>
 
-  </caption>
+<h2><a name="Tasks" 
+         tal:attributes="href app_class">The Tasks</a></h2>
+<p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
+<table border="1">
   <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
     <td><a href="link"
            tal:define="url python:here.get_frame_name(instance)"
@@ -51,23 +47,16 @@ This page summarizes the various aspects of this software project:
 
 
 
-
-<hr/>
 
 
 
 <tal:dummy
     define="app_class string:UseCase">
 
-<a name="UseCases"></a>
+<h2><a name="UseCases" 
+         tal:attributes="href app_class">The Use Cases</a></h2>
+<p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
 <table border="1">
-  <caption>
-    <strong>
-      <a href=""
-         tal:attributes="href app_class"
-         tal:content="app_class"></a>&nbsp;instances</strong>
-
-  </caption>
   <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
     <td><a href="link"
            tal:define="url python:here.get_frame_name(instance)"
@@ -81,23 +70,17 @@ This page summarizes the various aspects of this software project:
 
 
 
-
-<hr/>
 
 
 
 <tal:dummy
     define="app_class string:AgentType">
 
-<a name="AgentTypes"></a>
-<table border="1">
-  <caption>
-    <strong>
-      <a href=""
-         tal:attributes="href app_class"
-         tal:content="app_class"></a>&nbsp;instances</strong>
+<h2><a name="AgentTypes"
+         tal:attributes="href app_class">The Agent Types</a></h2>
+<p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
 
-  </caption>
+<table border="1">
   <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
     <td><a href="link"
            tal:define="url python:here.get_frame_name(instance)"
@@ -108,12 +91,6 @@ This page summarizes the various aspects of this software project:
 </table>
 
 </tal:dummy>
-
-
-
-
-
-
 
 
 
@@ -125,7 +102,7 @@ This page summarizes the various aspects of this software project:
 </div>
 
 <hr>
-$Id: software_project_overview.html,v 1.1 2003/06/19 22:38:30 smurp Exp $
+$Id: software_project_overview.html,v 1.2 2003/06/20 19:40:10 smurp Exp $
 </div>
   </body>
 </html>

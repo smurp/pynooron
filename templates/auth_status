@@ -17,7 +17,7 @@
     <b tal:content="AUTHENTICATED_USER"></b>
     <tal:dummy replace="structure sep"/>
     </td><td>
-    <form action="/login" method="POST">
+    <form action="/login" method="GET">
        User: <input name="the_user_id" type="text" size="6"/>
        Pass: <input name="the_user_pw" type="password" size="6"/>
        <input type="submit" value="Login"/>
