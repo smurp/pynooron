@@ -9,6 +9,8 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python: get_frame_name(here)"></h1>
 
+<i><p tal:content="python:get_slot_value(here,':DOCUMENTATION')[0]"></p></i>
+
 <span tal:define="items python:get_class_instances(here)[0]" 
       tal:condition="items">
   <strong>Instances</strong><br/>
@@ -23,16 +25,12 @@
   </ul>
 </span>
 
-<i><p tal:content="python:get_slot_value(here,':DOCUMENTATION')[0]"></p></i>
 
-<div tal:define="test python:0" tal:condition="test">
-
-</div>
 
 
 
 <hr>
-$Id: web_log_category_self.html,v 1.3 2003/02/07 23:50:04 smurp Exp $
+$Id: web_log_category_self.html,v 1.4 2003/02/08 00:35:27 smurp Exp $
 </div>
   </body>
 </html>
