@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.2 2003/02/25 01:19:02 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.3 2003/02/26 10:16:38 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -18,6 +18,7 @@ Warning: OkbcOperation.SAFETY is OFF
 """
 
 import inspect
+from pyokbc import *
 
 def build_slot_specs(own_or_template_slots,form):
     """Accumulate own_slots or template_slots into a slot_specs value.
@@ -64,6 +65,15 @@ class OkbcOperation:
         op._request = request
         op._kb = kb
         op._frame = frame
+
+    def get_kb_to_write_to(op):
+        if instance_of_p(op._kb,'nooron_app_instance',kb=op._kb):
+            parents =  get_kb_direct_parents(kb=op._kb)
+            for parent in parents:
+                if instance_of_p(parent,'nooron_app_data',kb=op._kb)[0]:
+                    return parent
+        return op._kb
+        
     def get_args_and_kwargs(op):
         #print "op._func", op._func
         (args,varargs,varkw,defaults) = inspect.getargspec(op._func)
@@ -73,9 +83,10 @@ class OkbcOperation:
         #kwargs = op._request.form()
         largs = []
         kwargs = {}
+        write_to_kb = op.get_kb_to_write_to()
         return convert_query_to_okbc_args_and_kwargs(op._func,
                                                      op._request.form(),
-                                                     op._kb)
+                                                     write_to_kb)
     def call(op):
         if SAFETY:
             return 'OkbcOperations are not permitted because SAFETY is ON'
