@@ -6,6 +6,7 @@ from CachingMixin import *
 import string
 import os
 import StringIO
+from WikiWord import *
 
 def word2int(word):
     assert len(word) == 4
@@ -20,6 +21,7 @@ def word2int(word):
     return val
 
 def pretty_name_to_name(pretty_name):
+    return make_wiki_word(pretty_name)
     retval = string.replace(pretty_name,' ','')
     retval = string.replace(retval,'.','')
     return retval
