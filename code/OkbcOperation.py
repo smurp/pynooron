@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.5 2003/03/08 12:58:54 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.6 2003/03/08 13:02:12 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -62,8 +62,6 @@ def detail_preprocessor(form,kb,arg):
                 slot_specs.append(slot_spec)
             the_val = slot_specs
         details[subarg] = the_val
-        print "subarg =",subarg,'the_val =',the_val        
-    print "details =",details
     return details
 put_frame_details.http_argument_preprocessors = {'details':detail_preprocessor}
 
@@ -105,7 +103,7 @@ def convert_query_to_okbc_args_and_kwargs(func,form,kb):
                     kw_val = val
         else:
             if arg == 'kb':
-                print "type(kb) =",type(kb),kb
+                #print "type(kb) =",type(kb),kb
                 if type(kb) == type([]):
                     kb = kb[0]
                 kw_val = pos_val = kb
