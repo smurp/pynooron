@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<topicMap id="weblog" xmlns="http://www.topicmaps.org/xtm/1.0/">
+  <topic id="marvel">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>a thing to marvel at</baseNameString></baseName></topic>
+  <topic id="web-log-entry">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>web log entry</baseNameString></baseName></topic>
+  <topic id="wle-1">
+    <instanceOf>
+      <topicRef xlink:href="#web-log-entry" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>A New Kind of Science</baseNameString></baseName>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-occurrence" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceData>Hey Moses (er, Stephen) what are those tablets you're carrying?</resourceData></occurrence>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceRef xlink:href="http://www.amazon.com/exec/obidos/ASIN/1579550088" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic>
+  <topic id="wle-2">
+    <instanceOf>
+      <topicRef xlink:href="#web-log-entry" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <instanceOf>
+      <topicRef xlink:href="#marvel" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>Endurantism and Perdurantism: An Ongoing Debate</baseNameString></baseName>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-occurrence" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceData>To think that these sorts of conversations  are going on all the time!</resourceData></occurrence>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceRef xlink:href="http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic><!-- auto completion begins here
+ -->  <topic id="url">
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>url</baseNameString></baseName></topic>
+<!-- auto completion ends here
+ --></topicMap>

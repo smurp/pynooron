@@ -1,0 +1,14 @@
+
+fsa: iso-8859-1
+
+# FSA (finite state automaton) is a topic map intended
+# to be used as an template for the creation of state
+# transition diagrams.  It is a study in preparation 
+# for the creation of 'scenario.xtm'.
+
+state
+
+transition
+
+transition-template:
+role:

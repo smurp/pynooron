@@ -1,0 +1,34 @@
+weblog : iso-8859-1
+
+
+marvel
+bn: a thing to marvel at
+
+web-log-entry
+
+wle-1 (web-log-entry)
+bn: A New Kind of Science
+in: Hey Moses (er, Stephen) what are those tablets you're carrying?
+oc (url): http://www.amazon.com/exec/obidos/ASIN/1579550088
+
+wle-2 (web-log-entry marvel)
+bn: Endurantism and Perdurantism: An Ongoing Debate
+in: To think that these sorts of conversations \
+ are going on all the time!
+oc (url): http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html
+
+wle-3 (web-log-entry gear)
+bn: A Permanent Flashlight, Finally
+in: It's bright, it's blue, you shake it...
+oc (url): http://www.excaliburelectronics.com/foreverflashl.html
+
+wle-4 (web-log-entry spoonerism)
+bn: freaking insleepwently
+in: How tired I must have been when I caught myself using the phrase\
+ "freaking insleeepwently".  Spooner would be pleased.
+
+
+wle-5 (web-log-entry architecture)
+bn: Libeskind's Architecture
+oc (url): http://www.radio.cbc.ca/programs/ideas/libeskind/index.html
+oc (url): http://www.daniel-libeskind.com/

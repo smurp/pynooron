@@ -1,0 +1,8 @@
+
+scenario
+
+# Scenario is a topic map embodying an ontology for creating
+# state transition models with actors who can trigger state
+# changes by performing actions.  It is motivateb by a desire
+# to support things like http://www.noosphere.org/software/graph
+

@@ -1,0 +1,43 @@
+overview:
+  - collaborative editing of scenario graph data
+
+scratch my own itches, in order:
+  - add topic
+  - display multiple topics in SVG
+  - display multiple topics in text
+  - display a single topic in text
+  - create identity/account
+  - add criterion
+  - evaluate items
+  - create filters based on evaluations and attributes
+  - apply filters
+  - add new display methods
+
+architecture:
+  - use gooseworks
+  - use REST
+  ? use medusa
+  
+question:
+  ? What is a forum  
+      - a topic of type forum?
+    
+TODO  
+  - sTQML queries to figure out:
+    - instances of a class
+    - attributes of a topic
+    - classes of a topic
+    - 
+  - specific queries reqiured for reproducing nanotech scenario 
+
+TODO for nanotech scenario
+  - create ontology for scenarios
+
+data will have skins
+  Note how different these views of a person are:
+  - business card
+  - curriculum vitae
+  - medical history
+  - rap sheet
+  - diary page
+  - christmas letter
