@@ -1,4 +1,7 @@
 
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: VeryEasy.py,v 1.2 2002/08/13 06:22:13 smurp Exp $'
+
 """A wrapper for C objects that is acceptable to the security machinery."""
 
 class VeryEasy:

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: TMObject_mixin.py,v 1.4 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: TMObject_mixin.py,v 1.5 2002/08/13 06:22:13 smurp Exp $'
 
 import GWApp
 from VeryEasy import VeryEasy
@@ -31,18 +31,36 @@ def getLink(self,label='no label',use_all_basenames=0,index_link=1):
            and not index_link:
             link = basenames[0]
     return """<a href="%s">%s</a>""" % (link,label)
-        
 GWApp.TMObject.getLink = getLink
 
+
+## wrappers for security reasons
 def wrapped_getSIRs(self):
     retval = GWApp.TMObject.unwrapped_getSIRs(self)
     retval2 = []
     for sir in retval:
         retval2.append(VeryEasy(sir))
     return retval2
-
 GWApp.TMObject.unwrapped_getSIRs = GWApp.TMObject.getSIRs
 GWApp.TMObject.getSIRs = wrapped_getSIRs
+
+def wrapped_getSCR(self):
+    retval = GWApp.TMObject.unwrapped_getSCR(self)
+    if retval:
+        ve = VeryEasy(retval)
+        return ve
+    return None
+GWApp.TMObject.unwrapped_getSCR = GWApp.TMObject.getSCR
+GWApp.TMObject.getSCR = wrapped_getSCR
+
+def wrapped_getOccurrenceResources(self):
+    retval = GWApp.TMObject.unwrapped_getOccurrenceResources(self)
+    retval2 = []
+    for res in retval:
+        retval2.append(VeryEasy(res))
+    return retval2
+GWApp.TMObject.unwrapped_getOccurrenceResources = GWApp.TMObject.getOccurrenceResources
+GWApp.TMObject.getOccurrenceResources = wrapped_getOccurrenceResources
 
 
 # OKBC-inspired stuff
@@ -81,6 +99,5 @@ GWApp.__allow_access_to_unprotected_subobjects__ = 1
 
 
 
-import GW
-#GW.Resource.__allow_access_to_unprotected_subobjects__ = 1
-GW.__allow_access_to_unprotected_subobjects__ = 1
+#import GW
+#GW.__allow_access_to_unprotected_subobjects__ = 1
