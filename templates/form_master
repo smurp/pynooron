@@ -117,7 +117,7 @@ msct exists:my_slot_collection_type;
              define="text_value python:slot_values and str(slot_values[0]) or '';
                      len_text_value python:len(text_value)">
 
-   <tal:block repeat="dummy python:multiple and [1,2,3] or [1]">
+   <tal:block repeat="dummy python:multiple and [1,2] or [1]">
      <textarea
           name=""
           cols="60"
@@ -191,4 +191,4 @@ msct exists:my_slot_collection_type;
 
 
 
-$Id: form_master,v 1.8 2003/03/28 11:01:29 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.9 2003/03/28 11:44:18 smurp Exp $ <a href="/templates/form_master">Show Source</a>

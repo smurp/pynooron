@@ -6,6 +6,18 @@
 
   <body>
 
+
+<div metal:fill-slot="priority_options">
+<form method="GET"
+   action=""
+   tal:attributes="action python:request.object_request()+
+                              '/pattern__create_individual.html'">
+ <input type="submit" value="Create New Pattern"/>
+</form>
+</div>
+
+
+
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
@@ -29,14 +41,9 @@
   </span>
 </dl>
 
-<a href="" 
-   tal:attributes="href python:request.object_request()+
-                              'pattern__create_individual.html';
-                  "/>Create New Pattern</a>
-
 
 <hr>
-$Id: pattern_language_intents.html,v 1.4 2003/03/28 11:01:29 smurp Exp $
+$Id: pattern_language_intents.html,v 1.5 2003/03/28 11:44:18 smurp Exp $
 </div>
   </body>
 </html>

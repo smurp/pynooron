@@ -22,6 +22,8 @@
 
     <tr>
       <td bgcolor="#CCFFFF" valign="top">
+         <metal:block define-slot="priority_options">
+         </metal:block>
          <div metal:define-slot="available_garments" tal:omit-tag="">
            <tal:dummy replace="structure container/available_garments"/>
          </div>
@@ -68,6 +70,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.25 2003/03/26 23:17:14 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.26 2003/03/28 11:44:18 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
