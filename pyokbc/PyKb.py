@@ -1,4 +1,7 @@
 
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.12 2003/01/24 12:22:27 smurp Exp $'
+
 import string
 
 from PyOkbc import *
