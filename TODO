@@ -1,8 +1,19 @@
 -*-mode: outline -*-
 TODO for Nooron
 
+
+* possible priorities
+** generic frame editing
+** create_kb (so new kbs can be created via the web)
+** put_direct_parents (so pattern languages can be added to linguistic shells)
+** xtm output, done down deep (if easily, else as garment)
+
+
+
 * www.noosphere.org
 ** update FAQ
+** refactor CVS contents for nooron.org, noosphere.org, smurp.com
+
 
 * through-the-web-editing
 ** already completed forms
