@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.11 2003/03/28 11:04:42 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.12 2003/04/01 15:22:28 smurp Exp $'
 
 import string
 import md5
@@ -15,7 +15,53 @@ import fcntl, FCNTL
 import select
 import signal
 
-def execute_pipeline(input,command):
+import tempfile
+import os
+
+from medusa.producers import file_producer
+
+def execute_pipeline(input,command,
+                     initial_file_name=None,
+                     terminal_file_name=None):
+    preamble = postamble = ''
+    delete_initial_file = 0
+    delete_terminal_file = 0
+    if not initial_file_name:
+        delete_initial_file = 1
+        initial_file_name = tempfile.mktemp()
+    if not terminal_file_name:
+        delete_terminal_file = 1
+        terminal_file_name = tempfile.mktemp()
+        postamble = " > %s" % terminal_file_name
+    if len(input):
+        tmpf = open(initial_file_name,'a')
+        tmpf.write(input)
+        tmpf.flush()
+        tmpf.close()
+
+    outfile = tempfile.mktemp()
+    
+    whole_cmd = "%s%s%s" % (preamble,command or '',postamble)
+
+    fh = os.popen(whole_cmd,'r')
+    error_lines = fh.readlines()
+    #if error_lines:
+    #    print "ERROR: ",string.join(error_lines,"")
+    fh.close()
+    fh = open(terminal_file_name,'r')
+    lines = fh.readlines()
+    fh.close()
+    return string.join(lines,'')
+##    try:
+##        fh = os.popen(terminal_file_name,'r')
+##        fp = file_producer(fh)
+##        return fp
+##    except:
+##        return None
+
+
+
+def execute_pipeline_the_old_way(input,command):
     """Return the output of a shell pipeline as a string."""
     def makeNonBlocking(fd):
         fl = fcntl.fcntl(fd, FCNTL.F_GETFL)
@@ -24,10 +70,39 @@ def execute_pipeline(input,command):
         except AttributeError:
             fcntl.fcntl(fd, FCNTL.F_SETFL, fl | FCNTL.FNDELAY)
 
+
+    def write_softly(tochild,more):
+        magic_size = 10 * 1<<10  # 20480 why?  cause otherwise write hangs
+        start = 0
+        stop = magic_size
+        if len(more) >= magic_size:
+            len_more = len(more)
+            while start <= len_more:
+                print start,stop
+                tochild.write(more[start:stop])
+                print "about to flush"
+                tochild.flush()
+                print "flushed"
+                start = start + magic_size
+                stop = stop + magic_size
+        else:
+            tochild.write(more)
+
+    print "got to execute_pipeline"
+
     timeout = 15
     proc = popen2.Popen3(command,1)
     # fromchild, tochild, childerr
-    proc.tochild.write(input)
+
+    if hasattr(input,'more'):
+        more = input.more()
+        while len(more) > 0:
+            write_softly(proc.tochild,more)
+            more = input.more()
+    else:
+        write_softly(proc.tochild,input)
+        #proc.tochild.write(input[0:20479])
+        #proc.tochild.write(input)
     proc.tochild.flush()
     proc.tochild.close()
     outfile  = proc.fromchild
@@ -44,7 +119,12 @@ def execute_pipeline(input,command):
         max_time_to_live = 60 
     start_time = time.time()
 
+    print "but not to here?"
+
     while 1:
+        outdata = []
+        errdata = []
+        print "sleep"
         #print "   before ready"        
         ready = select.select([outfd,errfd],[],[],1)
         #print "   after ready"
@@ -52,15 +132,18 @@ def execute_pipeline(input,command):
             outchunk = outfile.read()
             #print "   reading ",len(outchunk)
             if outchunk == '': outeof = 1
-            outdata = outdata + outchunk
+            outdata.append(outchunk)
+            #outdata = outdata + outchunk
         if errfd in ready[0]:
             errchunk = errfile.read()
             if errchunk == '': erreof = 1
-            errdata = errdata + errchunk
+            #errdata = errdata + errchunk
+            errdata.append(errchunk)
         if outeof and erreof: break
         if max_time_to_live + start_time < time.time():
             break
         time.sleep(0.2)
+
     exit_code = proc.poll()
     if exit_code == -1:
         pid = proc.pid
@@ -69,7 +152,8 @@ def execute_pipeline(input,command):
         #print "exit code",exit_code
         pass
 
-    return outdata
+    return string.join(outdata,"")
+    #return outdata
 
 
 class CachingPipeliningProducer:
@@ -85,12 +169,26 @@ class CachingPipeliningProducer:
         piper._cmds = None
     def __str__(piper):
         return string.join(map(str,piper._pipeline),'\n')
+
+    def get_initial_file(piper):
+        if piper._pipeline:
+            return piper._pipeline[0].full_path()
+        else:
+            return None
+
+    def get_terminal_file(piper):
+        if piper._pipeline:
+            return piper._pipeline[-1].full_path()
+        else:
+            return None
     
     out_buffer_size = 1<<16
 
     def prime(piper):
         """Prime the pipe by associating a data source with _file."""
+
         (src_prod,cmds,fullpath,cached) = piper.producer_and_commands()
+        #print ">>>",cmds,"<<<"
         if fullpath and cached:
             f = open(fullpath,'r')
             lines = f.readlines()
@@ -106,10 +204,15 @@ class CachingPipeliningProducer:
 #            print "length of content",len(all),fullpath
 #            print "  len(pipeline) =",len(piper._pipeline)
 #            print "  cmds =",cmds
-            fout = execute_pipeline(all,cmds)
+            fout = execute_pipeline(all,cmds,
+                                    initial_file_name=piper.get_initial_file(),
+                                    terminal_file_name=piper.get_terminal_file())
             freshness = "freshly-generated"
         elif cmds:
-            fout = execute_pipeline('',cmds)
+            fout = execute_pipeline('',cmds,
+                                    initial_file_name=piper.get_initial_file(),
+                                    terminal_file_name=piper.get_terminal_file())
+
             freshness = "from-precursor"
         else:
             raise "ThisShouldNotHappen",fullpath
@@ -171,7 +274,8 @@ class CachingPipeliningProducer:
         while sections and not mt:
             section = sections.pop()
             mt = section.mimetype()
-        return mt or 'text/html' #'text/plain'
+        retval = mt or 'text/html' # or 'text/plain'
+        return retval 
     def producer_and_commands(piper):
         """Return (source,commands) where source is either a
         producer or None and commands is either None or a string
@@ -190,10 +294,15 @@ class CachingPipeliningProducer:
         pos = 0
         final_fullpath = None
         num_sections = len(sections)
+        input_file_name = sections[0].full_path()
+        #print "INPUT_FILE_NAME",input_file_name
+        next_guy = None
         while sections:
             section = sections.pop()
+            #print "SECTION",section._extension
             (prod,cmd,fullpath,cached) \
-                    = section.producer_command_fullpath_and_cached()
+                    = section.producer_command_fullpath_and_cached(input_file_name,
+                                                                   next_guy)
             if cmd :
                 cmds.append(cmd)
             if prod and not cached:
@@ -205,8 +314,11 @@ class CachingPipeliningProducer:
             if pos == num_sections and fullpath:
                 pass
             pos = pos + 1
+            input_file_name = section.full_path()
+            next_guy = section
         if cmds:
             if not flip: cmds.reverse()
+            #print "CMDS=",cmds
             commands = string.join(cmds,' | ')
         else:
             commands = None
@@ -219,13 +331,17 @@ class PipeSection:
     abilities."""
     def __init__(pipesection,producer=None,command=None,
                  mimetype=None,extension=None,
+                 readsfrom='pipe',
+                 writesto='pipe',
                  cachedir=None,cachekey=None):
-        pipesection._command = command
-        pipesection._mimetype = mimetype
-        pipesection._extension = extension
-        pipesection._cachedir = cachedir
-        pipesection._cachekey = cachekey
-        pipesection._producer = producer
+        pipesection._command =    command
+        pipesection._mimetype =   mimetype
+        pipesection._extension =  extension
+        pipesection._cachedir =   cachedir
+        pipesection._cachekey =   cachekey
+        pipesection._readsfrom =  readsfrom
+        pipesection._writesto =   writesto
+        pipesection._producer =   producer
     def __str__(self):
         return "<PipeSection: %s %s %s >" % (
             str(self._command or self._producer),
@@ -249,9 +365,12 @@ class PipeSection:
             return None
 
     def do_caching(pipesection):
-        return pipesection._cachedir and os.path.isdir(pipesection._cachedir)
+        p = pipesection._cachedir and os.path.isdir(pipesection._cachedir)
+        #print "do_caching",p
+        return p
 
-    def producer_command_fullpath_and_cached(pipesection):
+    def producer_command_fullpath_and_cached(pipesection,incoming_file=None,
+                                             next_guy=None):
         """Returns (producer,command,fullpath) where producer is only included
         if a cached result is not available.  Command is either a command
         which transforms stdin to stdout or a command which starts a
@@ -260,16 +379,60 @@ class PipeSection:
         if cachedir is not None.  The intention is that the command
         returned by this method be combined with others in a complete
         shell pipeline.  Fullpath is not None if the file already exists."""
+        
+        if next_guy:
+           next_guy_readsfrom = next_guy._readsfrom
+        else:
+            next_guy_readsfrom = None
+        #print pipesection._extension,"NEXT_GUY_READSFROM",next_guy_readsfrom
+        params = {'precursor':incoming_file,
+                  'cache_dir':pipesection._cachedir}
+        if pipesection._command == None:
+            the_command = None
+        else:
+            the_command = pipesection._command % params
+        the_producer = pipesection._producer
+        the_fullpath = None
+        is_cached = None
         if pipesection.do_caching():
             fullpath = pipesection.full_path()
             if fullpath:
                 if os.path.isfile(fullpath):
-                    return (None,"cat %s" % fullpath,fullpath,1)
+                    is_cached = 1
+                    the_producer = None
+                    the_fullpath = fullpath
+                    #the_command = "cat %s" % fullpath
+##                if pipesection._writesto == 'file':
+##                    the_command =  pipesection._command % params
+##                    #return (pipesection._producer,
+##                    #        pipesection._command % params,
+##                    #        None,None)
+##                else:
+                if next_guy_readsfrom == 'file':
+                    the_command = None
+                elif next_guy_readsfrom == None:
+                    if pipesection._command:
+                        the_command = "%s > %s" % \
+                                      (pipesection._command % params,
+                                       fullpath)
                 else:
-                    return (pipesection._producer,
-                            "%s | tee %s" % (pipesection._command or 'cat',
-                                             fullpath),fullpath,None)
-        return (pipesection._producer,pipesection._command,None,None)
+                    if pipesection._command:
+                        the_command = "%s | tee %s" % \
+                                      (pipesection._command % params,
+                                       fullpath)
+                    else:
+                        #the_command = None
+                        the_command = "cat %s" % fullpath
+        if 0:
+            print "  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            print "  X %s " % pipesection._extension
+            print "  X   producer:   %s " % the_producer
+            print "  X   command:    %s " % the_command
+            print "  X   fullpath:   %s " % the_fullpath
+            print "  X   is_cached:  %s " % is_cached
+            print "  X   next_reads: %s " % next_guy_readsfrom        
+            print "  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        return (the_producer,the_command,the_fullpath,is_cached)
         
         
 
