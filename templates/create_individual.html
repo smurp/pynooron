@@ -7,7 +7,7 @@
   <body>
 
 <div metal:fill-slot="main">
-
+NARF
 <h3 tal:content="string:create instance of $here"></h3>
 <form method="GET"
    action="" 
@@ -23,6 +23,7 @@
 </tal:block>
 </tal:block>
 
+
 <input type="hidden" name="direct_types" value=""
   tal:attributes="value here">
 <table border="1">
@@ -30,6 +31,9 @@
   <tal:block define="slot_name string:name;
                      field_name slot_name;
                      slot_pretty_name string:Frame Name;
+                     slot_help string:If you leave the frame name blank
+a unique one will be created for you from the pretty_name,
+or failing that, a short random string will be used.;
                      slot_values nothing">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
@@ -37,6 +41,7 @@
   <tal:block define="slot_name string:pretty_name;
                      field_name slot_name;
                      slot_pretty_name string:Pretty Name;
+                     slot_help string:You may leave the pretty_name blank.;
                      slot_values nothing">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
@@ -52,6 +57,7 @@
                                    arguments=(slots,None,this_kb))">
       <tal:block define="slot_name        python:zlot[0];
 		         field_name       slot_name;
+                         slot_help string:;
                          slot_pretty_name python:zlot[1];
 		         slot_values      python:[]">
 
@@ -72,7 +78,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.8 2003/03/28 11:01:29 smurp Exp $
+$Id: create_individual.html,v 1.9 2003/06/19 22:24:13 smurp Exp $
 </div>
 
   </body>
