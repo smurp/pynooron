@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: test_primordial.py,v 1.3 2002/11/18 23:44:00 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: test_primordial.py,v 1.4 2002/11/26 20:32:12 smurp Exp $'
 
 import os
 import sys
@@ -18,7 +18,7 @@ class PrimordialTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
-        mykb = open_kb("PeopleData.pykb")
+        mykb = open_kb("PeopleData")
         goto_kb(mykb)
 
     def test_all_classes_instances_of_CLASS(self):

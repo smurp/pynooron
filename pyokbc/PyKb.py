@@ -51,10 +51,16 @@ def to_slot_spec(frame,slot,slot_type):
 
 class PyKb(AbstractFileKb):
     _kb_type_file_extension = 'pykb'
-    def __init__(self,filename,place='',connection=None):
+    def __init__(self,filename,place='',connection=None,name=None):
         #self._name = filename
-        raw_kb = connection._obtain_raw_kb(filename,place)
-        AbstractFileKb.__init__(self,filename,connection=connection)        
+        if name == None:
+            name = filename
+        ext = self._kb_type_file_extension 
+        if not (len(filename) > len(ext) and \
+           filename[-1 * len(ext):] == ext):
+            filename = filename + '.' + ext
+        raw_kb = connection._obtain_raw_file(filename,place)
+        AbstractFileKb.__init__(self,name,connection=connection)
         #if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
         #    place = connection._default_place        

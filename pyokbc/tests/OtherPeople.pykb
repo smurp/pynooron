@@ -1,5 +1,5 @@
 
-put_direct_parents(['PeopleSchema.pykb'])
+put_direct_parents(['PeopleSchema'])
 
 create_individual('JonathanSwift',
                   direct_types=['AdultHuman'],

@@ -1,5 +1,5 @@
 
-put_direct_parents(['PeopleSchema.pykb','LiteratureOntology.pykb'])
+put_direct_parents(['PeopleSchema','LiteratureOntology'])
 
 create_individual('ChristopherRobin',
                   direct_types=['Child'],

@@ -1,5 +1,5 @@
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.20 2002/11/24 17:46:11 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.21 2002/11/26 20:32:11 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1771,6 +1771,7 @@ class PrimordialKb(TupleKb):
 
     
 class AbstractFileKb(AbstractPersistentKb):
+    
     def _save_to_storage(kb,filename,error_p = 1):
         print "saving to",filename
         outfile = open(filename,"w")
@@ -1823,7 +1824,7 @@ class Connection: #abstract
         return kb
 
     def openable_kbs(connection, kb_type = None, place = None):
-        warn("openable_kbs is a noop",20)
+        warn("Connection.openable_kbs is abstract",20)
         return []
     
 ##    def all_connections

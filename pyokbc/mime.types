@@ -1,0 +1,4 @@
+# these are mimetypes specific to pyokbc
+# $Id: mime.types,v 1.1 2002/11/26 20:32:12 smurp Exp $
+application/vnd.pyokbc.kb.pykb pykb
+application/vnd.pyokbc.kb.tell tell

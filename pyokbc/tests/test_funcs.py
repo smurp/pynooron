@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.12 2002/11/25 16:38:39 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.13 2002/11/26 20:32:12 smurp Exp $'
 
 import os
 import sys
@@ -17,11 +17,18 @@ class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
-        addenda = open_kb("Addenda.pykb")
-        mykb = open_kb("OtherPeople.pykb")
-        mykb = open_kb("PeopleData.pykb")
+        addenda = open_kb("Addenda")
+        mykb = open_kb("OtherPeople")
+        mykb = open_kb("PeopleData")
         goto_kb(mykb)
 
+
+    def test_documentation(self):
+        good = doc="You know, Alice!  With the restaraunt..."
+        resp = get_slot_value('AliceLidell',Node._DOCUMENTATION,
+                              slot_type=Node._own)[0]
+        self.assertEquals(good, str(resp))
+        
     def test_get_class_instances(self):
         good = "[CharlesLutwidgeDodgson, SamuelBeckett]"
         resp = list(get_class_instances('AdultHuman')[0])
@@ -56,7 +63,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, string.join(resp,"\n"))
 
     def test_get_frame_slots_all(self):
-        mykb = find_kb('Addenda.pykb')
+        mykb = find_kb('Addenda')
         #mykb = current_kb()
         good = "['Age', 'BirthTime', 'Eats', 'Friend'," + \
                " 'Speaks', 'Species', 'Wrote']"
@@ -81,14 +88,14 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_direct_children(self):
-        schema = find_kb('PeopleSchema.pykb')
-        good = "[OtherPeople.pykb, PeopleData.pykb]"
+        schema = find_kb('PeopleSchema')
+        good = "[OtherPeople, PeopleData]"
         resp = list(get_kb_direct_children(schema))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_kb_direct_parents(self):
-        good = "[LiteratureOntology.pykb, PRIMORDIAL_KB, PeopleSchema.pykb]"
+        good = "[LiteratureOntology, PRIMORDIAL_KB, PeopleSchema]"
         resp = list(get_kb_direct_parents())
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -123,7 +130,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_parents_REUSE(self):
-        ontology = find_kb('PeopleSchema.pykb')
+        ontology = find_kb('PeopleSchema')
         children = get_kb_direct_children(ontology)
         parent = []
         for kb in children:
@@ -131,7 +138,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(parent[0],parent[1])
 
     def test_get_instance_types_all(self):
-        mykb = find_kb('Addenda.pykb')        
+        mykb = find_kb('Addenda')        
         good = '[:INDIVIDUAL, :THING, AdultHuman, Agent, Animal,' +\
                ' Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
@@ -168,7 +175,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_slot_values(self):
-        mykb = find_kb('Addenda.pykb')
+        mykb = find_kb('Addenda')
         good = """['MorePricksThanKicks', 'Murphy', 'WaitingForGodot']"""
         resp = list(mykb.get_slot_values('SamuelBeckett','Wrote',
                                          kb_local_only_p = 0)[0])
@@ -176,7 +183,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_slot_values_klop(self):
-        mykb = find_kb('Addenda.pykb')
+        mykb = find_kb('Addenda')
         good = """['MorePricksThanKicks', 'Murphy']"""
         resp = list(mykb.get_slot_values('SamuelBeckett','Wrote',
                                          kb_local_only_p = 1)[0])
@@ -231,11 +238,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_documentation(self):
-        good = doc="You know, Alice!  With the restaraunt..."
-        resp = get_slot_value('AliceLidell',Node._DOCUMENTATION,
-                              slot_type=Node._own)[0]
-        self.assertEquals(good, str(resp))
+    def test_open_kb_without_extension(self):
+        good = 'MergeKB'
+        merge_kb = open_kb('MergeKB')
+        self.assertEquals(good,str(merge_kb))
 
     def skip_test_stayup(self):
         # this was to check for one of those no-recursion-setup bugs

@@ -1,6 +1,5 @@
 
-
-put_direct_parents(['PeopleData.pykb'])
+put_direct_parents(['PeopleData'])
 
 create_individual('SamuelBeckett',
 #                  direct_types=['AdultHuman'],

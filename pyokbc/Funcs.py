@@ -168,12 +168,8 @@ def get_class_superclasses(klass, kb=None, inference_level=Node._taxonomic,
                                      kb_local_only_p=kb_local_only_p)
 
 def get_frame_in_kb(thing,kb=None,error_p=1,kb_local_only_p=0):
-    # FIXME
     if not kb: kb = current_kb()
-    if not kb.frame_in_kb_p(thing,kb_local_only_p):
-        return (0,0)
-    else:
-        return kb.get_frame_in_kb(thing,kb_local_only_p)
+    return kb.get_frame_in_kb(thing,kb_local_only_p)
 
 def get_frame_name(frame,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()
