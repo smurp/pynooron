@@ -1,1 +1,1 @@
-breadcrumbs: <hr tal:replace="structure request/breadcrumbs"/>
+<hr tal:replace="structure request/breadcrumbs"/>

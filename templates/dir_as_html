@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="here"></h1>
+
+
+<table border="1"
+       tal:define="items openable_kbs" 
+       tal:condition="items">
+  <caption><strong>Dig Deeper (openable_kbs)</strong></caption>
+  <tr tal:repeat="item items">
+    <td tal:content="structure item">item</td>
+    <td><a href="booger"
+           tal:define="url python: str(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a>
+    </td>
+
+  </tr>
+</table>
+
+
+<div tal:define="test python:0" tal:condition="test">
+    <td tal:content="structure python: here.get_frame_name(item)">link</td>
+
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a>
+    </td>
+
+</div>
+
+<hr>
+$Id: dir_as_html,v 1.1 2002/10/21 23:50:19 smurp Exp $
+</div>
+  </body>
+</html>
