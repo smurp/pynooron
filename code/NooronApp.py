@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.33 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.33 2003/04/01 15:20:44 smurp Exp $'
+__version__='$Revision: 1.34 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.34 2003/04/13 22:24:17 smurp Exp $'
 
 
 from pyokbc import *
@@ -149,10 +149,16 @@ class GenericFrame(AbstractApp):
         """
         extension_frame = '%s_extension' % to_ext
         mimetype=get_slot_value(extension_frame,'MimeType')[0]
-        transformer_frame = 'transform_%s_2_%s' % (from_ext,to_ext)
-        command=get_slot_value(transformer_frame,'LiteralExternalCommand')[0]
-        readsfrom=get_slot_value(transformer_frame,'ReadsFrom')[0]
-        writesto=get_slot_value(transformer_frame,'WritesTo')[0]
+        transformer_frame_name = ['transform_%s_2_%s' % (from_ext,to_ext),
+                                  'transform_any_2_%s' % to_ext]
+        for transformer_frame in transformer_frame_name:
+            command=get_slot_value(transformer_frame,
+                                   'LiteralExternalCommand')[0]
+            if not command:
+                continue
+            readsfrom=get_slot_value(transformer_frame,'ReadsFrom')[0]
+            writesto=get_slot_value(transformer_frame,'WritesTo')[0]
+            break
         return PipeSection(command=command,
                            extension=to_ext,
                            readsfrom=readsfrom,
