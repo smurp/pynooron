@@ -1,0 +1,61 @@
+
+put_direct_parents(['web_log_schema.pykb'])
+
+create_class('spoonerism',direct_superclasses=['web_log_category'],
+             direct_types=['nooron_schema_class'],
+             doc="""Verbal constructions spontaneously constructed in
+             homage to the dreat groctor Lysander Spooner.""")
+create_class('marvel',direct_superclasses=['web_log_category'],
+             direct_types=['nooron_schema_class'],             
+             doc="""Things that make you go wow!""")
+create_class('book_blog_category',direct_superclasses=['web_log_category'],
+             direct_types=['nooron_schema_class'],
+             doc="""About books, generally interesting.""")
+create_class('gear',direct_superclasses=['web_log_category'],
+             direct_types=['nooron_schema_class'],
+             doc="""Strange devices or products.""")
+create_class('architecture',direct_superclasses=['web_log_category'],
+             direct_types=['nooron_schema_class'],
+             doc="""The subjugation of space to the will of an artist.""")
+
+create_individual('wle_1',
+                  direct_types = ['marvel','book_blog_category'],
+                  own_slots = [['web_log_text',
+                                """Hey Moses (er, Stephen) what are those tablets you're carrying?"""],
+                               ['web_log_url',
+                                "http://www.amazon.com/exec/obidos/ASIN/1579550088"]],
+                  pretty_name = "A New Kind of Science")
+
+create_individual('wle_2',
+                  direct_types = ['marvel'],
+                  own_slots = [['web_log_text',
+                                """To think that these sorts of conversations  are going on all the time!"""],
+                               ['web_log_url',
+                                "http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html"]],
+                  pretty_name = "Endurantism and Perdurantism: An Ongoing Debate")
+
+create_individual('wle_3',
+                  direct_types = ['gear'],
+                  own_slots = [['web_log_text',
+                                """It's bright, it's blue, you shake it..."""],
+                               ['web_log_url',
+                                "http://www.excaliburelectronics.com/foreverflashl.html"]],
+                  pretty_name = "A Permanent Flashlight, Finally")
+
+create_individual('wle_4',
+                  direct_types = ['spoonerism'],
+                  own_slots = [['web_log_text',
+                                """How tired I must have been when I caught myself
+                                using the phrase "freaking insleepwently"."""],],
+                  pretty_name = "freaking insleepwently")
+
+create_individual('wle_5',
+                  direct_types = ['architecture'],
+                  own_slots = [['web_log_text',
+                                """Some quite amazing architecture."""],
+                               ['web_log_url',
+                                "http://www.radio.cbc.ca/programs/ideas/libeskind/index.html",
+                                "http://www.daniel-libeskind.com/"]],
+                  pretty_name = "Libeskind's Architecture")
+
+                  

@@ -1,0 +1,63 @@
+
+create_slot('merges_in',
+	own_slots=[[':DOMAIN','nooron_app_component']])
+create_class('knowledge_base')
+create_class('nooron_app_component',
+             direct_superclasses=['knowledge_base'],        
+             doc="""Nooron app components are knowledgebases which
+             have features which are made use of by code/NooronApp.py
+             """)
+create_class('data_schema',
+             direct_superclasses=['nooron_app_component'],
+             doc="""This is the schema for the data, equivalent to a
+             relational database schema or to a set of data structure
+             declarations for a object oriented system.  This information
+             depends on nothing, except possibly other information of the
+             same kind, i.e. other data schema information existing elsewhere.
+             """)
+create_class('nooron_schema_class',
+             doc="""Classes defined in data_schema knowledge bases should
+             be marked as instances of nooron_schema_class.""")
+create_class('data_instances',
+             direct_superclasses=['nooron_app_component'],
+             own_slots=[['merges_in','data_schema']],
+             doc="""This is the actual data, the instances or the database
+             records used by the application.  Clearly this information itself 
+             depends on the data_schema and just as clearly can and ought 
+             to be able to exist independently of any application's use of it. 
+             Hence, it depends only on the data_schema.""")
+create_class('app_skeleton',
+             direct_superclasses=['nooron_app_component'],
+             own_slots=[['merges_in','data_schema']],
+             doc="""An app skeleton is not itself a runnable app.  It is a
+             definition of the resources which when brought together with
+             suitable data would be a runnable app.  An app skeleton must
+             know about the data_schema (but not about any particular
+             data_instances).  It must know about which presentation
+             templates to use for the various classes specified in the
+             data_schema. It must know about whatever programming resources
+             are required to make the app work.""")
+create_class('app_instance',
+             direct_superclasses=['nooron_app_component'],
+             own_slots=[['merges_in','app_skeleton','data_instances']],
+             doc="""An app instance is an actual runnable app.  It is the
+             combination of two things: an app skeleton and a set of data
+             instances.""")
+
+# NPT (Nooron Page Template) frames
+create_slot('npt_for_app_front',
+            doc="""Apps should have a resource of this kind.  It ought to
+            contain the url of an Nooron Page Template which is suitable for
+            use as the 'front page' of a nooron app.  Ideally, this is a page 
+            which is capable of displaying useful entry points into the 
+            current app_instance.""")
+create_slot('npt_for_instances',
+            doc="""App Skeletons should define occurrences of this type for
+            each class whose instances are supposed to be surfed.  The
+            associated resourceRef should contain the url of a Nooron Page
+            Template (NPT) which is appropriate for displaying instances of
+            the class on which ntp_for_instances is an occurrence.""")
+create_slot('npt_for_self',
+            doc="""App Skeletons can define occurrences of this type for each
+            topic for which a particular template is desired.  Npt_for_self
+            has precedence over npt_for_instances.""")

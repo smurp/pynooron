@@ -1,0 +1,16 @@
+
+put_direct_parents(['nooron_app_architecture.pykb'])
+create_class('web_log_entry',
+	     doc="""This is an actual entry in a web log.""",
+             pretty_name="web log entry")
+create_slot('web_log_url',
+            doc="""This is a link from a 'web log entry' to an item it discusses.""",
+            pretty_name="url")
+create_slot('web_log_text',
+            doc="""This is the text which constitute the remarks fo the blogger.""",
+            pretty_name = "text")
+create_class('web_log_category',
+             direct_types=['web_log_entry'],
+             doc="""Subclasses of 'web log category' are theselves classes which
+             individual web log entries are instances of.""",
+             pretty_name="web log category")

@@ -1,0 +1,5 @@
+
+put_direct_parents(['web_log_skeleton.pykb',
+                    'smurp_web_log_data.pykb'])
+
+
