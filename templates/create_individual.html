@@ -17,7 +17,6 @@
 <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
                    kb_to_save python:gmnadk(this_kb)">
 
-<h3 tal:content="string:save_kb $kb_to_save"></h3>
 <input type="hidden" name="kb" value="" 
        tal:attributes="value kb_to_save">
 
@@ -68,7 +67,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.4 2003/02/26 18:51:57 smurp Exp $
+$Id: create_individual.html,v 1.5 2003/02/27 18:24:55 smurp Exp $
 </div>
 
   </body>
