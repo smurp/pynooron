@@ -33,7 +33,7 @@
   <span tal:repeat="item items">
     <em><a href="link"
         	   tal:define="url python:get_frame_name(item)"
-		   tal:attributes="href python:'../'+url"
+		   tal:attributes="href python:url"
            	   tal:content="url">click me</a></em>, 
   </span>
   </dd>
@@ -65,7 +65,7 @@
 </div>
 
 <hr>
-$Id: openable_kbs.html,v 1.2 2003/02/07 23:41:10 smurp Exp $
+$Id: openable_kbs.html,v 1.3 2003/02/16 14:49:56 smurp Exp $
 </div>
   </body>
 </html>
