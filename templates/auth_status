@@ -1,5 +1,5 @@
 
-<!-- auth_status $Id: auth_status,v 1.6 2003/07/03 20:59:40 smurp Exp $ -->
+<!-- auth_status $Id: auth_status,v 1.7 2003/07/09 16:12:45 smurp Exp $ -->
 <tal:dummy condition="python:1" define="sep string:&lt;b&gt;||&lt;/b&gt;">
   <tal:dummy 
        condition="python: AUTHENTICATED_USER != AnonymousUser">
@@ -19,7 +19,7 @@
     <b tal:content="AUTHENTICATED_USER"></b>
     <tal:dummy replace="structure sep"/>
     </td><td>
-    <form action="/login" method="GET">
+    <form action="/login" method="get">
        User: <input name="the_user_id" type="text" size="6"/>
        Pass: <input name="the_user_pw" type="password" size="6"/>
        <input type="submit" value="Login"/>

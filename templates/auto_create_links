@@ -1,5 +1,5 @@
 
-<!-- auto_create_links $Id: auto_create_links,v 1.5 2003/07/02 18:03:00 smurp Exp $ -->
+<!-- auto_create_links $Id: auto_create_links,v 1.6 2003/07/09 16:12:45 smurp Exp $ -->
 <tal:block
      condition="python:AUTHENTICATED_USER != AnonymousUser">
 
@@ -27,7 +27,7 @@
 
 
 <tal:dummy condition="python:here != meta_kb()">
-<form method="GET"
+<form method="get"
       tal:attributes="action python:request.object_request()+
                              '__put_frame_details.html'">
  <input 
@@ -42,14 +42,14 @@
                      kb_to_save python:gmnadk(this_kb)">
 
     <form 
-       method="GET"
+       method="get"
        tal:attributes="action python:request.kb_request()+
                                 '__save_kb'">
 
       <input type="hidden" name="OnSuccessRedirectTo" 
              tal:attributes="value python:request.kb_request()"/>
       <input type="hidden" name="kb" value="" 
-             tal:attributes="value kb_to_save">
+             tal:attributes="value kb_to_save"/>
       <input type="submit" value="Save All Changes"/>
     </form>
 
