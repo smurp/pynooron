@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.24 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.24 2002/12/16 16:44:40 smurp Exp $'
+__version__='$Revision: 1.25 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.25 2002/12/17 08:22:47 smurp Exp $'
 
 
 from pyokbc import *
@@ -172,7 +172,7 @@ class GenericFrame(AbstractApp):
 
     def choose_an_npt(app,request,frame):
         return app.get_npt_from_url(request) \
-               or app.get_npt_for_subclasses(request,frame) \
+               or app.get_nearest_preferred_npt_for_self(request,frame) \
                or app.get_npt_for_instances(request,frame) \
                or app.get_npt_for_self(request,frame) \
                or app.get_npt_hardwired(request,frame) \
@@ -185,15 +185,26 @@ class GenericFrame(AbstractApp):
         else:
             return 'frame.html'
 
-    def get_npt_for_subclasses(app,request,frame):
+    def get_nearest_preferred_npt_for_self(app,request,frame,prefer=".html"):
+        """Return the first garment listed as npt_for_self on one of
+        the direct types of frame."""
         kb = app._kb
-        #print "kb is",kb
-        if not kb.class_p(frame):
-            return None
-        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_subclasses',
-                                                 number_of_values=1,
-                                                 slot_type=Node._all)
-        return vals and vals[0] 
+        direct_types = list(kb.get_instance_types(frame,
+                                             inference_level=Node._direct)[0])
+        vals = []
+        chosen_garmie = None
+        while not chosen_garmie and direct_types:
+            dtype = direct_types.pop(0)
+            (vals,exact_p,more) = kb.get_slot_values(dtype,'npt_for_self',
+                                                     number_of_values=1,
+                                                     inference_level = Node._direct,
+                                                     slot_type=Node._template)
+            for garmie in vals:
+                if not prefer or \
+                   garmie.find(prefer) == len(garmie) - len(prefer):
+                    chosen_garmie = garmie
+                    break
+        return chosen_garmie
 
     def get_npt_for_instances(app,request,frame):
         kb = app._kb

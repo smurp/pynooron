@@ -15,6 +15,7 @@ create_individual('Nooron_0_2_1',
 create_individual('PyOkbcCorrectness',direct_types=['Task'],
   pretty_name='PyOkbc Correctness',
   own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['Status','complete'],
              ['TaskDescription',
               """Fix bugs in get_slot_values, etc.."""],
              ['EstimatedHours',3]])
@@ -185,6 +186,25 @@ create_individual('CachedOutput',
               and preferences mixed in ought to do it.
               """],
              ['EstimatedHours',8]])
+
+create_individual('DiskCacheFlushing',
+  pretty_name='Disk Cache Flushing',
+  direct_types=['Task'],
+  own_slots=[['Predecessors','CachedOutput'],
+             ['TaskDescription',
+              """Delete items in the disk cache when they are stale."""],
+             ['EstimatedHours',3]])
+
+create_individual('CachingMixin',
+  pretty_name='Caching Mixin',
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['Status','complete'],
+             ['TaskDescription',
+              """Put wrapper functions around all kb read operations
+              which cache the output keyed on the paremeters."""],
+             ['EstimatedHours',3]])
+
 
 create_individual('TellKb',
   direct_types=['Task'],

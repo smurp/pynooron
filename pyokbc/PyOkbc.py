@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.30 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.30 2002/12/16 21:00:10 smurp Exp $'
+_version__='$Revision: 1.31 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.31 2002/12/17 08:22:47 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -684,7 +684,7 @@ class KB(FRAME,Programmable):
                 list_of_instances.append(frame)
         return (list_of_instances,exact_p,more_status)
     
-    def get_class_subclasses(kb,klass,
+    def CACHING_get_class_subclasses(kb,klass,
                              inference_level = Node._taxonomic,
                              number_of_values = Node._all,
                              kb_local_only_p = 0):
@@ -721,7 +721,7 @@ class KB(FRAME,Programmable):
         if kb.allow_caching_p(): kb._cache[cache_key] = retval
         return retval
 
-    def NON_CACHING_get_class_subclasses(kb,klass,
+    def get_class_subclasses(kb,klass,
                              inference_level = Node._taxonomic,
                              number_of_values = Node._all,
                              kb_local_only_p = 0):
@@ -747,7 +747,7 @@ class KB(FRAME,Programmable):
         return (subs,exact_p,more_status)
 
 
-    def get_class_superclasses(kb,klass,
+    def CACHING_get_class_superclasses(kb,klass,
                                inference_level = Node._taxonomic,
                                number_of_values = Node._all,
                                kb_local_only_p = 0):
@@ -790,7 +790,7 @@ class KB(FRAME,Programmable):
         return retval
     
 
-    def NON_CACHING_get_class_superclasses(kb,klass,
+    def get_class_superclasses(kb,klass,
                                inference_level = Node._taxonomic,
                                number_of_values = Node._all,
                                kb_local_only_p = 0):
@@ -1445,6 +1445,9 @@ class KB(FRAME,Programmable):
         if hasattr(kb,'_cached_kb_parents'):
             del kb['_cached_kb_parents']
 
+        #if parent_kbs:
+        #    kb._parent_kbs.remove(PRIMORDIAL_KB)
+                
         #if hasattr(kb,'_cached_get_instance_types'):
         #    del kb['_cached_get_instance_types']
 

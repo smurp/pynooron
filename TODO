@@ -4,13 +4,7 @@ TODO for Nooron
 * required for v0.2.2
 
 
-* correctness
-** what the hell is http://192.168.1.11/__openable_kbs.html doing?
-** not automatically writing to the correct kb (ie a nooron_data KB)
-** save_kb (respect kb_local_only_p by telling parent kbs to save too)
-* performance
-** preload data in profile.py 
-** cache get_class_superclasses?
+
 * completeness
 ** make nooron.py sensitive to commandline parameters
 ** finish nooron (init.d script)
@@ -30,6 +24,14 @@ TODO for Nooron
    Probably redo entire layout of standard_master
 *** put "main" across entire window to permit rendering before trailing
     unsized images are available
+* correctness
+** what the hell is http://192.168.1.11/__openable_kbs.html doing?
+** not automatically writing to the correct kb (ie a nooron_data KB)
+** save_kb (respect kb_local_only_p by telling parent kbs to save too)
+* performance
+** debug putting PRIMORDIAL_KB only at the root
+** is there value in marking a frame as being the deepest of that name
+   and hence all deeper kbs can be ignored (for some purposes)
 
 
 BUGS

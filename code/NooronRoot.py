@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.22 2002/12/16 16:44:40 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.23 2002/12/17 08:22:47 smurp Exp $'
 
 DEBUG = 0
 
@@ -128,8 +128,8 @@ class NooronRoot:
                 raise "IncompleteNooronRootSetup", \
                       'arguments server_name, server_port and log_to required'
 
-            self.pipeline_factory = None #PipeLineFactory.PipeLineFactory()
-            statusable_handlers.append(self.pipeline_factory)
+            #self.pipeline_factory = None #PipeLineFactory.PipeLineFactory()
+            #statusable_handlers.append(self.pipeline_factory)
             
             if publishing_root:
                 self.fsroot = publishing_root
