@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: www_nooron_org.py,v 1.1 2003/04/02 13:43:50 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: www_nooron_org.py,v 1.2 2003/04/13 23:03:11 smurp Exp $'
 
 
 """
@@ -33,8 +33,7 @@ default_place = cwd+'/know'
 
 from OkbcOperation import IPListSecurityEngine 
 security_engine = IPListSecurityEngine(allow=['192.168.1.14',
-                                              '24.52.220.140',
-                                              '24.52.220.146',
+                                              '24.52.220.*',
                                               '208.38.8.158'],
                                        deny=1)
 
