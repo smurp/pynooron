@@ -1,8 +1,15 @@
+
 weblog : iso-8859-1
 
+#
+# $Revision: 1.2 $
+# $Id: weblog.atm,v 1.2 2002/07/11 17:17:39 smurp Exp $
+#
 
 marvel
 bn: a thing to marvel at
+
+url
 
 web-log-entry
 

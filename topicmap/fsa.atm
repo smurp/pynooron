@@ -1,14 +1,39 @@
 
 fsa: iso-8859-1
 
+#
+# $Revision: 1.2 $
+# $Id: fsa.atm,v 1.2 2002/07/11 17:17:39 smurp Exp $
+#
+# usage:
+#   astma2xtm.pl < fsa.atm | prettifyxtm.pl > fsa.xtm
+#
+
+
+#
 # FSA (finite state automaton) is a topic map intended
 # to be used as an template for the creation of state
 # transition diagrams.  It is a study in preparation 
 # for the creation of 'scenario.xtm'.
+#
 
 state
 
-transition
+transition (at-template)
 
-transition-template:
-role:
+(at-template-role-rpc)
+template: transition
+role: from-state
+rpc: state
+
+(at-template-role-rpc)
+template: transition
+role: to-state
+rpc: state
+
+to-state
+in: The end state of a transition.
+
+from-state
+in: The starting state of a transition.
+

@@ -2,6 +2,9 @@
 noorontm : iso-8859-1
 
 #
+# $Revision: 1.2 $
+# $Id: nooron.atm,v 1.2 2002/07/11 17:17:39 smurp Exp $
+#
 # usage:
 #   astma2xtm.pl < nooron.atm | prettifyxtm.pl > nooron.xtm
 #

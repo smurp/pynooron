@@ -1,4 +1,6 @@
 
+# $Revision: 1.2 $
+# $Id: Makefile,v 1.2 2002/07/11 17:17:39 smurp Exp $
 
 PWD     = $(shell /bin/pwd)
 XTMTMP=$(shell mktemp /tmp/xtm.XXXXXX)

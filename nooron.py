@@ -1,6 +1,13 @@
 #!/usr/bin/python2
+
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.2 2002/07/11 17:17:39 smurp Exp $'
+
 import string
 import GW,sys,os
+
+from GWApp import GWApp
+
 import asyncore
 from medusa import http_server
 from medusa import default_handler
@@ -11,8 +18,13 @@ from medusa import status_handler
 
 from medusa import counter
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.1 2002/07/04 09:02:29 smurp Exp $'
+
+"""
+Nooron -- a whack at a proof of concept for the collective intelligence
+approach described at http://www.noosphere.org/
+
+"""
+
 
 DEBUG = 1
 
@@ -35,15 +47,6 @@ class post_script_handler (script_handler.script_handler):
             print request.header
 
         return script_handler.script_handler.handle_request (self, request)
-
-
-
-"""
-Nooron -- a whack at a proof of concept for the collective intelligence
-approach described at http://www.noosphere.org/
-
-"""
-
 
 
 class ProcHandler:
@@ -82,6 +85,17 @@ class GraphHandler:
     def endRootElement():
         print "ending root element"
 
+
+
+#   Utility Functions
+
+def link_to_tmobject(topic):
+    return """<a href="../TMObject/%s">%s</a>""" % ( topic.getIndex(),
+                                                         str(topic.getBaseNames()) )
+
+
+
+# A Medusa Handler
 
 class topicmap_handler:
 
@@ -191,7 +205,11 @@ class topicmap_handler:
             retval = 0
         return retval
 
-    def add_graph(self,tm_name,tm_uri):
+    def add_graph(self,tm_name,spec):
+        g = GW.Graph(spec)
+        self.graphs[tm_name] = GWApp(g)
+
+    def import_topicmap(self,tm_name,tm_uri):
         if DEBUG:
             print tm_name,tm_uri
             
@@ -211,7 +229,8 @@ class topicmap_handler:
         p.process(u)
         g.commitTransaction()
 
-        self.graphs[tm_name] = g
+        
+        self.graphs[tm_name] = GWApp(g)
         if DEBUG:
             print self.graphs[tm_name]
 
@@ -225,24 +244,23 @@ class topicmap_handler:
     def is_query(self,query_name):
         return self.canned_queries.has_key(query_name)
 
-    def available_queries(self):
-        query_names = self.canned_queries.keys()
+    def available_queries_for_graph(self,tm_name):
+        query_names = self.canned_queries.keys() + self.graphs[tm_name].__class__.__dict__.keys()
         retval = "<h3>available queries</h3>"
         for n in query_names:
             retval = retval + """<a href="%s">%s</a><br>\n""" % (n,n)
         return retval
 
-
     def do_query(self,tm_name=None,query_name='instances',as=None):
         if not self.graphs.has_key(tm_name):
             return "map '%s' not known" % tm_name
-        g = self.graphs[tm_name]
-        g.startTransaction(GW.XRO)
+        g = self.graphs[tm_name].graph
+        #g.startTransaction(GW.XRO)
         try:
             response = self.perform_canned_query(g,query_name,as=as)
         except:
             pass
-        g.commitTransaction()
+        #g.commitTransaction()
         return response
 
     def breadcrumbs(self,path_list):
@@ -255,6 +273,81 @@ class topicmap_handler:
 
         retval = retval + "<!-- breadcrumbs() end -->\n"
         return retval
+
+    def graph_query(self,tm_name,qname):
+        app = self.graphs[tm_name]
+        if not hasattr(app,qname):
+            return "Can not find " + qname
+        retval = ""
+        for t in apply(getattr(app,qname),[],{}):
+            basenames = t.getBaseNames()
+            if len(basenames):
+                label = basenames[0]
+                link = "topic/" + label
+            else:
+                label =  "index=%s" % str(t.getIndex())
+                link = "TMObject/%s" % t.getIndex()
+            retval = retval + """<LI><a href="%s">%s</a>""" % (link,label)
+        return retval
+
+    def topic(self,app,node_name):
+        return app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % node_name)
+
+    def noogie(self,app,discard):
+        return app.getTopicWithID('file:///home/smurp/src/nooron/catalog.xtm#%s' % discard)
+        return app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % discard)    
+
+    def present_tmobject(self,topic):
+        retval =  "a TMObject<br>"
+
+        sir_summ = ""
+        for sir in topic.getSIRs():
+            sir_summ = """<a href="%s">%s</a><br />""" % \
+                       ( sir.getUris()[0],sir.getUris()[0] )
+        if sir_summ:
+            sir_summ = "<b>subject indicators</b><br>" + sir_summ + "\n"
+
+        inst_summ = ""
+        for inst in topic.getInstances():
+            inst_summ = link_to_tmobject(inst)
+        if inst_summ:
+            inst_summ = "<b>direct instances</b><br>" + inst_summ + "\n"
+
+        occ_summ = ""
+        for occ in topic.getOccurrences():
+            occ_summ = occ_summ + \
+                       "\n<LI>" + link_to_tmobject(occ[0]) + \
+                       " -- "   + link_to_tmobject(occ[0]) + \
+                       " -- "   + link_to_tmobject(occ[0]) 
+                       
+        if occ_summ:
+            occ_summ = "<b>occurences</b><br>\n" + occ_summ + "\n"
+
+        bn_summ = ""
+        for bn in topic.getBaseNames():
+            bn_summ = bn_summ + """<LI>%s""" % bn
+        if bn_summ:
+            bn_summ = "<b>base names</b><br>\n" + bn_summ + "<br>\n"
+            
+        return retval + sir_summ + bn_summ + inst_summ + occ_summ
+
+
+    def present(self,input):
+        if type(input) == type(''):
+            return input
+        elif type(input) == type([]):
+            retarray = []
+            for t in input:
+                if str(t.__class__) == 'GWApp.TMObject':
+                    retarray.append(self.present_tmobject(t))
+                else:
+                    retarray.append(str(type(t)))
+            return string.join(retarray,'<LI>')
+        elif str(input.__class__) == 'GWApp.TMObject':
+            return self.present_tmobject(input)
+        else:
+            return str(input)
+        
 
     def handle_request(self,request):
         
@@ -277,7 +370,7 @@ class topicmap_handler:
             <hr>
             TBD: show list of available topic maps"""
         elif len(path_list) == 2:
-            content = self.available_queries()
+            content = self.available_queries_for_graph(path_list[1])
             content = content + """
             <hr>
             topicmap = %s<br>TBD: show list of available actions (topic,class,scope,etc)""" % path_list[1]
@@ -286,10 +379,13 @@ class topicmap_handler:
                 content = self.do_query(tm_name=path_list[1],query_name=path_list[2])
             else:
                 meth_name = path_list[2]
-                if self.__dict__.has_key(meth_name) and type(self[meth_name]) == type(self.__init__):
-                    content = "results of <code>%s()</code> here" % meth_name
-                else:
-                    content = "don't know what to do for '%s'" % meth_name
+                content = self.graph_query(path_list[1],meth_name)
+                if 0:
+                    if self.__dict__.has_key(meth_name) and type(self[meth_name]) == type(self.__init__):
+                        content = self.query(path_list[1],meth_name)
+                        #content = "results of <code>%s()</code> here" % meth_name
+                    else:
+                        content = "don't know what to do for '%s'" % meth_name
                 
             content = content + """
             <hr>
@@ -298,14 +394,42 @@ class topicmap_handler:
             TBD: show list of available subjects of action
                (e.g. for action=topic: smurp,criterion,evaluation,etc))""" % (path_list[1],path_list[2])
         elif len(path_list) == 4:
-            content = self.do_query(tm_name=path_list[1],query_name=path_list[2],as=path_list[3])
+            #content = self.do_query(tm_name=path_list[1],query_name=path_list[2],as=path_list[3])
+            tm_name = path_list[1]
+            meth_name = path_list[2]
+            fragment = path_list[3]
+            app = self.graphs[tm_name]
+            coerce_arg = {'TMObject':int}
+
+            # coerce type of fragment if need be
+            if coerce_arg.has_key(meth_name):
+                fragment = coerce_arg[meth_name](fragment)
+
+            # cascade attempts to run method
+            try:
+                meth = getattr(app,meth_name)
+                args = [fragment]
+            except:
+                meth = None
+            if not meth:
+                try:
+                    meth = getattr(self,meth_name)
+                    args = [app,fragment]
+                except:
+                    meth = None
+            if meth:
+                content = self.present(apply(meth,args,{}))
+            else:
+                content = " no damn luck finding %s on app or self" % meth_name
             content = content + """
             <hr>
             topicmap = %s<br>
             action=%s<br>
             subject=%s<br>
             TBD: show default html view of the subject
-            TBD: show list of available views (html,xtm,atm,svg) or actions (???)""" % (path_list[1],path_list[2],path_list[3])
+            TBD: show list of available views (html,xtm,atm,svg) or actions (???)""" % (path_list[1],
+                                                                                        path_list[2],
+                                                                                        path_list[3])
         else:
             content="duh len(path_list) = %i" % len(path_list)
 
@@ -341,9 +465,15 @@ ph = post_script_handler (fs)
 
 
 tmh = topicmap_handler('')
-tmh.add_graph('jill','file:///download/knowledge/jill.xtm')
-#tmh.add_graph('opera','file:///download/knowledge/opera.xtm')
-#tmh.add_graph('nooron','file:///home/smurp/src/nooron/nooron.xtm')
+tmh.import_topicmap('jill','file:///download/knowledge/jill.xtm')
+tmh.import_topicmap('weblog','file:///home/smurp/src/nooron/weblog.xtm')
+tmh.import_topicmap('catalog','file:///home/smurp/src/nooron/catalog.xtm')
+
+#tmh.import_topicmap('opera','file:///download/knowledge/opera.xtm')
+#tmh.import_topicmap('nooron','file:///home/smurp/src/nooron/nooron.xtm')
+
+tmh.add_graph('jill',"type=MySQL,name=jill,user=smurp,pass=trivialpw")
+
 #tmh.do_query('jill','instances')
 
 #sys.exit()
@@ -358,3 +488,4 @@ hs.install_handler(ph)
 hs.install_handler(tmh)
 
 asyncore.loop()
+

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<topicMap id="weblog" xmlns="http://www.topicmaps.org/xtm/1.0/">
-  <topic id="marvel">
+<topicMap id="weblog" xmlns="http://www.topicmaps.org/xtm/1.0/"><!--  $Revision: 1.2 $
+     $Id: weblog.xtm,v 1.2 2002/07/11 17:17:39 smurp Exp $
+ -->  <topic id="marvel">
     <instanceOf>
       <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
     <baseName>
       <scope>
         <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
       <baseNameString>a thing to marvel at</baseNameString></baseName></topic>
+  <topic id="url">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>url</baseNameString></baseName></topic>
   <topic id="web-log-entry">
     <instanceOf>
       <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
@@ -53,11 +61,79 @@
         <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
       <scope>
         <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
-      <resourceRef xlink:href="http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic><!-- auto completion begins here
- -->  <topic id="url">
+      <resourceRef xlink:href="http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic>
+  <topic id="wle-3">
+    <instanceOf>
+      <topicRef xlink:href="#web-log-entry" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <instanceOf>
+      <topicRef xlink:href="#gear" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
     <baseName>
       <scope>
         <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
-      <baseNameString>url</baseNameString></baseName></topic>
+      <baseNameString>A Permanent Flashlight, Finally</baseNameString></baseName>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-occurrence" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceData>It's bright, it's blue, you shake it...</resourceData></occurrence>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceRef xlink:href="http://www.excaliburelectronics.com/foreverflashl.html" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic>
+  <topic id="wle-4">
+    <instanceOf>
+      <topicRef xlink:href="#web-log-entry" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <instanceOf>
+      <topicRef xlink:href="#spoonerism" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>freaking insleepwently</baseNameString></baseName>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-occurrence" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceData>How tired I must have been when I caught myself using the phrase "freaking insleeepwently".  Spooner would be pleased.</resourceData></occurrence></topic>
+  <topic id="wle-5">
+    <instanceOf>
+      <topicRef xlink:href="#web-log-entry" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <instanceOf>
+      <topicRef xlink:href="#architecture" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>Libeskind's Architecture</baseNameString></baseName>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceRef xlink:href="http://www.radio.cbc.ca/programs/ideas/libeskind/index.html" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence>
+    <occurrence>
+      <instanceOf>
+        <topicRef xlink:href="#url" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <resourceRef xlink:href="http://www.daniel-libeskind.com/" xmlns:xlink="http://www.w3.org/1999/xlink"/></occurrence></topic><!-- auto completion begins here
+ -->  <topic id="gear">
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>gear</baseNameString></baseName></topic>
+  <topic id="spoonerism">
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>spoonerism</baseNameString></baseName></topic>
+  <topic id="architecture">
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/></scope>
+      <baseNameString>architecture</baseNameString></baseName></topic>
 <!-- auto completion ends here
  --></topicMap>
+
