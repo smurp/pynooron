@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.3 2003/02/26 10:16:38 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.4 2003/02/26 10:42:42 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -67,6 +67,34 @@ class OkbcOperation:
         op._frame = frame
 
     def get_kb_to_write_to(op):
+        """
+* have instances written to nooron_app_data KBs, but how?
+** Have the original actions specify the target kb explicitly.
+** Have the nooron_app_instance delegate creation to assoc. *_data.
+** Have NooronApp do the delegating.
+** Have knowledge trigger the delegation
+*** Some template slot on nooron_app_instance such as:
+      delegate_writing_to_data_kb
+**** No! No! We already know that we want to do this
+** What we need to handle this in a more generic fashion.
+** What are the issues?
+*** Sometimes classes need to have their instances stored in particular KBs.
+**** This arises when multiple _ontology and _data kbs are in use.
+*** Sometimes users want to store their work other than in the default place.
+**** e.g. When they want to make private notes or modifications.
+**** e.g. When the source of the rest of the data is read-only.
+** What are the knowledge-driven ways to do these sorts of things?
+*** Have slots on kbs indicating the classes they can store instances of.
+*** Have a frame 'STORAGE_PREFERENCES' which has slots which tell things where to go.
+*** Have slots on the nooron_app_instance kb itself which tell things where to go.
+*** Have slots on :CLASS which guide storage policies.  
+Generally overridden on particular classes.  The problem is that each class 
+needs to be handled separately (unless some wonderful slot type can 
+simplify this.)  :SAME-VALUES with a slot chain might prove useful.
+** What is the simplest solution for now?
+*** Have OkbcOperation detect attempts to create in nooron_app_instances and
+replace them with creation attempts in appropriate _data kbs.
+ """
         if instance_of_p(op._kb,'nooron_app_instance',kb=op._kb):
             parents =  get_kb_direct_parents(kb=op._kb)
             for parent in parents:
