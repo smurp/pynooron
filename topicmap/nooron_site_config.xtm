@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: nooron_site_config.xtm,v 1.2 2002/08/14 20:47:42 smurp Exp $  -->  
+<!-- $Id: nooron_site_config.xtm,v 1.3 2002/08/15 18:17:42 smurp Exp $  -->  
 
 <topicMap id="nooron_site_config"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -15,7 +15,7 @@
   </subjectIdentity>
   <occurrence>
     <resourceData>
-      This is the default local topicmap which indicates which
+      This is the default local topicmap which indicates which 
       other topicmaps to serve under the /know tree.
     </resourceData>
   </occurrence>
@@ -51,7 +51,6 @@
     </occurrence>
   </topic>
 
-
   <topic id="smurp_web_log_mysql">
     <baseName>
       <baseNameString>smurp_web_log_mysql</baseNameString>
@@ -75,7 +74,6 @@
       <resourceRef xlink:href="file:///download/knowledge/jill.xtm"/>
     </occurrence>
   </topic>
-
 
   <topic id="cpan">
     <baseName>

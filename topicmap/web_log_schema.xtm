@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Revision: 1.2 $ -->
-
 <topicMap id="web_log_schema" 
   xmlns="http://www.topicmaps.org/xtm/1.0/"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
+<mergeMap xlink:href="nooron_app_architecture.xtm"/>
 
 <topic id="web_log_schema_tm">
   <instanceOf>
@@ -18,6 +16,12 @@
   <subjectIdentity>
     <subjectIndicatorRef xlink:href="#web_log_schema"/>
   </subjectIdentity>
+  <occurrence>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="nooron_app_architecture.xtm#cvs_id"/>
+    </instanceOf>
+    <resourceData>$Id: web_log_schema.xtm,v 1.3 2002/08/15 18:17:43 smurp Exp $</resourceData>
+  </occurrence>
   <occurrence>
     <resourceData>
       This is the schema for the data for a simple weblog with such 
@@ -54,7 +58,7 @@
     </baseName>
     <occurrence>
       <resourceData>
-        Subclasses of 'web log category' are themselves classes
+        Subclasses of 'web log category' are themselves classes 
 	which individual web log entries are instances of.
       </resourceData>
     </occurrence>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: web_log_skeleton.xtm,v 1.2 2002/08/08 20:47:29 smurp Exp $ -->
+<!-- $Id: web_log_skeleton.xtm,v 1.3 2002/08/15 18:17:43 smurp Exp $ -->
 
 <topicMap id="web_log_skeleton" 
   xmlns="http://www.topicmaps.org/xtm/1.0/"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm"/>
-<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
+<mergeMap xlink:href="web_log_schema.xtm"/>
+<mergeMap xlink:href="nooron_app_architecture.xtm"/>
 
 <topic id="web_log_skeleton_tm">
   <instanceOf>
     <topicRef 
-      xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#app_skeleton"/>
+      xlink:href="nooron_app_architecture.xtm#app_skeleton"/>
   </instanceOf>
   <subjectIdentity>
     <subjectIndicatorRef xlink:href="#web_log_skeleton"/>
@@ -32,25 +32,28 @@
   <occurrence>
     <instanceOf>
       <subjectIndicatorRef 
-        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_app_front"
-        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        xlink:href="nooron_app_architecture.xtm#npt_for_app_front" />
     </instanceOf>
     <resourceRef 
-      xlink:href="http://crusty:8081/templates/web_log_app_front"
-      xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      xlink:href="../templates/web_log_app_front" />
+  </occurrence>
+  <occurrence>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="nooron_app_architecture#cvs_id"/>
+    </instanceOf>
+    <resourceData>$Id: web_log_skeleton.xtm,v 1.3 2002/08/15 18:17:43 smurp Exp $</resourceData>
   </occurrence>
 </topic>
 
 <topic id="web_log_entry">
   <subjectIdentity>
     <subjectIndicatorRef
-      xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      xlink:href="web_log_schema.xtm#web_log_entry"/>
   </subjectIdentity>
   <occurrence>
     <instanceOf>
       <topicRef 
-        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_instances"
-        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        xlink:href="nooron_app_architecture.xtm#npt_for_instances" />
     </instanceOf>
     <resourceRef 
       xlink:href="../templates/web_log_entry_as_html"/>
@@ -58,8 +61,7 @@
   <occurrence>
     <instanceOf>
       <topicRef 
-        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_self"
-        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        xlink:href="nooron_app_architecture.xtm#npt_for_self" />
     </instanceOf>
     <resourceRef 
       xlink:href="../templates/web_log_entry_self_as_html"/>
@@ -69,13 +71,12 @@
 <topic id="web_log_category">
   <subjectIdentity>
     <topicRef 
-      xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      xlink:href="web_log_schema.xtm#web_log_category"/>
   </subjectIdentity>
   <occurrence>
     <instanceOf>
       <topicRef 
-        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_instances"
-        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        xlink:href="nooron_app_architecture.xtm#npt_for_instances" />
     </instanceOf>
     <resourceRef 
       xlink:href="../templates/web_log_category_as_html"/>
@@ -83,8 +84,7 @@
   <occurrence>
     <instanceOf>
       <topicRef 
-        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_self"
-        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        xlink:href="nooron_app_architecture.xtm#npt_for_self" />
     </instanceOf>
     <resourceRef 
       xlink:href="../templates/web_log_category_self_as_html"/>

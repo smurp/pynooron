@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: nooron_app_architecture.xtm,v 1.2 2002/08/08 20:47:29 smurp Exp $ -->
+<!-- $Id: nooron_app_architecture.xtm,v 1.3 2002/08/15 18:17:42 smurp Exp $ -->
 
 <topicMap id="nooron_app_architecture"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -29,14 +29,61 @@
       servers or sites.
     </resourceData>
   </occurrence>
+  <occurrence>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="#cvs_id"/>
+    </instanceOf>
+    <resourceData>$Id: nooron_app_architecture.xtm,v 1.3 2002/08/15 18:17:42 smurp Exp $</resourceData>
+  </occurrence>
 </topic>
+
+<topic id="topic_map_class">
+  <baseName>
+    <baseNameString>topic map class</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      Instances of topic_map_class are themselves just topic maps.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<topic id="nooron_app_component">
+  <baseName>
+    <baseNameString>Nooron app component</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      Nooron app components are topicmaps which have features which are 
+      made use of by code/NooronApp.py 
+    </resourceData>
+  </occurrence>
+</topic>
+
+<association>
+  <instanceOf>
+    <topicRef xlink:href="#superclass-subclass"/>
+  </instanceOf>
+  <member>
+    <roleSpec>
+      <topicRef xlink:href="#superclass"/>
+    </roleSpec>
+    <topicRef xlink:href="#topic_map_class"/>
+  </member>
+  <member>
+    <roleSpec>
+      <topicRef xlink:href="#subclass"/>
+    </roleSpec>
+    <topicRef xlink:href="#nooron_app_component"/>
+  </member>
+</association>
 
 <topic id="data_schema">
   <baseName>
     <baseNameString>data schema</baseNameString>
   </baseName>
   <instanceOf>
-    <topicRef xlink:href="#topicmap_class"/>
+    <topicRef xlink:href="#nooron_app_component"/>
   </instanceOf>
   <occurrence>
     <resourceData>
@@ -54,7 +101,7 @@
     <baseNameString>data instances</baseNameString>
   </baseName>
   <instanceOf>
-    <topicRef xlink:href="#topicmap_class"/>
+    <topicRef xlink:href="#nooron_app_component"/>
   </instanceOf>
   <occurrence>
     <resourceData>
@@ -72,7 +119,7 @@
     <baseNameString>app skeleton</baseNameString>
   </baseName>
   <instanceOf>
-    <topicRef xlink:href="#topicmap_class"/>
+    <topicRef xlink:href="#nooron_app_component"/>
   </instanceOf>
   <occurrence>
     <resourceData>
@@ -92,23 +139,12 @@
     <baseNameString>app instance</baseNameString>
   </baseName>
   <instanceOf>
-    <topicRef xlink:href="#topicmap_class"/>
+    <topicRef xlink:href="#nooron_app_component"/>
   </instanceOf>
   <occurrence>
     <resourceData>
       An app instance is an actual runnable app.  It is the combination 
       of two things: an app skeleton and a set of data instances.
-    </resourceData>
-  </occurrence>
-</topic>
-
-<topic id="topicmap_class">
-  <baseName>
-    <baseNameString>topic map</baseNameString>
-  </baseName>
-  <occurrence>
-    <resourceData>
-      Instances of topicmap-class are themselves just topic maps.
     </resourceData>
   </occurrence>
 </topic>
@@ -249,6 +285,22 @@
     </resourceData>
   </occurrence>  
 </topic>
+
+<!-- Occurrence types -->
+
+<topic id="cvs_id">
+  <baseName>
+    <baseNameString>CVS Id</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      The CVS Id is the Id field automatically updated by CVS.  It is
+      recommended that an occurrence of this type be placed in the topics
+      which have 
+    </resourceData>
+  </occurrence>  
+</topic>
+
 
 
 </topicMap>

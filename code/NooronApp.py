@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.3 2002/08/14 20:47:42 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.4 2002/08/15 18:17:42 smurp Exp $'
 
 import GW
 from GWApp import GWApp
@@ -9,17 +9,8 @@ import NooronRoot
 
 class NooronApp(GWApp):
 
-    def isNooronApp(self):
-        return 0
-
     src_uris = []
 
-    def links_use_index(self):
-        print "links_use_index should return 1 if type=Mem"
-        print dir(self.graph)
-        print
-        return 1
-    
     def set_src_uris(self,src_uris):
         self.src_uris = src_uris
     

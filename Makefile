@@ -1,6 +1,6 @@
 
-# $Revision: 1.3 $
-# $Id: Makefile,v 1.3 2002/08/02 23:44:41 smurp Exp $
+# $Revision: 1.4 $
+# $Id: Makefile,v 1.4 2002/08/15 18:17:42 smurp Exp $
 
 PWD     = $(shell /bin/pwd)
 XTMTMP=$(shell mktemp /tmp/xtm.XXXXXX)
@@ -22,6 +22,7 @@ distribution:
 	mv nooron $(VERSION_NAME) && \
 	tar -cvzf $(VERSION_NAME).tgz $(VERSION_NAME) && \
 	rm -fR $(VERSION_NAME)
+
 
 all: xtm mysql
 
