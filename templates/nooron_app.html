@@ -9,8 +9,57 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
-for each nooron_app_class
 
+<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+
+
+
+<table border="1"
+       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
+  <tr tal:repeat="item items">
+    <td><a href="link"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+
+
+
+<tal:dummy
+    define="app_classes python:get_class_instances('nooron_app_class')[0]"
+    condition="app_classes">
+<tal:dummy repeat="app_class app_classes">
+<table border="1">
+  <caption>
+    <strong>
+      <a href=""
+         tal:attributes="href app_class"
+         tal:content="app_class"></a>&nbsp;instances</strong>
+
+  </caption>
+  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+    <td><a href="link"
+           tal:define="url python:here.get_frame_name(instance)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(instance,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+<br/><br/>
+</tal:dummy>
+</tal:dummy>
+
+
+
+
+
+
+<div tal:define="test python:0" tal:condition="test">
 
 
 <dl tal:define="items python:get_kb_direct_parents(here)" 
@@ -40,25 +89,12 @@ for each nooron_app_class
 </dl>
 
 
-<table border="1"
-       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
-       tal:condition="items">
-  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
-  <tr tal:repeat="item items">
-    <td><a href="link"
-           tal:define="url python:here.get_frame_name(item)"
-	   tal:attributes="href url"
-           tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
-  </tr>
-</table>
-
 
 
 <table border="1"
        tal:define="items python:get_class_instances('nooron_app_class')[0]" 
        tal:condition="items">
-  <caption><strong tal:content="structure python:get_doc_for(get_class_instances)">link</strong></caption>
+  <caption><strong tal:content="structure python:get_doc_for(get_class_instances) + '(nooron_app_class)'">link</strong></caption>
   <tr tal:repeat="item items">
     <td><a href="link"
            tal:define="url python:here.get_frame_name(item)"
@@ -69,14 +105,10 @@ for each nooron_app_class
 </table>
 
 
-
-
-<div tal:define="test python:0" tal:condition="test">
-
 </div>
 
 <hr>
-$Id: nooron_app.html,v 1.4 2003/03/26 23:17:14 smurp Exp $
+$Id: nooron_app.html,v 1.5 2003/04/02 19:43:05 smurp Exp $
 </div>
   </body>
 </html>
