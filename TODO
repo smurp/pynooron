@@ -2,14 +2,12 @@
 TODO for Nooron
 
 for v0.2.0 release
-
 * cleanliness
 ** wrong garment options on site_front_as_html
 ** orange and green!
 ** remove junk from http log output
 * skins for kbs
 ** ensure that kb_as_html is default template for kbs
-* figure out how to display a NooronApp instance
 
 after v0.2
 * implement IntermediateReferent (or SubjectIndicators?)
@@ -35,10 +33,6 @@ Solutions:
   .pykb 
   2) put all the frame info *into* the garments as leading comments
     (ala Zope's on-disk representation of dtml, python-script, etc. )
-* presentability
-** write up understandable overview: sentence, paragraph, document
-** make PRIMORDIAL_KB surfable
-** clean out all old topicmap stuff
 
 * kb interchange
 ** make /know/some_kb surfable, /know/some_kb.pykb downloadable
@@ -64,12 +58,13 @@ such as:
  etc, etc
 
 
+OOOOLD STUFF:
 
 The 'Roadmap' aspects of this have been superceded by:
   http://www.noosphere.org/discuss/zwiki/NooronRoadmap
 
 Principles Guiding ToDo Prioritization
-  - scratch own itch
+  - scratch my own itch
   - do tough stuff early (to ensure they affect design early)
   - release early, and have something usable (to promote participation)
       (opposed to scratch own itch?)
@@ -95,12 +90,8 @@ TODO (prioritized as above, roughly)
   - create user authentication system
     - implement NotSoBasicAuth
 
-  - create a nano-fsa 
   - display weblog.xtm
   - generate some svg now
   - time for users
 
-
-TODO for nanotech scenario
-  - create ontology for scenarios
 
