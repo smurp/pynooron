@@ -107,7 +107,8 @@
   </table>
 
 <hr/>
-$Id: standard_master,v 1.37 2003/07/09 16:35:13 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.38 2003/07/09 16:39:54 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+<a href="javascript:void(window.open('http://validator.w3.org/check?uri='+escape(document.location.href)))">validate</a>
   </body>
 </html>
 </metal:block>
