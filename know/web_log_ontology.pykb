@@ -3,13 +3,15 @@ put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
 create_slot('web_log_url',
-            own_slots=[[':DOMAIN','web_log_entry']],
+            own_slots=[[':DOMAIN','web_log_entry'],
+                       [':SLOT-VALUE-TYPE',':STRING']],
             doc="""This is a link from a 'web log entry' to an item 
 		it discusses.""",
             pretty_name="url")
 
 create_slot('web_log_text',
-            own_slots=[[':DOMAIN','web_log_entry']],
+            own_slots=[[':DOMAIN','web_log_entry'],
+                       [':SLOT-VALUE-TYPE',':STRING']],
             doc="""This slot contains the remarks by the blogger.""",
             pretty_name = "text")
 
