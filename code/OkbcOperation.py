@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.8 2003/03/28 07:37:38 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.9 2003/03/28 07:47:41 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -182,7 +182,7 @@ replace them with creation attempts in appropriate _data kbs.
             return 'OkbcOperations are not permitted because SAFETY is ON'
         else:
             (posargs,kwargs) = op.get_args_and_kwargs()
-            print "callDump",posargs,kwargs
+            #print "callDump",posargs,kwargs
             return apply(op._func,posargs,kwargs)
 
 
@@ -190,10 +190,12 @@ class AuthorizedOkbcOperation(OkbcOperation):
     def call(op,security_engine):
         if SAFETY:
             return 'OkbcOperations are not permitted because SAFETY is ON'
-        denied = security_engine.denied_p(op)
+        if security_engine:
+            denied = security_engine.denied_p(op)
+        else:
+            denied = None
         if not denied:
             (posargs,kwargs) = op.get_args_and_kwargs()
-            #print "callDump",posargs,kwargs
             return apply(op._func,posargs,kwargs)
         else:
             return denied
