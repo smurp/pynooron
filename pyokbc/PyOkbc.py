@@ -1,4 +1,8 @@
 
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.11 2002/11/04 22:47:21 smurp Exp $'
+
+DEBUG = 1
 WARNINGS = 2
 # 10 critical
 # 20 noops
@@ -109,39 +113,7 @@ def primordialINDIVIDUAL(name):
     primordials.append(o)
     return o
 
-##Node._all                      = Symbol(':all')
-##Node._own                      = Symbol(':own')
-##Node._template                 = Symbol(':template')
-
-    
-##Node._taxonomic                = Symbol(':taxonomic')
-##Node._direct                   = Symbol(':direct')
-    
-##Node._default_only             = Symbol(':default-only')
-##Node._known_true               = Symbol(':known-true')
-##Node._either                   = Symbol(':either')
-    
-##Node._more                     = Symbol(':more')
-
-###see after class KB
-    
-##Node._value                    = Symbol(':value')
-##Node._frame                    = Symbol(':frame')
-    
-##Node._system_default           = Symbol(':system-default')
-##Node._frames                   = Symbol(':frames')
-##Node._default                  = Symbol(':default')
-##Node._filled                   = Symbol(':filled')
-
-##    # initargs
-##Node._port                     = Symbol(':port')
-##Node._host                     = Symbol(':host')
-##Node._password                 = Symbol(':password')
-##Node._username                 = Symbol(':username')
-##Node._parent_kbs               = Symbol(':parent-kbs')
-
 primordial = {}
-
 
 primordial['kwarg'] = (':all',':own',':template',':taxonomic',
                        ':direct',':default-only',':known-true',
@@ -174,8 +146,9 @@ primordial['class'] = (":INDIVIDUAL",
 
 primordial['individual'] = ()
 
-primordial['behavior_value'] = (':never',':immediate',':user-defined-facets',
-                                ':facets-reported',':read-only',':monotonic',
+primordial['behavior_value'] = (':never',':immediate',
+                                ':user-defined-facets', ':facets-reported',
+                                ':read-only',':monotonic',
                                 ':deferred',':background',':override',
                                 ':when-consistent',':none',':list',
                                 ':bag',':set')
@@ -220,8 +193,9 @@ def bootstrap(primordial = primordial):
 
 bootstrap()
 
-#Node._THING._direct_types = [Node._CLASS]
+
 # see CLASS_RECURSION comments
+Node._THING._direct_types = [Node._CLASS]
 Node._CLASS._direct_superclasses = [Node._THING]
 
 Node._NUMBER. _direct_superclasses.append(Node._INDIVIDUAL)
@@ -299,7 +273,7 @@ Node._inference_levels         = (Node._taxonomic,Node._all,Node._direct)
 
 
 
-class KB(FRAME):    
+class KB(FRAME):
     """All OKBC methods which take a KB argument should be implemented here.
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
@@ -661,21 +635,49 @@ class KB(FRAME):
                         inference_level = Node._taxonomic,
                         slot_type = Node._all,
                         kb_local_only_p = 0):
+        checked_kbs = []
+        checked_classes = []
+        return kb.get_frame_slots_recurse(frame,
+                                          inference_level,
+                                          slot_type,
+                                          kb_local_only_p,
+                                          checked_kbs,
+                                          checked_classes)
+                               
+    def get_frame_slots_recurse(kb,frame,
+                                inference_level = Node._taxonomic,
+                                slot_type = Node._all,
+                                kb_local_only_p = 0,
+                                checked_kbs = [],
+                                checked_classes = []):
         klop = kb_local_only_p
         il = inference_level
         (frame,frame_found_p) = kb.get_frame_in_kb(frame)        
         (list_of_slots,
          exact_p) = kb.get_frame_slots_internal(frame,inference_level,
                                                 slot_type,klop)
+        #if DEBUG: print "get_frame_slots",kb,frame
         if inference_level in [Node._all,Node._taxonomic] and \
            slot_type in [Node._template,Node._all]:
+            
             for klass in kb.get_instance_types(frame, inference_level = il,
                                                number_of_values = Node._all,
                                                kb_local_only_p = klop)[0]:
-                for slot in  kb.get_frame_slots(klass,
-                                                inference_level = il,
-                                                slot_type=Node._template,
-                                                kb_local_only_p=klop)[0]:
+                #if DEBUG: print "  klass:",klass
+                if klass in checked_classes:
+                    continue
+                checked_classes.append(klass)
+                if klass == frame:
+                    continue
+                if kb_local_only_p \
+                   and not kb.frame_in_kb_p(klass,kb_local_only_p=1):
+                    continue
+                for slot in  kb.get_frame_slots_recurse(klass,
+                                                        inference_level,
+                                                        Node._template,#slot_type
+                                                        kb_local_only_p,
+                                                        checked_kbs,
+                                                        checked_classes)[0]:
                     if not (slot in list_of_slots):
                         list_of_slots.append(slot)
         return (list_of_slots,exact_p)
@@ -860,17 +862,21 @@ class KB(FRAME):
                         slot_type = Node._own,
                         number_of_values = Node._all,
                         value_selector = Node._either,
-                        kb_local_only_p = 0,
-                        checked_kbs=[],checked_classes=[]):
-        """Returns the list-of-values of slot within frame.
-        If the :collection-type of the slot is
-        :list, and only :direct own slots have been asserted,
-        then order is preserved; otherwise the values are returned in
-        no guaranteed order. Get-slot-values always returns a list of
-        values. If the specified slot has no values, () is returned.
-        Return Value(s): list-of-values exact-p more-status 
-        Flags: E O R """
-        #print "get_slot_value(",kb,frame,slot,")"
+                        kb_local_only_p = 0):
+        checked_kbs = []
+        checked_classes = []
+        return kb.get_slot_values_recurse(frame,slot,inference_level,
+                                          slot_type,number_of_values,
+                                          value_selector,kb_local_only_p,
+                                          checked_kbs,checked_classes)
+
+    def get_slot_values_recurse(kb,frame,slot,
+                                inference_level = Node._taxonomic,
+                                slot_type = Node._own,
+                                number_of_values = Node._all,
+                                value_selector = Node._either,
+                                kb_local_only_p = 0,
+                                checked_kbs=[],checked_classes=[]):
         klop = kb_local_only_p
         il =  inference_level
         (found_frame,
@@ -891,36 +897,53 @@ class KB(FRAME):
                                 number_of_values, value_selector,
                                 kb_local_only_p)
 
+        #if DEBUG: print "get_slot_values",kb,frame,slot,kb_local_only_p,checked_kbs,checked_classes
         if not kb_local_only_p:
             for kaybee in kb.get_kb_direct_parents():
                 if kaybee in checked_kbs:
                     continue
-                vals = kaybee.get_slot_values(found_frame, found_slot,
-                                              inference_level, slot_type,
-                                              number_of_values, value_selector,
-                                              kb_local_only_p,
-                                              checked_kbs,checked_classes)[0]
+                vals = kaybee.get_slot_values_recurse(found_frame,
+                                                      found_slot,
+                                                      inference_level,
+                                                      slot_type,
+                                                      number_of_values,
+                                                      value_selector,
+                                                      kb_local_only_p,
+                                                      checked_kbs,
+                                                      checked_classes)[0]
                 for v in vals:
                     if not (v in list_of_values):
                         list_of_values.append(v)
-
-        if inference_level in [Node._taxonomic,Node._all] and \
-           slot_type != Node._own:
+                checked_kbs.append(kaybee)
+                
+        if inference_level in [Node._taxonomic,Node._all] \
+           and slot_type != Node._own:
             my_types = kb.get_instance_types(found_frame,
                                              inference_level=il)[0]
-            for klass in my_types:
+            #if DEBUG: print "  my_types =",my_types,"\n  checked_classes =",checked_classes
+            for klass in my_types :
                 if klass in checked_classes:
-                    break
-                else:
-                    pass
-                    #checked_classes.append(klass) #CLASS_RECURSION
-                for val in kb.get_slot_values(klass,found_slot,
-                                              inference_level=inference_level,
-                                              slot_type=Node._template,
-                                              checked_kbs = checked_kbs,
-                                              checked_classes = checked_classes)[0]:
+                    continue
+                checked_classes.append(klass) #CLASS_RECURSION
+                if klass == found_frame:
+                    continue
+                # should kb_local_only_p ignore template values outside of kb?
+                if kb_local_only_p \
+                   and not kb.frame_in_kb_p(klass,kb_local_only_p=1):
+                    continue
+                for val in kb.get_slot_values_recurse(klass,
+                                                      found_slot,
+                                                      inference_level,
+                                                      Node._template,#slot_type
+                                                      number_of_values,
+                                                      value_selector,
+                                                      kb_local_only_p,
+                                                      checked_kbs,
+                                                      checked_classes)[0]:
+                    #if DEBUG: print "  val =",val
                     if not (val in list_of_values):
                         list_of_values.append(val)
+                #checked_classes.append(klass) #CLASS_RECURSION
 
         return (list_of_values,exact_p,more_status)
 

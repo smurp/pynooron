@@ -2,9 +2,17 @@
 TODO
 
 * PyOkbc must support operations minimally required by Nooron:
-** permit frames with same names in different kbs to share values
+** fix recursion error when Node._THING._direct_types = [Node._CLASS]
+important so that taxonomic roots are available for hanging skins on
+** implement kb_type, kb_locator and load kbs by name w/o ext
 ** enforce DOMAIN constraints on slot values 
+** enforce slot-based constraints first
 ** test facets values (in prep for constraints)
+* features not absolutely required by Nooron
+** get_slot_values_in_detail
+** meaningful implementation of default values
+*** value_selector sensitivity in get_slot_values
+
 
 coerce slot values appropriately (so they are frames too)
 ** coerce_to_handle [how the hell does a handle work]
@@ -14,4 +22,4 @@ coerce slot values appropriately (so they are frames too)
 ** clean up Node._*_all and make them into a dict keyed by _*
 ** improve Getting Started section of INSTALL
 
-$Id: TODO,v 1.5 2002/11/03 17:58:16 smurp Exp $
+$Id: TODO,v 1.6 2002/11/04 22:47:22 smurp Exp $
