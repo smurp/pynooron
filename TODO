@@ -1,15 +1,77 @@
-
+-*-mode: outline -*-
 TODO for Nooron
 
 * www.noosphere.org
 ** update FAQ
-*** how do I see pdfs instead of .dbk files?
+
+* through-the-web-editing
+** already completed forms
+*** put-pretty-name (change_pretty_name.html)
+*** create_individual.html
+*** save_data.html
+*** save_kb_as.html
+
+** high priority forms for okbc operations (in rough priority order)
+**** What intended purpose(s) guide this prioritization?
+***** make project management usable
+****** adding, editing, deleting Tasks
+put_slot_values, put_frame_details
+set_TaskStatus, put_slot_values
+delete_frame
+***** misc, spontaneous, personal data management
+***** pattern language maintenance
+***** FAQ maintenance
+***** online brainstorming (ala group genius)
+***** Central Registry of Nooron Apps
+*** put-kb-direct-parents
+*** create-kb
+*** copy-kb
+*** save-kb
+*** revert-kb
+*** copy-frame
+*** delete-frame
+*** put-frame-name
+*** put-frame-details
+*** create-class
+*** expunge-kb
+*** create-slot
+*** delete-slot
+*** attach-slot
+*** detach-slot
+*** put-slot-values
+*** put-frame-details
+
+** other conceivable forms for okbc operations
+*** add-class-superclasses
+*** put-class-superclasses
+*** remove-class-superclasses
+*** add-instance-type
+*** put-instance-types
+*** remove-instance-type
+*** add-slot-value
+*** attach-slot
+*** delete-slot
+*** detach-slot
+*** put-slot-value
+*** put-slot-values
+*** replace-slot-value
+
+
+** okbc methods possibly required by the above
+*** get-frame-details
+*** follow-slot-chain
+*** get-classes-in-domain-of
+*** get-frames-with-slot-value
+
+
 
 * Nooron features
-** fix Content-Type of http://mybox:9001/know/PRIMORDIAL_KB
 ** fix up nooron_app.html
 ** debug pattern_language.dbk
 ** get transform_dbk_2_ps and transform_dbk_2_pdf working
+** consider surfable frame.slots
+eg: /know/nooron_pert/FormActions/EstimatedHours => 3
+eg: /know/nooron_pert/FormActions/EstimatedHours/put_slot_value
 
 * completeness
 ** make nooron.py sensitive to commandline parameters
@@ -18,31 +80,39 @@ TODO for Nooron
 ** some authorization stubbed in
 ** make /know/pert/ a surfable thing (kb?, place?)
 ** implement proper cache flushing, tee hee
+
 * useability
+** make some nice documentation for "available_garments"
 ** fix available garments defaults for site_front.html and other weirdos
 ** fix truncated (at char 1024) error reporting
 ** put "available actions" and "available garments" in better places
    Probably redo entire layout of standard_master
 *** put "main" across entire window to permit rendering before trailing
     unsized images are available
+
 * correctness
 ** ensure that slots with a CARDINALITY of 1 only return a single value
    (specifically, the :DOCUMENTATION slot on frames in the PRIMORDIAL_KB)
 ** what the hell is http://192.168.1.11/__openable_kbs.html doing?
 ** not automatically writing to the correct kb (ie a nooron_data KB)
 ** save_kb (respect kb_local_only_p by telling parent kbs to save too)
+
 * performance
 ** debug putting PRIMORDIAL_KB only at the root
 ** is there value in marking a frame as being the deepest of that name
    and hence all deeper kbs can be ignored (for some purposes)
 
+* BUGS
+** pattern_language.dbk
+** class_hierarchy.dot
+** classes_in_kb.dot
+** pattern_language output in .dbk (DocBook) format broken (for a couple of reasons!) 
+** there are far too many edges in class_hierarchy sometimes 
+** classes_in_kb graphs (dot,ps,etc) are quite broken at the moment 
+** nooron_app.html should be really nice (not all confusing and nerdy the way it is), just haven't gotten there yet 
+** knowledge-bases which are in subdirectories of /know are not surfable  (e.g. /know/fsa/fsa_wardrobe) 
 
-BUGS
-** wrong garment options on site_front_as_html
-** orange and green!
-** ensure that kb_as_html is default template for kbs
 
-after v0.2
 * implement IntermediateReferent (or SubjectIndicators?)
 Instances of IntermediateReferent are frames which
 can be bibliographic references, URL's and their titles, 
@@ -50,49 +120,87 @@ or SubjectIndictators ala TopicMaps.
 * come up with better terminology for distinguishing Nooron Apps (equivalent
 to Zope products) from nooron_app_instances (which are the instances of those
 products)
-* create individual directories for nooron_apps, where the _ontology, 
-_wardrobe and garments all live.  (Along with procedures and widgets,
-when they get systematized.)
+
+* implement triggering of saving, but when?
+** at user whim
+** on kb close
+** after every write operation
+** periodically
+
+* have instances written to nooron_app_data KBs, but how?
+** Have the original actions specify the target kb explicitly.
+** Have the nooron_app_instance delegate creation to assoc. *_data.
+** Have NooronApp do the delegating.
+** Have knowledge trigger the delegation
+*** Some template slot on nooron_app_instance such as:
+      delegate_writing_to_data_kb
+**** No! No! We already know that we want to do this
+** What we need to handle this in a more generic fashion.
+** What are the issues?
+*** Sometimes classes need to have their instances stored in particular KBs.
+**** This arises when multiple _ontology and _data kbs are in use.
+*** Sometimes users want to store their work other than in the default place.
+**** e.g. When they want to make private notes or modifications.
+**** e.g. When the source of the rest of the data is read-only.
+** What are the knowledge-driven ways to do these sorts of things?
+*** Have slots on kbs indicating the classes they can store instances of.
+*** Have a frame 'STORAGE_PREFERENCES' which has slots which tell things where to go.
+*** Have slots on the nooron_app_instance kb itself which tell things where to go.
+*** Have slots on :CLASS which guide storage policies.  
+Generally overridden on particular classes.  The problem is that each class 
+needs to be handled separately (unless some wonderful slot type can 
+simplify this.)  :SAME-VALUES with a slot chain might prove useful.
+** What is the simplest solution for now?
+*** Have OkbcOperation detect attempts to create in nooron_app_instances and
+replace them with creation attempts in appropriate _data kbs.
+
+
+
+
 * update http://www.noosphere.org/background/how_to
-* wrap garments in knowledge
-Hmm, two goals: 
-  1) keep the garments on-disk as trivially editable files
-  2) make them appear to be frames (for metadata)
-Solutions:
-  1) Come up with some Connection type (or kb-type?) which treats files
+
+* Wrap Garments in Knowledge
+** Goals: 
+*** keep the garments on-disk as trivially editable files
+*** make them appear to be frames (for metadata)
+** Solutions:
+*** Come up with some Connection type (or kb-type?) which treats files
   as frames and merges into them any other info discovered in a per-directory
   .pykb or .tell
-  2) put all the frame info *into* the garments as leading comments
-    (ala Zope's on-disk representation of dtml, python-script, etc. )
-  3) look for a .tell file beside each normal content file (e.g. each npt)
-
-[Really should ontologize Analysis so that one can peek into 
- the analysis associated with any old thing.  Include: goals, proposals, 
- pros+cons]
-
-TODO (prioritized as above, roughly)
-  - deliver templates by version
-
-  - store evaluations (in sql?)
-  - create evaluation facilities
-  - filter/sort/format things on the basis of evaluations 
-      (or other attributes)
- 
-  - ensure that here/blah uses acquisition-like something
-  - test root/blah and container/blah
-  - implement adding of topics
-    - set up form and action architecture
-      - early uses to include:
-        - loading KBs
-        - creating frames
-        - creating KBs
-        - save_as
-
-  - create user authentication system
-    - implement NotSoBasicAuth
-
-  - display weblog.xtm
-  - generate some svg now
-  - time for users
+     [pros:
+         easy, flexible choice of 'central' knowledge format (.db|.tell|.xtm etc)
+         doesn't contaminate content files with metadata
+      cons:
+         all knowledge travels together, bloats together, corrupts together]
+*** Put all the frame info *into* the garments 
+     (as leading comments ala Zope's on-disk representation of dtml, python-script,etc)
+     (or in HEADER format ala mail messages)
+     [pros:
+         knowledge ineluctably associated with content
+         knowledge copies with content, etc
+      cons:
+         knowledge ineluctably associated with content
+         have to use special tool to get at content w.o. knowledge
+         insufficiently editable, flexible, customizable]
+*** look for a .tell file beside each normal content file (e.g. each npt)
+     [pros:
+         easier to edit than if metadata in the files
+      cons:
+         lots of separate files]
+*** look in a magically named subdirectory (ala .AppleDouble) for file
+     of the same name but containing knowledge
+     [pros:
+         simple to find
+      cons:
+         how to guard .MysteryMeatDir from normal handling? its dotfileness?]
 
 
+* Things to Ontologize
+** Analysis
+Really should ontologize Analysis so that one can peek into 
+the analysis associated with any old thing.
+*** Classes:
+**** goals
+**** proposals, 
+**** pros
+**** cons

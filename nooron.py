@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.28 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.28 2003/01/30 11:48:36 smurp Exp $'
+__version__='$Revision: 1.29 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.29 2003/03/08 12:57:23 smurp Exp $'
 
 
 """
@@ -13,6 +13,7 @@ approach described at http://www.noosphere.org/
 import os
 import sys
 import asyncore
+from medusa.monitor import *
 
 # adjust for your Zope installation
 sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python')
@@ -69,6 +70,20 @@ try:
 except:
     pass
 
+use_monitor = 1
+if use_monitor:
+    monitor_password = None
+    monitor_encrypt = 0
+    monitor_port = 8023
+    if monitor_password is not None:
+        s = secure_monitor_server (monitor_password, '', monitor_port)
+        if monitor_encrypt:
+            s.channel_class = secure_encrypted_monitor_channel
+            import sapphire
+            s.cipher = sapphire
+    else:
+        s = monitor_server ('', monitor_port)
+        
 #print "final pid =",os.getpid()
 
-asyncore.loop()
+asyncore.loop(use_poll=1)
