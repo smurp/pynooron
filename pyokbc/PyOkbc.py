@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.34 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.34 2003/02/26 18:54:23 smurp Exp $'
+__version__='$Revision: 1.35 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.35 2003/03/03 21:19:56 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -495,11 +495,16 @@ class KB(FRAME,Programmable):
                 frame = FACET(name,kb,frame_type=frame_type)
             else:
                 raise GenericError()
-        elif not isinstance(name,FRAME):
+        #elif not isinstance(name,FRAME):
+        else:
             # name is neither a string nor an existing FRAME
             # We permit FRAMEs because of possible circularities when
             # a kb is being read in.
-            raise GenericError()
+            name_type = str(type(name))
+            if type(name) == type(kb): # ie instance
+                return name
+            raise 'Name is not a string','kb=%s name=%s frame_type=%s type(name)=%s' % \
+                  (str(kb),str(name),str(frame_type),name_type)
 
         if frame_type == Node._slot:
             if not (Node._SLOT in direct_types) and \
@@ -593,6 +598,12 @@ class KB(FRAME,Programmable):
         
         return slot
     create_slot = create_slot_internal
+
+    def delete_frame(kb,frame,kb_local_only_p=0):
+        kb.delete_frame_internal(frame,kb_local_only_p)
+        if not kb_local_only_p:
+            for kaybee in kb.get_kb_parents():
+                kaybee.delete_frame(frame,kb_local_only_p=1)
 
     def facet_p(kb,thing,kb_local_only_p=0):
         return isinstance(thing,FACET)
@@ -1450,7 +1461,7 @@ class KB(FRAME,Programmable):
 
     def put_direct_parents(kb,parent_kbs):
         if hasattr(kb,'_cached_kb_parents'):
-            del kb['_cached_kb_parents']
+            kb._cached_kb_parents = []
 
         #if parent_kbs:
         #    kb._parent_kbs.remove(PRIMORDIAL_KB)
@@ -1467,9 +1478,6 @@ class KB(FRAME,Programmable):
         kb.put_frame_name_internal(frame,new_name,kb_local_only_p)
 
     def put_frame_pretty_name(kb,frame,name,kb_local_only_p=0):
-        print "put_frame_pretty_name kb =",kb,type(kb),name
-        if type(kb) != type(current_kb()):
-            raise 'ell',name
         kb.put_frame_pretty_name_internal(frame,name,kb_local_only_p)
 
     def put_instance_types(kb,frame,new_types,kb_local_only_p = 0):
@@ -1530,6 +1538,11 @@ class TupleKb(KB,Constrainable):
             # silently pass over any attempted duplication
             pass
 
+    def _remove_frame_from_store(kb,frame):
+        frame_name = kb.get_frame_name(frame)
+        if kb._store.has_key(frame_name):
+            del kb._store[frame_name]
+
     def _rename_frame_in_store(kb,frame,new_name,kb_local_only_p):
         frame_name = kb.get_frame_name(frame)
         frame_type = kb.get_frame_type(frame)
@@ -1556,6 +1569,9 @@ class TupleKb(KB,Constrainable):
         if str(kb) == str(frame):
             return kb
         return kb._store.get(frame)
+
+    def delete_frame_internal(kb,frame,kb_local_only_p=0):
+        kb._remove_frame_from_store(frame)
 
     def frame_in_kb_p_internal(kb,thing,
                                kb_local_only_p = 0):
@@ -1948,6 +1964,9 @@ class AbstractPersistentKb(TupleKb):
         kb.save_kb(error_p)
         #kb._save_to_storage(new_name_or_locator,error_p=error_p)
 
+    def _preamble(kb):
+        return ''
+
     def _get_place(kb):
         return kb._place
 
@@ -2015,6 +2034,7 @@ class AbstractFileKb(AbstractPersistentKb):
             path = filename
         print "saving to",path            
         outfile = open(path,"w")
+        outfile.write(kb._preamble())
         outfile.write(kb._print_kb_own_attributes())
         for frame in \
             get_kb_facets(kb,kb_local_only_p=1) + \

@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.13 2003/02/26 18:54:23 smurp Exp $'
+_version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.14 2003/03/03 21:20:11 smurp Exp $'
 
 
 from PyOkbc import *
@@ -230,7 +230,17 @@ current_kb.write=0
 
 # def decontextualize
 # def delete_facet
-# def delete_frame
+
+def delete_frame(frame,kb=None,kb_local_only_p=0):
+    kb = _coerce_to_kb(kb)
+    return kb.delete_frame(frame,kb_local_only_p)
+delete_frame.enumerator=0
+delete_frame.optional=0
+delete_frame.read=0
+delete_frame.mandatory=1
+delete_frame.write=1
+delete_frame.causes_side_effects_p=1
+
 # def delete_slot
 # def detach_facet
 # def detach_slot
