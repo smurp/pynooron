@@ -1,44 +1,43 @@
-
 put_direct_parents(['PeopleSchema','LiteratureOntology'])
-
+put_frame_pretty_name(current_kb(),"""Several Jocularly Related People""")
+put_slot_values(current_kb(),':DOCUMENTATION',["""Not too much to say here.
+Just a newline, nothing to see here."""])
 create_individual('ChristopherRobin',
                   direct_types=['Child'],
-                  own_slots=[['Eats', 'Toast', 'Cookie'],
-                             ['Age', 2],
+                  own_slots=[['Age', 2],
                              ['BirthTime', '1999-11-04 GMT-6'],
+                             ['Eats', 'Toast', 'Cookie'],
                             ],
                   pretty_name='Christopher Robin')
 create_individual('AliceLidell',
                   direct_types=['Child'],
-                  doc="You know, Alice!  With the restaraunt...",
                   own_slots=[['Eats', 'ThingsThatSayEatMe'],
                             ],
+                  doc="""You know, Alice!  With the restaraunt...""",
                   pretty_name='Alice in Wonderland')
 create_individual('AliceInWonderland',
-                  direct_types = ['Book'],
-                  own_slots=[['WrittenBy','LewisCarroll']],
+                  direct_types=['Book'],
+                  own_slots=[['WrittenBy', 'LewisCarroll'],
+                            ],
                   pretty_name='Alice in Wonderland')
-
 create_individual('LewisCarroll',
                   direct_types=['Alias'],
-                  own_slots=[['PennameOf','CharlesLutwidgeDodgson'],
+                  own_slots=[['PennameOf', 'CharlesLutwidgeDodgson'],
                             ],
                   pretty_name='Lewis Carroll')
-
 create_individual('CharlesLutwidgeDodgson',
                   direct_types=['AdultHuman'],
-                  own_slots=[['BirthTime', '1832-01-27 GMT'],
+                  own_slots=[['Age', '66'],
+                             ['BirthTime', '1832-01-27 GMT'],
                              ['DeathTime', '1898-01-14 GMT'],
-                             ['Age','66'],
-                             ['Penname','LewisCarroll'],
+                             ['Penname', 'LewisCarroll', 'BooBooLePew'],
                             ],
                   pretty_name='Charles Lutwidge Dodgson')
-
 create_individual('SamuelBeckett',
                   direct_types=['AdultHuman'],
-                  own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
-                             ['Age', 83],
-                             ['Wrote','WaitingForGodot'],
+                  own_slots=[['Age', 83],
                              ['BirthTime', '1906-04-13 GMT'],
+                             ['Eats', 'Apple', 'Berry', 'Cookie'],
+                             ['Wrote', 'WaitingForGodot'],
                             ],
                   pretty_name='Samuel Beckett')
