@@ -9,8 +9,8 @@ import StringIO
 
 def word2int(word):
     assert len(word) == 4
-    mult = 1
-    val = 0
+    mult = 1L
+    val = 0L
 #    print "word = ",word
     for i in word:
         val = ord(i) * mult + val
