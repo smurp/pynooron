@@ -1,14 +1,11 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.11 2002/11/11 22:48:50 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.12 2002/11/16 12:00:10 smurp Exp $'
 
 DEBUG = 0
 
 """
 NooronRoot is the root object of a nooron instance.
-
-It is a singleton. Or rather a Borg:
-http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
 
 """
 import os
@@ -28,7 +25,6 @@ import PipeLineFactory
 from pyokbc import *
 import os
 
-booger ='boo gear'
 class NooronRoot:
     fsroot = None
     http_server = None
@@ -75,7 +71,7 @@ class NooronRoot:
                 self.fsroot = publishing_root
                 fs = filesys.os_filesystem(self.fsroot)
                 ch = code_handler(fs,list_directories = 1,
-                                  serve=['/code','/templates','/topicmap'],
+                                  serve=['/code','/templates'],
                                   skip=['code/CVS','templates/CVS'])
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                

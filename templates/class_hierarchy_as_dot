@@ -1,22 +1,22 @@
-digraph class_hierarchy {
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
 <span tal:condition="python:1" 
-      tal:define="allsupers python:get_class_superclasses(here)"
+      tal:define="allsupers python: [':THING'] + get_class_subclasses(':THING')[0]"
       tal:omit-tag="">
 
-  <hr tal:replace="allsupers"/>
-</span>}
-
-
-<span tal:condition="python:0">
+//  <hr tal:replace="allsupers"/>
     <span tal:repeat="first allsupers"
           tal:omit-tag="">
-            
-      <span tal:repeat="second python:get_class_superclasses(first,
-                                                             inference_level=DIRECT)[0]">
-        <hr tal:replace="first"/>
-        -> <hr tal:replace="second"/>;
+      <span tal:omit-tag=""
+            tal:repeat="second python:get_class_subclasses(first,
+           	                                           inference_level=DIRECT)[0]">
+        <hr tal:replace="python:str(first).replace(':','')"/>
+        -> <hr tal:replace="python:str(second).replace(':','')"/>;
       </span>
 
     </span>
 
 </span>
+</metal:block>
+</metal:block>
+

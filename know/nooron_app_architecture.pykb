@@ -1,6 +1,6 @@
 
 create_slot('merges_in',
-	own_slots=[[':DOMAIN','nooron_app_component']])
+            own_slots=[[':DOMAIN','nooron_app_component']])
 
 # NPT (Nooron Page Template) frames
 create_slot('npt_for_app_front',
@@ -20,6 +20,9 @@ create_slot('npt_for_self',
             topic for which a particular template is desired.  Npt_for_self
             has precedence over npt_for_instances.""")
 
+create_slot('slot_display_order',
+            doc="""A list of the slots to display, in the order they
+            should be displayed.""")
 #create_class('knowledge_base')
 
 create_class('nooron_app_component',
@@ -59,6 +62,7 @@ create_class('app_skeleton',
              are required to make the app work.""")
 create_class('app_instance',
              direct_superclasses=['nooron_app_component'],
+             template_slots=[['npt_for_self','kb_ancestry_as_dot']],
              own_slots=[['merges_in','app_skeleton','data_instances']],
              doc="""An app instance is an actual runnable app.  It is the
              combination of two things: an app skeleton and a set of data
@@ -70,7 +74,10 @@ create_class('app_instance',
 create_class(':THING',
              template_slots=[['npt_for_self','frame_as_html']])
 create_class(':CLASS',
-             template_slots=[['npt_for_self','class_and_instances_as_html',
+             template_slots=[['npt_for_self',
+                              'class_and_instances_as_html',
                               'class_and_subclasses_as_html']])
 create_class(':KB',
-             template_slots=[['npt_for_self','app_instance_as_html']])
+             template_slots=[['npt_for_self',
+                              'class_hierarchy_as_dot',
+                              'app_instance_as_html']])

@@ -26,6 +26,12 @@
   <dt>modules</dt>
   <dd tal:content="modules"></dd>
 
+  <dt>this</dt>
+  <dd tal:content="this"></dd>
+  <dt>this_kb</dt>
+  <dd tal:content="this_kb"></dd>
+
+
 </dl>
 <hr>
-$Id: namespace,v 1.7 2002/10/21 08:34:05 smurp Exp $
+$Id: namespace,v 1.8 2002/11/16 12:00:11 smurp Exp $

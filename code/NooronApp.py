@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.12 2002/11/11 22:48:50 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.13 2002/11/16 12:00:10 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -22,6 +22,7 @@ class AbstractApp:
 
     def publish(app,request):
         """Ultimately does a nooron_root.publish(request,sumut)."""
+        
         nooron_root.publish(request,object)
 
     def get_npt_from_url(app,request):
@@ -33,6 +34,12 @@ class AbstractApp:
         request.effective_query_extend({'with_template': npt_name})
         nooron_root.publish(request,app._kb)
 
+    def get_npt_for_self(app,request,frame):
+        kb = app._kb
+        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
+                                                 number_of_values=1,
+                                                 slot_type=Node._all)
+        return vals and vals[-1]
 
 class MetaKB(AbstractApp):
     """Lets publish a meta-kb shall we?"""
@@ -47,19 +54,26 @@ class NooronApp(AbstractApp):
 class GenericFrame(AbstractApp):
     # see http://www.noosphere.org/discuss/zwiki/VariousTemplateUseCases
     default_npt_name = "frame_as_html"
-    def publish(app,request,frame_name):
-        (frame,frame_found_p) = frame_name \
-                                and app._kb.get_frame_in_kb(frame_name) \
-                                or (None,None)
-        if not frame_found_p:
-            NooronApp(app._kb).publish(request)
-            return
-        print "frame =",frame
-        npt_name = app.get_npt_from_url(request) \
-                   or app.get_npt_for_subclasses(request,frame) \
-                   or app.get_npt_for_instances(request,frame) \
-                   or app.get_npt_for_self(request,frame) \
-                   or app.default_npt_name
+    def publish(app,request,frame_name,npt_name):
+        if frame_name == None:
+            frame = app._kb
+        else:
+            (frame,frame_found_p) = frame_name \
+                                    and app._kb.get_frame_in_kb(frame_name) \
+                                    or (None,None)
+            if not frame:
+                frame = app._kb
+        #if not frame_found_p:
+        #    NooronApp(app._kb).publish(request)
+        #    print "frame",frame_name,"not found in NooronApp.py"
+        #    return
+        #print "frame =",frame
+        if npt_name == None:
+            npt_name = app.get_npt_from_url(request) \
+                       or app.get_npt_for_subclasses(request,frame) \
+                       or app.get_npt_for_instances(request,frame) \
+                       or app.get_npt_for_self(request,frame) \
+                       or app.default_npt_name
         print "=====================\n",\
               "publish() npt_name:",npt_name,\
               "for frame:",frame
@@ -88,4 +102,4 @@ class GenericFrame(AbstractApp):
         (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
                                                  number_of_values=1,
                                                  slot_type=Node._all)
-        return vals and vals[0] 
+        return vals and vals[-1] 

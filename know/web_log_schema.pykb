@@ -5,6 +5,7 @@ create_slot('web_log_url',
             doc="""This is a link from a 'web log entry' to an item 
 		it discusses.""",
             pretty_name="url")
+
 create_slot('web_log_text',
             doc="""This is the text which constitute the remarks by the
 		 blogger.""",
@@ -20,6 +21,13 @@ create_class('web_log_entry',
 create_class('web_log_category',
              direct_types=['nooron_schema_class'],
              #direct_types=['web_log_entry'],
-             doc="""Subclasses of 'web log category' are theselves classes 
+             doc="""Subclasses of 'web log category' are themselves classes 
 		which individual web log entries are instances of.""",
              pretty_name="web log category")
+
+create_class('web_log_app',
+             direct_superclasses=['app_instance'],
+             template_slots=[['npt_for_self','web_log_app_as_html']],
+             doc="""Instances of web_log_app are themselves kbs which
+             are publishable nooron app_instances which happen to be
+             web logs.""")

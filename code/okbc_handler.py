@@ -1,5 +1,5 @@
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.5 2002/11/01 23:47:18 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.6 2002/11/16 12:00:10 smurp Exp $'
 
 
 from pyokbc import *
@@ -28,7 +28,7 @@ class okbc_handler:
         retval = path.find(self.from_root)
         if retval < 0:
             retval = 0
-        if DEBUG: print "okbc_handler %s %s\n" % (path,str(retval))
+        #if DEBUG: print "okbc_handler %s %s\n" % (path,str(retval))
         return retval
 
     def handle_request(self,request):
@@ -41,11 +41,13 @@ class okbc_handler:
         if '%' in path or '+' in path:
             path = string.replace(path,'+',' ')
             path = unquote (path)
-            print path
+            #print path
 
         frame_in_kb_p = 0
         frame = None
+        frame_name = None
         kb = None
+        npt_name = None
 
         path_list = path.split('/')
         if len(path_list) < 3 and path[-1] != '/':
@@ -68,7 +70,7 @@ class okbc_handler:
 
         if len(path_list) > 1:
             kb_name = path_list[1]
-            #print "opening kb",kb_name
+            print "finding kb",kb_name
             kb = find_kb(kb_name)
             print "find_kb(",kb_name,") ==> ",kb
             if not kb:
@@ -79,10 +81,14 @@ class okbc_handler:
         if len(path_list) > 2:
             frame_name = path_list[2]
             frame_name = frame_name.replace('+',' ')
-            app = NooronApp.GenericFrame(kb)
-            app.publish(request,frame_name)
-        else:
-            app = NooronApp.NooronApp(kb)            
-            app.publish(request)
-
+##            app = NooronApp.GenericFrame(kb)
+##            app.publish(request,frame_name)
+##        else:
+##            app = NooronApp.NooronApp(kb)
+##            app.publish(request)
+            
+#        if len(path_list) > 3:
+#            npt_name = path_list[3]            
+        app = NooronApp.GenericFrame(kb)
+        app.publish(request,frame_name,npt_name)
 

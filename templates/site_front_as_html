@@ -1,0 +1,28 @@
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>My Nooron Instance</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+<h3>Welcome to the default front page of a stock Nooron instance.</h3>
+
+Starting points:
+<ul>
+<li>Browse all the knowledge contained in this site: <a href="know">/know</a></li>
+<li><a href="/know/nooron_pattern_language.pykb">The Nooron Pattern Language</a></li>
+<li>The <a href="/know/nooron_app_architecture.pykb">Nooron Architecture</a></li>
+<li><a href="/know/smurp_web_log.pykb">Smurp's Web Log</a></li>
+<li>Nooron FAQ (local) (central)</li>
+<li>Nooron TODO (local) (central)</li>
+</ul>
+In case it wasn't obvious, all of the above are 
+<a href="/know/nooron_app_architecture.pykb/app_instance">Nooron App Instances</a>.
+
+<hr>
+$Id: site_front_as_html,v 1.1 2002/11/16 12:00:11 smurp Exp $
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 
 put_direct_parents(['web_log_skeleton.pykb',
                     'smurp_web_log_data.pykb'])
-
-
+put_slot_values(current_kb(),':DOCUMENTATION',['snargle'])
+put_instance_types(current_kb(),['web_log_app'])
+put_frame_pretty_name(current_kb(),"smurp's blog")

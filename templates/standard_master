@@ -46,10 +46,8 @@
   </tbody>
   </table>
 
-<br>
-Rember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
 
 <hr>
-$Id: standard_master,v 1.10 2002/11/11 22:48:51 smurp Exp $
+$Id: standard_master,v 1.11 2002/11/16 12:00:11 smurp Exp $
   </body>
 </html>

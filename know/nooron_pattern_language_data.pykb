@@ -1,0 +1,238 @@
+
+put_direct_parents(['pattern_language_ontology.pykb'])
+
+create_individual('KnowledgeRepresentation',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses','OKBC','PyOKBC','Cyc'], 
+                             ['RelatedPatterns']],
+                  pretty_name = 'Knowledge Representation'
+                  )
+
+create_individual('Versioning',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns']],
+                  )
+
+create_individual('CriteriaAndEvaluations',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns']],
+                  pretty_name='Criteria and Evaluations'
+                  )
+
+create_individual('REST',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',
+                              'http://www.amazon.com',
+                              'http://www.yahoo.com'], 
+                             ['RelatedPatterns','URLsHaveMeaning']],
+                  pretty_name = '(REpresentational State Transfer)',
+                  )
+
+create_individual('WorldViews',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'PeerReview',
+                              'CriteriaAndEvaluations']],
+                  pretty_name = 'World Views',
+                  )
+
+create_individual('NotSoBasicAuthentication',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',"""Users own and maintain
+                  their identity and preference information at a location
+                  of their choosing and minimize registration effort at
+                  sites they visit."""],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',"""Users enter an URL instead of
+                  a username at a BasicAuthentication prompt."""],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'FullyConfigurable',
+                              'KnowledgeRepresentation']],
+                  pretty_name = 'Not So Basic Authentication',
+                  )
+
+create_individual('AggressivelyFreeSoftware',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns','RadicalOpenness']],
+                  pretty_name = 'Aggressively Free Software'
+                  )
+
+create_individual('URLsHaveMeaning',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns','REST']],
+                  pretty_name = 'URLS Have Meaning'
+                  )
+
+create_individual('FullyAutomatic',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'FullyConfigurable',
+                              'KnowledgeRepresentation']],
+                  pretty_name = 'Fully Automatic'
+                  )
+
+create_individual('FullyConfigurable',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'FullyAutomatic',
+                              'NotSoBasicAuthentication',
+                              'KnowledgeRepresentation']],
+                  pretty_name = 'Fully Configurable'
+                  )
+
+create_individual('ExtensibleArchitecture',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'KnowledgeRepresentation',
+                              'REST']],
+                  pretty_name = 'Extensible Architecture',
+                  )
+
+create_individual('RadicalOpenness',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',
+                              'http://c2.com/cgi/wiki?WikiWikiWeb',
+                              'http://www.everything2.com'], 
+                             ['RelatedPatterns',
+                              'NotSoBasicAuthentication',
+                              'ExtensibleArchitecture',
+                              'Versioning',
+                              'REST']],
+                  pretty_name = 'Radical Openness',
+                  )
+
+create_individual('PeerReview',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'CriteriaAndEvaluations',
+                              'RadicalOpenness']],
+                  pretty_name='Peer Review'
+                  )
+
+create_individual('SemanticWeb',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'KnowledgeRepresentation']],
+                  pretty_name='Semantic Web'
+                  )
+
+create_individual('P2P',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns','RadicalOpenness']],
+                  pretty_name='Peer To Peer'
+                  )
+
+
+create_class('technology')
+
+create_individual('OKBC',
+                  direct_types=['technology'],
+                  pretty_name='Open KnowledgeBase Connectivity'
+                  )
+
+create_individual('PyOKBC',
+                  direct_types=['technology'],                  
+                  )
+
+create_individual('Cyc',
+                  direct_types=['technology'],                  
+                  )

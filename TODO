@@ -1,30 +1,42 @@
 
 TODO for Nooron
 
-[part of the argument for the feasibility of the project]
+* cleanliness
+** remove junk from http log output
+* figure out how to display a NooronApp instance
+** app_front_template
+** app_instance.npt_for_me
+* figure out how to configure a nooron instance
+
+after v0.2
+* presentability
+** write up understandable overview: sentence, paragraph, document
+** make PRIMORDIAL_KB surfable
+** clean out all old topicmap stuff
+
+* kb interchange
+** make /know/some_kb surfable, /know/some_kb.pykb downloadable
+
+* performance!
+** cache NPT instances (to improve performance)
+** cache intermediate results (types, slots, instances, etc.) on frames
+
+* graphics
+** create kb_as_svg
+** create kb_as_ps
+** examine PIL for graphics generation
+
+* criteria and evaluations
+* user preferences
+** NotSoBasicAuthentication
+
+* communicate the overall vision
 Nooron can grow as suggested because it is not limited by factors
 such as: 
  - a specific rigid knowledge model
  - bound to a particular human language
  etc, etc
 
-* fix get_class_instances bug in nooron
-Is it in Nooron or in class_and_instances_as_html?
-* make PRIMORDIAL_KB surfable
-* turn off all print statements
-* figure out how to display a NooronApp instance
-** app_front_object
-** app_front_template
-** app_instance.npt_for_me
-* figure out how to configure a nooron instance
-
-
-after v0.2
-* cache NPT instances (to improve performance)
-* cache intermediate results (types, slots, instances, etc.) on frames
-* create kb_as_svg
-* create kb_as_ps
-* examine PIL for graphics generation
 
 
 The 'Roadmap' aspects of this have been superceded by:

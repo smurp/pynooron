@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.10 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.11 2002/11/16 12:00:10 smurp Exp $'
 
 DEBUG = 0
 
@@ -168,11 +168,17 @@ class topicmap_html_producer(templated_producer):
 
 class directory_html_producer(templated_producer):
     domain = ['DirectoryFacade.DirectoryFacade'
-              ,'NooronRoot.NooronRoot'
               ,'topicmap_handler.topicmap_handler']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "directory_as_html"
+
+class site_front_html_producer(templated_producer):
+    domain = ['NooronRoot.NooronRoot']
+    extensions = ['html','htm']
+    def_mime_type = ['text/html']
+    template_name = "site_front_as_html"
+
 
     
 

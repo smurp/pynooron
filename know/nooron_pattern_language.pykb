@@ -1,0 +1,5 @@
+
+put_direct_parents(['pattern_language_skeleton.pykb',
+                    'nooron_pattern_language_data.pykb'])
+put_instance_types(current_kb(),['pattern_language_app'])
+put_frame_pretty_name(current_kb(),"Nooron Pattern Language")

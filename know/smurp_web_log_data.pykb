@@ -13,7 +13,7 @@ create_class('book',
              doc="""About books, generally interesting.""")
 create_class('gear',
              direct_types=['web_log_category'],
-             doc="""Strange devices or products.""")
+             doc="""Noteworthy devices or products.""")
 create_class('architecture',
              direct_types=['web_log_category'],
              doc="""The subjugation of space to the will of an artist.""")

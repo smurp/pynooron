@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.9 2002/11/11 22:48:50 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.10 2002/11/16 12:00:10 smurp Exp $'
 
 import NooronRoot
 
@@ -62,6 +62,8 @@ class NooronPageTemplate(PageTemplate):
     def pt_getContext(self):
         c = {'template': self,
              'here': self.obj,
+             'this': self.obj,             
+             'this_kb':current_kb(),
              'container': self.container,
              'nothing': None,
              'options': {},
@@ -71,6 +73,7 @@ class NooronPageTemplate(PageTemplate):
              'modules': SecureModuleImporter,
              'Node': Node
              }
+        #print "context:",c
         return c
 
     def pt_render(self, source=0, extra_context={}):
