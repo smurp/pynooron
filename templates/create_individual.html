@@ -30,12 +30,16 @@
 
 
   <tal:block define="slot_name string:name;
-                     slot_pretty_name string:Frame Name">
+                     field_name slot_name;
+                     slot_pretty_name string:Frame Name;
+                     slot_values nothing">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
 
   <tal:block define="slot_name string:pretty_name;
-                     slot_pretty_name string:Pretty Name">
+                     field_name slot_name;
+                     slot_pretty_name string:Pretty Name;
+                     slot_values nothing">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
 
@@ -49,6 +53,7 @@
                                    get_procedure('names_and_pretty_names'),
                                    arguments=(slots,None,this_kb))">
       <tal:block define="slot_name        python:zlot[0];
+		         field_name       slot_name;
                          slot_pretty_name python:zlot[1];
 		         slot_values      python:[]">
 
@@ -69,7 +74,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.6 2003/03/07 14:11:30 smurp Exp $
+$Id: create_individual.html,v 1.7 2003/03/08 13:11:57 smurp Exp $
 </div>
 
   </body>
