@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.46 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.46 2003/05/22 20:28:39 smurp Exp $'
+__version__='$Revision: 1.47 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.47 2003/06/28 21:41:10 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -2309,17 +2309,36 @@ class AbstractFileKb(AbstractPersistentKb):
             path = os.path.join(place,filename)
         else:
             path = filename
-        print "saving to",path            
+
+        via_temp = 1 # FIXME make this a property of the kb
+        make_backups = 1 # FIXME make this a property of the kb
+        written = 0
+
+        if via_temp:
+            real_path = path
+            path = path + '.tmp'
+        print "saving to",path
         outfile = open(path,"w")
-        outfile.write(kb._preamble())
-        outfile.write(kb._print_kb_own_attributes())
-        for frame in \
-            get_kb_facets(kb,kb_local_only_p=1) + \
-            get_kb_slots(kb,kb_local_only_p=1) + \
-            get_kb_classes(kb,kb_local_only_p=1) + \
-            get_kb_individuals(kb,kb_local_only_p=1):
-            outfile.write(kb.print_frame(frame,stream=0))
-        outfile.close()
+        try:
+            outfile.write(kb._preamble())
+            outfile.write(kb._print_kb_own_attributes())
+            for frame in \
+                    get_kb_facets(kb,kb_local_only_p=1) + \
+                    get_kb_slots(kb,kb_local_only_p=1) + \
+                    get_kb_classes(kb,kb_local_only_p=1) + \
+                    get_kb_individuals(kb,kb_local_only_p=1):
+                outfile.write(kb.print_frame(frame,stream=0))
+            written = 1
+        finally:
+            outfile.close()
+        if written:
+            if make_backups:
+                backup_path = real_path + '~'
+                print "making backup %s" % backup_path
+                os.rename(real_path,real_path + '~')
+            if via_temp:
+                print "finally saving %s" % real_path
+                os.rename(path,real_path)
 
 
 class Connection: #abstract
