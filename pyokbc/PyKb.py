@@ -1,8 +1,6 @@
 
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.18 2003/04/13 22:33:07 smurp Exp $'
-
-import string
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.19 2003/05/13 16:28:14 smurp Exp $'
 
 from PyOkbc import *
 from CachingMixin import CachingMixin

@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.10 2003/04/15 19:20:55 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.11 2003/05/13 16:28:14 smurp Exp $'
 
 import string
 
@@ -13,6 +13,7 @@ import mimetypes
 
 from PyKb import *
 from TellKb import *
+from BrainKb import *
 
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
@@ -26,6 +27,7 @@ class FileSystemKb(AbstractFileKb):
         AbstractFileKb.__init__(kb,filename,connection=connection)
         kb._kb_types = {'application/vnd.pyokbc.kb.pykb':PyKb,
                         'application/vnd.pyokbc.kb.tell':TellKb,
+                        'application/vnd.brain':BrainKb,
                         }
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.44 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.44 2003/04/29 15:27:33 smurp Exp $'
+__version__='$Revision: 1.45 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.45 2003/05/13 16:28:14 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -2353,12 +2353,14 @@ class Connection: #abstract
 
     def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
         if not kb_type:
-            kb_type = connection._default_kb_type
-        my_meta_kb = kb=connection._meta_kb
-        (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
-        if not kb:
-            kb = kb_type(kb_locator,connection=connection)
-            my_meta_kb._add_frame_to_store(kb)
+            kb_types = connection.meta_kb()._kb_types.values()
+            #kb_type = connection._default_kb_type
+        for kb_type in kb_types:
+            my_meta_kb = kb = connection._meta_kb
+            (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
+            if not kb:
+                kb = kb_type(kb_locator,connection=connection)
+                my_meta_kb._add_frame_to_store(kb)
         return kb
 
     def openable_kbs(connection, kb_type = None, place = None):
