@@ -1,3 +1,4 @@
+# -*-mode: python -*-
 put_direct_parents(['PeopleSchema'])
 create_individual('JonathanSwift',
                   pretty_name='Jonathan Swift',

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.16 2003/03/06 14:40:22 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.17 2003/03/26 16:18:55 smurp Exp $'
 
 import os
 import sys
@@ -50,6 +50,7 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_get_frame_details(self):
         resp = get_frame_details('SamuelBeckett')[0]
         str_resp = str(resp)
+        print resp
         len_str_resp = len(str(resp))
         self.assertEquals(662,len_str_resp)
         num_keys = len(resp.keys())

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: test_PyKb.py,v 1.4 2003/02/26 18:55:01 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: test_PyKb.py,v 1.5 2003/03/26 16:18:55 smurp Exp $'
 
 import os
 import sys
@@ -76,6 +76,33 @@ class PyKbStuff(unittest.TestCase):
         new_kb = find_kb(test_kb_name)
         print "found new kb",new_kb
         print "found old kb",find_kb(nom)
+
+
+    def test_ModificationTime(self):
+        pair = []
+        def pushpair(self,pair):
+            new = get_slot_value(current_kb(),'ModificationTime')[0]
+            print "XX new",[new]
+            pair.append(new)
+            if len(pair) > 2:
+                pair.pop(0)
+            if len(pair) == 2:
+                print 'XX pair',pair
+                self.assertNotEquals(pair[0],pair[1])
+                
+        pushpair(self,pair)
+        put_slot_value('SamuelBeckett','Age',87)
+        pushpair(self,pair)
+        create_class('BigWheel')
+        pushpair(self,pair)
+        add_class_superclass('BigWheel','Person')
+        pushpair(self,pair)
+        create_individual('TheDude',direct_types=['Person'])
+        pushpair(self,pair)
+        create_slot('HairColor',own_slots=[[':DOMAIN','Person']])
+        pushpair(self,pair)
+        create_facet('Validity')
+        pushpair(self,pair)
         
         
 if __name__ == "__main__":
