@@ -14,6 +14,24 @@
                               '/pattern__create_individual.html'">
  <input type="submit" value="Create New Pattern"/>
 </form>
+
+
+
+
+<form method="GET"
+   action=""
+   tal:attributes="action python:request.object_request()+
+                              '__save_kb'">
+<tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
+  <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
+                     kb_to_save python:gmnadk(here)">
+      <input type="hidden" name="kb" value="" 
+             tal:attributes="value kb_to_save">
+  </tal:block>
+</tal:block>
+<input type="submit" value="Save All Patterns"/>
+</form>
+
 </div>
 
 
@@ -43,7 +61,7 @@
 
 
 <hr>
-$Id: pattern_language_intents.html,v 1.5 2003/03/28 11:44:18 smurp Exp $
+$Id: pattern_language_intents.html,v 1.6 2003/03/28 12:01:26 smurp Exp $
 </div>
   </body>
 </html>
