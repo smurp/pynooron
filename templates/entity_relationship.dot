@@ -1,0 +1,72 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+// $Id: entity_relationship.dot,v 1.1 2003/07/03 20:59:25 smurp Exp $
+//  size="7.5,10"
+//  rotate=90
+ ratio=compress
+
+<tal:block
+   define="abs_kb_url
+             python:server_absolute_url + request.object_request() + '/';
+           app_classes
+             python:call_procedure(get_procedure('names_and_pretty_names'),
+                                   arguments=(get_class_instances('nooron_app_class')[0],
+                                              '\\n',this_kb));
+           app_class_names
+             python:[str(cname[0]) for cname in app_classes]">
+  URL="<tal:dummy replace="abs_kb_url"/>"
+  label="<tal:dummy 
+            replace="python:'Entity Relationship Diagram for '+
+                            (get_frame_pretty_name(this_kb) 
+                             or get_frame_name(this_kb))"/>"
+  <tal:dummy
+     repeat="app_class app_classes">
+        node [shape=box,fontsize=12];
+
+	<tal:dummy replace="python:app_class[0]"/> 
+          [label="<tal:dummy replace="python:app_class[1]"/>",
+           shape=box,fontsize=12
+    <tal:block 
+       condition="python:str(get_slot_value(app_class[0],
+                                            'Status')[0]) == 'complete'">
+         style=filled,
+         fillcolor=green,
+    </tal:block>
+      //   URL="<tal:dummy replace="python:abs_kb_url+str(app_class[0])"/>"
+         ];
+
+    edge [arrowhead=none];
+    node [shape=ellipse,fontsize=8];
+
+    <tal:block
+        repeat="slot python:get_slot_values(app_class[0],
+                                            'slot_display_order')[0]
+                            or get_frame_slots(app_class[0])[0]">
+      <tal:dummy
+         condition="python:not instance_of_p(slot,'BookKeepingSlot')[0]"
+         define="attr_name 
+                     python:'%s__%s'
+                            %(str(app_class[0]).replace(':',''),
+                              str(slot).replace(':',''))">
+         <tal:dummy
+            replace="structure
+                     python:'%s [label=%s];'%(attr_name,str(slot))"/>
+         <tal:dummy
+            replace="structure 
+                     python:'%s -> %s;'
+                            %(app_class[0],attr_name)"/>
+         <tal:dummy
+            define="this_svt 
+                      python:get_slot_value(slot,
+                                            ':SLOT-VALUE-TYPE')[0]"
+            condition="python:this_svt in app_class_names"
+            replace="structure 
+                     python:'%s -> %s [style=bold,arrowhead=normal];'
+                            %(this_svt,app_class[0])"/>
+
+      </tal:dummy>
+    </tal:block>
+  </tal:dummy>
+</tal:block>
+</metal:block>
+</metal:block>
