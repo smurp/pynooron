@@ -43,7 +43,7 @@
 
 
 <img src="" 
-     tal:attributes="src python:request.object_request()+'__pattern_language.dot.jpg'"/>
+     tal:attributes="src python:request.object_request()+'__pattern_language_graph.dot.jpg'"/>
 
 <dl tal:define="items python:get_class_instances('pattern')[0]" 
        tal:condition="items">
@@ -61,7 +61,7 @@
 
 
 <hr>
-$Id: pattern_language_intents.html,v 1.6 2003/03/28 12:01:26 smurp Exp $
+$Id: pattern_language_intents.html,v 1.7 2003/04/01 16:04:16 smurp Exp $
 </div>
   </body>
 </html>
