@@ -277,6 +277,20 @@ def get_slot_values(frame,slot,
                               value_selector,
                               kb_local_only_p)
 
+def get_slot_values_in_detail(frame,slot,
+                              kb=None,
+                              inference_level = Node._taxonomic,
+                              slot_type = Node._own,
+                              number_of_values = Node._all,
+                              value_selector = Node._either,
+                              kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.get_slot_values_in_detail(frame,slot,
+                                        inference_level,
+                                        slot_type,
+                                        number_of_values,
+                                        value_selector,
+                                        kb_local_only_p)
 
 def goto_kb(kb):
     global CURRENT_KB

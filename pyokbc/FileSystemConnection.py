@@ -41,5 +41,5 @@ class FileSystemConnection(Connection):
             lines = f.readlines()
             f.close()
         except:
-            raise KbNotFound,filename
+            raise KbNotFound,filename,fname
         return lines

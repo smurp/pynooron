@@ -112,10 +112,10 @@ class IndividualNotFound(AbstractError):
 
 class KbNotFound(AbstractError):
     _name = "kb-not-found"
-    mess = "Kb '%s' not found"
-    def __init__(self,kb):
+    mess = "Kb '%s' not found at '%s'"
+    def __init__(self,kb,fname):
         self.kb = kb
-        AbstractError.__init__(self,self.mess % (kb))
+        AbstractError.__init__(self,self.mess % (kb,fname))
 
 class KbValueReadError(AbstractError):
     _name = "kb-value-read-error"
