@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.11 2003/04/13 19:59:06 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.12 2003/04/13 23:02:37 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -205,6 +205,8 @@ class AuthorizedOkbcOperation(OkbcOperation):
         else:
             return denied
 
+import re
+
 class IPListSecurityEngine:
     """IPListSecurityEngine allows or denies listed IPs or allows everybody
     by default.
@@ -228,13 +230,26 @@ class IPListSecurityEngine:
         self._deny    = deny
         self._message = message
         self._chain   = chain
-
+        
+        rule_re = '.*'
+        if type(allow) == type([]):
+            rule_re = string.join(allow,'|')
+            if not rule_re:
+                rule_re = "DENYALL"
+            rule_re = string.replace(rule_re,'.','\.')
+            rule_re = string.replace(rule_re,'*','\d+')
+        self._rule_re = rule_re
+        self._allow_re = re.compile(rule_re)
+        
     def denied_p(self,op):
         addr = op._request.channel.addr[0]
         #print ">'%s'<" % addr, self._allow
         #if self._allow == 1 or addr in self._allow:
         the_guy_is_bad = type(self._deny) == type([]) and addr in self._deny
-        the_guy_is_good = type(self._allow) == type([]) and addr in self._allow
+        the_guy_is_good = type(self._allow) == type([]) \
+                          and self._allow_re.search(addr) != None
+
+        #the_guy_is_good = type(self._allow) == type([]) and self._allow_re and addr in self._allow
         if the_guy_is_bad:
             return self._message
         if the_guy_is_good:

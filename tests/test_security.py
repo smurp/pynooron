@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: test_security.py,v 1.2 2003/03/28 07:36:34 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: test_security.py,v 1.3 2003/04/13 23:02:41 smurp Exp $'
 
 import os
 import sys
@@ -41,7 +41,7 @@ class IPSecurityTest(unittest.TestCase):
     def test_allow_everybody_by_default(self):
         sec_eng = IPListSecurityEngine()        
         self.failUnless(sec_eng.denied_p(bad_guy),
-                        'failing to deny everybody by default')
+                        'failing to deny everybody by default'+sec_eng._rule_re)
 
     def test_allow_only_listed(self):
         sec_eng = IPListSecurityEngine(allow=['1.1.1.1'],deny=1)
@@ -71,6 +71,16 @@ class IPSecurityTest(unittest.TestCase):
         self.assertEquals(sec_eng.denied_p(neutral_guy),
                           chained_engine.mess,
                           'neutrals not caught in chain')
+
+    def test_allow_by_wildcard(self):
+        sec_eng = IPListSecurityEngine(allow=['1.1.1.*'],deny=1)
+
+        self.failIf(sec_eng.denied_p(good_guy),
+                    'failing to let the know good guys in')
+
+        self.failUnless(sec_eng.denied_p(neutral_guy),
+                        'failing to deny others when deny=1 '+sec_eng._rule_re)
+        
         
 
 if __name__ == "__main__":
