@@ -61,7 +61,11 @@ class PyKb(AbstractFileKb):
         #fname = place+filename # FIXME should os.pathjoin be used?
         prev_kb = current_kb()
         goto_kb(self)
-        exec(string.join(raw_kb,"\n"))
+
+        try:
+            exec(string.join(raw_kb,""))
+        except exceptions.SyntaxError,e:
+            raise GenericError,str(e)+ " of "+str(filename)
         goto_kb(prev_kb)
 
     def print_frame(kb,frame,

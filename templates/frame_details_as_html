@@ -6,11 +6,42 @@
 
   <body>
 
-<div metal:fill-slot="main">
+<div metal:fill-slot="lay_docs">
+This page is like an X-ray of 
+<em tal:content="python:get_frame_name(here)"></em>
+showing every little nerdy detail about it.  This skin or template
+(whatever you want to call it) is useful
+for understanding how the system works or fixing a problem with it.
+</div>
+
+<div metal:fill-slot="wired_docs">
+This is  a detailed view of the frame 
+<em tal:content="python:get_frame_name(here)"></em>
+within the knowledge base 
+<em tal:content="python:get_frame_name(this_kb)"></em>.  
+More might be known about this frame in child KBs.
+Even knowledge bases themselves can be viewed as 
+frames<tal:dummy condition="python:str(this) == str(this_kb)">, as in
+this case
+</tal:dummy>.
+</div>
+
+<div metal:fill-slot="nerd_docs">
+The left-justified links such as 'get_frame_type' are to the 
+OKBC Specification which
+serves as documentation  
+for the PyOKBC calls which were used to discover the various details
+about this frame.  The other links are to other frames in the 
+knowledge base.
+</div>
+
+
+
+<metal:block metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
-<dl>
 
+<dl>
 
 <dt tal:content="structure python:get_doc_for(get_frame_type)"></dt>
 <dd tal:content="python:get_frame_type(here)"></dd>
@@ -148,7 +179,7 @@
 
 
 <hr>
-$Id: frame_details_as_html,v 1.1 2002/11/18 23:42:13 smurp Exp $
-</div>
+$Id: frame_details_as_html,v 1.2 2002/11/22 21:37:03 smurp Exp $
+</metal:block>
   </body>
 </html>

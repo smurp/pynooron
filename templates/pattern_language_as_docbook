@@ -1,0 +1,121 @@
+ <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
+<tal:dummy replace="python:request.set_header('Content-Type','text/xml')"/>
+ <article>
+    <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
+    <sect1 id="introduction">
+       <title tal:content="python:get_frame_pretty_name(here) or 
+                                  get_frame_name(here)"></title>
+
+        <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
+  
+      <sect2 id="how-this-document">
+         <title>How this document was generated</title>
+         <para>
+       This document was automatically published as a DocBook XML document
+       by a web-based knowledge management and publishing system called 
+       Nooron.  
+
+       The information in this document is stored within Nooron as a 
+       knowledge base stored at: 
+        <span tal:omit-tag="" 
+              tal:content="baseurl"></span>.  It is based on a reusable
+       'Pattern Language Ontology'.
+
+          (An ontology is a succinct machine- and human- 
+           understandable definition of the kinds of things which
+           exist in some domain; kind of like a relational database
+           schema, but more flexible.)
+
+       There is an associated 'Pattern Language Wardrobe' which 
+       connects the classes defined in the 
+       ontology with presentation templates which can display 
+       a particular pattern language in a variety
+       of ways.  These templates are called Nooron Page Templates
+       which are based on Zope Page Templates (ZPTs).
+       </para>
+
+       <para>   
+	These are the other templates which can be used to view
+        this pattern language.  The 'dot' format mentioned below
+        is a graph format which shows the connections between patterns.
+         <itemizedlist 
+            tal:define="skins python:get_slot_values(here,'npt_for_self',
+                                                     slot_type=ALL)[0]"
+            tal:condition="skins"
+            tal:repeat="skin skins">
+            <listitem><para tal:content="skin"></para></listitem>
+         </itemizedlist>
+        
+
+         </para>
+      </sect2>
+
+    </sect1>
+
+
+    <sect1 id="main-body">
+      <title>The Patterns</title>
+      <tal:dummy 
+         define="global pat_slots python:get_slot_values('pattern',
+                                                         'slot_display_order',
+                                                         slot_type=ALL)[0];
+                 global sort_frames python:get_procedure('sort_frames')"/>
+      <span tal:define="patterns python:call_procedure(sort_frames,
+                                 arguments=([get_class_instances('pattern')[0]]))"
+            tal:omit-tag="">
+        <span tal:repeat="pattern patterns"
+              tal:omit-tag="">
+         <sect2 id="" tal:attributes="id pattern">
+            <title tal:content="python:get_frame_pretty_name(pattern) or
+                                       get_frame_name(pattern)">pattern</title>
+            <span tal:repeat="pat_slot pat_slots"
+                  tal:omit-tag="">
+
+	      <sect3 id="" 
+                     tal:define="vals python:get_slot_values(pattern,pat_slot)[0]"
+                     tal:condition="vals"
+                     tal:attributes="id python:str(pattern)+'-'+str(pat_slot)">
+                <title tal:content="pat_slot">pat_slot</title>
+                <span tal:repeat="val vals"
+                      tal:omit-tag="">
+                   <para 
+                     tal:define="isin   python:frame_in_kb_p(val);
+                                 ishref python:0 == str(val).find('http')">
+                     <tal:dummy condition="python: not isin and not ishref"
+                                replace="val"/>
+                     <ulink url=""
+                        tal:condition="ishref"
+                        tal:content="python: get_frame_pretty_name(val) or
+                                             get_frame_name(val)"
+                        tal:attributes="url val">
+                     </ulink>
+	             <tal:dummy replace="val" 
+                                tal:condition="isin"/>
+                   </para>
+                </span>
+              </sect3>
+
+
+            </span>
+         </sect2>
+        </span>
+      </span>
+    </sect1>
+ </article>
+
+<metal:block tal:condition="nothing">
+  The following code is what I wanted to use
+  to make links from one pattern to another
+  within a docbook instance.  But... ZPT raised 
+  some zany error about:
+    "Close tag link should be removed"
+  This looks like a bug/mangled feature
+  in ZPT where it tries to do some automagic
+  stuff with the HTML unary LINK tag.
+   (link linkend="booger")youch(/link)
+   (link linkend="" 
+         tal:condition="isin" 
+         tal:content="val" 
+         tal:attributes="linkend val")(/link)
+
+</metal:block>

@@ -1,11 +1,11 @@
-<!-- $Revision: 1.5 $ -->
-    <a href="/">/ (site root)</a> 
+<!-- $Revision: 1.6 $ -->
+    <a href="/">(TOP)</a> 
 <strong>|</strong>
-    <a href="/status">/status</a> 
+    <a href="/status">status</a> 
 <strong>|</strong>
-    <a href="/know/">/know/</a>
+    <a href="/know/">know</a>
 <strong>|</strong>
-    <a href="/templates/">/templates/</a>
+    <a href="/templates/">templates</a>
 <strong>|</strong>
-    <a href="/code/">/code/</a>
+    <a href="/code/">code</a>
 

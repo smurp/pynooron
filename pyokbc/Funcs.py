@@ -10,6 +10,10 @@ def add_class_superclass(klass,new_superclass,
     if not kb: kb = current_kb()
     return kb.add_class_superclass(klass,new_superclass,kb_local_only_p)
 
+def call_procedure(procedure,kb=None,arguments=None):
+    if not kb: kb = current_kb()
+    return kb.call_procedure(procedure,arguments)
+
 def class_p(thing,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()    
     return kb.class_p(thing,kb_local_only_p)
@@ -96,6 +100,10 @@ def create_individual(name,
 def create_kb(name,kb_type=None,kb_locator=None,initargs={},connection=None):
     if not connection: connection = local_connection()
     return connection.create_kb(kb_type,kb_locator,initargs)
+
+def create_procedure(kb=None,arguments=None,body=None,environment=None):
+    if not kb: kb = current_kb()
+    return kb.create_procedure(arguments,body,environment)
 
 def create_slot(name,
                 kb=None,
@@ -239,6 +247,10 @@ def get_kb_slots(kb=None,
     if not kb: kb = current_kb()
     return kb.get_kb_slots_internal(selector,kb_local_only_p)
 
+def get_procedure(name,kb=None):
+    if not kb: kb = current_kb()
+    return kb.get_procedure(name)
+
 def get_slot_facets(frame,slot,kb=None,
                    inference_level = Node._taxonomic,
                    slot_type = Node._own,
@@ -356,7 +368,8 @@ def print_frame(frame,
                           kb_local_only_p = kb_local_only_p)
 
 def procedure_p(thing):
-    return isinstance(thing,PROCEDURE)
+    return type(thing) == type(lambda a:a)
+    #return isinstance(thing,PROCEDURE)
 
 def put_class_superclasses(klass,new_superclasses,kb=0,kb_local_only_p=0):
     if not kb: kb = current_kb()
@@ -388,6 +401,10 @@ def put_slot_values(frame,slot, values,
     return kb.put_slot_values(frame,slot,values,slot_type,
                               value_selector,kb_local_only_p)
 
+def register_procedure(name,procedure,kb=None):
+    if not kb: kb = current_kb()
+    kb.register_procedure(name,procedure)
+
 def save_kb(kb=None,error_p=1):
     if not kb: kb = current_kb()
     return kb.save_kb(error_p=error_p)
@@ -412,6 +429,10 @@ def superclass_of_p(superclass,subclass,kb=None,
     if not kb: kb = current_kb()    
     return kb.subclass_of_p(superclass,subclass,
                             inference_level,kb_local_only_p)
+
+def unregister_procedure(name,kb=None):
+    if not kb: kb = current_kb()
+    kb.unregister_procedure(name)
 
 
 

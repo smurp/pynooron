@@ -1,5 +1,20 @@
 
 put_direct_parents(['convenience_procedures.pykb'])
+put_frame_pretty_name(current_kb(),"Nooron App Architecture")
+put_slot_values(current_kb(),':DOCUMENTATION',
+                ["""This knowledgebase is the very heart of the Nooron
+                App Architecture.  This is the ontology which gives
+                Nooron Apps (such as Pattern Language, FAQ, Web Log
+                and PERT) their rich features.
+                It establishes the slots for managing a hierarchy of skins.
+                It defines different kinds of nooron_app_component: KBs
+                which are either nooron_app_ontologies, nooron_app_wardrobes,
+                nooron_app_data or nooron_app_instances which by being
+                separate make possible a wildly flexible strategy of
+                knowledge recombination.  This approach will also
+                support the automatic generation of management screens for
+                adding, editing, versioning and deleting information.
+                """])
 
 create_slot('merges_in',
             doc="""Which nooron_app_components does this kind of
@@ -28,7 +43,7 @@ create_slot('slot_display_order',
             slot_display_order is optional on any nooron_app_class.""")
 
 create_class('nooron_app_component',
-             direct_superclasses=['knowledge_base'],
+             direct_superclasses=[':KB'],
              template_slots=[['npt_for_self','kb_as_html']],
              doc="""Nooron app components are knowledgebases which
              have features which are made use of by code/NooronApp.py
@@ -36,7 +51,7 @@ create_class('nooron_app_component',
 create_class('nooron_app_ontology',
              own_slots=[['merges_in',]],
              direct_superclasses=['nooron_app_component'],
-             doc="""This is the ontology for the nooron app, equivalent to a
+             doc="""This is the ontology for a nooron app, equivalent to a
              relational database schema or to a set of data structure
              declarations for an object oriented system.  Knowledge bases of
              this kind depend on nothing, except possibly other ontologies.
@@ -97,4 +112,7 @@ create_class(':THING',
 #                              'class_and_subclasses_as_html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
-                              'class_hierarchy_as_dot']])
+#                              'class_in_kb_as_dot',
+#                              'class_hierarchy_as_dot',
+                              'kb_as_html'
+                              ]])

@@ -14,3 +14,6 @@ def sort_frames(these):
 register_procedure('sort_frames',
                    procedure=create_procedure(body=sort_frames))
 del sort_frames
+
+
+#def get_npts_from_types

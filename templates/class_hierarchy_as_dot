@@ -1,5 +1,6 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
+  size="8,10"
 <span tal:condition="python:1" 
       tal:define="allsupers python: [':THING'] + get_class_subclasses(':THING')[0]"
       tal:omit-tag="">

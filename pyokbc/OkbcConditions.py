@@ -91,8 +91,8 @@ class FrameAlreadyExists(AbstractError):
 
 class GenericError(AbstractError):
     _name = "generic-error"
-    def __init__(error='Unspecified GenericError'):
-        AbstractError.__init__(error)
+    def __init__(self,error='Unspecified GenericError'):
+        AbstractError.__init__(self,error)
 
 class IllegalBehaviourValues(AbstractError):
     _name = "illegal-behaviour-values"

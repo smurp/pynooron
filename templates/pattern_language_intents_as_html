@@ -12,8 +12,6 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
-
-
 <dl tal:define="items python:get_class_instances('pattern')[0]" 
        tal:condition="items">
   <span tal:repeat="item items"
@@ -28,30 +26,8 @@
   </span>
 </dl>
 
-
-
-
-
-<div tal:define="test python:0" tal:condition="test">
-<span  tal:define="items python:get_class_instances(here)[0]" 
-       tal:condition="items">
-  <!-- better would be some sort of slot value e.g. plural_for_instances-->
-  <ul>
-  <span tal:repeat="item items">
-    <li	><a href="booger"
-        	   tal:define="url python:get_frame_name(item)"
-		   tal:attributes="href url"
-           	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></li>
-	
-  </span>
-  </ul>
-</span>
-
-
-</div>
-
 <hr>
-$Id: pattern_language_as_html,v 1.1 2002/11/16 12:00:11 smurp Exp $
+$Id: pattern_language_intents_as_html,v 1.1 2002/11/22 21:37:04 smurp Exp $
 </div>
   </body>
 </html>

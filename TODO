@@ -1,19 +1,37 @@
 
 TODO for Nooron
 
-* make unittest for get_frame_slots on a frame of type kb
+for v0.2.0 release
+
+* fix surfability of /templates and /code
+* cleanliness
+** remove junk from http log output
+* implement Marsh's suggestions:
+** complete minimal FAQ
+** 
 * test for surfability of /know and everything from site_front_as_html
 * skins for kbs
 ** ensure that kb_as_html is default template for kbs
-** ideally, have 
-* cleanliness
-** remove junk from http log output
 * figure out how to display a NooronApp instance
-** app_front_template
-** app_instance.npt_for_me
-* figure out how to configure a nooron instance
 
 after v0.2
+* come up with better terminology for distinguishing Nooron Apps (equivalent
+to Zope products) from nooron_app_instances (which are the *uses* of those
+products)
+* create individual directories for nooron_apps, where the _ontology, 
+_wardrobe and garments all live.  (Along with procedures and widgets,
+when they get systematized.)
+* update http://www.noosphere.org/background/how_to
+* wrap garments in knowledge
+Hmm, two goals: 
+  1) keep the garments on-disk as trivially editable files
+  2) wrap them in metadata frames, ie make a garment a frame of some type
+Solutions:
+  1) Come up with some Connection type (or kb-type?) which treats files
+  as frames and merges into them any other info discovered in a per-directory
+  .pykb 
+  2) put all the frame info *into* the garments as leading comments
+    (ala Zope's on-disk representation of dtml, python-script, etc. )
 * presentability
 ** write up understandable overview: sentence, paragraph, document
 ** make PRIMORDIAL_KB surfable

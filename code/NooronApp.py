@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.13 2002/11/16 12:00:10 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.14 2002/11/22 21:37:02 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -73,12 +73,20 @@ class GenericFrame(AbstractApp):
                        or app.get_npt_for_subclasses(request,frame) \
                        or app.get_npt_for_instances(request,frame) \
                        or app.get_npt_for_self(request,frame) \
+                       or app.get_npt_hardwired(request,frame) \
                        or app.default_npt_name
         print "=====================\n",\
               "publish() npt_name:",npt_name,\
               "for frame:",frame
         request.effective_query_extend({'with_template': npt_name})
         nooron_root.publish(request,frame)
+
+    def get_npt_hardwired(app,request,frame):
+        kb = app._kb
+        if kb == frame:
+            return 'kb_as_html'
+        else:
+            return 'frame_as_html'
 
     def get_npt_for_subclasses(app,request,frame):
         kb = app._kb
@@ -88,7 +96,6 @@ class GenericFrame(AbstractApp):
                                                  number_of_values=1,
                                                  slot_type=Node._all)
         return vals and vals[0] 
-
 
     def get_npt_for_instances(app,request,frame):
         kb = app._kb

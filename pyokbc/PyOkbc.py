@@ -1,5 +1,5 @@
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.18 2002/11/20 15:20:58 smurp Exp $'
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.19 2002/11/22 21:37:03 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -200,7 +200,7 @@ primordial['slot'] = (":DOCUMENTATION",
                       ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE")
 
 primordial['class'] = (":INDIVIDUAL",
-                       ":SLOT",":FACET",#"KB",
+                       ":SLOT",":FACET",":KB",
                        ":NUMBER",":INTEGER",":STRING",
                        ":SEXPR",":SYMBOL",":LIST")
 
@@ -389,7 +389,7 @@ class KB(FRAME,Programmable):
         self._connection = connection
         node_kb = Node.__dict__.get('_kb') # equivalent to Node._kb see below
         FRAME.__init__(self,name,frame_type=node_kb,kb=kb)
-
+        self._direct_types.append(Node._KB)
         self._initargs = initargs
         
         parent_kbs = initargs.get(Node._parent_kbs,[])
@@ -1345,6 +1345,7 @@ class KB(FRAME,Programmable):
 Node._kb = KB(':kb')
 Node._kb._frame_type = Node._class
 KB._frame_type = Node._kb
+KB._direct_types = [Node._KB]
 Node._cache_types              = Node._frame_types + (Node._kb,)
 
 class NullMetaKb(KB):
@@ -1749,7 +1750,9 @@ class PrimordialKb(TupleKb):
                                           kb_local_only_p = 0,
                                           checked_kbs=[],checked_classes=[]):
         if kb.coerce_to_frame_internal(str(frame)):
-            if str(slot) == ':DOCUMENTATION':
+            if str(slot) == ':DOCUMENTATION' and \
+               str(frame) != 'PRIMORDIAL_KB':
+                #FIXME more generally skip things which are not in OKBC Spec
                 # list-of-specs,exact-p,more-status,default-p
                 return ([[get_doc_for(frame),1,0]],1,0,0)
         apkb_gsvidi = AbstractPersistentKb.get_slot_values_in_detail_internal

@@ -11,7 +11,7 @@
 
 Starting points:
 <ul>
-<li>Browse all the knowledge contained in this site: <a href="know">/know</a></li>
+<li>What is this thing?</li>
 <li><a href="/know/nooron_pattern_language.pykb">The Nooron Pattern Language</a></li>
 <li>The <a href="/know/nooron_app_architecture.pykb">Nooron Architecture</a></li>
 <li><a href="/know/smurp_web_log.pykb">Smurp's Web Log</a></li>
@@ -21,9 +21,12 @@ Starting points:
 </ul>
 In case it wasn't obvious, all of the above are 
 <a href="/know/nooron_app_architecture.pykb/nooron_app_instance">Nooron App Instances</a>.
-
+<ul>
+<li>Browse all the knowledge contained in this site: 
+    <a href="know">/know</a></li>
+</ul>
 <hr>
-$Id: site_front_as_html,v 1.2 2002/11/18 23:42:13 smurp Exp $
+$Id: site_front_as_html,v 1.3 2002/11/22 21:37:04 smurp Exp $
 </div>
 </body>
 </html>

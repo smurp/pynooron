@@ -11,21 +11,22 @@
 
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
-<span tal:define="faqs python:get_class_instances('faq')[0]" 
+<span tal:define="sort_frames python:get_procedure('sort_frames');
+                  faqs python:call_procedure(sort_frames,
+                                arguments=([get_class_instances('faq')[0]]))"
       tal:condition="faqs"
       tal:omit-tag="">
-  <tal:dummy define="faqs python:faqs.sort()"/>
   <span tal:repeat="faq faqs"
         tal:omit-tag="">
     <a href="booger"
        tal:define="url python:get_frame_name(faq)"
        tal:attributes="href url"
        tal:content="url">click me</a><br/>
-    Q: <b tal:content="python:get_slot_value(faq,'Q')[0]"></b><br/>
+    Q: <b tal:content="structure python:get_slot_value(faq,'Q')[0]"></b><br/>
     A: <span tal:content="structure python:get_slot_value(faq,'A')[0]"></span>
     <br/>
     <br/>
-	
+
   </span>
 </span>
 
@@ -34,7 +35,7 @@
 </div>
 
 <hr>
-$Id: faqs_as_html,v 1.1 2002/11/18 23:42:13 smurp Exp $
+$Id: faqs_as_html,v 1.2 2002/11/22 21:37:03 smurp Exp $
 </div>
   </body>
 </html>

@@ -7,7 +7,9 @@
 
 <div metal:fill-slot="main">
 
-<div tal:condition="python: hasattr(here,'objectValues')">
+<b tal:content="here"></b>
+
+<div tal:condition="python:1">
 <table border="1"
        tal:define="items here/objectValues"
        tal:condition="items">
@@ -19,7 +21,7 @@
 </div>
 
 <hr>
-$Id: directory_as_html,v 1.2 2002/08/02 18:47:19 smurp Exp $
+$Id: directory_as_html,v 1.3 2002/11/22 21:37:03 smurp Exp $
 </div>
 </body>
 </html>

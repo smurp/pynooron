@@ -2,10 +2,13 @@
 TODO for PyOKBC
 
 * PyOkbc must support operations minimally required by Nooron:
+** get_kb_direct_children not working fully?
 ** get_class_instances should work a little bit
 ** get_class_subclasses should work a little bit
+** automatic reload of .pykb files when change detected on disk
 ** PERFORMANCE
 *** clarify when PRIMORDIAL_KB should be poked into kb._parent_kbs
+
 
 ** enforce DOMAIN constraints on slot values 
 ** enforce slot-based constraints first
@@ -34,4 +37,4 @@ coerce slot values appropriately (so they are frames too)
 ** clean up Node._*_all and make them into a dict keyed by _*
 ** improve Getting Started section of INSTALL
 
-$Id: TODO,v 1.10 2002/11/18 23:44:00 smurp Exp $
+$Id: TODO,v 1.11 2002/11/22 21:37:03 smurp Exp $
