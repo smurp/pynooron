@@ -1,0 +1,223 @@
+#!/usr/bin/python2.1
+
+__version__='$Revision: 1.1 $'[11:-2]
+__cvs_id__ ='$Id: CachedPipelineProducer.py,v 1.1 2002/12/03 10:18:13 smurp Exp $'
+
+import string
+import md5
+import os
+import copy
+
+
+class CachingPipeliningProducer:
+    def __init__(piper,canonical_request = None):
+        piper._cachedir = None
+        piper._canonical_request = canonical_request
+        #Piper.__init__(piper,garment,extensions)
+        #garment_ext = piper._garment.split('.')[-1]
+        #cached_garmie_out = piper.MD5 + '.' + garment_ext
+        piper._pipeline = []
+        piper._done = 0
+        piper._file = None
+    def set_canonical_request(piper,canonical_request):
+        piper._canonical_request = canonical_request
+        ck = piper.cachekey()
+        for p in piper._pipeline:
+            p.set_cachekey(ck)
+    def cachekey(piper):
+        """Return a key into the cache which is a hash (md5sum) of
+        the canonical_request."""
+        digest = md5.new(piper._canonical_request).digest()
+        piper._cachekey = '%x' * 16 % tuple(map(ord,tuple(digest)))
+        return piper._cachekey
+    def set_cachedir(piper,cachedir):
+        piper._cachedir = cachedir
+        for p in piper._pipeline:
+            p.set_cachedir(cachedir)
+    def append_pipe(piper,pipe):
+        piper._pipeline.append(pipe)
+    def mimetype(piper):
+        mt = None
+        sections = copy.copy(piper._pipeline)
+        #sections.reverse()
+        while not mt:
+            section = sections.pop()
+            mt = section.mimetype()
+        return mt
+    def source_and_commands(piper):
+        """Return (source,commands) where source is either a
+        producer or None and commands is either None or a string
+        which constitutes a unix shell pipeline which does
+        the least possible work, making use of any cached values
+        if they exist and caching intermediate results if the
+        cachedir is specified.  If source is not None then it is
+        a Medusa-style producer which is intended to be called to
+        feed its output down the commands pipeline."""
+        sections = copy.copy(piper._pipeline)
+        source_p = 0
+        source = None
+        cmds = []
+        while sections and not source_p:
+            section = sections.pop()
+            (cmd,source_p) = section.pipe_or_cached_source()
+            if type(cmd) == type(''):
+                cmds.append(cmd)
+            else:
+                source = cmd
+        if cmds:
+            cmds.reverse()
+            commands = string.join(cmds,' | ')
+        else:
+            commands = None
+        return (source,commands)
+
+    out_buffer_size = 1<<16
+    def more(self):
+        """Execute the whole pipeline. See composite_producer &
+        file_producer"""
+        if self._done:
+            return ''
+        else:
+            data = self._file.read(self.out_buffer_size)
+            if not data:
+                self._file.close()
+                del self._file
+                self._done = 1
+                return ''
+            else:
+                return data
+        
+class PipeSection:
+    """A PipeSection is an encapsulated shell command which can be
+    piped together with others and have mimetype, extension and caching
+    abilities."""
+    def __init__(pipesection,producer=None,command=None,
+                 mimetype=None,extension=None,
+                 cachedir=None,cachekey=None):
+        pipesection._command = command
+        pipesection._mimetype = mimetype
+        pipesection._extension = extension
+        pipesection._cachedir = cachedir
+        pipesection._cachekey = cachekey
+    def set_cachedir(pipesection,cachedir):
+        pipesection._cachedir = cachedir
+    def set_cachekey(pipesection,cachekey):
+        pipesection._cachekey = cachekey
+    def mimetype(pipesection):
+        return pipesection._mimetype
+    def full_path(pipesection):
+        if pipesection._cachedir and \
+           pipesection._cachekey != None and \
+           pipesection._extension != None:
+            return os.path.join(pipesection._cachedir,
+                                pipesection._cachekey + '.' +
+                                pipesection._extension)
+        else:
+            return None
+    def pipe_or_cached_source(pipesection):
+        """Returns (command,source_p) where command is either a command
+        which transforms stdin to stdout or a command which starts a
+        pipeline by catting to stdout the contents of a cached file
+        if it exists.  The pipeline command will tee off a cached copy
+        if cachedir is not None.  The intention is that the command
+        returned by this method be combined with others in a complete
+        shell pipeline.  Source_p is true means that the command ignores
+        stdin and hence defines the begining of a pipeline."""
+        if pipesection._cachedir and os.path.isdir(pipesection._cachedir):
+            fullpath = pipesection.full_path()
+            if fullpath:
+                if os.path.isfile(fullpath):
+                    return ("cat %s" % fullpath,1)
+                else:
+                    return ("%s | tee %s" % (pipesection._command or 'cat',
+                                             fullpath),0)
+        return (pipesection._command,0)
+
+
+if __name__ == '__main__':
+   
+    cp = CachingPipeliningProducer()
+    cp.append_pipe(PipeSection(producer=None,
+                               extension='dot',
+                               mimetype ='application/x-graphviz'))
+
+    cp.append_pipe(PipeSection(command='dot -Tps ',
+                               extension='ps',
+                               mimetype = 'application/ps'))
+    
+    cp.append_pipe(PipeSection(command='ps2pdf - - ',
+                               extension='pdf',
+                               mimetype = 'application/pdf'))
+
+    cp.set_cachedir('/tmp/nooron_cache')
+    cp.set_canonical_request('rumbletumble')
+    print cp.mimetype()
+    print cp.source_and_commands()
+
+
+"""
+requirements of caching system
+1) save all intermediate results (they might be requested too)
+2) make it easy to detect and expire old cache contents
+[remember that the base request is not the same as the canonical_request]
+[remember that different users might have different preferences which
+ could cause the output to differ, hence the canonical_request must
+ contain appropriate information to cover this]
+3) function even if no cache location
+   dot -Tps | ps2pdf - - 
+   tee MD5.dot | dot -Tps | tee MD5.ps | ps2pdf - - | tee MD5.pdf
+
+   CACHELOC/{MD5}.canonical_request   
+   CACHELOC/{MD5}.dot
+   CACHELOC/{MD5}.ps
+   CACHELOC/{MD5}.pdf
+   CACHELOC/{MD5}.pykb
+   CACHELOC/{MD5}.tell
+   CACHELOC/base_request_to_MD5
+     /some/base/url knowledge-stamp garment-stamp {MD5.1}
+     /some/base/url knowledge-stamp garment-stamp {MD5.2}
+   throw away all those which are based on old knowledge or npts.
+   (the keepers are those which are current, but use different prefs)
+
+terms:
+  actual_request
+    Might be the base_request or it might be only THING,
+    in which case a base_request is automatically generated.
+    THING eg /know/nooron_faq
+  base_request
+    The base request is the path the user could (or might) have
+    visited to be explicit about which GARMENT to use.  If the
+    actual_request is not a base_request then some algorithm (such
+    as pick the first possible garment which produces .html) is
+    used to determine the base_request.  Notice that no transforming
+    or encoding extensions (such as .ps, .pdf, .gz) are included.
+    THING__GARMENT  eg /know/nooron_faq/faq__details.html
+  canonical_request
+    The canonical request is meant to unambiguously identify the
+    state of the system in such a way that the CR will only differ if
+    something has happened to either the knowledge, the logic, or
+    the presentation such that any cached results may be invalid.
+    Initially, the canonical_request will be consist of the following
+    values on succeeding lines:
+       the base_request,
+       the most recent change_time of all the parent_kbs
+       the most recent change_time of all involved templates
+       some indication of involved user preferences
+
+  MD5
+    The md5 checksum of the canonical request is what is used as
+    the on-disk standin for the canonical_request.
+    eg in file and directory names such as:
+       CACHELOC/{MD5}.dot
+       CACHELOC/{MD5}.canonical_request       
+
+logic
+0) build canonical request
+1) create MD5 of the canonical request
+   (url & kb-datestamp & template-datestamp, later, more)
+2) if isfile(MD5.LAST): return it
+3) else: for each stage, in order if it does not exist, cache it
+4) return MD5.LAST if it exists
+5) else: error
+
+"""
