@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.12 2003/02/07 22:53:16 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.13 2003/02/17 18:45:49 smurp Exp $'
 
 import os
 import sys
@@ -13,11 +13,30 @@ PyOkbc.DEBUG=0
 def str_sort(a,b):
     return cmp(str(a),str(b))
 
+def copy_same_as_original(self,src_kb,loc):
+    mykb = open_kb(src_kb)
+    #goto_kb(mykb)
+    print "======================",src_kb,mykb.__class__    
+    src_fname = mykb._file_name()
+    prefix = 'DELETEME_Copy_of_'
+    mykb.save_kb_as(prefix+src_kb)
+    a = open(loc+src_fname)
+    #b = open(loc+'DELETEME_'+src_fname)
+    b = open(prefix+src_kb)
+    a_all = string.join(a.readlines(),"\n")
+    b_all = string.join(b.readlines(),"\n")
+    a.close()
+    b.close()
+    self.assertEquals(a_all,b_all)
+
+
 class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd() + '/../know'
+        #std_tranny = open_kb("standard_transmission_fsa")
         mykb = open_kb("smurp_web_log")
+        
         goto_kb(mykb)
 
     def test_get_class_instances_of_marvel(self):
@@ -27,7 +46,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_class_instances_of_web_log_entry(self):
-        good = "[wle_0001, wle_0002, wle_0003, wle_0004, wle_0005]"
+        good = "[wle_0001, wle_0002, wle_0003, wle_0004, wle_0005," +\
+               " wle_0006, wle_0007]"
         resp = list(get_class_instances('web_log_entry')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -161,6 +181,34 @@ class ReadOnlyTestCase(unittest.TestCase):
                                               kb_local_only_p=0)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_smurp_web_log_is_same_as_original(self):
+        src_kb = 'smurp_web_log'
+        loc = '../know/'
+        copy_same_as_original(self,src_kb,loc)
+
+    def test_standard_transmission_fsa_is_valid(self):
+        src_kb = 'standard_transmission_fsa'
+        std_trany = open_kb(src_kb)
+        kb=std_trany
+        self.assertEquals('Start',get_slot_values('Start_N','from_state',kb=kb)[0][0])
+
+    def stest_standard_transmission_fsa_is_same_as_original(self):
+        # FIXME this test should pass, why doesn't it?
+        src_kb = 'standard_transmission_fsa'
+        loc = '../know/'        
+        copy_same_as_original(self,src_kb,loc)
+
+    def test_smurp_web_log_data_is_same_as_original(self):
+        src_kb = 'smurp_web_log_data'
+        loc = '../know/'        
+        copy_same_as_original(self,src_kb,loc)
+
+    def test_nooron_pert_data_is_same_as_original(self):
+        src_kb = 'nooron_pert_data'
+        loc = '../know/'        
+        copy_same_as_original(self,src_kb,loc)
+
 
     def skip_test_get_slot_values_in_detail_web_log_category(self):
         good = "[['class_and_instances_as_html', 0, 0]," +\
