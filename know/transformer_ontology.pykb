@@ -57,7 +57,7 @@ create_slot('RequiresProgram',pretty_name='Requires Program',
             exist for this transformer to be able to work.""")
 
 create_class('transformer_class',
-             direct_types=['nooron_app_class'],
+             #direct_types=['nooron_app_class'],
              doc="""This is the superclass of all classes in the
              transformer_ontology.""")
 

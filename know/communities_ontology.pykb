@@ -1,0 +1,96 @@
+# -*-mode: python -*-
+put_direct_parents(['nooron_app_architecture','pattern_language_ontology'])
+put_instance_types(current_kb(),['nooron_app_ontology'])
+
+
+# Address, Lat, Long, PhoneNumber, PatternsEmployed, AhasGained, AhasGiven
+# OrgType (NGO, GOV, Informal), OrgURL
+
+create_slot('MailingAddress',pretty_name='',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""Mailing Address.""")
+create_slot('Latitude',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""You know, the latitude!'""")
+create_slot('Longitude',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""You know, the longitude!'""")
+
+create_slot('PhoneNumber',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""You know, the Phone Number!!!'""")
+
+create_slot('OrgURL',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE',':HREF'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""You know, the organization's web page!'""")
+
+create_slot('AhasGained',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE','Aha'],
+                       [':SLOT-COLLECTION-TYPE','set']],                       
+            doc="""The set of Ahas that this organization has gained.'""")
+create_slot('AhasGiven',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE','Aha'],
+                       [':SLOT-COLLECTION-TYPE','set']],                       
+            doc="""The set of Ahas that this organization has given to others.'""")
+create_slot('PatternsEmployed',
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE','pattern'],
+                       [':SLOT-COLLECTION-TYPE','set']],                       
+            doc="""The set of patterns this community uses.'""")
+
+create_slot('TypeOfCommunity',
+            pretty_name="Type of Community",
+            own_slots=[[':DOMAIN','Community'],
+                       [':SLOT-VALUE-TYPE','CommunityType'],
+                       [':SLOT-COLLECTION-TYPE','set']],                       
+            doc="""The set of Ahas that this organization has gained.'""")
+
+create_class('communities_app_class',
+             doc="""Subclasses of communities_app_class are the special
+             classes which comprise communities_app.""",
+             direct_superclasses=['nooron_app_class'])
+
+create_class('CommunityType',
+             pretty_name="Community Type",
+             direct_types=['communities_app_class'],
+             doc="""The class whose instances are various kinds of Community.'""")
+
+create_class('Community',
+             direct_types=['communities_app_class'],
+             template_slots=[['MailingAddress'],
+                             ['Latitude'],
+                             ['Longitude'],
+                             ['PhoneNumber'],
+                             ['OrgURL'],
+                             ['AhasGained'],
+                             ['AhasGiven'],
+                             ['PatternsEmployed']],
+	     doc="""Communities are groups of people with a purpose.""")
+
+create_class('communities_app',
+             direct_superclasses=['nooron_app_instance'],
+             doc="""A communities_app is a KB which is an instance of communities_app
+             and contains a number of Community instances..""")
+
+create_individual('InternationalNGO',
+                  pretty_name="International NGO",
+                  direct_types=['CommunityType'])
+create_individual('GovernmentalOrg',
+                  pretty_name="Governmental Organization",
+                  direct_types=['CommunityType'])
+create_individual('Informal',
+                  pretty_name="Informal Organization",
+                  direct_types=['CommunityType'])
+

@@ -33,12 +33,12 @@ create_slot('Applicability',
             doc="""This is where the pattern can be applied.""")
 create_slot('Method',
             own_slots=[[':DOMAIN','pattern'],
-                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],                       
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],
                        [':SLOT-COLLECTION-TYPE','list']],
             doc="""This is how to implement the pattern.""")
 create_slot('Consequences',
             own_slots=[[':DOMAIN','pattern'],
-                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],                       
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],
                        [':SLOT-COLLECTION-TYPE','list']],
             doc="""How does the pattern succeed?  What are the
             results?""")
@@ -71,7 +71,7 @@ create_slot('References',
                        [':SLOT-COLLECTION-TYPE','list']],
             doc="""References to published documents.""")
 create_class('pattern_language_class',
-             direct_types=['nooron_app_class'],
+             direct_superclasses=['nooron_app_class'],
              doc="""This is the superclass of all classes in the
              pattern_language_ontology.  It might not be very useful...
              YAGNI (you aren't going to need it) suggests that it be

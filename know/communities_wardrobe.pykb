@@ -1,0 +1,18 @@
+# -*-mode: python -*-
+put_direct_parents(['communities_ontology','pattern_language_wardrobe'])
+put_instance_types(current_kb(),['nooron_app_wardrobe','pattern_language'])
+
+create_class('Community',
+             template_slots=[['slot_display_order',
+                              'MailingAddress',
+                              'Latitude',
+                              'Longitude',
+                              'PhoneNumber',
+                              'OrgURL',
+                              'AhasGained',
+                              'AhasGiven',
+                              'PatternsEmployed',
+                              ]])
+
+#create_class('communities_app',
+#             template_slots=[['npt_for_self','faqs.html']])

@@ -1,0 +1,28 @@
+# -*- mode: python -*-
+put_direct_parents(['communities_ontology','uplift_linguistic_shell'])
+put_instance_types(current_kb(),['nooron_app_data'])
+
+# the create_individual statements go here
+
+create_individual('ImagineNepal',
+                  pretty_name="Imagine Nepal",
+                  direct_types=['Community'],
+                  own_slots=[['PhoneNumber',"1-800-we-nepal"]])
+create_individual('ChildrenOfPromise',
+                  pretty_name="Children Of Promise",
+                  direct_types=['Community'],
+                  own_slots=[['PhoneNumber',"1-800-6-ORPHAN"],
+                             ['Latitude','43 27 51'],
+                             ['Longitude','80 29 49'],
+                             ['OrgURL','http://www.promise.org'],
+                             ['MailingAddress',"""102 West Third Street\nAlma, MO 64001"""],
+                             ])
+create_individual('ImagineChicago',
+                  pretty_name="Imagine Chicago",
+                  direct_types=['Community'],
+                  own_slots=[['PhoneNumber',"1 773 275-2520"],
+                             ['Latitude','41 47'],
+                             ['Longitude','87 45'],
+                             ['OrgURL','http://imaginechicago.org'],
+                             ['MailingAddress',"""910 W. Castlewood Terrace\nChicago, IL 60640"""],
+                             ])

@@ -140,7 +140,7 @@ create_class(':THING',
                               ],
                              ['actions_for_self',                              
                               #'change_pretty_name.html',
-                              #'put_frame_details.html',
+                              'put_frame_details.html',
                               #'delete_frame.html'
                               ]])
 create_class(':CLASS',

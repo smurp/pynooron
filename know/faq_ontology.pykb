@@ -1,4 +1,4 @@
-
+# -*-mode: python -*-
 put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
@@ -12,10 +12,17 @@ create_slot('Q',
             own_slots=[[':DOMAIN','faq'],
                        [':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE',':STRING']])
+
+create_class('faq_app_class',
+             doc="""Subclasses of faq_app_class are the special classes
+             which comprise faq_app.""",
+             direct_superclasses=['nooron_app_class'])
+
 create_class('faq',
 	     doc="""A frequently asked question.""",
              template_slots = [['Q'],['A']],
-             direct_types=['faq_class'])
+             own_slots=[['label_slot','Q']],
+             direct_types=['faq_app_class'])
 create_class('faq_app',
              direct_superclasses=['nooron_app_instance'],
              doc="A FAQ app contains FAQs organized in sections.")
