@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.37 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.37 2003/03/08 13:04:12 smurp Exp $'
+__version__='$Revision: 1.38 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.38 2003/03/28 11:05:56 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -272,7 +272,8 @@ primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
                        ":COLLECTION-TYPE",
                        ":DOCUMENTATION-IN-FRAME")
 
-primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME")
+primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME",
+                                'ModificationTime','CreationTime','AccessTime')
 
 # Slots on slot frames okbc2.html#3169
 primordial['slot'] = (":DOCUMENTATION",
@@ -522,6 +523,78 @@ class KB(FRAME,Programmable):
         return kb._connection
 
 
+    def create_class(kb,name,
+                     direct_types=[],
+                     direct_superclasses=[],
+                     doc = None,
+                     template_slots=[],
+                     template_facets=[],
+                     own_slots=[],
+                     own_facets=[],
+                     primitive_p=1,
+                     handle=None,
+                     pretty_name=None,
+                     kb_local_only_p=0):
+        return kb.create_frame_internal(name,Node._class,
+                                        direct_types=direct_types,
+                                        direct_superclasses=direct_superclasses,
+                                        primitive_p=primitive_p,
+                                        doc=doc,
+                                        template_slots = template_slots,
+                                        template_facets = template_facets,
+                                        own_slots = own_slots,
+                                        own_facets = own_facets,
+                                        handle = handle,
+                                        pretty_name = pretty_name,
+                                        kb_local_only_p = kb_local_only_p
+                                        )
+
+
+    def create_facet(kb,name,
+                     frame_or_nil = None,
+                     slot_or_nil = None,
+                     slot_type = Node._own,
+                     direct_types = [],
+                     doc = None,
+                     own_slots = [],
+                     own_facets = [],
+                     handle = None,
+                     pretty_name = None,
+                     kb_local_only_p = 0):
+        return kb.create_frame_internal(name,Node._facet,
+                                        direct_types = direct_types,
+                                        own_slots = own_slots,
+                                        own_facets = own_facets,
+                                        handle = handle,
+                                        pretty_name = pretty_name,
+                                        kb_local_only_p = kb_local_only_p)
+    
+    def create_frame(kb,name,frame_type,
+                     direct_types=[],
+                     direct_superclasses=[],
+                     doc = None,
+                     template_slots=[],
+                     template_facets=[],
+                     own_slots=[],
+                     own_facets=[],
+                     primitive_p=1,
+                     handle=None,
+                     pretty_name=None,
+                     kb_local_only_p=0):
+        return kb.create_frame_internal(kb,name,
+                                        frame_type,
+                                        direct_types,
+                                        direct_superclasses,
+                                        doc,
+                                        template_slots,
+                                        template_facets,
+                                        own_slots,
+                                        own_facets,
+                                        primitive_p,
+                                        handle,
+                                        pretty_name,
+                                        kb_local_only_p)
+
     def create_frame_internal(kb,name,frame_type,
                               direct_types=[],
                               direct_superclasses=[],
@@ -533,8 +606,7 @@ class KB(FRAME,Programmable):
                               primitive_p=1,
                               handle=None,
                               pretty_name=None,
-                              kb_local_only_p=0):
-        #print name,"being inserted into", kb
+                              kb_local_only_p=0):    
         if kb != current_kb():
             print "noncurrent kb",kb,"for",name
         klop = kb_local_only_p
@@ -606,8 +678,45 @@ class KB(FRAME,Programmable):
 
         
         return frame
-    create_frame = create_frame_internal
 
+    def create_individual(kb,name,
+                          direct_types = [],
+                          doc = None,
+                          own_slots = [],
+                          own_facets = [],
+                          handle = None,
+                          pretty_name = None,
+                          kb_local_only_p = 0):     
+        return kb.create_frame_internal(name,Node._individual,
+                                        direct_types = direct_types,
+                                        doc = doc,
+                                        own_slots = own_slots,
+                                        own_facets = own_facets,
+                                        handle = handle,
+                                        pretty_name = pretty_name,
+                                        kb_local_only_p = kb_local_only_p)
+
+    def create_slot(kb,name,
+                    frame_or_nil = None,
+                    slot_type = Node._all,
+                    direct_types = [],
+                    doc = None,
+                    own_slots = [],
+                    own_facets = [],
+                    handle = None,
+                    pretty_name = None,
+                    kb_local_only_p = 0):
+        return kb.create_slot_internal(name,
+                                       frame_or_nil = frame_or_nil,
+                                       slot_type = slot_type,
+                                       direct_types = direct_types,
+                                       doc = doc,
+                                       own_slots = own_slots,
+                                       own_facets = own_facets,
+                                       handle = handle,
+                                       pretty_name = pretty_name,
+                                       kb_local_only_p = kb_local_only_p)
+                    
     def create_slot_internal(kb, name, 
                              frame_or_nil = None,
                              slot_type = Node._all,
@@ -1321,10 +1430,12 @@ class KB(FRAME,Programmable):
         return kb._cached_kb_parents
     get_kb_parents._caching = 1
 
-    def get_kb_parents_maximum_mtime(kb): # FIXME not in OKBC spec
+    # FIXME not in OKBC spec
+    def get_kb_parents_maximum_value_for_slot(kb,slot): 
         times = []
         for kay_bee in kb.get_kb_parents() + [kb]:
-            times.append(get_slot_value(kay_bee,'MTIME',kb=kay_bee)[0])
+            times.append(get_slot_value(kay_bee,slot,kb=kay_bee)[0])
+        #print "BOOGER",max(times)
         return max(times)
     
     def get_kb_parents_recurse(kb,checked_kbs=[]):
@@ -1584,6 +1695,13 @@ class KB(FRAME,Programmable):
     def put_frame_pretty_name(kb,frame,name,kb_local_only_p=0):
         kb.put_frame_pretty_name_internal(frame,name,kb_local_only_p)
 
+    def put_slot_value(kb,frame,slot, value,
+                       slot_type=Node._own,
+                       value_selector = Node._known_true,
+                       kb_local_only_p = 0):
+        kb.put_slot_value_internal(frame,slot,value,slot_type,
+                                   value_selector,kb_local_only_p)
+        
     def put_instance_types(kb,frame,new_types,kb_local_only_p = 0):
         klop = kb_local_only_p
         new_direct_types = []
@@ -1664,8 +1782,10 @@ class TupleKb(KB,Constrainable):
 
     def add_class_superclass(kb,klass,new_superclass,
                              kb_local_only_p = 0):
-        if new_superclass not in klass._direct_superclasses:
-            klass._direct_superclasses.append(new_superclass)
+        klass = kb.coerce_to_frame_internal(str(klass))
+        if klass:
+            if new_superclass not in klass._direct_superclasses:
+                klass._direct_superclasses.append(new_superclass)
 
     def class_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,KLASS)
@@ -1960,14 +2080,16 @@ class TupleKb(KB,Constrainable):
             found_frame._pretty_name = name
         # FIXME put_frame_pretty_name_internal should raise frame_not_found
 
-    def put_slot_value(kb,frame,slot, value,
-                       slot_type=Node._own,
-                       value_selector = Node._known_true,
-                       kb_local_only_p = 0):
+    def put_slot_value_internal(kb,frame,slot, value,
+                                slot_type=Node._own,
+                                value_selector = Node._known_true,
+                                kb_local_only_p = 0):
         """Sets the values of slot in frame to be a singleton set
         consisting of a single element: value.  This operation may
         signal constraint violation conditions (see Section 3.8).
         Returns no values. """
+        if str(slot) == 'ModificationTime':      ## REMOVE
+            warn('get_class_subclasses ignores inference_level > direct')
         if type(value) == type([]): raise CardinalityViolation,str(value)
         (frame,frame_found_p) = kb.get_frame_in_kb(frame)
         (slot,slot_found_p) = kb.get_frame_in_kb(slot)
@@ -2080,7 +2202,12 @@ class PrimordialKb(TupleKb):
                            checked_kbs,checked_classes)
 
 class AbstractPersistentKb(TupleKb):
-    """PersistentKb implements save_kb and save_kb_as."""
+    """PersistentKb implements save_kb and save_kb_as and has slots on
+    the KB: CreationTime, ModificationTime and AccessTime.
+
+    ModificationTime is what the NPT caching process should be sensitive
+    to.
+    """
     def save_kb(kb,error_p = 1):
         filename = kb.get_frame_name(kb)
         ext = kb._kb_type_file_extension

@@ -63,4 +63,7 @@ class FileSystemConnection(Connection):
                  'ATIME':st[7],
                  'MTIME':st[8],
                  'CTIME':st[9]}
+        stats['ModificationTime'] = stats['MTIME']
+        stats['CreationTime'] =     stats['CTIME']
+        stats['AccessTime'] =       stats['ATIME']
         return (lines,stats)

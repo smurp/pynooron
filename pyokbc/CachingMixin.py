@@ -1,10 +1,11 @@
 
-_version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: CachingMixin.py,v 1.4 2003/02/26 18:54:23 smurp Exp $'
+_version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: CachingMixin.py,v 1.5 2003/03/28 11:05:56 smurp Exp $'
 
 
 from __future__ import nested_scopes
 import string
+import time
 from Funcs import okbc_readonly_kb_functions, okbc_side_effecting_kb_functions
 
 
@@ -49,8 +50,13 @@ def make_a_procedure_wrapper(kb,wrapped_method,name_of_method):
 def make_cache_clearing_wrapper(kb,wrapped_method,name_of_method):
     """Return the wrapped method with a cache clearing routine before it."""
     def cache_clearing_wrapper(*args,**kwargs):
+        ## FIXME can't we use a sniper rifle instead of a doomsday device?
         kb._cache = {}
-        args = [kb] + list(args)        
+        for child in kb.get_kb_direct_children():
+            child._cache = {}
+        args = [kb] + list(args)
+        kb.put_slot_value_internal(kb,'ModificationTime',time.time())
+        #print "BOOGER dumping cache %s" % str(kb), time.time(),wrapped_method
         return apply(wrapped_method,args,kwargs)
     return cache_clearing_wrapper
     

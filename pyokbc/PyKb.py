@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.15 2003/02/26 18:54:23 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.16 2003/03/28 11:05:56 smurp Exp $'
 
 import string
 
@@ -85,6 +85,9 @@ class PyKb(AbstractFileKb,CachingMixin):
             raise GenericError,str(e)+ " in "+str(filename)
         self._allow_caching_p = orig_allow_caching_p
         goto_kb(prev_kb)
+
+    def _preamble(kb):
+        return '# -*-mode: python -*-\n'
 
     def print_frame(kb,frame,
                     slots = Node._filled,

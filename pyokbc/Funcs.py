@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.16 2003/03/08 13:05:05 smurp Exp $'
+_version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.17 2003/03/28 11:05:56 smurp Exp $'
 
 
 from PyOkbc import *
@@ -96,24 +96,25 @@ def create_class(name,kb=None,
                  pretty_name=None,
                  kb_local_only_p=0):
     kb = _coerce_to_kb(kb)
-    return kb.create_frame_internal(name,Node._class,
-                                    direct_types=direct_types,
-                                    direct_superclasses=direct_superclasses,
-                                    primitive_p=primitive_p,
-                                    doc=doc,
-                                    template_slots = template_slots,
-                                    template_facets = template_facets,
-                                    own_slots = own_slots,
-                                    own_facets = own_facets,
-                                    handle = handle,
-                                    pretty_name = pretty_name,
-                                    kb_local_only_p = kb_local_only_p
-                                    )
+    return kb.create_class(name,
+                           direct_types=direct_types,
+                           direct_superclasses=direct_superclasses,
+                           primitive_p=primitive_p,
+                           doc=doc,
+                           template_slots = template_slots,
+                           template_facets = template_facets,
+                           own_slots = own_slots,
+                           own_facets = own_facets,
+                           handle = handle,
+                           pretty_name = pretty_name,
+                           kb_local_only_p = kb_local_only_p
+                           )
 create_class.enumerator=1
 create_class.optional=1
-create_class.read=1
+create_class.read=0
 create_class.mandatory=0
-create_class.write=0
+create_class.write=1
+create_class.causes_side_effects_p=1
 
 def create_facet(name,
                  kb=None,
@@ -128,18 +129,19 @@ def create_facet(name,
                  pretty_name = None,
                  kb_local_only_p = 0):
     kb = _coerce_to_kb(kb)
-    return kb.create_frame_internal(name,Node._facet,
-                                    direct_types = direct_types,
-                                    own_slots = own_slots,
-                                    own_facets = own_facets,
-                                    handle = handle,
-                                    pretty_name = pretty_name,
-                                    kb_local_only_p = kb_local_only_p)
+    return kb.create_facet(name,
+                           direct_types = direct_types,
+                           own_slots = own_slots,
+                           own_facets = own_facets,
+                           handle = handle,
+                           pretty_name = pretty_name,
+                           kb_local_only_p = kb_local_only_p)
 create_facet.enumerator=0
 create_facet.optional=0
 create_facet.read=0
 create_facet.mandatory=1
 create_facet.write=1
+create_facet.causes_side_effects_p=1
 
 # def create_frame
 
@@ -154,14 +156,14 @@ def create_individual(name,
                       kb_local_only_p = 0):
     kb = _coerce_to_kb(kb)
     #if not kb: kb = current_kb()
-    return kb.create_frame_internal(name,Node._individual,
-                                    direct_types = direct_types,
-                                    doc = doc,
-                                    own_slots = own_slots,
-                                    own_facets = own_facets,
-                                    handle = handle,
-                                    pretty_name = pretty_name,
-                                    kb_local_only_p = kb_local_only_p)
+    return kb.create_individual(name,
+                                direct_types = direct_types,
+                                doc = doc,
+                                own_slots = own_slots,
+                                own_facets = own_facets,
+                                handle = handle,
+                                pretty_name = pretty_name,
+                                kb_local_only_p = kb_local_only_p)
 create_individual.enumerator=0
 create_individual.optional=1
 create_individual.read=0
@@ -178,6 +180,7 @@ create_kb.optional=1
 create_kb.read=0
 create_kb.mandatory=0
 create_kb.write=1
+create_kb.causes_side_effects_p=1
 
 # def create_kb_locator
 
@@ -189,6 +192,7 @@ create_procedure.optional=1
 create_procedure.read=1
 create_procedure.mandatory=0
 create_procedure.write=0
+
 
 def create_slot(name,
                 kb=None,
@@ -202,21 +206,22 @@ def create_slot(name,
                 pretty_name = None,
                 kb_local_only_p = 0):
     kb = _coerce_to_kb(kb)
-    return kb.create_slot_internal(name,
-                                   frame_or_nil = frame_or_nil,
-                                   slot_type = slot_type,
-                                   direct_types = direct_types,
-                                   doc = doc,
-                                   own_slots = own_slots,
-                                   own_facets = own_facets,
-                                   handle = handle,
-                                   pretty_name = pretty_name,
-                                   kb_local_only_p = kb_local_only_p)
+    return kb.create_slot(name,
+                          frame_or_nil = frame_or_nil,
+                          slot_type = slot_type,
+                          direct_types = direct_types,
+                          doc = doc,
+                          own_slots = own_slots,
+                          own_facets = own_facets,
+                          handle = handle,
+                          pretty_name = pretty_name,
+                          kb_local_only_p = kb_local_only_p)
 create_slot.enumerator=0
 create_slot.optional=0
 create_slot.read=0
 create_slot.mandatory=1
 create_slot.write=1
+create_slot.causes_side_effects_p=1
 
 def current_kb():
     global CURRENT_KB
@@ -795,6 +800,7 @@ put_slot_value.optional=1
 put_slot_value.read=0
 put_slot_value.mandatory=0
 put_slot_value.write=1
+put_slot_value.causes_side_effects_p=1
 
 def put_slot_values(frame,slot, values,
                     kb = None,
