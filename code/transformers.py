@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.9 2002/10/16 19:29:50 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.10 2002/10/21 08:34:04 smurp Exp $'
 
 DEBUG = 0
 
@@ -139,6 +139,12 @@ class topic_html_producer(templated_producer):
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "frame_as_html"
+
+class kb_html_producer(templated_producer):
+    domain = ['pyokbc.PyKb.PyKb']
+    extensions = ['pykb']
+    def_mime_type = ['text/html'] 
+    template_name = "kb_as_html"   
 
 class tclass_html_producer(templated_producer):
     """Render a generic class in a generic fashion.

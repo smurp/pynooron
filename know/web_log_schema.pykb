@@ -11,6 +11,8 @@ create_slot('web_log_text',
             pretty_name = "text")
 create_class('web_log_category',
              direct_types=['web_log_entry'],
+#             template_slots=[['npt_for_self','web_log_category_as_html']],
+#             own_slots = [['npt_for_self','web_log_category_self_as_html']],
              doc="""Subclasses of 'web log category' are theselves classes which
              individual web log entries are instances of.""",
              pretty_name="web log category")

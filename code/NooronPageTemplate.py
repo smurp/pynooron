@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.7 2002/10/21 08:34:04 smurp Exp $'
 
 import NooronRoot
 
@@ -14,7 +14,10 @@ from TAL.TALParser import TALParser
 from cStringIO import StringIO
 #Z_DEBUG_MODE = 0
 
-SAFETY = 1
+from pyokbc import *
+    
+
+SAFETY = 0 # safety off means that python in NPTs is omnipotent
 
 if SAFETY: #safe
     #print "doing things safely"
@@ -73,6 +76,7 @@ class NooronPageTemplate(PageTemplate):
         output = StringIO()
         c = self.pt_getContext()
         c.update(extra_context)
+        c.update(okbc_functions)
         #if Z_DEBUG_MODE:
         #    __traceback_info__ = pprint.pformat(c)
         #print "_v_program =",self._v_program

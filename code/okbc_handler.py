@@ -1,5 +1,5 @@
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.2 2002/10/18 07:21:02 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.3 2002/10/21 08:34:04 smurp Exp $'
 
 
 from pyokbc import *
@@ -34,6 +34,7 @@ class okbc_handler:
     def handle_request(self,request):
         [path, params, query, fragment] = request.split_uri()
         # path extensions query
+        print "======\n\n"
         while path and path[0] == '/':
             path = path[1:]
 
@@ -61,39 +62,25 @@ class okbc_handler:
 
         if len(path_list) == 1:
             kb = meta_kb()
+            app = NooronApp.MetaKB(kb)
+            app.publish(request)
+            return
 
         if len(path_list) > 1:
             kb_name = path_list[1]
+            print "opening kb",kb_name
             kb = open_kb(kb_name)
             if not kb:
                 request.error(401) # not found
                 return
-
-        app = NooronApp.NooronApp(kb)
-        
+            
         if len(path_list) > 2:
             frame_name = path_list[2]
             frame_name = frame_name.replace('+',' ')
+            app = NooronApp.GenericFrame(kb)
             app.publish(request,frame_name)
         else:
+            app = NooronApp.NooronApp(kb)            
             app.publish(request)
 
 
-
-
-
-    def junk_pile(self):
-        if frame_in_kb_p:
-            app.publish(request,frame)
-        else:
-            app.publish(request,kb)
-        
-        #print NooronRoot.the_root,NooronRoot.booger
-        if frame_in_kb_p:
-            #NooronRoot.the_root.publish(request,frame)
-            nooron_root.publish(request,frame)
-        else:
-            #NooronRoot.the_root.publish(request,kb)
-            nooron_root.publish(request,frame)            
-            #NOORON_ROOT.publish(request,frame)            
-            #NooronRoot.NooronRoot().publish(request,kb)            

@@ -13,7 +13,6 @@ class FileSystemConnection(Connection):
         from PyKb import PyKb
         connection._default_kb_type = PyKb
 
-
     def openable_kbs(connection,kb_type,place=None):
         if not place: place = connection._default_place
         warn("openable_kbs doing listdir of"+place)

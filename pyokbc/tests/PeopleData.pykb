@@ -1,24 +1,24 @@
 
 put_direct_parents(['PeopleSchema.pykb'])
 
-create_individual('Ethan',
+create_individual('ChristopherRobin',
                   direct_types=['Child'],
                   own_slots=[['Eats', 'Toast', 'Cookie'],
                              ['Age', 2],
                              ['BirthTime', '1999-11-04 GMT-6'],
                             ],
-                  pretty_name='Ethan Brown')
-create_individual('Sam',
+                  pretty_name='Christopher Robin')
+create_individual('AliceLidell',
                   direct_types=['Child'],
                   own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
                              ['Age', 2],
                              ['BirthTime', '1999-11-07 16:30 GMT-6'],
                             ],
-                  pretty_name='Samuel Francesco Aiudi-Murphy')
-create_individual('Shawn',
+                  pretty_name='Alice in Wonderland')
+create_individual('SamuelBeckett',
                   direct_types=['AdultHuman'],
                   own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
-                             ['Age', 38],
-                             ['BirthTime', '1964-07-25 01:15 GMT-5'],
+                             ['Age', 83],
+                             ['BirthTime', '1906-04-13 GMT'],
                             ],
-                  pretty_name='Shawn Francis Murphy')
+                  pretty_name='Samuel Beckett')

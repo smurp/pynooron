@@ -9,22 +9,6 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
-<table border="1"
-       tal:define="items here/get_kb_classes" 
-       tal:condition="items">
-  <caption><strong>getClasses</strong></caption>
-  <tr tal:repeat="item items">
-    <td tal:content="structure python: here.get_frame_name(item)">link</td>
-
-    <td><a href="booger"
-           tal:define="url python:here.get_frame_name(item)"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-    </td>
-
-  </tr>
-</table>
-
 
 
 <table border="1"
@@ -43,7 +27,12 @@
 
 
 
+
 <div tal:define="test python:0" tal:condition="test">
+
+
+
+
 
 <pre tal:content="python: current_kb()">
 
@@ -156,7 +145,7 @@
 </div>
 
 <hr>
-$Id: kb_as_html,v 1.3 2002/10/18 09:03:27 smurp Exp $
+$Id: kb_as_html,v 1.4 2002/10/21 08:34:05 smurp Exp $
 </div>
   </body>
 </html>

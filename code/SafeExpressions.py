@@ -24,8 +24,8 @@ code.  Much code was just nabbed, holus bolus, because Expressions
 was written in a fashion which discouraged inheritance.
 """
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: SafeExpressions.py,v 1.1 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: SafeExpressions.py,v 1.2 2002/10/21 08:34:04 smurp Exp $'
 
 Expressions__version__='Revision: 1.31.10.2'
 
@@ -61,7 +61,7 @@ def installHandlers(engine):
     for pt in ('standard', 'path', 'exists', 'nocall'):
         reg(pt, pe)
     reg('string', StringExpr)
-    reg('python', PythonExpr)    
+    reg('python', PythonExpr)
     reg('not', NotExpr)
     reg('defer', DeferExpr)
 
@@ -273,6 +273,7 @@ def restrictedTraverse(self, path, securityManager,
                        get=getattr, has=hasattr, N=None, M=[],
                        TupleType=type(()) ):
 
+
     REQUEST = {'path': path}
     REQUEST['TraversalRequestNameStack'] = path = path[:] # Copy!
     if not path[0]:
@@ -286,6 +287,7 @@ def restrictedTraverse(self, path, securityManager,
     #validate = securityManager.validate
     validate = always_validate
     object = self
+
     if DEBUG: print "rT ",object
 
     while path:
@@ -309,6 +311,7 @@ def restrictedTraverse(self, path, securityManager,
                 continue
 
         t=get(object, '__bobo_traverse__', N)
+
         if t is not N:
             o=t(REQUEST, name)
                     

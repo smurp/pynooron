@@ -7,7 +7,7 @@
   <dd tal:content="here"></dd>
 
   <dt>template</dt>
-  <dd><i>tal:content="template"</i></dd>
+  <dd><i>tal:content="template"</i> maximum recursion error</dd>
 
   <dt>container</dt>
   <dd tal:content="container"></dd>
@@ -28,4 +28,4 @@
 
 </dl>
 <hr>
-$Id: namespace,v 1.6 2002/10/16 19:29:50 smurp Exp $
+$Id: namespace,v 1.7 2002/10/21 08:34:05 smurp Exp $

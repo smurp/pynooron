@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.8 2002/10/18 07:21:02 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.9 2002/10/21 08:34:04 smurp Exp $'
 
 DEBUG = 1
 
@@ -46,6 +46,9 @@ class NooronRoot:
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
         self._connection = local_connection()
+        #print "local_connection =",local_connection()
+        #print "current_kb =",current_kb()        
+        #print "openable_kbs =",openable_kbs(connection=local_connection())
         
         if not self.__dict__.has_key('prepped'):
             self.__dict__['prepped'] = 1

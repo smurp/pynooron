@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.16 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.17 2002/10/21 08:34:04 smurp Exp $'
 
 
 """
@@ -29,8 +29,9 @@ cwd = os.getcwd()
 
 default_place = cwd+'/know' # FIXME should use os.pathjoin (sp?)
 
-
 import __main__
+
+
 #if not hasattr( __main__.__builtins__, 'nooron_root' ):
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
