@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.8 2003/02/07 22:54:08 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.9 2003/02/08 00:34:59 smurp Exp $'
 
 import string
 import md5
@@ -57,7 +57,7 @@ def execute_pipeline(input,command):
         if outeof and erreof: break
         if max_time_to_live + start_time < time.time():
             break
-        time.sleep(0.1)
+        time.sleep(0.2)
     exit_code = proc.poll()
     if exit_code == -1:
         pid = proc.pid
