@@ -1,4 +1,4 @@
-
+# -*-mode: python -*-
 put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
@@ -25,7 +25,7 @@ create_slot('References',
                        [':SLOT-COLLECTION-TYPE','list']])
 
 create_class('pert_class',
-             direct_types=['nooron_app_class'])
+             direct_superclasses=['nooron_app_class'])
 
 create_class('Task',
              direct_types=['pert_class'],
@@ -40,6 +40,7 @@ create_class('TaskStatus',
 
 create_class('pert_app',
              direct_superclasses=['nooron_app_instance'],
+             own_slots=[['root_classes_of_app','pert_class']],
              doc="""A PERT app contains Tasks for a particular
              Project.""")
 
