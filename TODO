@@ -9,10 +9,25 @@ TODO for Nooron
 * performance
 ** cache get_class_superclasses?
 * completeness
+** make nooron.py sensitive to commandline parameters
+** finish nooron (init.d script)
+** log errors to separate error log
 ** some authorization stubbed in
 ** make /know/pert/ a surfable thing (kb?, place?)
-* cosmetics
+* useability
+** make /know --> /know__openable_kbs.html
+** fix available garments defaults for site_front.html and other weirdos
 ** fix truncated (at char 1024) error reporting
+** redesign "available garments" to add links for typical conversions
+   such as dot.jpg, dot.ps, dot.pdf, dbk.ps, dbk.pdf and so on
+   e.g   aon.dot (.jpg) (.ps) (.ps.pdf)
+         -------  ----   ---   ------- 
+** add "available actions" to standard_master
+** put "available actions" and "available garments" in better places
+   Probably redo entire layout of standard_master
+*** put "main" across entire window to permit rendering before trailing
+    unsized images are available
+
 
 BUGS
 ** wrong garment options on site_front_as_html
