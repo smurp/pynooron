@@ -1,4 +1,3 @@
-
 put_direct_parents(['convenience_procedures',
                     #'transformer_ontology',
                     'common_transformers'
@@ -18,12 +17,10 @@ put_slot_values(current_kb(),':DOCUMENTATION',
                 support the automatic generation of management screens for
                 adding, editing, versioning and deleting information.
                 """])
-
 create_slot('merges_in',
+            own_slots=[[':DOMAIN','nooron_app_component']],
             doc="""Which nooron_app_components does this kind of
-            nooron_app_component have as direct_parents?""",
-            own_slots=[[':DOMAIN','nooron_app_component']])
-
+            nooron_app_component have as direct_parents?""")
 create_slot('npt_for_instances',
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':DOMAIN',':CLASS'],
@@ -35,7 +32,6 @@ create_slot('npt_for_instances',
             associated resourceRef should contain the url of a Nooron Page
             Template (NPT) which is appropriate for displaying instances of
             the class on which ntp_for_instances is an occurrence.""")
-
 create_slot('actions_for_instances',
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':DOMAIN',':CLASS'],
@@ -43,14 +39,19 @@ create_slot('actions_for_instances',
             doc="""Nooron_app_wardrobes should have template_slots of this
             type on all classes which have specific nooron_page_templates
             for their instances.""")
-
+create_slot('actions_for_self',
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
+                       [':DOMAIN',':CLASS'],
+                       [':SLOT-COLLECTION-TYPE','set']],
+            doc="""Nooron_app_wardrobes should have template_slots of this
+            type on all classes which have specific nooron_page_templates
+            for their instances.""")
 create_slot('npt_for_self',
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':SLOT-COLLECTION-TYPE','set']],
             doc="""Nooron_app_wardrobes should have npt_for_self
             template_slots on all classes which have specific
             nooron_page_templates for their instances.""")
-
 create_slot('slot_display_order',
             own_slots=[[':SLOT-VALUE-TYPE',':SLOT'],
                        [':SLOT-COLLECTION-TYPE','list']],
@@ -58,7 +59,6 @@ create_slot('slot_display_order',
             should be displayed.  This is respected by the template
             frame_as_html but not required by it.  In other words,
             slot_display_order is optional on any nooron_app_class.""")
-
 create_class('nooron_app_component',
              direct_superclasses=[':KB'],
              doc="""Nooron app components are knowledgebases which
@@ -100,7 +100,8 @@ create_class('nooron_app_wardrobe',
              resources are required to make the app work.""")
 create_class('nooron_app_instance',
              direct_superclasses=['nooron_app_component'],
-             template_slots=[['npt_for_self','nooron_app.html']],
+             template_slots=[['npt_for_self','nooron_app.html'],
+                             ['actions_for_self','Save_Kb.html']],
              own_slots=[['merges_in','nooron_app_wardrobe','nooron_app_data']],
              doc="""A nooron_app_instance is an actual runnable app.
              It is the combination of two things: a nooron_app_wardrobe
