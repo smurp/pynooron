@@ -1,6 +1,12 @@
 
 put_direct_parents(['transformer_ontology'])
 
+create_individual('html_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/html'],
+                             ['LiteralExtension','.html','.htm']])
+
+
 ##########################################################
 
 create_individual('ps_extension',

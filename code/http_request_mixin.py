@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.7 2002/11/22 21:37:02 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.8 2002/12/05 12:51:44 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -26,6 +26,33 @@ def split_uri (self):
     return self._split_uri
 http_request.split_uri = split_uri
 
+################################
+def set_object_request(request,object_request):
+    request._object_request = object_request
+http_request.set_object_request = set_object_request
+def object_request(self):
+    return self.__dict__.get('_object_request')
+http_request.object_request = object_request
+
+################################
+def set_base_request(request,base_request):
+    request._base_request = base_request
+http_request.set_base_request = set_base_request
+def base_request(self):
+    return self.__dict__.get('_base_request')
+http_request.base_request = base_request
+
+################################
+def set_canonical_request(request,canonical_request):
+    request._canonical_request = canonical_request
+http_request.set_canonical_request = set_canonical_request
+def canonical_request(self):
+    return self.__dict__.get('_canonical_request')
+http_request.canonical_request = canonical_request
+
+
+
+################################
 def set_header(self,key,val):
     self.reply_headers[key]=val
 http_request.set_header = set_header

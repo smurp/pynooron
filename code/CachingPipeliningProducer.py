@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.2 2002/12/04 19:17:28 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.3 2002/12/05 12:51:43 smurp Exp $'
 
 import string
 import md5
@@ -60,13 +60,14 @@ class CachingPipeliningProducer:
         if ck:
             pipe.set_cachekey(ck)
     def mimetype(piper):
-        mt = 'text/plain'
+        #mt = 'text/plain'
+        mt = ''
         sections = copy.copy(piper._pipeline)
         #sections.reverse()
         while sections and not mt:
             section = sections.pop()
             mt = section.mimetype()
-        return mt
+        return mt or 'text/plain'
     def source_and_commands(piper):
         """Return (source,commands) where source is either a
         producer or None and commands is either None or a string
@@ -82,18 +83,26 @@ class CachingPipeliningProducer:
         cmds = []
         while sections and not source_p:
             section = sections.pop()
-            (cmd,source_p) = section.pipe_or_cached_source()
-            if type(cmd) == type(''):
-                cmds.append(cmd)
-            else:
-                source = cmd
+            (src,cmd,source_p) = section.pipe_or_cached_source()
+            #print "===>",src,cmd,source_p
+            cmds.append(cmd)
+            if src:
+                source = src
         if cmds:
             cmds.reverse()
             commands = string.join(cmds,' | ')
         else:
             commands = None
-        return (source,commands)
+        return [source,commands]
 
+    def more(piper):
+        if not piper.__dict__.get('_s_and_c'):
+           piper._s_and_c = piper.source_and_commands()
+        (source,commands) = piper._s_and_c
+        # drain the source into the 
+        if source:
+           data = source.more()
+           #if data:
         
 class PipeSection:
     """A PipeSection is an encapsulated shell command which can be
@@ -129,6 +138,7 @@ class PipeSection:
                                 pipesection._extension)
         else:
             return None
+         
     def pipe_or_cached_source(pipesection):
         """Returns (command,source_p) where command is either a command
         which transforms stdin to stdout or a command which starts a
@@ -138,15 +148,18 @@ class PipeSection:
         returned by this method be combined with others in a complete
         shell pipeline.  Source_p is true means that the command ignores
         stdin and hence defines the begining of a pipeline."""
+        cmd_or_prod = pipesection._command or pipesection._producer
         if pipesection._cachedir and os.path.isdir(pipesection._cachedir):
             fullpath = pipesection.full_path()
             if fullpath:
                 if os.path.isfile(fullpath):
-                    return ("cat %s" % fullpath,1)
+                    return (None,"cat %s" % fullpath,1)
                 else:
-                    return ("%s | tee %s" % (pipesection._command or 'cat',
+                    return (pipesection._producer,
+                            "%s | tee %s" % (pipesection._command or 'cat',
                                              fullpath),0)
-        return (pipesection._command,0)
+        return (cmd_or_prod,0)
+
 
 
 if __name__ == '__main__':
@@ -199,17 +212,34 @@ requirements of caching system
 
 terms:
   actual_request
-    Might be the base_request or it might be only THING,
-    in which case a base_request is automatically generated.
+    Might be the base_request or it might be only THING or it
+    might specify the garment and some encoding extensions,
+    in which case a base_request must be deduced.
     THING eg /know/nooron_faq
+    actual_request examples:
+       /know/nooron_faq
+       /know/nooron_faq__faqs.html
+       /know/nooron_faq__faqs.html.gz
+
+  object_request
+    The object to publish, even if it had to be deduced.
+    actual_request          -->    object_request
+    --------------                 --------------
+    /know/nooron_faq               /know/nooron_faq
+    /know/nooron_faq/U0001         /know/nooron_faq/U0001
+    /know/nooron_faq__faqs.html    /know/nooron_faq
+    /know/nooron_pert__aon.dot.ps  /know/nooron_pert
+       
   base_request
     The base request is the path the user could (or might) have
     visited to be explicit about which GARMENT to use.  If the
-    actual_request is not a base_request then some algorithm (such
+    actual_request is not a base_request (bacause it does not specify
+    a garment) then some algorithm (such
     as pick the first possible garment which produces .html) is
     used to determine the base_request.  Notice that no transforming
     or encoding extensions (such as .ps, .pdf, .gz) are included.
     THING__GARMENT  eg /know/nooron_faq/faq__details.html
+    
   canonical_request
     The canonical request is meant to unambiguously identify the
     state of the system in such a way that the CR will only differ if

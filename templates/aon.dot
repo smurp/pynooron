@@ -1,0 +1,30 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+  size="10,7.5"
+  rotate=90
+  URL="<tal:dummy replace="this"/>"
+<span tal:condition="python:1" 
+      tal:define="all_tasks python:call_procedure(get_procedure('names_and_pretty_names'),
+                                                  arguments=(get_class_instances('Task')[0],
+                                                             '\\n',this_kb))"
+      tal:omit-tag="">
+  <span tal:repeat="a_task all_tasks"
+        tal:omit-tag="">
+	<tal:dummy replace="python:a_task[0]"/> 
+          [label="<tal:dummy replace="python:a_task[1]"/>",
+  <tal:dummy condition="python:str(get_slot_value(a_task[0],'Status')[0]) == 'complete'">
+    style=filled,
+    fillcolor=green,
+  </tal:dummy>
+
+           URL="<tal:dummy replace="python:a_task[0]"/>"];
+        <span tal:repeat="a_relative python:get_slot_values(a_task[0],
+                                           'Predecessors')[0]"
+              tal:omit-tag="">
+         <tal:dummy replace="a_relative"/> -> <tal:dummy replace="python:a_task[0]"/>;
+        </span>
+  </span>
+</span>
+</metal:block>
+</metal:block>
+

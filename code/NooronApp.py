@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.18 2002/12/04 19:17:28 smurp Exp $'
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.19 2002/12/05 12:51:44 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -10,7 +10,8 @@ import NooronRoot
 from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer
 #from AccessControl import allow_module
 #allow_module('pyobkc')
-
+import medusa.producers
+import popen2
 
 class AbstractApp:
     __allow_access_to_unprotected_subobjects__ = 1
@@ -36,14 +37,14 @@ class AbstractApp:
                                                  slot_type=Node._all)
         return vals and vals[-1]
 
-class MetaKB(AbstractApp):
-    """Lets publish a meta-kb shall we?"""
-    default_npt_name = "dir_as_html"    
+#class MetaKB(AbstractApp):
+#    """Lets publish a meta-kb shall we?"""
+#    default_npt_name = "dir_as_html"    
 
 
-class NooronApp(AbstractApp):
-    """Publish a generic kb generically or a NooronApp kb appropriately."""
-    default_npt_name = "kb_as_html"
+#class NooronApp(AbstractApp):
+#    """Publish a generic kb generically or a NooronApp kb appropriately."""
+#    default_npt_name = "kb_as_html"
 
 
 class GenericFrame(AbstractApp):
@@ -68,14 +69,28 @@ class GenericFrame(AbstractApp):
               "publish() npt_name:",npt_name,\
               "for frame:",frame
 
+        
+        app.calc_canonical_request(request,frame,npt_name)
+        canonical_request = request.canonical_request()
+        print "canonical_request =",canonical_request
+
         cp = CachingPipeliningProducer()
-        cp.set_canonical_request(request.uri)
+        cp.set_canonical_request(canonical_request)
         cp.set_cachedir('/tmp/nooron_cache')
 
         dotsplit = npt_name.split('.')
         prev_ext = dotsplit[-1]
         extensions.pop(0) # only required so long as okbc_handler prepends npt
-        spigot = app.get_pipe_section_for_spigot(prev_ext)
+
+        template = nooron_root.template_root().obtain(npt_name,
+                                                      request=request,
+                                                      obj=frame)
+        template.title = 'booger'
+        #template_output = template(content=frame)
+        #template_prod = medusa.producers.scanning_producer(template_output)
+        tp = template_producer(template,frame)
+        spigot = app.get_pipe_section_for_spigot(prev_ext,
+                                                 producer = tp)
         if spigot:
             cp.append_pipe(spigot)
         for this_ext in extensions:
@@ -86,10 +101,54 @@ class GenericFrame(AbstractApp):
         request['Content-Type'] = cp.mimetype()
 
         cmds = cp.source_and_commands()[1]
-        print cp.source_and_commands()
+        (src_prod,cmds) = cp.source_and_commands()
+        print "==========\n",src_prod,cmds,"\n=========="
+        if src_prod:
+            (fout,fin)=popen2.popen2(cmds,1<<16)
+            fin.write(src_prod.more())
+            fin.flush()
+            fin.close()
+            #src_prod.close()
+            final_producer = medusa.producers.file_producer(fout)
+        else:
+            final_producer = medusa.producers.file_producer(os.popen(cmds,'r'))
+
         resp = cmds or 'no commands'
-        request.push(resp)
+        request.push(final_producer)        
+        #request.push(dummy_producer())
+
+        #prod = medusa.producers.file_producer(os.popen(cmds,'r'))
+        #request.push(prod)
         request.done()
+
+    def calc_canonical_request(app,request,frame,npt_name):
+        """The canonical request is meant to unambiguously identify the
+        state of the system in such a way that the CR will only differ if
+        something has happened to either the knowledge, the logic, or
+        the presentation such that any cached results may be invalid.
+        Initially, the canonical_request will be consist of the following
+        values on succeeding lines:
+          the base_request,
+          the most recent change_time of all the parent_kbs
+          the most recent change_time of all involved templates
+          some indication of involved user preferences """
+        app.calc_base_request(request,frame,npt_name)
+        # FIXME must add change_times for parent_kbs and templates
+        request.set_canonical_request(request.base_request())        
+
+    def calc_base_request(app,request,frame,npt_name):
+        """
+        The base request is the path the user could (or might) have
+        visited to be explicit about which GARMENT to use.  If the
+        actual_request is not a base_request (bacause it does not specify
+        a garment) then some algorithm (such
+        as pick the first possible garment which produces .html) is
+        used to determine the base_request.  Notice that no transforming
+        or encoding extensions (such as .ps, .pdf, .gz) are included.
+        THING__GARMENT  eg /know/nooron_faq/faq__details.html
+        """
+        request.set_base_request(request.object_request() + '__' + npt_name)
+        
 
     def get_pipe_section(app,
                          from_ext=None,from_type=None,
@@ -114,7 +173,7 @@ class GenericFrame(AbstractApp):
     def get_pipe_section_for_spigot(app,to_ext,producer=None):
         extension_frame = '%s_extension' % to_ext
         mimetype=get_slot_value(extension_frame,'MimeType')[0]        
-        return PipeSection(producer=None,
+        return PipeSection(producer=producer,
                            extension=to_ext,
                            mimetype=mimetype)
         
@@ -161,3 +220,24 @@ class GenericFrame(AbstractApp):
                                                  number_of_values=1,
                                                  slot_type=Node._all)
         return vals and vals[-1] 
+
+class dummy_producer:
+    def more(self):
+        if not self.__dict__.get('_done') :
+            self._done = 1
+            return "This is just great\n" * 500
+        else:
+            return ''
+
+class template_producer:
+    def __init__(self,template,content):
+        self._template = template
+        self._content = content
+    def more(self):
+        if not self.__dict__.get('_done') :
+            self._done = 1
+            return self._template(content=self._content)
+        else:
+            return ''
+
+        

@@ -8,7 +8,6 @@
 //   dot -Tjpeg -o thing.jpeg thing.dot
 // MIME type:  application/x-graphviz 
 // extensions: dot,gv
-<tal:dummy replace="python:request.set_header('Content-Type','application/x-graphviz')"/>
 
 digraph <tal:dummy replace="template/title"/> {
 <metal:block tal:omit-tag="" metal:define-slot="main" >
