@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.9 2002/08/02 23:44:41 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.10 2002/08/04 21:15:29 smurp Exp $'
 
 
 # GooseWorks support
@@ -9,7 +9,7 @@ from GWApp import GWApp
 
 import NooronRoot
 
-DEBUG = 1
+DEBUG = 0
 
 from medusa import counter
 import medusa
@@ -20,7 +20,7 @@ class ProcHandler:
         self.graph = graph
         
     def preMergeMap(self,refUri,addedThemes):
-        if DEBUG: print "now merging in %s" % refUri      
+        if DEBUG: print "now merging in %s" % refUri
         
     def postMergeMap(self,e,refUri,addedThemes):
         if(e):
@@ -28,9 +28,15 @@ class ProcHandler:
             GW.clearError()
 
     def unprocessedTopicRefUri(self,uris):
-        if DEBUG: print "\nunprocessed uris"
+        if DEBUG: print "\nunprocessed topic ref uris"
         for u in uris:
             print u
+
+    def unprocessedUris(self,uris):
+        if DEBUG:
+            print "\nunprocessed uris"
+            for u in uris:
+                print u
 
     def subjectEquivalence(self,sirs,scr):
         self.graph.subjectEquivalence(sirs,scr);
@@ -38,8 +44,12 @@ class ProcHandler:
     def association(self,a):
         self.graph.addAssociation(a)
 
+    def startRootElement(doh):
+        pass
+
     def endRootElement(doh):
-        if DEBUG: print "ending root element %s" % str(doh)
+        pass
+        #if DEBUG: print "ending root element %s" % str(doh)
 
 
 class GraphHandler:
@@ -48,9 +58,11 @@ class GraphHandler:
                                                      str(role),
                                                      str(member))
     def startRootElement():
-        if DEBUG: print "starting root element"
+        pass
+        #if DEBUG: print "starting root element"
     def endRootElement():
-        if DEBUG: print "ending root element"
+        pass
+        #if DEBUG: print "ending root element"
 
 
 
@@ -83,36 +95,42 @@ class topicmap_handler:
         self.graphs[tm_name] = gwapp
 
 
+    def parse_map(self,spec,tm_uri):
+        u = GW.Uri(tm_uri)
+        p = GW.Proc()
+        g = GW.Graph(spec)
+        ph = ProcHandler(g)
+        p.setHandler(ph)
+        g.startTransaction(GW.XRW)
+        p.process(u)
+        g.commitTransaction()
+        return g
+
     def load_map(self,tm_name,tm_uri):
         if DEBUG: print tm_name,tm_uri
-            
-        u = GW.Uri(tm_uri)
-
-        p = GW.Proc()
-
+        
         if tm_uri[:5] == 'type=':
             spec = tm_uri
         else:
             spec = "type=Mem,name=%s" % tm_name
+
+        spec_type = spec.split(',')[0].split('=')[1]
+        print "spec = ",spec, spec_type
+
+        if spec_type == "Mem":
+            g = self.parse_map(spec,tm_uri)
+        else:
+            g = GW.Graph(spec)
             
-        g = GW.Graph(spec)
-
-        ph = ProcHandler(g)
-
-        p.setHandler(ph)
-        #g.setHandler(gh)
-
-        g.startTransaction(GW.XRW)
-        p.process(u)
-        g.commitTransaction()
-
         app = GWApp(g)
-        app.tm_uri = tm_uri        
+        if spec_type == 'Mem':
+            app.use_indices_in_links = 0
+            app.tm_uri = tm_uri
+        else:
+            app.use_indices_in_links = 1
+            
         self.add_app(tm_name,app)
         
-        if DEBUG: print self.graphs[tm_name]
-
-
     def objectValues(self):
         graph_name = self.graphs.keys()
         retarr = []
@@ -166,15 +184,19 @@ class topicmap_handler:
 
         if len(path_list) > 2:
             topic_name = path_list[2]
-            path = app.tm_uri
             topic_name = topic_name.replace('+',' ')
             if len(topic_name) > 5 and topic_name[:6] == 'index=':
                 index = int(topic_name[6:])
-                print "fetching index ", index
+                if DEBUG: print "fetching index ", index
                 obj = app.TMObject(index)
             else:
-                print "fetching topic_name " + topic_name
-                obj = app.getTopicWithID('%s#%s' % (path,topic_name))
+                many = app.getAllWhereBaseNameIs(topic_name)
+                if many:
+                    obj = many[0]
+                else:
+                    path = app.tm_uri
+                    obj = app.getTopicWithID('%s#%s' % \
+                                             (path,topic_name))
             
         if not obj:
             obj = app

@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.10 2002/08/02 23:53:40 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.11 2002/08/04 21:15:29 smurp Exp $'
 
 
 """
@@ -19,11 +19,14 @@ from NooronRoot import NooronRoot
 
 cwd = os.getcwd()
 
-maps = {'weblog':'file://%s/weblog.xtm' % cwd,
+maps = {'weblog':'file://%s/topicmap/weblog.xtm' % cwd,
+        #'denial':'file://%s/topicmap/DenialOfServiceAttacks.xtm' % cwd,
+        #'contacts':"http://topicmaps.bond.edu.au/examples/contacts.xtm",
+        #'contacts':'file:///download/knowledge/contacts.xtm',
         #'jill':'file:///download/knowledge/jill.xtm',
         #'random':'http://www.random.com/sumpin.xtm',
         #'whatever',"type=MySQL,name=dbname,user=yourname,pass=yourpw",
-        'smurp':'file://%s/smurp_as_agent.xtm' % cwd}
+        'smurp':'file://%s/topicmap/smurp_as_agent.xtm' % cwd}
 
 NooronRoot(publishing_root = cwd,
            #server_name = '192.168.1.11',

@@ -1,34 +1,34 @@
 
-overview:
-  - collaborative editing of scenario graph data
+Welcome to Nooron
+=================
 
-scratch my own itches, in order:
-  - add topic
-  - display multiple topics in SVG
-  - display multiple topics in html
-  - display a single topic in html
-  - create identity/account
-  - add criterion
-  - evaluate items
-  - create filters based on evaluations and attributes
-  - apply filters
-  - add new display methods
+Home:
+  http://www.noosphere.org/software/nooron
+  http://www.nooron.org/
 
-architecture:
-  - use gooseworks
-  - use REST
-  - use medusa
-  
-questions:
-  ? What is a forum  
-      - a topic of type forum?
+To understand the scope of the project please see:
+  http://www.noosphere.org
+On Thu, 1 Aug 2002, Jan Algermissen wrote:
+
+> I would also like to know (if you like to tell me) WHAT you are
+> doing with GwTk, which tasks it supports well and which not.   
+
+Here are some nice examples of the OKBC API:
+  http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#follow-slot-chain
 
 
-data will have skins
-  Note how different these views of a person are:
-  - business card
-  - curriculum vitae
-  - medical history
-  - rap sheet
-  - diary page
-  - christmas letter
+This version depends on:
+  Medusa 0.5.2 (or later, presumably, if more come along)
+    http://oedipus.sourceforge.net/medusa/
+  The Goose-Works Toolkit
+    http://www.goose-works.org
+    Gooseworks can use MySQL (and Postgresql too, I think)
+  Zope Page Templates
+    http://www.zope.org/
+
+This distribution of Nooron contains GWApp.py which is a 
+slight modification of Goose-Works' GWSAM.py.  It is likely that
+GWApp.py will soon be included in GWTK (Goose-Works).  GWApp.py
+has only been tested with an unreleased version of GWTK later than
+0.5 (the latest on the gooseworks site as of Aug 4th, 2002.  Many T
+thanks to Jan Algermissen for access to his ongoing work.

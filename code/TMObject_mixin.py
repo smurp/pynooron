@@ -24,9 +24,10 @@ def getLink(self,label='no label',use_all_basenames=0):
             label = str(basenames)
         else:
             label = basenames[0]
-        if basenames[0].find(' ') < 0:
+        if basenames[0].find(' ') < 0 and not self.app.use_indices_in_links:
             link = basenames[0]
     return """<a href="%s">%s</a>""" % (link,label)
         
 GWApp.TMObject.getLink = getLink
+
 
