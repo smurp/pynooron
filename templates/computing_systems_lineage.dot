@@ -1,7 +1,7 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
   mclimit=8    // run longer, do better
-  size="6,6"   // bounding box in inches
+  size="7.7,7.5"   // bounding box in inches
   center=1
   //  node[fontname="Courier";fontsize=10]
 
@@ -43,11 +43,6 @@
   </tal:dummy>
 
 
-
-
-
-
-
   // don't group the edges
   <tal:dummy
        repeat="group groups">
@@ -58,7 +53,7 @@
           repeat="a_relative python:a_system['InfluencedBy']">
           <tal:dummy condition="python: a_relative != ''">
           <hr tal:replace="python:a_relative"/> -> <hr tal:replace="python:a_system['name']"/>
-             [style=dashed];
+             ;
           </tal:dummy>
         </tal:dummy>
 
@@ -73,8 +68,6 @@
       </tal:block>
 
   </tal:dummy>
-
-
 
 </tal:block>
 
