@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.12 2003/01/24 12:22:27 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.13 2003/02/14 19:47:06 smurp Exp $'
 
 import string
 
@@ -11,6 +11,11 @@ import os
 
 EMIT_STRINGS_NOT_VARS = 1
 
+def safely_quoted_python_string(unsafe): # BUGGED large security flaw
+    if string.find(unsafe,"'") + string.find(unsafe,"\n") > -2:
+        return '"""%s"""' % unsafe
+    return "'%s'" % str(unsafe)  
+
 def var_name_for_emit(frame):
     out = string.replace(get_frame_name(frame),' ','_')
     if EMIT_STRINGS_NOT_VARS:
@@ -20,13 +25,18 @@ def var_name_for_emit(frame):
 
 def emit_value(val):
     if type(val) == type(''):
-        if string.find(val,"'") + string.find(val,"\n") > -2:
-            return '"""%s"""' % val
-        return "'%s'" % val
+        return safely_quoted_python_string(val)
     elif EMIT_STRINGS_NOT_VARS and isinstance(val,FRAME):
-        return "'"+str(val)+"'"
+        return safely_quoted_python_string(val)
     else:
         return str(val)
+
+def safe_value_list(frame,slot,slot_type):
+    quoted_slot_values = []
+    for slot_value in get_slot_values(frame,slot,slot_type=slot_type)[0]:
+        quoted_slot_values.append(emit_value(slot_value))
+        
+    return "[%s]" % string.join(quoted_slot_values,", ")
     
 def to_slot_spec(frame,slot,slot_type):
     #print "to_slot_spec(",frame,slot,slot_type,")"
@@ -43,21 +53,21 @@ def to_slot_spec(frame,slot,slot_type):
         if type(slot_value) in (type(()),type([])):
             for val in slot_value:
                 slot_value_spec = slot_value_spec + emit_value(val) + ","
-            if slot_value:
-                slot_value_spec = slot_value_spec[:-1]
+#            if slot_value:
+#                slot_value_spec = slot_value_spec[:-1]
         else:
             slot_value_spec = slot_value_spec + emit_value(slot_value) + ", "
     #if slot_value_spec[-2:] == ', ':
     slot_value_spec = slot_value_spec[:-2]
-    #else:
-    #    die("we get here")
     return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
 
 class PyKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'pykb'
     def __init__(self,filename,place='',connection=None,name=None):
+        self._place = place
         if name == None:
             name = filename
+        self._name = name
         #print name,filename
         ext = self._kb_type_file_extension 
         if not (len(filename) > len(ext) and \
@@ -122,12 +132,21 @@ class PyKb(AbstractFileKb,CachingMixin):
         assignment_line = assignment_line + "'" + frame_name + "'"
         lines.append(assignment_line)
 
+        line = "pretty_name="
+        pretty_name = kb.get_frame_pretty_name(frame)
+        if pretty_name != None: lines.append(line+emit_value(pretty_name))
+
+
         line = "direct_types=["
         got_one = 0
         for klass in kb.get_instance_types(frame,
                                            inference_level=Node._direct)[0]:
-            line = line + var_name_for_emit(klass) + ","
-            got_one = 1
+            klass_name =  var_name_for_emit(klass)
+            if not (klass_name in ["':INDIVIDUAL'","':SLOT'","':CLASS'",
+                                   "':KB'","':THING'"]):
+                # FIXME the above test is a kludge re create_frame_internal
+                line = line + klass_name + ","
+                got_one = 1
         if got_one: lines.append(line[:-1]+"]")
 
         line = "direct_superclasses=["
@@ -144,12 +163,24 @@ class PyKb(AbstractFileKb,CachingMixin):
         line = "own_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
-        for slot in get_frame_slots(frame,slot_type=Node._own)[0]:
+        own_slots = get_frame_slots(frame,slot_type=Node._own)[0]
+        print frame,own_slots
+        if ":DOCUMENTATION" in own_slots:
+            doc_p = 1
+            own_slots.remove(':DOCUMENTATION')
+        else:
+            doc_p = None
+        own_slots.sort()
+        for slot in own_slots:
+            if str(slot) == 'from_state':
+                print string(frame), "has slot",str(slot)
+            #if not kb.instance_of_p(slot,':TRANSIENT_SLOT',
+            #                        inference_level=Node._direct)[0]:
             line = line + to_slot_spec(frame,slot,Node._own) \
                    + ",\n" + local_indent_str
             got_one = 1
         if got_one: lines.append(line[:-1]+"]")
-
+            
         line = "template_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
@@ -160,9 +191,12 @@ class PyKb(AbstractFileKb,CachingMixin):
             got_one = 1
         if got_one: lines.append(line[:-1]+"]")
 
-        line = "pretty_name="
-        pretty_name = kb.get_frame_pretty_name(frame)
-        if pretty_name != None: lines.append(line+emit_value(pretty_name))
+
+        if doc_p:
+            docs = get_slot_value(frame,':DOCUMENTATION',
+                                  inference_level=Node._direct)[0]
+            lines.append('doc="""'+docs+'"""')
+
 
         comma_and_indent = ",\n"+indent_str
         out =  string.join(lines,comma_and_indent) + ")\n"
@@ -172,3 +206,50 @@ class PyKb(AbstractFileKb,CachingMixin):
         else:
             return out
 
+
+    def _print_kb_own_attributes(kb):
+        return kb._print_put_direct_parents() + \
+               kb._print_put_instance_types() + \
+               kb._print_put_frame_pretty_name() +\
+               kb._print_put_slot_values() 
+
+    def _print_put_direct_parents(kb):
+        parent_name_list = []
+        for parent in kb.get_kb_direct_parents():
+            parent_name_list.append("'" + str(parent) + "'")
+        if parent_name_list.count("'PRIMORDIAL_KB'"):
+            parent_name_list.remove("'PRIMORDIAL_KB'")
+        if parent_name_list:
+            return "put_direct_parents([%s])\n" % string.join(parent_name_list,',')
+        return ''
+
+    def _print_put_instance_types(kb):
+        instance_type_list = []
+        for my_type in kb.get_instance_types(kb,
+                                             inference_level=Node._direct)[0]:
+            instance_type_list.append("'" + str(my_type) + "'")
+        if instance_type_list.count("':KB'"):
+            instance_type_list.remove("':KB'")
+        if instance_type_list:
+            return "put_instance_types(current_kb(),[%s])\n" % \
+                   string.join(instance_type_list,',')
+        return ''
+
+    def _print_put_frame_pretty_name(kb):
+        pname = kb.get_frame_pretty_name(kb)
+        if pname:
+            return 'put_frame_pretty_name(current_kb(),"""%s""")\n' % pname
+        return ''
+
+
+    def _print_put_slot_values(kb):
+        calls = []
+        for slot in kb.get_frame_slots(kb,slot_type=Node._own)[0]:
+            if not kb.instance_of_p(slot,':TRANSIENT_SLOT',
+                                    inference_level=Node._direct)[0]:
+                calls.append("put_slot_values(current_kb(),%s,%s)\n" % \
+                             (safely_quoted_python_string(slot),
+                              safe_value_list(kb,slot,Node._own)))
+        if calls:
+            return string.join(calls,'\n')
+        return ''

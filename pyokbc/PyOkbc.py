@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.32 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.32 2003/01/24 12:28:20 smurp Exp $'
+__version__='$Revision: 1.33 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.33 2003/02/14 19:47:06 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -180,6 +180,7 @@ Node._individual._frame_type = Node._class
 INDIVIDUAL._frame_type = Node._individual
 
 
+
 primordials = []
 def primordialFACET(name):
     o = FACET(name,)
@@ -216,6 +217,8 @@ primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
                        ":COLLECTION-TYPE",
                        ":DOCUMENTATION-IN-FRAME")
 
+primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME")
+
 # Slots on slot frames okbc2.html#3169
 primordial['slot'] = (":DOCUMENTATION",
                       ":DOMAIN",":SLOT-VALUE-TYPE",":SLOT-INVERSE",
@@ -223,13 +226,13 @@ primordial['slot'] = (":DOCUMENTATION",
                       ":SLOT-MINIMUM-CARDINALITY",":SLOT-SAME-VALUES",
                       ":SLOT-NOT-SAME-VALUES",":SLOT-SUBSET-OF-VALUES",
                       ":SLOT-NUMERIC-MINIMUM",":SLOT-NUMERIC-MAXIMUM",
-                      ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE",
-                      "UID","GID","SIZE","ATIME","MTIME","CTIME")
+                      ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE")
 
 primordial['class'] = (":INDIVIDUAL",
                        ":SLOT",":FACET",":KB",
                        ":NUMBER",":INTEGER",":STRING",
-                       ":SEXPR",":SYMBOL",":LIST")
+                       ":SEXPR",":SYMBOL",":LIST",
+                       ":TRANSIENT_SLOT")
 
 primordial['individual'] = ()
 
@@ -258,6 +261,7 @@ def bootstrap(primordial = primordial):
              ('class',          primordialKLASS),             
              ('facet',          primordialFACET),
              ('slot',           primordialSLOT),
+             ('transient_slot', primordialSLOT),
              ('individual',     primordialINDIVIDUAL),
              ('behavior_type',  Symbol),
              ('behavior_value', Symbol),
@@ -279,8 +283,10 @@ def bootstrap(primordial = primordial):
                 Node.__dict__[pyname]._direct_superclasses = [Node._THING]
             if typ == 'facet':
                 thang._direct_types.append(Node._FACET)
-            if typ == 'slot':
+            if typ in ['slot','transient_slot']:
                 thang._direct_types.append(Node._SLOT)
+            if typ == 'transient_slot':
+                thang._direct_types.append(Node._TRANSIENT_SLOT)
 
 bootstrap()
 
@@ -300,6 +306,7 @@ Node._DOCUMENTATION._own_slots[str(Node._SLOT_VALUE_TYPE)] = \
                UNIT_SLOT(Node._SLOT_VALUE_TYPE ,[Node._STRING])
 Node._DOCUMENTATION._own_slots[str(Node._SLOT_CARDINALITY)] = \
                UNIT_SLOT(Node._SLOT_CARDINALITY ,1)
+Node._TRANSIENT_SLOT._direct_superclasses.append(Node._SLOT)
 
 def class_dump(which):
     for w in which:
@@ -1856,6 +1863,11 @@ class AbstractPersistentKb(TupleKb):
     """PersistentKb implements save_kb and save_kb_as to someplace.."""
     def save_kb(kb,error_p = 1):
         filename = kb.get_frame_name(kb)
+        ext = kb._kb_type_file_extension
+        filename = 'DELETEME_' + filename 
+        if ext != None and ext:
+            filename = filename + '.' + ext
+        print "place =",kb._place
         kb._save_to_storage(filename,error_p=error_p)
 
     def save_kb_as(kb,new_name_or_locator,error_p = 1):
@@ -1867,11 +1879,55 @@ class AbstractPersistentKb(TupleKb):
 
     def _print_kb(kb):
         for frame in \
-            get_kb_facets(kb) + \
-            get_kb_slots(kb) + \
-            get_kb_classes(kb) + \
-            get_kb_individuals(kb):
+            get_kb_facets(kb,kb_local_only_p=1) + \
+            get_kb_slots(kb,kb_local_only_p=1) + \
+            get_kb_classes(kb,kb_local_only_p=1) + \
+            get_kb_individuals(kb,kb_local_only_p=1):
             kb.print_frame(frame,stream=1)
+
+    def _print_put_direct_parents(kb):
+        parent_name_list = []
+        for parent in kb.get_kb_direct_parents():
+            parent_name_list.append("'" + str(parent) + "'")
+        if parent_name_list.count("'PRIMORDIAL_KB'"):
+            parent_name_list.remove("'PRIMORDIAL_KB'")
+        if parent_name_list:
+            return "put_direct_parents([%s])\n" % string.join(parent_name_list,',')
+        return ''
+
+    def _print_put_instance_types(kb):
+        instance_type_list = []
+        for my_type in kb.get_instance_types(kb,
+                                             inference_level=Node._direct)[0]:
+            instance_type_list.append("'" + str(my_type) + "'")
+        if instance_type_list.count("':KB'"):
+            instance_type_list.remove("':KB'")
+        if instance_type_list:
+            return "put_instance_types(current_kb(),[%s])\n" % \
+                   string.join(instance_type_list,',')
+        return ''
+
+    def _print_put_frame_pretty_name(kb):
+        pname = kb.get_frame_pretty_name(kb)
+        if pname:
+            return 'put_frame_pretty_name(current_kb(),"""%s""")\n' % pname
+        return ''
+
+
+    def _print_put_slot_values(kb):
+        instance_type_list = []
+        for my_type in kb.get_instance_types(kb,
+                                             inference_level=Node._direct)[0]:
+            instance_type_list.append("'" + str(my_type) + "'")
+        if instance_type_list.count("':KB'"):
+            instance_type_list.remove("':KB'")
+        if instance_type_list:
+            return "put_instance_types(current_kb(),[%s])\n" % \
+                   string.join(instance_type_list,',')
+        return ''
+
+    def _print_kb_own_attributes(kb):
+        return ''
 
 class PrimordialKb(TupleKb):
     """Implements synthetic :DOCUMENTATION slot values which are URLs
@@ -1914,15 +1970,18 @@ class PrimordialKb(TupleKb):
 
     
 class AbstractFileKb(AbstractPersistentKb):
+    def _file_name(kb):
+        return kb._name + '.' + kb._kb_type_file_extension
     
     def _save_to_storage(kb,filename,error_p = 1):
         print "saving to",filename
         outfile = open(filename,"w")
+        outfile.write(kb._print_kb_own_attributes())
         for frame in \
-            get_kb_facets(kb) + \
-            get_kb_slots(kb) + \
-            get_kb_classes(kb) + \
-            get_kb_individuals(kb):
+            get_kb_facets(kb,kb_local_only_p=1) + \
+            get_kb_slots(kb,kb_local_only_p=1) + \
+            get_kb_classes(kb,kb_local_only_p=1) + \
+            get_kb_individuals(kb,kb_local_only_p=1):
             outfile.write(kb.print_frame(frame,stream=0))
         outfile.close()
 
