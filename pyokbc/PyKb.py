@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.13 2003/02/14 19:47:06 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.14 2003/02/17 18:49:09 smurp Exp $'
 
 import string
 
@@ -8,6 +8,18 @@ from PyOkbc import *
 from CachingMixin import CachingMixin
 import string
 import os
+
+"""PyKb is a rather simple file-based PyOKBC backend which simply uses Python
+source code as its file format.  The peculiar decision to bootstrap development
+of PyOKBC with this format was grounded in expediency: it means that no parsing
+needs to be done and it means that OKBC Procedures can (temporarily) be
+written in Python, giving us some of the advantages of such Procedures without
+actually having to implement an efficient, secure mini-lisp.  The intention is
+that the use of PyKb will be temporary, and that it will be replaced by TellKb
+as soon as possible.  There is nothing particularly wrong with PyKb as a file
+format at the outset of the Nooron project, but later -- when portable knowledge
+and logic is required -- more intrinsically secure approaches will be required.
+"""
 
 EMIT_STRINGS_NOT_VARS = 1
 
@@ -30,36 +42,7 @@ def emit_value(val):
         return safely_quoted_python_string(val)
     else:
         return str(val)
-
-def safe_value_list(frame,slot,slot_type):
-    quoted_slot_values = []
-    for slot_value in get_slot_values(frame,slot,slot_type=slot_type)[0]:
-        quoted_slot_values.append(emit_value(slot_value))
-        
-    return "[%s]" % string.join(quoted_slot_values,", ")
     
-def to_slot_spec(frame,slot,slot_type):
-    #print "to_slot_spec(",frame,slot,slot_type,")"
-    slot_value_spec = ''
-    for slot_value in get_slot_values(frame,slot,slot_type=slot_type)[0]:
-        if type(slot_value) in (type(()),type([])) \
-           and slot_value[0] == Node._default:
-            slot_value_prefix = "(Node._default, "
-            slot_value_suffix = ")"
-            slot_value = slot_value[1]
-        else:
-            slot_value_prefix = slot_value_suffix = ""
-
-        if type(slot_value) in (type(()),type([])):
-            for val in slot_value:
-                slot_value_spec = slot_value_spec + emit_value(val) + ","
-#            if slot_value:
-#                slot_value_spec = slot_value_spec[:-1]
-        else:
-            slot_value_spec = slot_value_spec + emit_value(slot_value) + ", "
-    #if slot_value_spec[-2:] == ', ':
-    slot_value_spec = slot_value_spec[:-2]
-    return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
 
 class PyKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'pykb'
@@ -156,14 +139,16 @@ class PyKb(AbstractFileKb,CachingMixin):
             get_supers = kb.get_class_superclasses
             for klass in get_supers(frame,
                                     inference_level=Node._direct)[0]:
-                line = line + var_name_for_emit(klass) + ","
-                got_one = 1
+                klass_name =  var_name_for_emit(klass)
+                if not (klass_name in ["':THING'"]):
+                    line = line + var_name_for_emit(klass) + ","
+                    got_one = 1
         if got_one: lines.append(line[:-1]+"]")
 
         line = "own_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
-        own_slots = get_frame_slots(frame,slot_type=Node._own)[0]
+        own_slots = kb.get_frame_slots(frame,slot_type=Node._own)[0]
         print frame,own_slots
         if ":DOCUMENTATION" in own_slots:
             doc_p = 1
@@ -176,7 +161,7 @@ class PyKb(AbstractFileKb,CachingMixin):
                 print string(frame), "has slot",str(slot)
             #if not kb.instance_of_p(slot,':TRANSIENT_SLOT',
             #                        inference_level=Node._direct)[0]:
-            line = line + to_slot_spec(frame,slot,Node._own) \
+            line = line + kb._to_slot_spec(frame,slot,Node._own) \
                    + ",\n" + local_indent_str
             got_one = 1
         if got_one: lines.append(line[:-1]+"]")
@@ -184,17 +169,17 @@ class PyKb(AbstractFileKb,CachingMixin):
         line = "template_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
-        for slot in get_frame_slots(frame,slot_type=Node._template,
-                                    inference_level=Node._direct)[0]:
-            line = line + to_slot_spec(frame,slot,Node._template) \
+        for slot in kb.get_frame_slots(frame,slot_type=Node._template,
+                                       inference_level=Node._direct)[0]:
+            line = line + kb._to_slot_spec(frame,slot,Node._template) \
                    + ",\n" + local_indent_str
             got_one = 1
         if got_one: lines.append(line[:-1]+"]")
 
 
         if doc_p:
-            docs = get_slot_value(frame,':DOCUMENTATION',
-                                  inference_level=Node._direct)[0]
+            docs = kb.get_slot_value(frame,':DOCUMENTATION',
+                                     inference_level=Node._direct)[0]
             lines.append('doc="""'+docs+'"""')
 
 
@@ -205,6 +190,38 @@ class PyKb(AbstractFileKb,CachingMixin):
             return None
         else:
             return out
+
+
+    def _to_slot_spec(kb,frame,slot,slot_type):
+        #print "to_slot_spec(",frame,slot,slot_type,")"
+        slot_value_spec = ''
+        for slot_value in kb.get_slot_values(frame,slot,slot_type=slot_type)[0]:
+            if type(slot_value) in (type(()),type([])) \
+               and slot_value[0] == Node._default:
+                slot_value_prefix = "(Node._default, "
+                slot_value_suffix = ")"
+                slot_value = slot_value[1]
+            else:
+                slot_value_prefix = slot_value_suffix = ""
+
+            if type(slot_value) in (type(()),type([])):
+                for val in slot_value:
+                    slot_value_spec = slot_value_spec + emit_value(val) + ","
+    #            if slot_value:
+    #                slot_value_spec = slot_value_spec[:-1]
+            else:
+                slot_value_spec = slot_value_spec + emit_value(slot_value) + ", "
+        #if slot_value_spec[-2:] == ', ':
+        slot_value_spec = slot_value_spec[:-2]
+        return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
+
+
+    def _safe_value_list(kb,frame,slot,slot_type):
+        quoted_slot_values = []
+        for slot_value in kb.get_slot_values(frame,slot,slot_type=slot_type)[0]:
+            quoted_slot_values.append(emit_value(slot_value))
+
+        return "[%s]" % string.join(quoted_slot_values,", ")
 
 
     def _print_kb_own_attributes(kb):
@@ -249,7 +266,7 @@ class PyKb(AbstractFileKb,CachingMixin):
                                     inference_level=Node._direct)[0]:
                 calls.append("put_slot_values(current_kb(),%s,%s)\n" % \
                              (safely_quoted_python_string(slot),
-                              safe_value_list(kb,slot,Node._own)))
+                              kb._safe_value_list(kb,slot,Node._own)))
         if calls:
             return string.join(calls,'\n')
         return ''
