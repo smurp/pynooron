@@ -8,47 +8,6 @@
 
         <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
   
-      <sect2 id="how-this-document">
-         <title>How this document was generated</title>
-         <para>
-       This document was automatically published as a DocBook XML document
-       by a web-based knowledge management and publishing system called 
-       Nooron.  
-
-       The information in this document is stored within Nooron as a 
-       knowledge base stored at: 
-        <span tal:omit-tag="" 
-              tal:content="baseurl"></span>.  It is based on a reusable
-       'Pattern Language Ontology'.
-
-          (An ontology is a succinct machine- and human- 
-           understandable definition of the kinds of things which
-           exist in some domain; kind of like a relational database
-           schema, but more flexible.)
-
-       There is an associated 'Pattern Language Wardrobe' which 
-       connects the classes defined in the 
-       ontology with presentation templates which can display 
-       a particular pattern language in a variety
-       of ways.  These templates are called Nooron Page Templates
-       which are based on Zope Page Templates (ZPTs).
-       </para>
-
-       <para>   
-	These are the other templates which can be used to view
-        this pattern language.  The 'dot' format mentioned below
-        is a graph format which shows the connections between patterns.
-         <itemizedlist 
-            tal:define="skins python:get_slot_values(here,'npt_for_self',
-                                                     slot_type=ALL)[0]"
-            tal:condition="skins"
-            tal:repeat="skin skins">
-            <listitem><para tal:content="skin"></para></listitem>
-         </itemizedlist>
-        
-
-         </para>
-      </sect2>
 
     </sect1>
 
