@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.9 2003/03/28 07:47:41 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.10 2003/03/28 11:04:42 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -199,7 +199,7 @@ class AuthorizedOkbcOperation(OkbcOperation):
             return apply(op._func,posargs,kwargs)
         else:
             return denied
-        
+
 class IPListSecurityEngine:
     """IPListSecurityEngine allows or denies listed IPs or allows everybody
     by default.

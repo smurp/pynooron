@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.14 2003/03/08 12:58:54 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.15 2003/03/28 11:04:42 smurp Exp $'
 
 
 
@@ -86,6 +86,8 @@ class NooronPageTemplate(PageTemplate):
              'request': self.request,
              #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,
+             'document_title':
+             get_frame_pretty_name(self.obj) or get_frame_name(self.obj),
              'Node': Node
              }
         #print "context:",c

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.31 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.31 2003/03/08 12:58:54 smurp Exp $'
+__version__='$Revision: 1.32 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.32 2003/03/28 11:04:42 smurp Exp $'
 
 
 from pyokbc import *
@@ -10,7 +10,7 @@ from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer
 #allow_module('pyobkc')
 import medusa.producers
 #import popen2
-from OkbcOperation import OkbcOperation
+from OkbcOperation import AuthorizedOkbcOperation
 
 class AbstractApp:
     __allow_access_to_unprotected_subobjects__ = 1
@@ -44,14 +44,15 @@ class GenericFrame(AbstractApp):
         if npt_name in okbc_functions.keys():
             #print "header    ",request.header
             #print "split_uri ",request.split_uri()
-            #print npt_name, "is an OKBC Func"
             a_func = okbc_functions[npt_name]
-            op = OkbcOperation(a_func,request,kb=app._kb, frame=frame)
-            #print "args and kwargs",op.get_args_and_kwargs()
-            operation_result = op.call()
-            print operation_result
-            npt_name = 'show_form.html'
 
+            op = AuthorizedOkbcOperation(a_func,request,
+                                         kb=app._kb, frame=frame)
+            #print "args and kwargs",op.get_args_and_kwargs()
+            operation_result = op.call(nooron_root.security_engine())
+            if type(operation_result) == type(""):
+                print npt_name,operation_result
+            npt_name = 'show_form.html'
 
 
         if npt_name == None:
@@ -74,7 +75,7 @@ class GenericFrame(AbstractApp):
         
         cp = CachingPipeliningProducer()
         cp.set_canonical_request(canonical_request)
-        cp.set_cachedir('/tmp/nooron_cache')
+        cp.set_cachedir(nooron_root.cache_dir())
         
         if spigot:
             cp.append_pipe(spigot)
@@ -111,12 +112,14 @@ class GenericFrame(AbstractApp):
           some indication of involved user preferences """
         app.calc_base_request(request,frame,npt_name)
         # FIXME must add change_times for parent_kbs and templates
-        request.set_canonical_request("%s\nkb_mtime=%s\ngarment_mtime=%s\n%s\n"%(
+        canonical_request = "%s\nkb_mtime=%s\ngarment_mtime=%s\n%s\n"%(
             request.base_request(),
-            str(app._kb.get_kb_parents_maximum_mtime()),
+            str(app._kb.get_kb_parents_maximum_value_for_slot('ModificationTime')),
             str(template._stats['MTIME']),
             str(request.split_uri()[2])
-            ))
+            )
+        #print "canonical_request ",canonical_request
+        request.set_canonical_request(canonical_request)
 
     def calc_base_request(app,request,frame,npt_name):
         """
