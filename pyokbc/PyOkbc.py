@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.36 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.36 2003/03/06 09:41:39 smurp Exp $'
+__version__='$Revision: 1.37 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.37 2003/03/08 13:04:12 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -92,6 +92,31 @@ def get_slot_specification(frame,slots,
         slot_spec.extend(vals)
         slot_specs.append(slot_spec)
     return (slot_specs,not inexact_p)
+
+def initialize_slots_and_facets(frame, kb,
+                                slot_specs, facet_specs,
+                                slot_type, kb_local_only_p,
+                                defined_slot_alist = None,
+                                defined_facet_alist = None):
+    # FIXME initialize_slots_and_facets ignores facets
+    # FIXME initialize_slots_and_facets ignores defaults
+    for slot_spec in slot_specs:
+        slot = slot_spec[0]
+        slot_values = []            
+        for slot_value_spec in slot_spec[1:]:
+            if (type(slot_value_spec) in [type([]),type(())]):
+                if slot_value_spec[0] == Node._default:
+                    pass #save a default value slot_value_spec[1]
+                else:
+                    pass # we are in a list but first elem != default
+            else:
+                slot_values.append(slot_value_spec)
+        kb.put_slot_values(frame,slot,slot_values,
+                           slot_type = slot_type,
+                           kb_local_only_p=kb_local_only_p)
+
+
+
 
 def uniquify_specs(list_of_specs):
     seen_vals = []
@@ -563,34 +588,11 @@ class KB(FRAME,Programmable):
         kb.put_instance_types(frame,direct_types,
                               kb_local_only_p = kb_local_only_p)
 
-        for slot_spec in own_slots:
-            slot = slot_spec[0]
-            slot_values = []            
-            for slot_value_spec in slot_spec[1:]:
-                if (type(slot_value_spec) in [type([]),type(())]):
-                    if slot_value_spec[0] == Node._default:
-                        pass #save a default value slot_value_spec[1]
-                    else:
-                        pass # we are in a list but first elem != default
-                else:
-                    slot_values.append(slot_value_spec)
-            kb.put_slot_values(frame,slot,slot_values,
-                               kb_local_only_p=kb_local_only_p)
+        initialize_slots_and_facets(frame, kb, own_slots, own_facets,
+                                    Node._own, kb_local_only_p)
 
-        for slot_spec in template_slots:
-            slot = slot_spec[0]
-            slot_values = []            
-            for slot_value_spec in slot_spec[1:]:
-                if (type(slot_value_spec) in [type([]),type(())]):
-                    if slot_value_spec[0] == Node._default:
-                        pass #save a default value slot_value_spec[1]
-                    else:
-                        pass # we are in a list but first elem != default
-                else:
-                    slot_values.append(slot_value_spec)
-            kb.put_slot_values(frame,slot,slot_values,
-                               slot_type=Node._template,
-                               kb_local_only_p=kb_local_only_p)
+        initialize_slots_and_facets(frame, kb, template_slots, template_facets,
+                                    Node._template, kb_local_only_p)
 
         if doc: frame._doc = doc
         if doc:
@@ -895,7 +897,7 @@ class KB(FRAME,Programmable):
         details[':name'] = kb.get_frame_name_internal(frame)
         details[':pretty-name'] = kb.get_frame_pretty_name_internal(frame)
         # FIXME get_frame_details ignoring :handle, :frame-type and :primitive_p
-        #details[':frame-type'] = kb.get_frame_type_internal(frame)
+        details[':frame-type'] = kb.get_frame_type(frame)
         #details[':primitive-p'] = kb.primitive_p_internal(frame)
         details[':superclasses'],exact_p,ignore_more =\
                         kb.get_class_superclasses_internal(frame,
@@ -906,7 +908,7 @@ class KB(FRAME,Programmable):
                                                          inference_level,
                                                          number_of_values)
         if not exact_p: inexact_p = 1
-        details['types'],exact_p,ignore_more = \
+        details[':types'],exact_p,ignore_more = \
                         kb.get_instance_types_internal(frame,
                                                        inference_level,
                                                        number_of_values,
@@ -1598,6 +1600,7 @@ class KB(FRAME,Programmable):
                     new_class = resp[0]
                     new_direct_types.append(new_class)                    
         frame._direct_types = new_direct_types
+    put_instance_types_internal = put_instance_types
 
     def slot_p(kb,thing,kb_local_only_p=0):
         return isinstance(thing,SLOT)
@@ -1909,6 +1912,36 @@ class TupleKb(KB,Constrainable):
                     new_class = resp[0]
                     new_direct_superclasses.append(new_class)
         klass._direct_superclasses = new_direct_superclasses
+
+    def put_frame_details(kb,frame,details,kb_local_only_p=0):
+        print "***********************************"
+        print details
+        print "***********************************"
+        if details.has_key(':pretty-name'):
+            kb.put_frame_pretty_name_internal(frame,
+                                              details[':pretty-name'],
+                                              kb_local_only_p)
+        if details.has_key(':types'):
+            kb.put_instance_types_internal(frame,
+                                           details[':types'],
+                                           kb_local_only_p)
+        if details.has_key(':superclasses'):
+            kb.put_class_superclasses_internal(frame,
+                                               details[':superclasses'],
+                                               kb_local_only_p = kb_local_only_p)
+        initialize_slots_and_facets(frame, kb,
+                                    details.get(':own-slots',[]),
+                                    details.get(':own-facets',[]),
+                                    Node._own, kb_local_only_p)
+        # FIXME put_frame_details might put template items on non-classes
+        initialize_slots_and_facets(frame, kb,
+                                    details.get(':template-slots',[]),
+                                    details.get(':template-facets',[]),
+                                    Node._template, kb_local_only_p)
+
+            
+    put_frame_details_internal = put_frame_details
+
 
     def put_frame_name_internal(kb,frame,new_name,kb_local_only_p=0):
         (found_frame,
