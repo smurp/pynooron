@@ -91,3 +91,18 @@ create_individual('lpr_extension',
                   direct_types=['FileExtension'],
                   own_slots=[['MimeType','text/plain'],])
 
+##########################################################
+
+create_individual('dbk_extension',
+                  direct_types=['FileExtension'],                  
+                  own_slots=[['MimeType','text/plain'],
+                             ['LiteralExtension','.dbk'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_ps']])
+
+# the problem with docbook2ps is that it doesnt accept stdin
+#create_individual('transform_dbk_2_ps',
+#                  direct_types=['NooronTransformer','ExternalCommand'],
+#                  own_slots=[['EmitsExtension','ps_extension'],
+#                             ['RequiresProgram','docbook2ps'],
+#                             ['LiteralExternalCommand','docbook2ps']])

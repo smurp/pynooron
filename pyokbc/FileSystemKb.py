@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.5 2002/12/12 18:34:22 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.6 2002/12/16 16:44:41 smurp Exp $'
 
 import string
 
@@ -30,14 +30,14 @@ class FileSystemKb(AbstractFileKb):
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
         frame_found_p = 1
-        frame = kb._cache.get(str(thing))
+        frame = kb._store.get(str(thing))
         #print "looking in",str(kb),"for",thing,
         if frame:
             #print 'found'
             return (frame,1)
 
-        #if thing == kb:
-        #    return (thing,1)
+        if thing == kb:
+            return (thing,1)
         
         if type(thing) == type('') and thing.find('__') > -1:
             possible_mime_type = thing.replace('__','/')
@@ -79,7 +79,7 @@ class FileSystemKb(AbstractFileKb):
                                     connection = kb._connection,
                                     name = thing)
                     #print "caching",frame
-                    kb._add_frame_to_cache(frame)
+                    kb._add_frame_to_store(frame)
 
                     return (frame,1)
 

@@ -14,7 +14,7 @@ class FileSystemConnection(Connection):
         #Connection.__init__(connection,initargs)
         connection._meta_kb = FileSystemKb(connection._default_place,
                                            connection = connection)
-        connection._meta_kb._add_frame_to_cache(Node._primordial_kb)
+        connection._meta_kb._add_frame_to_store(Node._primordial_kb)
         from PyKb import PyKb
         connection._default_kb_type = PyKb
         connection._ignore_tildes = 1

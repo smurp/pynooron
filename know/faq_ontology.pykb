@@ -13,6 +13,7 @@ create_slot('Q',
                        [':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE',':STRING']])
 create_class('faq',
+	     doc="""A frequently asked question.""",
              template_slots = [['Q'],['A']],
              direct_types=['faq_class'])
 create_class('faq_app',

@@ -2,7 +2,6 @@
 TODO for Nooron
 
 * required for v0.2.2
-** make /know --> /know__openable_kbs.html
 
 
 * correctness
@@ -10,6 +9,7 @@ TODO for Nooron
 ** not automatically writing to the correct kb (ie a nooron_data KB)
 ** save_kb (respect kb_local_only_p by telling parent kbs to save too)
 * performance
+** preload data in profile.py 
 ** cache get_class_superclasses?
 * completeness
 ** make nooron.py sensitive to commandline parameters
@@ -24,7 +24,7 @@ TODO for Nooron
 ** fix truncated (at char 1024) error reporting
 ** redesign "available garments" to add links for typical conversions
    such as dot.jpg, dot.ps, dot.pdf, dbk.ps, dbk.pdf and so on
-   e.g   aon.dot (.jpg) (.ps) (.ps.pdf)
+   e.g   aon.dot (.jpg) (.ps) (.pdf)
          -------  ----   ---   ------- 
 ** put "available actions" and "available garments" in better places
    Probably redo entire layout of standard_master

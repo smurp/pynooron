@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.21 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.21 2002/12/12 18:34:21 smurp Exp $'
+__version__='$Revision: 1.22 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.22 2002/12/16 16:44:40 smurp Exp $'
 
 DEBUG = 0
 
@@ -99,9 +99,9 @@ class NooronRoot:
         
         meta.put_direct_parents(meta_direct_parents)
 
-        #put_slot_values(meta,'npt_for_self',
-        #                ['openable_kbs.html'],
-        #                kb=meta)
+        put_slot_values(meta,'npt_for_self',
+                        ['openable_kbs.html'],
+                        kb=meta)
 
         #print "get_kb_direct_parents()",get_kb_direct_parents(kb=meta)
 

@@ -1,5 +1,5 @@
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.15 2002/12/12 18:34:21 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.16 2002/12/16 16:44:40 smurp Exp $'
 
 
 from pyokbc import *
@@ -65,22 +65,23 @@ class okbc_handler:
 
         if len(path_list) == 1:
             kb = meta_kb()
-            #app = NooronApp.MetaKB(kb)
-            #app.publish(request)
-            #return
 
+        no_frame_specified = 0
         for elem in [self.from_root]:
             #print "checking",elem
             object_request = object_request + '/' + elem
             kb_request = object_request
-            if str(elem) == str(path_list[0]):
+            if elem == str(path_list[0]):
                 path_list.pop(0)
+            elif path_list[0].find(elem) == 0:
+                no_frame_specified = 1
+                
         #print "path_list",path_list
         elem = None
         latest_kb = meta_kb()
         pipe = []
         for elem in path_list:
-            print "checking elem",elem
+            #print "checking elem",elem
             frag = string.split(elem,wedge)
             if len(frag) == 2:
                 elem = frag[0]
@@ -88,6 +89,9 @@ class okbc_handler:
                 npt_name = pipe.pop(0) + (pipe and '.' + pipe[0] or '')
                 #pipe[0] = npt_name
                 #print "pipe",pipe
+            else:
+                # this is an error
+                pass
             object_request = object_request + '/' + elem
             #print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            
             (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
@@ -104,8 +108,10 @@ class okbc_handler:
                 pass
                 #print elem,"was not found in",latest_kb
 
-        print "kb =",latest_kb,"  frame=",elem
-        print "object_request =",object_request 
+        if no_frame_specified:
+            elem = None
+        #print "kb =",latest_kb,"  frame=",elem
+        #print "object_request =",object_request 
         request.set_object_request(object_request)
         request.set_kb_request(kb_request)
         app = NooronApp.GenericFrame(latest_kb)

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.23 2002/12/12 18:34:21 smurp Exp $'
+__version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.24 2002/12/16 16:44:40 smurp Exp $'
 
 
 from pyokbc import *
@@ -30,16 +30,6 @@ class GenericFrame(AbstractApp):
     default_npt_name = "frame_as_html"
     app = {}
     def publish(app,request,frame_name,npt_name,extensions=[]):
-        print "  frame_name=%s\napp._kb=%s\n" % (str(frame_name), str(app._kb))
-
-        print "  frame_name=%s\n      type()=%s\n    npt_name=%s\n  extensions=%s\n     app._kb=%s" % (str(frame_name),
-                                                                                                       str(type(frame_name)),
-                                                                                                       str(npt_name),
-                                                                                                       str(extensions),
-                                                                                                       str(app._kb))
-        
-
-
         if frame_name == None:
             frame = app._kb
         else:

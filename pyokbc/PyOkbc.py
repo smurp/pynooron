@@ -1,5 +1,6 @@
-_version__='$Revision: 1.27 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.27 2002/12/12 19:23:36 smurp Exp $'
+
+_version__='$Revision: 1.28 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.28 2002/12/16 16:44:41 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -9,6 +10,7 @@ import string
 import sys
 import copy
 import os
+import time
 
 from  OkbcConditions import *
 from Constraints import Constrainable
@@ -139,7 +141,7 @@ class FRAME(Node):
         self._frame_in_cache_p = 0
         self._pretty_name = None
         if kb:
-            kb._add_frame_to_cache(self)
+            kb._add_frame_to_store(self)
         self._own_slots = {}
         self._template_slots = {}
         self._doc = None
@@ -251,7 +253,7 @@ Node.kwargs = {}
 
 def bootstrap(primordial = primordial):
     types_in_order = ['kwarg','facet','slot','class','individual',
-                      'behavior_type','behaviour_value']
+                      'behavior_type','behavior_value']
     types = (('kwarg',          Symbol),
              ('class',          primordialKLASS),             
              ('facet',          primordialFACET),
@@ -423,7 +425,15 @@ class KB(FRAME,Programmable):
         
         parent_kbs = initargs.get(Node._parent_kbs,[])
         if PRIMORDIAL_KB: parent_kbs.append(PRIMORDIAL_KB) #FIXME not always!
-        self._parent_kbs = parent_kbs 
+        self._parent_kbs = parent_kbs
+
+        # caching stuff (should get moved to separate mixin class?)
+        self._cache = {}
+        self._cache_timestamp = time.clock()
+        self._allow_caching_p = 1
+
+    def allow_caching_p(kb):
+        return kb._allow_caching_p
     
     def kb_p(kb):
         return 1
@@ -691,7 +701,51 @@ class KB(FRAME,Programmable):
 ##                                                 kb_local_only_p,
 ##                                                 superclasses)
 
+
     def get_class_superclasses(kb,klass,
+                               inference_level = Node._taxonomic,
+                               number_of_values = Node._all,
+                               kb_local_only_p = 0):
+        if kb.allow_caching_p():
+            cache_key = 'get_class_superclasses ' + \
+                        str(klass) +\
+                        str(inference_level) +\
+                        str(number_of_values) + \
+                        str(kb_local_only_p)
+            if kb._cache.has_key(cache_key):
+                #print "CACHE HIT:",cache_key
+                return kb._cache[cache_key]
+        superclasses = []
+        #if Node._INDIVIDUAL in superclasses:
+        #    print klass, "sub of INDIVIDUAL",superclasses,"doh"
+            
+        (klass,class_found_p) = kb.coerce_to_class(klass)
+        (supers,exact_p,more_status) =\
+               kb.get_class_superclasses_internal(klass,
+                                                  inference_level,
+                                                  number_of_values,
+                                                  kb_local_only_p)
+        
+        #warn('get_class_superclasses is not properly recursive %s %s' % (kb,klass))
+        #print "  get_class_superclasses \n    %s\n     %s\n    %s" \
+        #      % (kb,klass,supers)
+        #return (supers,exact_p,more_status)
+
+        if not kb_local_only_p:
+            for parent in kb.get_kb_parents():
+                rets = parent.get_class_superclasses(klass,
+                                                     inference_level,
+                                                     number_of_values,
+                                                     1)[0]
+                for super in rets:
+                    if not (super in supers):
+                        supers.append(super)
+        retval = (supers,exact_p,more_status)
+        if kb.allow_caching_p(): kb._cache[cache_key] = retval
+        return retval
+    
+
+    def NON_CACHING_get_class_superclasses(kb,klass,
                                inference_level = Node._taxonomic,
                                number_of_values = Node._all,
                                kb_local_only_p = 0):
@@ -1044,8 +1098,9 @@ class KB(FRAME,Programmable):
     def get_kb_frames(kb, kb_local_only_p = 0):
         return kb.get_kb_frames_recurse(kb_local_only_p,[])
 
-    def get_kb_frames_recurse(kb, kb_local_only_p = 0,
-                      checked_kbs = []):
+    def get_kb_frames_recurse(kb,
+                              kb_local_only_p = 0,
+                              checked_kbs = []):
         # NOTE this is different from other get_kb_TYPE methods, no selector
         #print "get_kb_frames(kb=",str(kb),\
         #      ",kb_local_only_p=",kb_local_only_p,\
@@ -1100,6 +1155,7 @@ class KB(FRAME,Programmable):
         if not hasattr(kb,'_cached_kb_parents'):
             kb._cached_kb_parents = kb.get_kb_parents_recurse([])
         return kb._cached_kb_parents
+    get_kb_parents._caching = 1
 
     def get_kb_parents_maximum_mtime(kb): # FIXME not in OKBC spec
         times = []
@@ -1383,7 +1439,7 @@ Node._cache_types              = Node._frame_types + (Node._kb,)
 
 class NullMetaKb(KB):
     """An empty meta_kb to work with NullConnection."""
-    def _add_frame_to_cache(null_meta_kb,frame):
+    def _add_frame_to_store(null_meta_kb,frame):
         pass
     def get_kbs(null_meta_kb):
         return []
@@ -1394,22 +1450,22 @@ class TupleKb(KB,Constrainable):
     Saving and reading ability can be left to subclasses. """
     def __init__(self,name='',connection=None):
         KB.__init__(self,name,connection=connection)
-        self._cache = {}
+        self._store = {}
         self._typed_cache = {}
         for frame_type in Node._cache_types:
             self._typed_cache[frame_type] = []
 
-    def _add_frame_to_cache(kb,frame):
+    def _add_frame_to_store(kb,frame):
         frame_name = kb.get_frame_name(frame)
         frame_type = kb.get_frame_type(frame)
-#        print "_add_frame_to_cache",frame_name
-        if not kb._cache.has_key(frame_name):
+#        print "_add_frame_to_store",frame_name
+        if not kb._store.has_key(frame_name):
             #print "caching",frame,frame_name
-            kb._cache[frame_name] = frame
+            kb._store[frame_name] = frame
             kb._typed_cache[frame_type].append(frame)
             #print kb._name,kb._typed_cache
         else:
-            warn("_add_frame_to_cache duplicate call for "+frame_name)
+            warn("_add_frame_to_store duplicate call for "+frame_name)
             # silently pass over any attempted duplication
             pass
 
@@ -1424,11 +1480,11 @@ class TupleKb(KB,Constrainable):
     def coerce_to_frame_internal(kb,frame):
         if str(kb) == str(frame):
             return kb
-        return kb._cache.get(frame)
+        return kb._store.get(frame)
 
     def frame_in_kb_p_internal(kb,thing,
                                kb_local_only_p = 0):
-        return kb._cache.has_key(str(thing))
+        return kb._store.has_key(str(thing))
 
     def get_class_subclasses_internal(kb,klass,
                                       inference_level = Node._taxonomic,
@@ -1468,7 +1524,7 @@ class TupleKb(KB,Constrainable):
                 kb.get_class_superclasses_internal_recurse(super,supers)
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
-        found_frame = kb._cache.get(str(thing))
+        found_frame = kb._store.get(str(thing))
         if not found_frame:
             if thing == kb or str(thing) == str(kb):
                 found_frame = kb
@@ -1532,7 +1588,7 @@ class TupleKb(KB,Constrainable):
 
     def get_kb_frames_internal(kb,selector=Node._system_default,
                                kb_local_only_p=None):
-        return copy.copy(kb._cache.values())
+        return copy.copy(kb._store.values())
 
     def get_kb_individuals_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
@@ -1842,7 +1898,7 @@ class Connection: #abstract
         
         kb = kb_type(kb_locator,initargs=initargs,
                      meta=my_meta_kb)
-        my_meta_kb._add_frame_to_cache(kb)
+        my_meta_kb._add_frame_to_store(kb)
         return kb
 
     def find_kb(connection,name_or_kb_or_kb_locator):
@@ -1859,7 +1915,7 @@ class Connection: #abstract
         (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
         if not kb:
             kb = kb_type(kb_locator,connection=connection)
-            my_meta_kb._add_frame_to_cache(kb)
+            my_meta_kb._add_frame_to_store(kb)
         return kb
 
     def openable_kbs(connection, kb_type = None, place = None):
@@ -1938,5 +1994,5 @@ goto_kb(Node._primordial_kb)
 PRIMORDIAL_KB = Node._primordial_kb
 
 for f in primordials:
-    Node._primordial_kb._add_frame_to_cache(f)
+    Node._primordial_kb._add_frame_to_store(f)
     

@@ -70,7 +70,8 @@ class PyKb(AbstractFileKb):
         for (key,val) in stats.items():
             #print "putting",key,val
             put_slot_value(self,str(key),val)
-
+        orig_allow_caching_p = self.allow_caching_p()
+        self._allow_caching_p = 0
         try:
             whole = string.join(raw_kb,"")
             stanzas = whole.split('\n\n')
@@ -82,6 +83,7 @@ class PyKb(AbstractFileKb):
             #raise GenericError,str(e)+ " of "+str(filename)
             #print stanza
             raise GenericError,str(e)+ " in "+str(filename)
+        self._allow_caching_p = orig_allow_caching_p
         goto_kb(prev_kb)
 
     def print_frame(kb,frame,
