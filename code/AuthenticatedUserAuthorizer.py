@@ -13,6 +13,6 @@ class AuthenticatedUserAuthorizer:
     def denied_p(self,op):
         """Deny nothing to the authenticated."""
         if op._request.AUTHENTICATED_USER == AnonymousUser:
-            return self.message
+            return self._message
         else:
             return None
