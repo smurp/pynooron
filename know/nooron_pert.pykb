@@ -1,0 +1,9 @@
+
+put_direct_parents(['pert/pert_wardrobe','nooron_pert_data'])
+put_instance_types(current_kb(),['pert_app'])
+put_frame_pretty_name(current_kb(),"Nooron PERT")
+put_slot_values(current_kb(),':DOCUMENTATION',
+                ["""This is an experimental application of the PERT
+                Nooron App which tests the use of directories under
+                /know as well as kbs referring to other kbs without
+                including file extensions."""])

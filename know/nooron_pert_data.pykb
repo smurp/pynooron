@@ -1,0 +1,225 @@
+
+put_direct_parents(['pert/pert_ontology'])
+put_instance_types(current_kb(),['nooron_app_data'])
+
+create_individual('Nooron_0_2_1',
+  pretty_name="Nooron 0.2.1",
+  direct_types=['Task'],
+  own_slots=[['Predecessors',],
+             ['TaskDescription',
+              """This is a dummy START job marking the state
+              which was current when nooron_pert was started."""],
+             ['EstimatedHours',0]])
+
+
+create_individual('FormGeneration',direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Create very simple forms automatically by
+              using widgets based on slot type."""],
+             ['EstimatedHours',5]])
+
+create_individual('FormActions',direct_types=['Task'],
+  own_slots=[['Predecessors',
+              'FormGeneration','AuthorizationStubbedIn'],
+             ['TaskDescription',
+              """Write create_individual and create_class
+              npts which are limited by authorization
+              stubs."""],
+             ['EstimatedHours',2]])
+
+create_individual('CriteriaAndEvaluationsOntology',direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Create initial ontology Criteria and Evaluations."""],
+             ['EstimatedHours',24]])
+
+create_individual('CriteriaAndEvaluations',direct_types=['Task'],
+  own_slots=[['Predecessors',
+              'FormActions',
+              'CriteriaAndEvaluationsOntology'],
+             ['TaskDescription',
+              """Criteria and Evaluations"""],
+             ['EstimatedHours',24]])
+
+create_individual('PyKb_save_kb',
+  pretty_name="PyKb save_kb",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Ensure that save_kb is working for PyKb."""],
+             ['EstimatedHours',3]])
+
+create_individual('ThroughTheWebEditing',
+  pretty_name="Through-the-web editing",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','PyKb_save_kb','FormActions'],
+             ['TaskDescription',
+              """Make it possible to at least add and edit frames."""],
+             ['EstimatedHours',3]])
+
+create_individual('AuthorizationStubbedIn',
+  pretty_name="Authorization Stubbed In",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Permit writing only when the user is visiting from
+              some fixed IP address list, or when they have entered
+              one of a list of userids."""],
+             ['EstimatedHours',3]])
+
+create_individual('DownloadableKBFiles',
+  pretty_name="Downloadable KB Files",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Ensure that KB_NAME.pykb or KB_NAME.tell downloads
+              the original source file."""],
+             ['EstimatedHours',2]])
+
+create_individual('NPTsInSubdirs',
+  pretty_name="NPTs in Subdirectories",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Ensure that NPTs can live in subdirectories of
+              /know (such as /know/pert) and be accessed appropriately."""],
+             ['EstimatedHours',4]])
+
+create_individual('NooronAppRegistry',
+  pretty_name="Nooron App Registry",
+  direct_types=['Task'],
+  own_slots=[['Predecessors',
+              'NPTsInSubdirs'],
+             ['TaskDescription',
+              """Create KB containing information about Nooron Apps."""],
+             ['EstimatedHours',2]])
+
+create_individual('RemotelyInheritNooronApps',
+  pretty_name="Remotely Inherit Nooron Apps",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','PlacesAsKBs','DownloadableKBFiles'],
+             ['TaskDescription',
+              """Make it possible for someone to create a
+              nooron_app_instance which points to a nooron_app_wardrobe
+              which actually lives on a different machine, and have it
+              all work."""],
+             ['EstimatedHours',8]])
+
+create_individual('PlacesAsKBs',
+  pretty_name="Places as KBs",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Make subdirectories of /know, (e.g. /know/pert)
+              themselves be KBs.  They need to be surfable and
+              representable as .tell or .pykb, ultimately."""],
+             ['EstimatedHours',3]])
+
+create_individual('EncodingPipelines',
+  pretty_name='Encoding Pipelines',
+  direct_types=['Task'],
+  own_slots=[['Predecessors','DownloadableKBFiles'],
+             ['TaskDescription',
+              """Ensure that sequences of extensions (e.g. tar.gz,
+              .dot.svg, or .dbk.pdf) properly transform the output.
+              All relationships between content-types and their legal
+              encodings to be managed as knowledge."""],
+             ['EstimatedHours',6]])
+
+create_individual('CachedOutput',
+  pretty_name="CachedOutput",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','EncodingPipelines'],
+             ['TaskDescription',
+              """Devise a system of request parameter hashing
+              so that output is only regenerated when needed and
+              that intermediate forms as well as encodings of them
+              are appropriately cached and delivered.  For example,
+              nooron_pattern_language.dot would be cached as would
+              nooron_pattern_language.dot.pdf.  The .dot would be
+              regenerated only when the knowledge or template changed.
+              The .pdf would only be regenerated from cached .dot
+              when the .dot changed.  A system of hashes based on
+              canonical forms of the requests with knowledge, template
+              and preferences mixed in ought to do it.
+              """],
+             ['EstimatedHours',8]])
+
+create_individual('TellKb',
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Get TellKb working correctly for reading and saving."""],
+             ['EstimatedHours',3]])
+
+create_individual('CentralAppRegistry',
+  pretty_name="Central Registry of Nooron Apps",
+  direct_types=['Task'],
+  own_slots=[['Predecessors',
+              'ThroughTheWebEditing',
+              'NooronAppRegistry',
+              'RemotelyInheritNooronApps',
+              'TellKb'],
+             ['TaskDescription',
+              """Create a Central Registry of Nooron Apps where the
+              apps themselves exist remotely."""],
+             ['EstimatedHours',3]])
+
+create_individual('NotSoBasicAuthentication',
+  pretty_name="Not So Basic Authentication",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Users enter an url (root-relative or absolute with fqdn)
+              as their userid and a password which when crypted must
+              equal a crypted value in the NSBA-KB at the url."""],
+             ['References',
+              'http://www.nooron.org/know/nooron_pattern_language/NotSoBasicAuthentication'],
+             ['EstimatedHours',6]])
+
+
+create_individual('UserPreferredGarments',
+  pretty_name="User-Preferred Garments",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','NotSoBasicAuthentication'],
+             ['TaskDescription',
+              """Defer to a user's preferences in their NSBA-KB for
+              things such as the garment to default to for instances
+              of each class.  Maybe when authenticated users surf a
+              nooron site, when they visit a kb, it should be with their
+              NSBA-KB as a parent, to avoid complicated look-aside."""],
+             ['References',],
+             ['EstimatedHours',4]])
+
+create_individual('UserBasedAuthorization',
+  pretty_name="User-based Authorization",
+  direct_types=['Task'],
+  own_slots=[['Predecessors',
+              'NotSoBasicAuthentication','AuthorizationStubbedIn'],
+             ['TaskDescription',
+              """Permit read, write, modify and other registerable
+              capabilities based on the who the user has authenticated
+              themselves as.  Seriously examine capabilities as
+              implemented in E before tackling this task."""],
+             ['References','http://www.erights.org'],
+             ['EstimatedHours',50]])
+
+
+create_individual('HTMLWithPictures',
+  pretty_name="HTML with Pictures",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','CachedOutput'],
+             ['TaskDescription',
+              """Put pictures (.jpg,.svg) from graphviz in html."""],
+             ['EstimatedHours',2]])
+
+create_individual('DocBookWithPictures',
+  pretty_name="DocBook with Pictures",
+  direct_types=['Task'],
+  own_slots=[['Predecessors','CachedOutput'],
+             ['TaskDescription',
+              """Put pictures (.jpg,.ps) from graphviz into DocBook
+              output."""],
+             ['EstimatedHours',4]])
+

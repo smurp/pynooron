@@ -1,7 +1,7 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-put_slot_value(current_kb(),'cvs_id',['$Id: nooron_faq_data.pykb,v 1.8 2002/11/27 07:53:10 smurp Exp $'])
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.9 2002/11/27 19:46:21 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -340,4 +340,3 @@ create_individual('U00210',direct_types=['faq'],
     and links to lists of all the templates (garments) and all the
     Python software which implements Nooron itself.
     """]])
-

@@ -1,0 +1,15 @@
+
+put_direct_parents(['pert/pert_ontology'])
+put_instance_types(current_kb(),['nooron_app_wardrobe'])
+
+
+create_class('Task',
+             template_slots=[['slot_display_order',
+                              'TaskDescription',
+                              'EstimatedHours',
+                              'Predecessors',
+                              'References']])
+
+create_class('pert_app',
+             template_slots=[['npt_for_self',
+                              'pert_activity_on_node_as_dot']])
