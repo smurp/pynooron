@@ -9,3 +9,5 @@ create_slot('Penname',own_slots=[[':INVERSE','PennameOf'],
 create_slot('PennameOf',own_slots=[[':INVERSE','Penname'],
                                    [':DOMAIN','Agent']])
 
+create_class('Literature',direct_superclasses=[':THING'])
+create_class('Book',direct_superclasses=['Literature'])

@@ -53,8 +53,8 @@ class PyKb(AbstractFileKb):
     _kb_type_file_extension = 'pykb'
     def __init__(self,filename,place='',connection=None):
         #self._name = filename
-        AbstractFileKb.__init__(self,filename,connection=connection)
         raw_kb = connection._obtain_raw_kb(filename,place)
+        AbstractFileKb.__init__(self,filename,connection=connection)        
         #if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
         #    place = connection._default_place        

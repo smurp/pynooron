@@ -27,7 +27,7 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_get_class_superclasses(self):
         resp = list(get_class_superclasses('AdultHuman')[0])
         resp.sort(str_sort)
-        good = "[Agent, Animal, Human, Mammal, Primate, Thing]"
+        good = "[:THING, Agent, Animal, Human, Mammal, Primate]"
         self.assertEquals(good,str(resp))
 
     def test_get_frame_sentences(self):
@@ -65,7 +65,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_direct_children(self):
-        schema = find_kb('PeopleSchema.pykb')[0]
+        schema = find_kb('PeopleSchema.pykb')
         good = "[OtherPeople.pykb, PeopleData.pykb]"
         resp = list(get_kb_direct_children(schema))
         resp.sort(str_sort)
@@ -77,10 +77,15 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_kb_frames(self):
+        good = 76
+        resp = list(get_kb_frames(kb_local_only_p=0))
+        self.assertEquals(good,len(resp))
+
     def test_get_kb_frames_klop(self):
-        good = "[AliceInWonderland, AliceLidell, Book," + \
+        good = "[AliceInWonderland, AliceLidell," + \
                " CharlesLutwidgeDodgson, ChristopherRobin," + \
-               " LewisCarroll, SamuelBeckett]" 
+               " LewisCarroll, SamuelBeckett]"
         resp = list(get_kb_frames(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -102,7 +107,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_parents_REUSE(self):
-        ontology = find_kb('PeopleSchema.pykb')[0]
+        ontology = find_kb('PeopleSchema.pykb')
         children = get_kb_direct_children(ontology)
         parent = []
         for kb in children:
@@ -110,7 +115,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(parent[0],parent[1])
 
     def test_get_instance_types_all(self):
-        good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
+        good = '[:THING, AdultHuman, Agent, Animal, Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
                                        inference_level=Node._all)[0])
         resp.sort(str_sort)
@@ -124,7 +129,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_instance_types_taxonomic(self):
-        good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
+        good = '[:THING, AdultHuman, Agent, Animal, Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
                                        inference_level=Node._taxonomic)[0])
         resp.sort(str_sort)

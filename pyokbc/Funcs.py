@@ -3,6 +3,8 @@ from PyOkbc import *
 CURRENT_KB = None
 LOCAL_CONNECTION = None
 
+__allow_access_to_unprotected_subobjects__ = 1
+
 def add_class_superclass(klass,new_superclass,
                          kb=None,kb_local_only_p = 0):
     if not kb: kb = current_kb()
@@ -128,6 +130,10 @@ def current_kb():
 def establish_connection(connection_type,initargs=None):
     return connection_type(initargs)
 
+def find_kb(name_or_kb_or_kb_locator,connection = None):
+    if not connection: connection = local_connection()
+    return connection.find_kb(name_or_kb_or_kb_locator)
+
 def frame_in_kb_p(kb,thing, kb_local_only_p = 0):
     if not kb: kb = current_kb()
     print "kb:",kb
@@ -204,6 +210,10 @@ def get_kb_classes(kb=None,
     if not kb: kb = current_kb()
     return kb.get_kb_classes(selector,kb_local_only_p)
 
+def get_kb_direct_children(kb=None):
+    if not kb: kb = current_kb()
+    return kb.get_kb_direct_children()
+
 def get_kb_direct_parents(kb=None):
     if not kb: kb = current_kb()
     return kb.get_kb_direct_parents()
@@ -214,7 +224,7 @@ def get_kb_facets(kb=None,
     if not kb: kb = current_kb()
     return kb.get_kb_facets_internal(selector, kb_local_only_p)
 
-def get_kb_frames(kb=None,kb_local_only_p=None):
+def get_kb_frames(kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()
     return kb.get_kb_frames(kb_local_only_p)
 
@@ -229,6 +239,15 @@ def get_kb_slots(kb=None,
                  kb_local_only_p=None):
     if not kb: kb = current_kb()
     return kb.get_kb_slots_internal(selector,kb_local_only_p)
+
+def get_slot_facets(frame,slot,kb=None,
+                   inference_level = Node._taxonomic,
+                   slot_type = Node._own,
+                   kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.get_slot_facets(frame,slot,
+                              inference_level,slot_type,
+                              kb_local_only_p)
 
 def get_slot_value(frame,slot,
                    kb=None,

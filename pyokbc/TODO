@@ -2,9 +2,10 @@
 TODO
 
 * PyOkbc must support operations minimally required by Nooron:
-** get :DOCUMENTATION working properly
-** poke :CLASS, :THING, :FACET and :SLOT into the right places
+** ensure that PRIMORDIAL_KB is in meta-KB
 ** enforce DOMAIN constraints on slot values 
+** test facets values (in prep for constraints)
+
 coerce slot values appropriately (so they are frames too)
 ** coerce_to_handle [how the hell does a handle work]
 
@@ -13,4 +14,4 @@ coerce slot values appropriately (so they are frames too)
 ** clean up Node._*_all and make them into a dict keyed by _*
 ** improve Getting Started section of INSTALL
 
-$Id: TODO,v 1.3 2002/10/23 19:50:38 smurp Exp $
+$Id: TODO,v 1.4 2002/11/01 23:45:18 smurp Exp $

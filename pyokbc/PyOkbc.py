@@ -11,6 +11,7 @@ import copy
 import os
 
 from  OkbcConditions import *
+from Constraints import Constrainable
 
 ##########################################
 #    Classes
@@ -81,16 +82,13 @@ Node._facet = FACET(':facet')
 Node._facet._frame_type = Node._class
 FACET._frame_type = Node._facet
 
-Node._slot = FACET(':slot')
+Node._slot = SLOT(':slot')
 Node._slot._frame_type = Node._class
 SLOT._frame_type = Node._slot
 
-Node._individual = FACET(':individual')
+Node._individual = INDIVIDUAL(':individual')
 Node._individual._frame_type = Node._class
 INDIVIDUAL._frame_type = Node._individual
-
-Node._kb = FACET(':kb')
-Node._kb._frame_type = Node._class
 
 
 primordials = []
@@ -131,7 +129,7 @@ Node._number_of_values         = (Node._all,Node._more)
 
 #Node._kb                       = Symbol(':kb') # not included in _frame_types
 Node._frame_types              = (Node._class,Node._individual,Node._slot,Node._facet)
-Node._cache_types              = Node._frame_types + (Node._kb,)
+#see after class KB
     
 Node._value                    = Symbol(':value')
 Node._frame                    = Symbol(':frame')
@@ -151,8 +149,6 @@ Node._password                 = Symbol(':password')
 Node._username                 = Symbol(':username')
 Node._parent_kbs               = Symbol(':parent-kbs')
 
-# standard slots
-#Node._DOCUMENTATION            = primordialSLOT(":DOCUMENTATION")
 
 primordial = {}
 
@@ -181,15 +177,31 @@ primordial['class'] = (":INDIVIDUAL",
 
 primordial['individual'] = ()
 
+primordial['behavior_value'] = (':never',':immediate',':user-defined-facets',
+                                ':facets-reported',':read-only',':monotonic',
+                                ':deferred',':background',':override',
+                                ':when-consistent',':none',':list',
+                                ':bag',':set')
+primordial['behavior_type'] = (':are-frames',':class-slot-types',
+                               ':collection-types',':compliance',
+                               ':constraints-checked',
+                               ':constraint-checking-time',
+                               ':constraint-report-time',
+                               ':defaults')
+
 Node._THING = primordialKLASS(":THING")
 Node._CLASS = primordialKLASS(":CLASS")
 
 def bootstrap(primordial = primordial):
-    types_in_order = ['facet','slot','class','individual']    
+    types_in_order = ['facet','slot','class','individual',
+                      'behavior_type','behaviour_value']
     types = (('facet',      primordialFACET),
              ('slot',       primordialSLOT),
              ('class',      primordialKLASS),
-             ('individual', primordialINDIVIDUAL))
+             ('individual', primordialINDIVIDUAL),
+             ('behavior_type', Symbol),             
+             ('behavior_value', Symbol),
+             )
     for typ,construct in types:
         for name in primordial[typ]:
             pyname = name
@@ -209,68 +221,59 @@ Node._STRING._direct_superclasses.append(Node._INDIVIDUAL)
 Node._SYMBOL._direct_superclasses.append(Node._SEXPR)
 Node._LIST._direct_superclasses.append(Node._INDIVIDUAL)
 
-    
 
+Node._behaviors = { # not in OKBC spec, but implied
+    Node._are_frames:               (Node._class,
+                                     Node._individual,
+                                     Node._slot,
+                                     Node._facet),
+    Node._class_slot_types:         (Node._template,
+                                     Node._own),
+    Node._collection_types:         (Node._list,
+                                     Node._set,
+                                     Node._bag,
+                                     Node._none),
+    Node._compliance:               (Node._facets_reported,
+                                     Node._user_defined_facets,
+                                     Node._read_only,
+                                     Node._monotonic),
+    Node._constraints_checked:      (Node._VALUE_TYPE,
+                                     Node._INVERSE,
+                                     Node._CARDINALITY,
+                                     Node._MAXIMUM_CARDINALITY,
+                                     Node._MINIMUM_CARDINALITY,
+                                     Node._SAME_VALUES,
+                                     Node._NOT_SAME_VALUES,
+                                     Node._SUBSET_OF_VALUES,
+                                     Node._NUMERIC_MINIMUM,
+                                     Node._NUMERIC_MAXIMUM,
+                                     Node._SOME_VALUES,
+                                     Node._COLLECTION_TYPE,
+                                     Node._DOCUMENTATION_IN_FRAME),
+    Node._constraint_checking_time: (Node._immediate,
+                                     Node._deferred,
+                                     Node._background,
+                                     Node._never),
+    Node._constraint_report_time:   (Node._immediate,
+                                     Node._deferred),
+    Node._defaults:                 (Node._override,
+                                     Node._when_consistent,
+                                     Node._none)}
 
-    # behavior values
-Node._never                    = Symbol(':never')
-Node._immediate                = Symbol(':immediate')
-Node._user_defined_facets      = Symbol(':user-defined-facets')
-Node._facets_reported          = Symbol(':facets-reported')    
-Node._read_only                = Symbol(':read-only')
-Node._monotonic                = Symbol(':monotonic')
-Node._deferred                 = Symbol(':deferred')
-Node._background               = Symbol(':background')
-Node._override                 = Symbol(':override')
-Node._when_consistent          = Symbol(':when-consistent')
-Node._none                     = Symbol(':none')
-Node._list                     = Symbol(':list')
-    
-    # behaviors
-Node._are_frames               = Symbol(':are-frames')
-Node._are_frames_all           = (Node._class,Node._individual,Node._slot,Node._facet)
-Node._class_slot_types         = Symbol(':class-slot-types')
-Node._class_slot_types_all     = (Node._template, Node._own)
-Node._collection_types         = Symbol(':collection-types')
-Node._compliance               = Symbol(':compliance')
-Node._compliance_all             = (Node._facets_reported,
-                               Node._user_defined_facets,
-                               Node._read_only,
-                               Node._monotonic)
-Node._constraints_checked      = Symbol(':constraints-checked')
-Node._constraints_checked_all  = (Node._VALUE_TYPE,
-                                  Node._INVERSE,
-                                  Node._CARDINALITY,
-                                  Node._MAXIMUM_CARDINALITY,
-                                  Node._MINIMUM_CARDINALITY,
-                                  Node._SAME_VALUES,
-                                  Node._NOT_SAME_VALUES,
-                                  Node._SUBSET_OF_VALUES,
-                                  Node._NUMERIC_MINIMUM,
-                                  Node._NUMERIC_MAXIMUM,
-                                  Node._SOME_VALUES,
-                                  Node._COLLECTION_TYPE,
-                                  Node._DOCUMENTATION_IN_FRAME)
-Node._constraint_checking_time = Symbol(':constraint-time-checking')
-Node._constraint_checking_time_all = (Node._immediate,Node._deferred,Node._background,Node._never)
-Node._constraint_report_time   = Symbol(':constraint-report-time')
-Node._constraint_report_time_all = (Node._immediate,Node._deferred)
-Node._defaults                 = Symbol(':defaults')
-Node._defaults_all             = (Node._override,
-                                  Node._when_consistent,
-                                  Node._none)
-
-Node._behaviours_all           = (Node._are_frames,
-                                  Node._class_slot_types,
-                                  Node._collection_types,
-                                  Node._compliance,
-                                  Node._constraints_checked,
-                                  Node._constraint_checking_time,
-                                  Node._constraint_report_time,
-                                  Node._defaults)
-
-
-
+# see constraints.lisp
+Node._equivalent_constraint_facets = {
+    Node._SLOT_INVERSE:             Node._INVERSE,
+    Node._SLOT_VALUE_TYPE :         Node._VALUE_TYPE,
+    Node._SLOT_CARDINALITY:         Node._CARDINALITY,
+    Node._SLOT_MAXIMUM_CARDINALITY: Node._MAXIMUM_CARDINALITY,
+    Node._SLOT_MINIMUM_CARDINALITY: Node._MINIMUM_CARDINALITY,
+    Node._SLOT_SAME_VALUES:         Node._SAME_VALUES,
+    Node._SLOT_NOT_SAME_VALUES:     Node._NOT_SAME_VALUES,
+    Node._SLOT_SUBSET_OF_VALUES:    Node._SUBSET_OF_VALUES,
+    Node._SLOT_NUMERIC_MINIMUM:     Node._NUMERIC_MINIMUM,
+    Node._SLOT_NUMERIC_MAXIMUM:     Node._NUMERIC_MAXIMUM,
+    Node._SLOT_SOME_VALUES:         Node._SOME_VALUES,
+    Node._SLOT_COLLECTION_TYPE:     Node._COLLECTION_TYPE }
 
 
 class KB(FRAME):    
@@ -278,7 +281,6 @@ class KB(FRAME):
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
     here.  Oh I am sure this is all screwed up!"""
-    _frame_type = Node._kb    
     __allow_access_to_unprotected_subobjects__ = 1
     def __init__(self,name,initargs = {},connection=None):
         if connection:
@@ -286,7 +288,8 @@ class KB(FRAME):
         else:
             kb = None
         self._connection = connection
-        FRAME.__init__(self,name,frame_type=Node._kb,kb=kb)
+        node_kb = Node.__dict__.get('_kb') # equivalent to Node._kb see below
+        FRAME.__init__(self,name,frame_type=node_kb,kb=kb)
 
         self._initargs = initargs
         
@@ -314,6 +317,9 @@ class KB(FRAME):
         if not class_found_p and error_p:
             raise ClassNotFound,(thing,kb)
         return (found_class,class_found_p)
+
+    def connection(kb):# FIXME not part of OKBC Spec
+        return kb._connection
     
     def create_frame_internal(kb,name,frame_type,
                               direct_types=[],
@@ -430,20 +436,20 @@ class KB(FRAME):
         return isinstance(thing,FRAME)
 
 
-    _behaviour_values = {Node._are_frames : [Node._class,
-                                             Node._individual,
-                                             Node._slot,
-                                             Node._facet],
-                         Node._class_slot_types : [Node._template],
-                         Node._collection_types : [Node._list],
-                         Node._constraint_checking_time : [Node._never],
-                         Node._constraint_report_time : [Node._never],
-                         Node._constraints_checked : [],
-                         Node._defaults : [Node._override]}
+    _behavior_values = {Node._are_frames : [Node._class,
+                                            Node._individual,
+                                            Node._slot,
+                                            Node._facet],
+                        Node._class_slot_types : [Node._template],
+                        Node._collection_types : [Node._list],
+                        Node._constraint_checking_time : [Node._immediate],
+                        Node._constraint_report_time : [Node._never],
+                        Node._constraints_checked : [],
+                        Node._defaults : [Node._override]}
 
-    def get_behaviour_values_internal(kb,behavior):
+    def get_behavior_values_internal(kb,behavior):
         return kb._behavior_values.get(behavior,[])
-    get_behaviour_values = get_behaviour_values_internal
+    get_behavior_values = get_behavior_values_internal
 
     def get_class_instances_internal(kb,klass,
                                      inference_level=Node._taxonomic,
@@ -455,7 +461,6 @@ class KB(FRAME):
                                 inference_level,
                                 kb_local_only_p)[0]:
                 list_of_instances.append(frame)
-                #print frame,"is instance of",klass,"in",kb
         return (list_of_instances,exact_p,more_status)
 
     def get_class_instances(kb,klass,
@@ -469,6 +474,7 @@ class KB(FRAME):
                                                inference_level,
                                                number_of_values,
                                                kb_local_only_p=1)
+        (list_of_instances,exact_p,more_status) = rets
         if not kb_local_only_p:
             for parent in kb.get_kb_direct_parents():
                 if not (parent in checked_kbs):
@@ -478,7 +484,10 @@ class KB(FRAME):
                                                       number_of_values,
                                                       kb_local_only_p,
                                                       checked_kbs)
-        return rets
+                    for inst in rets[0]:
+                        if not inst in list_of_instances:
+                            list_of_instances.append(inst)
+        return (list_of_instances,exact_p,more_status)
 
     def get_class_subclasses(kb,klass,
                              inference_level = Node._taxonomic,
@@ -672,12 +681,21 @@ class KB(FRAME):
             return (copy.copy(frame._direct_types),1,0)
     get_instance_types = get_instance_types_internal
 
-    def get_kb_behaviours_internal(kb):
+    def get_kb_behaviors_internal(kb):
         return kb._behavior_values.keys()
-    get_kb_behaviours = get_kb_behaviours_internal
+    get_kb_behaviors = get_kb_behaviors_internal
 
     def get_kb_direct_parents(kb):
         return kb._parent_kbs
+
+    def get_kb_direct_children(kb):
+        meta = kb.connection().meta_kb()
+        children = []
+        for k in meta.get_kbs():
+            if kb in k.get_kb_direct_parents():
+                if not (k in children):
+                    children.append(k)
+        return children
 
     def get_kb_classes(kb,selector=Node._system_default,kb_local_only_p=0,
                        checked_kbs=[]):
@@ -694,17 +712,25 @@ class KB(FRAME):
                         classes.append(klass)
         return classes
 
-    def get_kb_frames(kb, kb_local_only_p = 0,
+    def get_kb_frames(kb, kb_local_only_p = 0):
+        return kb.get_kb_frames_recurse(kb_local_only_p,[])
+
+    def get_kb_frames_recurse(kb, kb_local_only_p = 0,
                       checked_kbs = []):
         # NOTE this is different from other get_kb_TYPE methods, no selector
+        #print "get_kb_frames(kb=",str(kb),\
+        #      ",kb_local_only_p=",kb_local_only_p,\
+        #      ",checked_kbs=",checked_kbs,")"
         frames = kb.get_kb_frames_internal(1)
         if kb_local_only_p: return frames
-
+        #print "  parents = ",kb.get_kb_direct_parents()        
         for parent in kb.get_kb_direct_parents():
+            #print "  about to check parent:",parent  
+            #print "    checked_kbs:",checked_kbs
             if not (parent in checked_kbs):
                 checked_kbs.append(parent)
-                for frame in parent.get_kb_frames(0,
-                                                  checked_kbs):
+                for frame in parent.get_kb_frames_recurse(0,
+                                                          checked_kbs):
                     if not (frame in frames):
                         frames.append(frame)
         return frames
@@ -756,6 +782,29 @@ class KB(FRAME):
                     if not (slot in slots):
                         slots.append(slot)
         return slots
+
+    def get_slot_facets(kb,frame,slot,
+                       inference_level = Node._taxonomic,
+                       slot_type = Node._own,
+                       kb_local_only_p = 0):
+        klop = kb_local_only_p
+        il = inference_level
+        (frame, frame_found_p) = kb.get_frame_in_kb(frame)
+        (slot,  slot_found_p)  = kb.get_frame_in_kb(slot)
+        kb_gsfi = kb.get_slot_facets_internal
+        (list_of_facets,exact_p) = kb_gsfi(frame,slot,il,slot_type,klop)
+        if inference_level in [Node._all,Node._taxonomic] and \
+           slot_type in [Node._template,Node._all]:
+            number_of_values = Node._all
+            for klass in kb.get_instance_types(frame,il,
+                                               number_of_values,klop):
+                for facet in kb.get_slot_facets(klass,
+                                                inference_level = il,
+                                                slot_type=Node._template,
+                                                kb_local_only_p = klop):
+                    if not (facet in list_of_facets):
+                        list_of_facets.append(facet)
+        return (list_of_facets,exact_p)
 
     def get_slot_value(kb,frame,slot,
                        inference_level = Node._taxonomic,
@@ -891,8 +940,12 @@ class KB(FRAME):
     def slot_p(kb,thing,kb_local_only_p=0):
         return isinstance(thing,SLOT)
 
+Node._kb = KB(':kb')
+Node._kb._frame_type = Node._class
+KB._frame_type = Node._kb
+Node._cache_types              = Node._frame_types + (Node._kb,)
 
-class TupleKb(KB):
+class TupleKb(KB,Constrainable):
     """A simple in-RAM kb which has no saving or reading ability.
     
     Saving and reading ability can be left to subclasses. """
@@ -1011,10 +1064,31 @@ class TupleKb(KB):
                               kb_local_only_p=None):
         return copy.copy(kb._typed_cache[frame_type])
 
+    def get_kbs(kb):
+        return kb.get_kb_frames_by_type(Node._kb)
+
     def frame_in_kb_p_internal(kb,thing,
                                kb_local_only_p = 0):
         return kb._cache.has_key(str(thing))
     frame_in_kb_p = frame_in_kb_p_internal
+
+    def get_slot_facets_internal(kb,frame,slot,
+                                 inference_level = Node._taxonomic,
+                                 slot_type = Node._own,
+                                 kb_local_only_p = 0):
+        retarray = []
+        slot_name = ''
+        if slot_type in [Node._all,Node._own]:
+            unit_slot = frame._own_slots.get(slot)
+            if unit_slot:
+                for facet_name in unit_slot.facets().keys():
+                    retarray.append(facet_name)
+        if slot_type in [Node._all,Node._template]:
+            unit_slot = frame._template_slots.get(slot)
+            if unit_slot:
+                for facet_name in unit_slot.facets().keys():
+                    retarray.append(facet_name)
+        return (retarray,1)
 
     def get_slot_values_internal(kb,frame,slot,
                                  inference_level = Node._taxonomic,
@@ -1083,6 +1157,25 @@ class TupleKb(KB):
                         kb_local_only_p = 0):
         if type(values) != type([]): raise CardinalityViolation(values)
         slot_key = str(slot)
+
+        kb_get_behave = kb.get_behavior_values_internal
+        if Node._immediate in kb_get_behave(Node._constraint_checking_time):
+            current_values = kb.get_slot_values(frame,slot,
+                                                inference_level = Node._all,
+                                                slot_type = Node._own,
+                                                number_of_values = Node._all,
+                                                value_selector = Node._either,
+                                                kb_local_only_p = 0)
+            orig_values = copy.copy(values)
+            values = kb.enforce_slot_constraints(frame,slot,
+                                                 current_values = current_values,
+                                                 future_values = values,
+                                                 inference_level = Node._all,
+                                                 slot_type = Node._either,
+                                                 kb_local_only_p = 0)
+            if len(orig_values) <> len(values):
+                print "We got shortened."
+        
         if slot_type == Node._own:
             if frame._own_slots.has_key(slot_key):
                 frame._own_slots[slot_key].set_values(values)
@@ -1158,6 +1251,10 @@ class Connection:
         my_meta_kb._add_frame_to_cache(kb)
         return kb
 
+    def find_kb(connection,name_or_kb_or_kb_locator):
+        meta = connection.meta_kb()
+        return meta.get_frame_in_kb(name_or_kb_or_kb_locator)[0]
+
     def meta_kb(connection):
         return connection._meta_kb
 
@@ -1182,8 +1279,8 @@ class Connection:
 
 
 class UNIT_SLOT:
-    """UNIT_SLOT is the structure which holds the values for a slot
-    on a particular frame."""
+    """UNIT_SLOT is the structure which holds the facets and the values
+    for a slot on a particular frame."""
     def __init__(self,slot_unit,values=[],facets=[]):
         self._slot_unit = slot_unit
         if type(values) != type([]): values = [values]        
@@ -1192,9 +1289,12 @@ class UNIT_SLOT:
         self._facets = facets
     def __repr__(self):
         return str(self._values)
-
     def facets(self):
         return self._facets
+    def set_facet(self,facet):
+        self._facets = [facet]
+    def set_facets(self,facets):
+        self._facets = facets
     def values(self):
         return self._values
     def set_value(self,value):

@@ -1,5 +1,6 @@
 
 from PyOkbc import *
+from OkbcConditions import *
 import os
 
 class FileSystemConnection(Connection):
@@ -17,7 +18,7 @@ class FileSystemConnection(Connection):
         if not place: place = connection._default_place
         warn("openable_kbs doing listdir of"+place)
         entries = os.listdir(place)
-        rets = []
+        rets = ['PRIMORDIAL_KB']
         for e in entries:
             try:
                 if e[-5:] == '.pykb':
@@ -30,9 +31,15 @@ class FileSystemConnection(Connection):
     def _obtain_raw_kb(connection,filename,place):
         if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
-            place = connection._default_place        
-        fname = place+'/'+filename # FIXME should os.pathjoin be used?
-        f = open(fname)
-        lines = f.readlines()
-        f.close()
+            place = connection._default_place
+        if __builtins__.has_key('nooron_root'): # FIXME bad hack
+            fname = nooron_root.make_fname([place,filename])
+        else:
+            fname = place+'/'+filename # FIXME should os.pathjoin be used?
+        try:
+            f = open(fname)
+            lines = f.readlines()
+            f.close()
+        except:
+            raise KbNotFound,filename
         return lines
