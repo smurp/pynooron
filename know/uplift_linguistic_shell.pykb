@@ -6,7 +6,7 @@ put_direct_parents(['linguistic_shell_ontology',
                     'scalefree_pattern_language',
                     'uplift_pattern_language'])
 put_instance_types(current_kb(),['linguistic_shell_app'])
-put_frame_pretty_name(current_kb(),"Uplift Academy Pattern Languages")
+put_frame_pretty_name(current_kb(),"Uplift Academy Linguistic Shell")
 put_slot_values(current_kb(),':DOCUMENTATION',
                 ["""This page lists some of the pattern languages which are
                 being developed for the Uplift Academy
@@ -15,7 +15,7 @@ put_slot_values(current_kb(),':DOCUMENTATION',
                 and ways of knowing which will appeal to only a limited set
                 of people.  However, the patterns become more concrete
                 (HIV/AIDS, for example) which may be understood by a
-                progressively larger audience.<br/>
+                progressively larger audience.<br/><br/>
 
                 (coming soon) HIV/AIDS orphans pattern language is a specific
 application of these ideas to the HIV/AIDS crisis.  These patterns

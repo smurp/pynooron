@@ -2,7 +2,6 @@
 put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
 
-
 create_individual('KnowledgeRepresentation',
                   direct_types=['pattern'],
                   own_slots=[['Intent',
@@ -60,7 +59,7 @@ create_individual('CriteriaAndEvaluations',
   own_slots=[['AKA',],
              ['Intent',
               """The implicit criterion in most rating systems is
-              'goodness'.  Every descriptive phrase is a potential
+              'goodness'.  Every adjectival phrase is a potential
               criterion and hence a potential dimension along which
               evaluations may occur.  This infinitely extensible
               space is the space of human opinions.  Criteria and
@@ -138,8 +137,7 @@ create_individual('NotSoBasicAuthentication', pretty_name = 'Not So Basic Authen
                   a username at a BasicAuthentication prompt."""],
                              ['Consequences',],
                              ['Variations',], 
-                             ['KnownUses',],
-                             ['References','http://www.noosphere.org/discuss/zwiki/NotSoBasicAuthentication'],
+                             ['KnownUses',], 
                              ['RelatedPatterns',
                               'FullyConfigurable',
                               'KnowledgeRepresentation']],
@@ -518,7 +516,7 @@ create_individual('RecombinatoryKnowledge',
                              ['Consequences',],
                              ['Variations','transclusion'], 
                              ['KnownUses',
-                              'http://www.nooron.org/know/nooron_app_architecture'],
+                              'http://www.nooron.org/know/nooron_app_architecture.pykb'],
                              ['RelatedPatterns',
                               'KnowledgeRepresentation',
                               'DontRepeat'],

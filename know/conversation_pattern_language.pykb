@@ -5,11 +5,20 @@ put_instance_types(current_kb(),['pattern_language_app'])
 put_frame_pretty_name(current_kb(),"The Conversation Pattern Language")
 put_slot_value(current_kb(),
 ':DOCUMENTATION',
-"""The Conversation Pattern Language describes conversations which may employ other patterns.
-These patterns are declared as CONTEXTS which allow users to name terms which have special
-as referenced within the conversation.  The collection of contexts for a conversation is called
-its SHELL.  PARTICIPANTS in a conversation may be known to all, according to the CONVERSATION
-POLICY.  New participants are given the opportunity to learn the CONTEXTS in the SHELL when they
-enter the conversation, allowing them to review key patterns and threads of discussion so that
-they may better understand the conversation.
+"""Conversation Pattern Language is a pattern which describes an overview
+of conversation for collaboration.  These conversations allow the
+declaration of Contexts, which can be other pattern languages, allowing
+a group to name its patterns of discourse, as well as evolve them over
+time. This language allows a conversation to evolve over time,
+coevolving what we know with what we don't know. Some of these patterns
+which may shape this process are listed below.
 """)
+
+
+#The Conversation Pattern Language describes conversations which may employ other patterns.
+#These patterns are declared as CONTEXTS which allow users to name terms which have special
+#as referenced within the conversation.  The collection of contexts for a conversation is called
+#its SHELL.  PARTICIPANTS in a conversation may be known to all, according to the CONVERSATION
+#POLICY.  New participants are given the opportunity to learn the CONTEXTS in the SHELL when they
+#enter the conversation, allowing them to review key patterns and threads of discussion so that
+#they may better understand the conversation.

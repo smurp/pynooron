@@ -10,7 +10,7 @@ create_slot('AKA',pretty_name='Also Known As',
             alternative names for this same notion.""")
 create_slot('Intent',
             own_slots=[[':DOMAIN','pattern'],
-                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH'],
                        [':SLOT-COLLECTION-TYPE','list']],
             doc="""This is the briefest statement of the intention
             of the pattern and serves well as a summary of it.  As

@@ -160,6 +160,28 @@ create_class(':KB',
                               'kb_ancestry.dot',
                               'kb.html'],
                              ['actions_for_self',
-                              'save_kb_as.html',
-                              'put_direct_parents.html']])
+                              #'save_kb_as.html',        # probly werkin
+                              #'put_direct_parents.html' # probly werkin
+                              ]])
+
+
+### Experimental subclasses of :STRING for the purposes of guiding form generation.
+create_class(':WORD',
+             direct_superclasses=[':STRING'],
+             doc=""":WORD is a :STRING which has no spaces.""")
+
+create_class(':PHRASE',
+             direct_superclasses=[':STRING'],
+             doc=""":PHRASE is a :STRING which can be confined to an INPUT of type TEXT.""")
+
+create_class(':PARAGRAPH',
+             direct_superclasses=[':STRING'],
+             doc=""":PARAGRAPH is a :STRING which could benefit from a TEXTAREA.""")
+
+create_class(':HREF',
+             direct_superclasses=[':WORD'],
+             doc=""":HREF is a :WORD which may be a local, relative or absolute url.""")
+
+             
+
 

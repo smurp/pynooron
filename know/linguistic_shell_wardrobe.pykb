@@ -6,6 +6,6 @@ put_frame_pretty_name(current_kb(),"Linguistic Shell Wardrobe")
 create_class('linguistic_shell_app',
              template_slots=[['npt_for_self',
                               'linguistic_shell_contains.html',
-                              'linguistic_shell_contains_PLs.dot']],
+                              'linguistic_shell_contain_hier.dot']],
              )
 
