@@ -1,0 +1,15 @@
+
+put_direct_parents(['faq_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_wardrobe'])
+
+# the faq and faq_app frames appear again here in the skeleton
+# so that 'skins' and other cosmetics can be associated with them
+
+# Note that we don't bother with ['npt_for_instances','faq_as_html']
+# because frame_as_html should suffice for such a trivial class.
+create_class('faq',
+             template_slots=[['slot_display_order','Q','A']])
+
+create_class('faq_app',
+             template_slots=[['npt_for_self','faqs_as_html']])
+

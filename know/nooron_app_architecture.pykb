@@ -1,83 +1,98 @@
 
 create_slot('merges_in',
+            doc="""Which nooron_app_components does this kind of
+            nooron_app_component have as direct_parents?""",
             own_slots=[[':DOMAIN','nooron_app_component']])
 
-# NPT (Nooron Page Template) frames
-create_slot('npt_for_app_front',
-            doc="""Apps should have a resource of this kind.  It ought to
-            contain the url of an Nooron Page Template which is suitable for
-            use as the 'front page' of a nooron app.  Ideally, this is a page 
-            which is capable of displaying useful entry points into the 
-            current app_instance.""")
 create_slot('npt_for_instances',
-            doc="""App Skeletons should define occurrences of this type for
+            doc="""Nooron_app_wardrobes should have template_slots of this
+            type on all classes which have specific nooron_page_templates
+            for their instances.
             each class whose instances are supposed to be surfed.  The
             associated resourceRef should contain the url of a Nooron Page
             Template (NPT) which is appropriate for displaying instances of
             the class on which ntp_for_instances is an occurrence.""")
+
 create_slot('npt_for_self',
-            doc="""App Skeletons can define occurrences of this type for each
-            topic for which a particular template is desired.  Npt_for_self
-            has precedence over npt_for_instances.""")
+            doc="""Nooron_app_wardrobes should have npt_for_self
+            template_slots on all classes which have specific
+            nooron_page_templates for their instances.""")
 
 create_slot('slot_display_order',
+            own_slots=[[':SLOT-VALUE-TYPE',':SLOT']],
             doc="""A list of the slots to display, in the order they
-            should be displayed.""")
-#create_class('knowledge_base')
+            should be displayed.  This is respected by the template
+            frame_as_html but not required by it.  In other words,
+            slot_display_order is optional on any nooron_app_class.""")
 
 create_class('nooron_app_component',
-             direct_superclasses=['knowledge_base'],        
+             direct_superclasses=['knowledge_base'],
+             template_slots=[['npt_for_self','kb_as_html']],
              doc="""Nooron app components are knowledgebases which
              have features which are made use of by code/NooronApp.py
              """)
-create_class('data_schema',
+create_class('nooron_app_ontology',
+             own_slots=[['merges_in',]],
              direct_superclasses=['nooron_app_component'],
-             doc="""This is the schema for the data, equivalent to a
+             doc="""This is the ontology for the nooron app, equivalent to a
              relational database schema or to a set of data structure
-             declarations for a object oriented system.  This information
-             depends on nothing, except possibly other information of the
-             same kind, i.e. other data schema information existing elsewhere.
+             declarations for an object oriented system.  Knowledge bases of
+             this kind depend on nothing, except possibly other ontologies.
+             It would, for example be fine to create a nooron_app_ontology
+             which extended another.""")
+create_class('nooron_app_data',
+             direct_superclasses=['nooron_app_component'],
+             own_slots=[['merges_in','nooron_app_ontology']],
+             doc="""KBs of this kind contain 'INDIVIDUALs' which are
+             instances of the CLASSes defined in some nooron_app_ontology.
+             These KBs are equivalent to the records in a database
+             (as opposed to the schema)
+             or the objects in an object oriented system
+             (as opposed to the class definitions themselves).
              """)
-create_class('nooron_schema_class',
-             doc="""Classes defined in data_schema knowledge bases should
-             be marked as instances of nooron_schema_class.""")
-create_class('data_instances',
+create_class('nooron_app_wardrobe',
              direct_superclasses=['nooron_app_component'],
-             own_slots=[['merges_in','data_schema']],
-             doc="""This is the actual data, the instances or the database
-             records used by the application.  Clearly this information itself 
-             depends on the data_schema and just as clearly can and ought 
-             to be able to exist independently of any application's use of it. 
-             Hence, it depends only on the data_schema.""")
-create_class('app_skeleton',
-             direct_superclasses=['nooron_app_component'],
-             own_slots=[['merges_in','data_schema']],
-             doc="""An app skeleton is not itself a runnable app.  It is a
+             own_slots=[['merges_in','nooron_app_ontology']],
+             doc="""A nooron_app_wardrobe associates a number of
+             presentation resources such as templates with an
+             ontology (specifically a nooron_app_ontology) so that
+             all that is needed is some data to make a usable nooron app.
+             An app skeleton is not itself a runnable app.  It is a
              definition of the resources which when brought together with
-             suitable data would be a runnable app.  An app skeleton must
-             know about the data_schema (but not about any particular
-             data_instances).  It must know about which presentation
+             suitable data would be a runnable app.  A wardrobe must
+             know about the nooron_app_ontology (but not about any particular
+             nooron_app_data).  It must know about which presentation
              templates to use for the various classes specified in the
-             data_schema. It must know about whatever programming resources
-             are required to make the app work.""")
-create_class('app_instance',
+             nooron_app_ontology. It must know about whatever programming
+             resources are required to make the app work.""")
+create_class('nooron_app_instance',
              direct_superclasses=['nooron_app_component'],
-             template_slots=[['npt_for_self','kb_ancestry_as_dot']],
-             own_slots=[['merges_in','app_skeleton','data_instances']],
-             doc="""An app instance is an actual runnable app.  It is the
-             combination of two things: an app skeleton and a set of data
-             instances.""")
+             template_slots=[['npt_for_self','kb_ancestry_as_dot','nooron_app_as_html']],
+             own_slots=[['merges_in','nooron_app_wardrobe','nooron_app_data']],
+             doc="""A nooron_app_instance is an actual runnable app.
+             It is the combination of two things: a nooron_app_wardrobe
+             and some nooron_app_data.  In fact, multiple nooron_app_wardrobe
+             KBs and multiple nooron_app_data KBs can be the direct_parents
+             of a nooron_app_instance KB.  In this fashion, diverse (possibly
+             distributed) ontologies and (possibly distributed) data can
+             be brought together into a single Nooron application.""")
+create_class('nooron_app_class',
+             template_slots=[['slot_display_order']],
+             doc="""Classes defined in nooron_app_ontology knowledge bases
+             should be marked as instances of nooron_app_class.  They
+             then inherit facitilies for automatic display such as,
+             initially, slot_display_order.""")
 
 
-
-# maybe there should be a kb like: nooron_app_core_skeleton for...
+# maybe there should be a kb like: nooron_app_core_wardrobe for...
 create_class(':THING',
-             template_slots=[['npt_for_self','frame_as_html']])
-create_class(':CLASS',
              template_slots=[['npt_for_self',
-                              'class_and_instances_as_html',
-                              'class_and_subclasses_as_html']])
+                              'frame_details_as_html',
+                              'frame_as_html']])
+#create_class(':CLASS',
+#             template_slots=[['npt_for_self',
+#                              'class_and_instances_as_html',
+#                              'class_and_subclasses_as_html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
-                              'class_hierarchy_as_dot',
-                              'app_instance_as_html']])
+                              'class_hierarchy_as_dot']])

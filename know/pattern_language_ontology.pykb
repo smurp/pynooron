@@ -1,44 +1,78 @@
 
 put_direct_parents(['nooron_app_architecture.pykb'])
+put_instance_types(current_kb(),['nooron_app_ontology'])
 
+create_slot('AKA',pretty_name='Also Known As',
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This slot contains a list of strings which are
+            alternative names for this same notion.""")
 create_slot('Intent',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],            
+            doc="""This is the briefest statement of the intention
+            of the pattern and serves well as a summary of it.  As
+            the 'Gang of Four' say, it 'answers the following
+            questions: What does the design pattern do?  What is
+            its rationale and intent? What particular design issue
+            problem does it address?'""")
 create_slot('Motivation',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""A scenario which illustrates the problem and how
+            the pattern solves it.  The scenario provides a contrete
+            touchstone for understanding the more abstract treatment
+            in latter slots.""")
 create_slot('Applicability',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This is where the pattern can be applied.""")
 create_slot('Method',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This is how to implement the pattern.""")
 create_slot('Consequences',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""How does the pattern succeed?  What are the
+            results?""")
 create_slot('Variations',
-            doc=""" """)
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This multivalued slot contains descriptions of, or
+            urls pointing to variations on this pattern.""")
 create_slot('KnownUses',
-            doc=""" """,
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This multivalued slot contains either descriptions
+            of, frames names or
+            urls pointing to known uses of the pattern.""",
 	    pretty_name='Known Uses')
 create_slot('RelatedPatterns',
-            doc=""" """,
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""This multivalued slot contains other patterns which
+            are related to this one.  This is a 'Gang of Four' slot
+            would be more informative if replaced by the Alexander slots
+            'containing patterns' and 'contained patterns.""",
             pretty_name='Related Patterns')
-
+create_slot('References',
+            own_slots=[[':DOMAIN','pattern']],
+            doc="""References to published documents.""")
 create_class('pattern_language_class',
-             direct_types=['nooron_schema_class'],
-             doc=""" """)
+             direct_types=['nooron_app_class'],
+             doc="""This is the superclass of all classes in the
+             pattern_language_ontology.  It might not be very useful...
+             YAGNI (you aren't going to need it) suggest that it be
+             removed.""")
 create_class('pattern',
-             direct_types=['nooron_schema_class','pattern_language_class'],
-             template_slots=[['Intent'],
+             direct_types=['pattern_language_class'],
+             template_slots=[['AKA'],
+                             ['Intent'],
                              ['Motivation'],
                              ['Applicability'],
                              ['Method'],
                              ['Consequences'],
                              ['Variations'], 
-                             ['KnownUses'], 
-                             ['RelatedPatterns']],
-	     doc="""Instances of web_log_entry are the posts in a blog.""",
-             pretty_name="web log entry")
+                             ['KnownUses'],
+                             ['RelatedPatterns'],
+                             ['References']],
+	     doc="""Instances of pattern are the individual patterns in
+             the pattern language constituted by the kb.""")
 
 create_class('pattern_language_app',
-             direct_superclasses=['app_instance'],
-             doc="""An instance of pattern_language_app is itself a
-             knowledgebase which constitutes a pattern language.  It might
-             contain actual instances of Pattern or it might inherit
-             Patterns from one of its parent_kbs.""")
+             direct_superclasses=['nooron_app_instance'],
+             doc="""A pattern_language_app is a knowledge base which
+             has as parent kbs the pattern_language_wardrobe and a
+             kb with instances of pattern class in it.""")

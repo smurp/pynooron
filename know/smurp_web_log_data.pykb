@@ -1,5 +1,6 @@
 
-put_direct_parents(['web_log_schema.pykb'])
+put_direct_parents(['web_log_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_data'])
 
 create_class('spoonerism',
              direct_types=['web_log_category'],
@@ -16,7 +17,7 @@ create_class('gear',
              doc="""Noteworthy devices or products.""")
 create_class('architecture',
              direct_types=['web_log_category'],
-             doc="""The subjugation of space to the will of an artist.""")
+             doc="""Artists freeing the possibilities of space.""")
 
 create_individual('wle_1',
                   direct_types = ['web_log_entry','marvel','book'],
@@ -58,4 +59,3 @@ create_individual('wle_5',
                                 "http://www.daniel-libeskind.com/"]],
                   pretty_name = "Libeskind's Architecture")
 
-                  

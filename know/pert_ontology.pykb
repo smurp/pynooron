@@ -1,0 +1,30 @@
+
+put_direct_parents(['nooron_app_architecture.pykb'])
+put_instance_types(current_kb(),['nooron_app_ontology'])
+
+create_slot('EstimatedHours',
+            own_slots=[[':SLOT-CARDINALITY',1],
+                       [':SLOT-VALUE-TYPE',':INTEGER']])
+create_slot('Predecessors',
+            own_slots=[[':SLOT-VALUE-TYPE','Task']])
+
+create_slot('TaskDescription',
+            own_slots=[[':SLOT-CARDINALITY',1],
+                       [':SLOT-VALUE-TYPE',':STRING']])
+
+create_class('pert_class',
+             direct_types=['nooron_app_class'])
+
+create_class('Task',
+             direct_types=['pert_class'],
+             template_slots=[['Predecessors'],
+                             ['TaskDescription'],
+                             ['EstimatedHours']])
+
+create_class('Project',
+             direct_types=['pert_class'])
+
+create_class('pert_app',
+             direct_superclasses=['nooron_app_instance'],
+             doc="""A PERT app contains Tasks for a particular
+             Project.""")

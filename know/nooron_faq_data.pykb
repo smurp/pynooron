@@ -1,0 +1,60 @@
+
+put_direct_parents(['faq_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_data'])
+
+create_individual('U001',direct_types=['faq'],
+                  own_slots=[
+    ['Q',"How do I make my own pattern_language_app?"],
+    ['A',"""Put a file called <code>SOMENAME_pattern_language.pykb</code>
+    in /know with contents like:
+    <pre>
+put_direct_parents(['pattern_language_wardrobe.pykb',
+                    'SOMENAME_pattern_language_data.pykb'])
+put_instance_types(current_kb(),['pattern_language_app'])
+put_frame_pretty_name(current_kb(),"SOMENAME Pattern Language")
+    </pre>
+    Put your data in another file called <code>SOMENAME_pattern_language_data.pykb</code>
+    with contents like:
+    <pre>
+
+    </pre>
+    """]])
+
+create_individual('U002',direct_types=['faq'],
+                  own_slots=[
+    ['Q',"How do I see the graphs Nooron generates?"],
+    ['A',"""For the moment glean what you can from
+    <a href="http://www.pinkjuice.com/howto/dot.txt">http://www.pinkjuice.com/howto/dot.txt</a>"""]])
+
+create_individual('U003',direct_types=['faq'],
+                  own_slots=[
+    ['Q',"""Is it safe to run Nooron?  What with all the python
+    in the templates?"""],
+    ['A',"""Umm.  Yes. (but no warranty!)  Notice that when Nooron
+    starts up there is the line:
+    <code>Relax: NPT SAFETY is ON</code>.
+    If you see <code>Warning: NPT SAFETY is OFF</code> and your
+    Nooron instance is exposed to the wilds of the internet,
+    then you should set SAFETY = 1 up near the top of
+    <code>code/NooronPageTemplate.py</code>.  The SAFETY setting
+    controls whether a restricted execution environment is used
+    to execute the code within NooronPageTemplates (NPTs).  There
+    probably exist a few holes in the restriction.  Please report
+    them if you find any."""]])
+create_individual('U004',direct_types=['faq'],
+                  own_slots=[
+    ['Q',"Where is some documentation for Zope Page Templates (the
+    basis of Nooron Page Templates)?"],
+    ['A',""]])
+create_individual('U005',direct_types=['faq'],
+                  own_slots=[
+    ['Q',""],
+    ['A',""]])
+create_individual('U006',direct_types=['faq'],
+                  own_slots=[
+    ['Q',""],
+    ['A',""]])
+create_individual('U007',direct_types=['faq'],
+                  own_slots=[
+    ['Q',""],
+    ['A',""]])

@@ -1,5 +1,6 @@
 
 put_direct_parents(['pattern_language_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_data'])
 
 create_individual('KnowledgeRepresentation',
                   direct_types=['pattern'],
@@ -51,7 +52,7 @@ create_individual('REST',
                               'http://www.amazon.com',
                               'http://www.yahoo.com'], 
                              ['RelatedPatterns','URLsHaveMeaning']],
-                  pretty_name = '(REpresentational State Transfer)',
+                  pretty_name = 'REpresentational State Transfer',
                   )
 
 create_individual('WorldViews',
@@ -111,7 +112,7 @@ create_individual('URLsHaveMeaning',
                              ['Variations',""" """], 
                              ['KnownUses',""" """], 
                              ['RelatedPatterns','REST']],
-                  pretty_name = 'URLS Have Meaning'
+                  pretty_name = 'URLs Have Meaning'
                   )
 
 create_individual('FullyAutomatic',
@@ -208,7 +209,7 @@ create_individual('SemanticWeb',
                   pretty_name='Semantic Web'
                   )
 
-create_individual('P2P',
+create_individual('P2P', pretty_name='Peer To Peer',
                   direct_types=['pattern'],
                   own_slots=[['Intent',""" """],
                              ['Motivation',""" """],
@@ -218,9 +219,75 @@ create_individual('P2P',
                              ['Variations',""" """], 
                              ['KnownUses',""" """], 
                              ['RelatedPatterns','RadicalOpenness']],
-                  pretty_name='Peer To Peer'
                   )
 
+create_individual('LiterateProgramming',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns','CitizenScientist']],
+                  pretty_name='Literate Programming'
+                  )
+
+create_individual('SelfOrganization', pretty_name='Self Organization',
+                  direct_types=['pattern'],
+                  own_slots=[['AKA','Fast, Cheap and Out of Control'],
+                             ['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns',
+                              'RadicalOpenness',
+                              'LiterateProgramming']],
+                  )
+
+create_individual('Agile', pretty_name='Agile Software Development',
+                  direct_types=['pattern'],
+                  own_slots=[['AKA','Extreme Programming'],
+                             ['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['References','http://agilemanifesto.org/'],
+                             ['RelatedPatterns','RadicalOpenness']],
+                  )
+
+create_individual('CitizenScientist', pretty_name='Citizen Scientist',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """], 
+                             ['RelatedPatterns','LiterateProgramming']],
+                  )
+
+create_individual('CollectiveIntelligence', pretty_name='Collective Intelligence',
+                  direct_types=['pattern'],
+                  own_slots=[['Intent',""" """],
+                             ['Motivation',""" """],
+                             ['Applicability',""" """],
+                             ['Method',""" """],
+                             ['Consequences',""" """],
+                             ['Variations',""" """], 
+                             ['KnownUses',""" """],
+                             ['RelatedPatterns',
+                              'CitizenScientist','SelfOrganization',
+                              'RadicalOpenness','KnowledgeRepresenation']],
+                  )
 
 create_class('technology')
 

@@ -1,5 +1,6 @@
 
-put_direct_parents(['web_log_schema.pykb'])
+put_direct_parents(['web_log_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_wardrobe'])
 
 create_class('web_log_entry',
              template_slots=[['npt_for_instances','web_log_entry_as_html']],
@@ -11,7 +12,6 @@ create_class('web_log_category',
              )
 
 create_class('web_log_app',
-             template_slots=[['npt_for_self',
-                              'web_log_app_as_html']],
+             template_slots=[['npt_for_self','web_log_app_as_html']],
              )
 

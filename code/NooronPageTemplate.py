@@ -1,6 +1,8 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.10 2002/11/16 12:00:10 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.11 2002/11/18 23:45:13 smurp Exp $'
+
+SAFETY = 1 # safety off means that python in NPTs is omnipotent
 
 import NooronRoot
 
@@ -22,16 +24,14 @@ okbc_functions={}
 for i in inspect.getmembers(Funcs,inspect.isfunction):
     okbc_functions[i[0]]=i[1]
 
-SAFETY = 0 # safety off means that python in NPTs is omnipotent
-
 if SAFETY: #safe
-    #print "doing things safely"
+    print "Relax: NPT SAFETY is ON"
     from PageTemplates.ZRPythonExpr import PythonExpr, \
          _SecureModuleImporter,\
          call_with_ns
     from SafeExpressions import getEngine
 else:
-    print "Warning: SAFETY is OFF"
+    print "Warning: NPT SAFETY is OFF"
     from PageTemplates.PythonExpr import getSecurityManager, PythonExpr
     from PageTemplates.Expressions import getEngine
     def call_with_ns(f, ns, arg=1):

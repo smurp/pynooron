@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.12 2002/11/16 12:00:10 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.13 2002/11/18 23:45:13 smurp Exp $'
 
 DEBUG = 0
 
@@ -42,6 +42,8 @@ class NooronRoot:
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
         self._connection = local_connection()
+        put_direct_parents(['nooron_app_architecture.pykb'],
+                           kb=self._connection.meta_kb())
         #print "local_connection =",local_connection()
         #print "current_kb =",current_kb()        
         #print "openable_kbs =",openable_kbs(connection=local_connection())

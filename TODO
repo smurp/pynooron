@@ -1,6 +1,11 @@
 
 TODO for Nooron
 
+* make unittest for get_frame_slots on a frame of type kb
+* test for surfability of /know and everything from site_front_as_html
+* skins for kbs
+** ensure that kb_as_html is default template for kbs
+** ideally, have 
 * cleanliness
 ** remove junk from http log output
 * figure out how to display a NooronApp instance

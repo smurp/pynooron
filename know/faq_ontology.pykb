@@ -1,0 +1,20 @@
+
+put_direct_parents(['nooron_app_architecture.pykb'])
+put_instance_types(current_kb(),['nooron_app_ontology'])
+
+create_slot('A',
+            pretty_name = 'answer',
+            own_slots=[[':DOMAIN','faq'],
+                       [':SLOT-CARDINALITY',1],
+                       [':SLOT-VALUE-TYPE',':STRING']])
+create_slot('Q',
+            pretty_name = 'question',
+            own_slots=[[':DOMAIN','faq'],
+                       [':SLOT-CARDINALITY',1],
+                       [':SLOT-VALUE-TYPE',':STRING']])
+create_class('faq',
+             template_slots = [['Q'],['A']],
+             direct_types=['faq_class'])
+create_class('faq_app',
+             direct_superclasses=['nooron_app_instance'],
+             doc="A FAQ app contains FAQs organized in sections.")
