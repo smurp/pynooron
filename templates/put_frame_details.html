@@ -23,29 +23,40 @@
 
 <tal:block define="details python:get_frame_details(here)[0]">
 
-Frame Type: <tal:block replace="python:details[':frame-type']"/>
-
 <table border="1">
-
   <input type="hidden" name="frame" value="" tal:attributes="value here">
 
-  <tal:block define="slot_name string::name;
+  <tal:block define="slot_name        string::name;
+                     field_name       python:'details'+field_path_delim+slot_name;
                      slot_pretty_name string:Frame Name;
-                     slot_value python:details[':name']">
+                     slot_value       python:details[':name']">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+  </tal:block>
+  <input type="hidden" name="" value=":name" 
+         tal:attributes="name string:details$field_path_delim">
+
+  <tal:block define="slot_name        string::pretty-name;
+                     field_name       python:'details'+field_path_delim+slot_name;
+                     slot_pretty_name string:Pretty Name;
+                     slot_value       python:details[':pretty-name']">
+    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+  </tal:block>
+  <input type="hidden" name="" value=":pretty-name" 
+         tal:attributes="name string:details$field_path_delim">
+
+  <tal:block define="slot_pretty_name string:Frame Type;
+                     slot_value       python:details[':frame-type']">
+    <tal:block metal:use-macro="container/form_master/macros/text_display_widget"/>
   </tal:block>
 
-  <tal:block define="slot_name string::pretty-name;
-                     slot_pretty_name string:Pretty Name;
-                     slot_value python:details[':pretty-name']">
+  <tal:block define="slot_name        string::types;
+                     field_name       python:'details'+field_path_delim+slot_name;
+                     slot_pretty_name string:Types (Classes);
+                     slot_value       python:details[':types']">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
-  
-  <tal:block define="slot_name string::types;
-                     slot_pretty_name string:Types;
-                     slot_value python:details[':types']">
-    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
-  </tal:block>
+  <input type="hidden" name="" value=":types" 
+         tal:attributes="name string:details$field_path_delim">
 
 <tr><td colspan="2"><strong>Own Slots</strong></td></tr>
   
@@ -57,16 +68,21 @@ Frame Type: <tal:block replace="python:details[':frame-type']"/>
                                    arguments=(slots,None,this_kb))">
       <tal:block define="slot_name        python:zlot[0];
                          slot_pretty_name python:zlot[1];
+                         field_name       python:'details'+field_path_delim+':own-slots'+field_path_delim+slot_name;
                          slot_values      python:get_slot_values(here,zlot[0])[0]">
 
-        <input type="hidden" name="own_slots" value=""
-           tal:attributes="value slot_name">
+        <input type="hidden" name="" value=""
+           tal:attributes="value slot_name;
+                           name  python:'details'+field_path_delim+':own-slots'+field_path_delim">
         <tal:block 
              metal:use-macro="container/form_master/macros/auto_widget">
         </tal:block>
       </tal:block>
     </tal:block>
   </tal:block>
+  <input type="hidden" name="" value=":own-slots" 
+         tal:attributes="name python:'details'+field_path_delim">
+
 
   <tal:block condition="python:class_p(here)">
   <tal:block define="slot_name string::superclasses;
@@ -76,37 +92,13 @@ Frame Type: <tal:block replace="python:details[':frame-type']"/>
   </tal:block>
 
 
-  <tal:block define="slot_name string::templates-slots;
-                     slot_pretty_name string:template_slots;
-                     slot_value python:details[':template-slots']">
+  <tal:block define="slot_name          string::templates-slots;
+                     field_name         python:'own-slots'+field_path_delim+slot_name;
+                     slot_pretty_name   string:template_slots;
+                     slot_value python: details[':template-slots']">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
   </tal:block>
-
-  <input type="hidden" name="details" value="doesnt matter">
-
-<tal:block condition="python:0">
-  <tal:block define="slots python:get_slot_values(here,
-                                                  'slot_display_order',
-                                                  slot_type=ALL)[0] or
-                                  get_frame_slots(here,
-                                                  slot_type=ALL)[0]">
-
-    <tal:block repeat="zlot python:call_procedure(
-                                   get_procedure('names_and_pretty_names'),
-                                   arguments=(slots,None,this_kb))">
-      <tal:block define="slot_name        python:zlot[0];
-                         slot_pretty_name python:zlot[1]">
-
-        <input type="hidden" name="own_slots" value=""
-           tal:attributes="value slot_name">
-        <tal:block 
-             metal:use-macro="container/form_master/macros/auto_widget">
-        </tal:block>
-      </tal:block>
-    </tal:block>
-  </tal:block>
-</tal:block>
 
 
 </table>
@@ -118,7 +110,7 @@ Frame Type: <tal:block replace="python:details[':frame-type']"/>
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: put_frame_details.html,v 1.1 2003/03/07 14:11:30 smurp Exp $
+$Id: put_frame_details.html,v 1.2 2003/03/08 13:00:31 smurp Exp $
 </div>
 
   </body>
