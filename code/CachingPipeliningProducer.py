@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.9 2003/02/08 00:34:59 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.10 2003/03/08 12:58:54 smurp Exp $'
 
 import string
 import md5
@@ -45,9 +45,12 @@ def execute_pipeline(input,command):
     start_time = time.time()
 
     while 1:
+        print "   before ready"        
         ready = select.select([outfd,errfd],[],[],1)
+        print "   after ready"
         if outfd in ready[0]:
             outchunk = outfile.read()
+            print "   reading ",len(outchunk)
             if outchunk == '': outeof = 1
             outdata = outdata + outchunk
         if errfd in ready[0]:
@@ -94,7 +97,15 @@ class CachingPipeliningProducer:
             f.close()
             freshness = "from-cache"
         elif src_prod:
-            fout = execute_pipeline(src_prod.more(),cmds)
+            all = src_prod.more()
+            more = src_prod.more()
+            while len(more) > 0:
+                all = all + more
+                more = src_prod.more()
+            print "length of content",len(all),fullpath
+            print "  len(pipeline) =",len(piper._pipeline)
+            print "  cmds =",cmds
+            fout = execute_pipeline(all,cmds)
             freshness = "freshly-generated"
         elif cmds:
             fout = execute_pipeline('',cmds)
@@ -153,14 +164,13 @@ class CachingPipeliningProducer:
         if ck:
             pipe.set_cachekey(ck)
     def mimetype(piper):
-        #mt = 'text/plain'
         mt = ''
         sections = copy.copy(piper._pipeline)
         #sections.reverse()
         while sections and not mt:
             section = sections.pop()
             mt = section.mimetype()
-        return mt or 'text/plain'
+        return mt or 'text/html' #'text/plain'
     def producer_and_commands(piper):
         """Return (source,commands) where source is either a
         producer or None and commands is either None or a string

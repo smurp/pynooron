@@ -1,6 +1,7 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.4 2003/02/26 10:42:42 smurp Exp $'
+
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.5 2003/03/08 12:58:54 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -20,6 +21,53 @@ Warning: OkbcOperation.SAFETY is OFF
 import inspect
 from pyokbc import *
 
+def detail_preprocessor(form,kb,arg):
+    """Used by OkbcOperation to obtain a properly constructed detail arg from
+    an http form.  The form is in the template put_frame_details.html.  The
+    detail argument is used by create-frame and put-frame-details."""
+    assert(arg=='details')
+    STR = (1,'') # string value expected
+    FCT = (2,[]) # facet-spec value expected
+    SLT = (3,[]) # slot-spec value expected
+    TYP = (4,[]) # list of types
+    expect = {':pretty-name':STR,':name':STR,
+              ':own-slots':SLT,':template-slots':SLT,
+              ':own-facets':FCT, ':template-facets':FCT,}
+              #':types': TYP}
+    #string_fields = [':pretty-name',':name']
+    #slot_spec_fields = [':own-slot',':template-slot']
+    #facet_spec_fields = [':own-facets',':template-facets']
+    details = {}
+    delim = nooron_root.field_path_delim
+    for subarg in form.get(arg+delim,[]):
+        try:
+            def_val = expect[subarg][1]
+        except:
+            continue
+        current_key = arg+delim+subarg
+        the_val = form.get(current_key,
+                           form.get(current_key+delim,def_val))
+
+        if expect[subarg] == STR:
+            if type(the_val) != type(def_val):
+                if type(the_val) == type([]) and len(the_val):
+                    the_val = the_val[0]
+                else:
+                    the_val = def_val
+        if expect[subarg] == SLT:
+            slot_specs = []
+            for slot in the_val:
+                slot_spec = [slot]
+                slot_spec.extend(form.get(current_key+delim+slot))
+                slot_specs.append(slot_spec)
+            the_val = slot_specs
+        details[subarg] = the_val
+        print "subarg =",subarg,'the_val =',the_val        
+    print "details =",details
+    return details
+put_frame_details.http_argument_preprocessors = {'details':detail_preprocessor}
+
+
 def build_slot_specs(own_or_template_slots,form):
     """Accumulate own_slots or template_slots into a slot_specs value.
     own_or_template_slots is either 'own_slots' or 'template_slots'"""
@@ -31,6 +79,7 @@ def build_slot_specs(own_or_template_slots,form):
 
 def convert_query_to_okbc_args_and_kwargs(func,form,kb):
     (args,varargs,varkw,defaults) = inspect.getargspec(func)
+    http_argument_preprocessors = func.__dict__.get('http_argument_preprocessors',{})
     last_positional_idx = len(args) - len(defaults) - 1 
     #print "last_positional_idx",last_positional_idx
     posargs = []
@@ -39,23 +88,36 @@ def convert_query_to_okbc_args_and_kwargs(func,form,kb):
         ispositional = argidx <= last_positional_idx
         arg = args[argidx]
         #print 'argidx',argidx,'arg',arg,'ispositional',ispositional
+        kw_val = pos_val = None        
+        del kw_val, pos_val
         if arg in form.keys():
             val = form.get(arg,[])
             if ispositional:
-                posargs.append(len(val)==1 and val[0] or val)
+                pos_val = len(val)==1 and val[0] or val
             else:
                 if arg in ['own_slots','template_slots']:
-                    kwargs[arg] = build_slot_specs(arg,form)
+                    kw_val = build_slot_specs(arg,form)
                 elif arg == 'pretty_name':
-                    kwargs[arg] = len(val) and val[0]
+                    kw_val = len(val) and val[0]
+                elif arg == 'kb':
+                    kw_val = len(val) and val[0] or op._kb
                 else:
-                    kwargs[arg] = val
+                    kw_val = val
         else:
             if arg == 'kb':
-                if ispositional:
-                    posargs.append(kb)
-                else:
-                    kwargs[arg] = kb
+                print "type(kb) =",type(kb),kb
+                if type(kb) == type([]):
+                    kb = kb[0]
+                kw_val = pos_val = kb
+
+        if http_argument_preprocessors.has_key(arg):
+            pos_val = http_argument_preprocessors[arg](form,kb,arg)
+            
+        if ispositional and 'pos_val' in dir():
+            posargs.append(pos_val)
+        if not ispositional and 'kw_val' in dir():
+            kwargs[arg] = kw_val
+
     #print 'posargs',posargs,'kwargs',kwargs
     return (posargs,kwargs)
 
@@ -95,6 +157,7 @@ simplify this.)  :SAME-VALUES with a slot chain might prove useful.
 *** Have OkbcOperation detect attempts to create in nooron_app_instances and
 replace them with creation attempts in appropriate _data kbs.
  """
+        # FIXME get_kb_to_write_to is very crude
         if instance_of_p(op._kb,'nooron_app_instance',kb=op._kb):
             parents =  get_kb_direct_parents(kb=op._kb)
             for parent in parents:
@@ -111,7 +174,8 @@ replace them with creation attempts in appropriate _data kbs.
         #kwargs = op._request.form()
         largs = []
         kwargs = {}
-        write_to_kb = op.get_kb_to_write_to()
+        #write_to_kb = op.get_kb_to_write_to()
+        write_to_kb = op._kb
         return convert_query_to_okbc_args_and_kwargs(op._func,
                                                      op._request.form(),
                                                      write_to_kb)

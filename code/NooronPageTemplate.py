@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.13 2002/12/12 14:00:18 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.14 2003/03/08 12:58:54 smurp Exp $'
 
 
 
@@ -81,6 +81,8 @@ class NooronPageTemplate(PageTemplate):
              'options': {},
              'root': self.root,
              'server_absolute_url':nooron_root.http_server.absolute_url(),
+             'textarea_threshold':nooron_root.textarea_threshold,
+             'field_path_delim':nooron_root.field_path_delim,
              'request': self.request,
              #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,

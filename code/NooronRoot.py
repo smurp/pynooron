@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.26 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.26 2003/01/31 07:57:03 smurp Exp $'
+__version__='$Revision: 1.27 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.27 2003/03/08 12:58:54 smurp Exp $'
 
 DEBUG = 0
 
@@ -54,6 +54,11 @@ class NooronRoot:
     pipeline_factory = None
     uri_root = '/'
     title = ''
+
+    # formatting stuff should live elsewhere, but where?
+    field_path_delim = '//'
+    textarea_threshold = 30
+    
     def __init__(self,publishing_root=None,
                  server_ip = None,
                  server_name=None,

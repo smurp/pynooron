@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.30 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.30 2003/02/08 00:36:46 smurp Exp $'
+__version__='$Revision: 1.31 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.31 2003/03/08 12:58:54 smurp Exp $'
 
 
 from pyokbc import *
@@ -78,6 +78,8 @@ class GenericFrame(AbstractApp):
         
         if spigot:
             cp.append_pipe(spigot)
+            if extensions:
+                extensions.pop(0)
         for this_ext in extensions:
             pipesection = app.get_pipe_section(from_ext=prev_ext,
                                                to_ext=this_ext)
