@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.11 2002/11/16 11:58:37 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.12 2002/11/25 16:38:39 smurp Exp $'
 
 import os
 import sys
@@ -94,7 +94,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 78
+        good = 79
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
