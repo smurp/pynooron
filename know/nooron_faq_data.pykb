@@ -1,7 +1,7 @@
-
+# -*-mode:python -*-
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.13 2003/02/08 00:35:17 smurp Exp $')
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.14 2003/03/26 21:04:14 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -326,5 +326,6 @@ create_individual('U01400',direct_types=['faq'],
     ['A',"""    
     <a href="http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage">FrontPage of ZPT</a>
     <a href="http://dev.zope.org/Wikis/DevSite/Projects/ZPT/RenderErrorHandlingStrategies">ZPT Error Handling Strategies</a>
+    <a href="http://www.zope.org/Members/peterbe/DTML2ZPT/">ZPT Examples (and DTML equivalents)</a>
     """]])
 

@@ -1,0 +1,19 @@
+# -*- mode: python -*-
+put_direct_parents(['linguistic_shell_ontology',
+                    'linguistic_shell_wardrobe',
+                    'conversation_pattern_language',
+                    'unknowledge_pattern_language',
+                    'scalefree_pattern_language',
+                    'uplift_pattern_language'])
+put_instance_types(current_kb(),['linguistic_shell_app'])
+put_frame_pretty_name(current_kb(),"Uplift Academy Pattern Languages")
+put_slot_values(current_kb(),':DOCUMENTATION',
+                ["""This page lists some of the pattern languages which are
+                being developed for the Uplift Academy
+                (<a href="www.upspace.org">www.upspace.org</a>).
+                These begin as very abstract representations of discourse
+                and ways of knowing which will appeal to only a limited set
+                of people.  However, the patterns become more concrete
+                (HIV/AIDS, for example) which may be understood by a
+                progressively larger audience.
+                """])

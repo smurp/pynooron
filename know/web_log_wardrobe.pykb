@@ -1,9 +1,10 @@
-
+# -*-mode: python -*-
 put_direct_parents(['web_log_ontology'])
 put_instance_types(current_kb(),['nooron_app_wardrobe'])
 
 create_class('web_log_entry',
-             template_slots=[['npt_for_instances','web_log_entry.html']],
+             template_slots=[['npt_for_instances','web_log_entry.html'],
+                             ['slot_display_order','web_log_text','web_log_url']],
 )
 
 create_class('web_log_category',

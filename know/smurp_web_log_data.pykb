@@ -1,3 +1,4 @@
+# -*-mode: python -*-
 put_direct_parents(['web_log_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
 create_class('spoonerism',
@@ -57,4 +58,10 @@ create_individual('wle_0007',
                   pretty_name='dadly mashing',
                   direct_types=['web_log_entry','spoonerism'],
                   own_slots=[['web_log_text', 'Caffeination does not help.'],
+                            ])
+create_individual('wle_0008',
+                  pretty_name="""Sail or Hotel, You Decide""",
+                  direct_types=['web_log_entry','architecture'],
+                  own_slots=[['web_log_text', 'Good heavens'],
+                             ['web_log_url', 'http://www.kapook.com/hilight/pichilight/385.html'],
                             ])

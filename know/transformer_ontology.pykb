@@ -1,4 +1,4 @@
-
+# -*-mode: python -*-
 # Transformer contributes to the nooron_app_architecture, but how does
 # it relate to nooron_app_wardrobes?
 #put_direct_parents(['nooron_app_architecture'])

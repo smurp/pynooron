@@ -1,4 +1,4 @@
-
+# -*-mode: python -*-
 put_frame_pretty_name(current_kb(),"Convenience Procedures")
 put_slot_values(current_kb(),':DOCUMENTATION',
                 ["""These convenience PyOKBC procedures are an experiment
@@ -42,7 +42,9 @@ del npts_for_self_and_instances
 def actions_for_self_and_instances(here):
     #actions_for_self = get_slot_values(here,'actions_for_self',
     #                               slot_type=Node._all)[0]
-    actions_for_self = [] # not yet implemented in nooron_app_architecture
+    actions_for_self = get_slot_values(here,'actions_for_self',
+                                       slot_type=Node._template)[0]
+
     if class_p(here):
         actions_for_instances = get_slot_values(here,'actions_for_instances',
                                             slot_type=Node._template)[0]
@@ -52,6 +54,19 @@ def actions_for_self_and_instances(here):
 register_procedure('actions_for_self_and_instances',
                    procedure=create_procedure(body=actions_for_self_and_instances))
 del actions_for_self_and_instances
+
+
+####################################################################
+
+def get_my_nooron_app_data_kb(here):
+    parents =  get_kb_direct_parents(kb=here)
+    for parent in parents:
+        if instance_of_p(parent,'nooron_app_data',kb=here)[0]:
+            return parent
+    return None
+register_procedure('get_my_nooron_app_data_kb',
+                   procedure=create_procedure(body=get_my_nooron_app_data_kb))
+del get_my_nooron_app_data_kb
 
 
 ####################################################################

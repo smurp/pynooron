@@ -1,0 +1,11 @@
+# -*- mode: python -*-
+put_direct_parents(['linguistic_shell_ontology'])
+put_instance_types(current_kb(),['nooron_app_wardrobe'])
+put_frame_pretty_name(current_kb(),"Linguistic Shell Wardrobe")
+
+create_class('linguistic_shell_app',
+             template_slots=[['npt_for_self',
+                              'linguistic_shell_contains.html',
+                              'linguistic_shell_contains_PLs.dot']],
+             )
+

@@ -1,4 +1,4 @@
-
+# -*- mode: python -*-
 put_direct_parents(['transformer_ontology'])
 
 create_individual('html_extension',
@@ -62,6 +62,14 @@ create_individual('transform_dot_2_svg',
                   own_slots=[['EmitsExtension','svg_extension'],
                              ['RequiresProgram','dot'],
                              ['LiteralExternalCommand','dot -Tsvg']])
+
+##########################################################
+
+create_individual('glade_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/glade'],
+                             ['LiteralExtension','.glade'],
+                             ['ApplicableTransformers']])
 
 ##########################################################
 

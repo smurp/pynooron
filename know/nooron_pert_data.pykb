@@ -1,3 +1,4 @@
+# -*-mode: python -*-
 put_direct_parents(['pert/pert_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
 create_individual('Nooron_0_2_1',
@@ -54,6 +55,7 @@ create_individual('FormActions',
                   direct_types=['Task'],
                   own_slots=[['EstimatedHours', 2],
                              ['Predecessors', 'FormGeneration', 'AuthorizationStubbedIn', 'OkbcConstraints'],
+                             ['Status', 'complete'],
                              ['TaskDescription', """Write create_individual and create_class
               npts which are limited by authorization
               stubs.  method:add_slot_value """],
@@ -84,7 +86,7 @@ create_individual('ThroughTheWebEditing',
                   pretty_name='Through-the-web editing',
                   direct_types=['Task'],
                   own_slots=[['EstimatedHours', 3],
-                             ['Predecessors', 'PyKb_save_kb', 'FormActions', 'CreateNewFramesInRightKB', 'RunOnPort80', 'PyOkbcCorrectness'],
+                             ['Predecessors', 'PyKb_save_kb', 'HighPriorityForms', 'CreateInNooronData', 'RunOnPort80', 'PyOkbcCorrectness'],
                              ['TaskDescription', 'Make it possible to at least add and edit frames.'],
                             ])
 create_individual('AuthorizationStubbedIn',
@@ -247,8 +249,8 @@ create_individual('DocBookWithPictures',
                              ['TaskDescription', """Put pictures (.jpg,.ps) from graphviz into DocBook
               output."""],
                             ])
-create_individual('CreateNewFramesInRightKB',
-                  pretty_name='Create new frames in the right KB',
+create_individual('CreateInNooronData',
+                  pretty_name='Create in nooron_app_data kbs',
                   direct_types=['Task'],
                   own_slots=[['EstimatedHours', 3],
                              ['Predecessors', 'Nooron_0_2_1'],
@@ -256,4 +258,68 @@ create_individual('CreateNewFramesInRightKB',
               nooron_app_class, those instances should be created in
               the appropriate nooron_app_data kb."""],
                             ])
+create_individual('HighPriorityForms',
+                  pretty_name='High Priority Forms',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'FormActions'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Create forms to support project management and pattern language maintenance.'],
+                            ])
+create_individual('PDFwithPictures',
+                  pretty_name='PDF with Pictures',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '2'],
+                             ['Predecessors', 'DocBookWithPictures'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', ''],
+                            ])
+create_individual('ImprovingContent',
+                  pretty_name='Improving Content',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'CriteriaAndEvaluations'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Use Criteria and Evaluations to improve knowledge (including frames and garments)'],
+                            ])
+create_individual('CentralRegistryOfEvolvingApps',
+                  pretty_name='Central Registry of Evolving Apps',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'ImprovingContent', 'CentralAppRegistry'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Combine Criteria and Evaluations with the App Registry so that Nooron Apps can undergo collaborative filtering and collaborative amelioration.'],
+                            ])
+create_individual('DistributedRegistryOfEvolvingApps',
+                  pretty_name='Distributed Registry of Evolving Apps',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'CentralRegistryOfEvolvingApps'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Create distributed system for using collaborative filtration to discover evolving apps.'],
+                            ])
 
+create_individual('FilteredKnowledgeAcquisition',
+                  pretty_name='Filtered Knowledge Acquisition',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'EvolvingAppRegistry'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Acquire knowledge from multiple instances of the same Nooron App.'],
+                            ])
+
+create_individual('DistributedEncyclopedia',
+                  pretty_name='Distributed Encyclopedia',
+                  direct_types=['Task'],
+                  own_slots=[['EstimatedHours', '6'],
+                             ['Predecessors', 'FilteredKnowledgeAcquisition'],
+                             ['References', ''],
+                             ['Status', 'future'],
+                             ['TaskDescription', 'Combine Criteria and Evaluations with the App Registry so that Nooron Apps can undergo collaborative filtering and collaborative amelioration.'],
+                            ])

@@ -1,4 +1,4 @@
-
+# -*-mode: python -*-
 put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_wardrobe'])
 put_frame_pretty_name(current_kb(),"Pattern Language Wardrobe")

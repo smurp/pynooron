@@ -60,6 +60,15 @@ create_slot('slot_display_order',
             should be displayed.  This is respected by the template
             frame_as_html but not required by it.  In other words,
             slot_display_order is optional on any nooron_app_class.""")
+
+#create_slot('kb_owner',
+#            own_slots=[[':DOMAIN',':KB'],
+#                       [':SLOT-VALUE-TYPE','nooron_user']],
+#            doc="""The KB Owner is the Person who has administrative control over the KB.""")
+#create_class('nooron_user',
+#             doc="""A nooron_user is the identifier for a person (or bot presumably) who uses Nooron.  A UserID.""")
+
+
 create_class('nooron_app_component',
              direct_superclasses=[':KB'],
              doc="""Nooron app components are knowledgebases which
@@ -69,8 +78,8 @@ create_class('nooron_app_ontology',
              own_slots=[['merges_in',]],
              direct_superclasses=['nooron_app_component'],
              doc="""This is the ontology for a nooron app, equivalent to a
-             relational database schema or to a set of data structure
-             declarations for an object oriented system.  Knowledge bases of
+             relational database schema or to a set of class 
+             definitions for an object oriented system.  Knowledge bases of
              this kind depend on nothing, except possibly other ontologies.
              It would, for example be fine to create a nooron_app_ontology
              which extended another.""")
@@ -118,6 +127,10 @@ create_class('nooron_app_class',
              then inherit facitilies for automatic display such as,
              initially, slot_display_order.""")
 
+#create_class('collection_of_kbs',
+#             own_slots=[[':DOMAIN',':KB']],
+#             doc="""A collection_of_kbs is a kb (possibly transient) which
+#             has kbs as its parents.""")
 
 # maybe there should be a kb like: nooron_app_core_wardrobe for...
 create_class(':THING',
@@ -127,7 +140,8 @@ create_class(':THING',
                               ],
                              ['actions_for_self',                              
                               'change_pretty_name.html',
-                              'put_frame_details.html']])
+                              'put_frame_details.html',
+                              'delete_frame.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
                               'class_and_instances.html',
@@ -136,6 +150,7 @@ create_class(':CLASS',
                              ['actions_for_instances',
                               'create_individual.html',
                               'delete_frame.html']])
+
 create_class(':KB',
              template_slots=[['npt_for_self',
                               'classes_in_kb.dot',
@@ -145,3 +160,4 @@ create_class(':KB',
                              ['actions_for_self',
                               'save_kb_as.html',
                               'put_direct_parents.html']])
+
