@@ -22,17 +22,6 @@ database table.)
 This template is inherited by everything which is an instance of
 :THING, or any subclass of :THING.  Since everything is in fact a :THING
 this template is available to every KB, CLASS, INDIVIDUAL, SLOT, and FACET.
-The complete set of universally available templates is: 
-
-   <div tal:define="skins python:get_slot_values(':THING','npt_for_self',
- 		  			         slot_type=ALL)[0];
-                    baseurl python:request.split_uri()[0]"
-        tal:condition="skins"
-  	tal:repeat="skin skins"
-        tal:omit-tag="">
-     <a tal:attributes="href python:baseurl+'?with_template='+skin" 
-        tal:content="skin"></a>,
-   </div>
 </div>
 
 <div metal:fill-slot="main">
@@ -75,7 +64,7 @@ The complete set of universally available templates is:
 </div>
 
 <hr>
-$Id: frame.html,v 1.4 2003/03/26 23:17:14 smurp Exp $
+$Id: frame.html,v 1.5 2003/03/28 12:53:38 smurp Exp $
 </div>
   </body>
 </html>
