@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.20 2003/04/23 23:32:22 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.21 2003/04/24 11:07:36 smurp Exp $'
 
 
 from pyokbc import *
@@ -77,6 +77,8 @@ class okbc_handler:
 
         if path_list[-1] == '':
             del path_list[-1] # exists if trailing /
+
+        request._auth_info = nooron_root._authenticator.authenticate(request)
 
         if len(path_list) == 1:
             kb = meta_kb()

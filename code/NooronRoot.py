@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.35 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.35 2003/04/23 23:32:22 smurp Exp $'
+__version__='$Revision: 1.36 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.36 2003/04/24 11:07:36 smurp Exp $'
 
 DEBUG = 0
 
@@ -168,6 +168,7 @@ class NooronRoot:
             statusable_handlers.append(kbh)
 
             lih = login_handler.login_handler(use_auth)
+            self._authenticator = lih
             hs.install_handler(lih)
             hs.install_handler(kbh)
             #statusable_handlers.append(lih)            

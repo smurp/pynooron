@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.15 2003/03/28 11:04:42 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.16 2003/04/24 11:07:36 smurp Exp $'
 
 
 
@@ -70,11 +70,15 @@ class NooronPageTemplate(PageTemplate):
         self.root = nooron_root
 
     def pt_getContext(self):
-
+        print "_auth_info =", self.request._auth_info
+        AU =  len(self.request._auth_info) \
+             and self.request._auth_info[0] or None
+        print "AU =",AU
         #absolute_url = 'http://'+nooron_root.server_name+nooron_root.
         c = {'template': self,
              'here': self.obj,
-             'this': self.obj,             
+             'this': self.obj,
+             'AUTHENTICATED_USER':AU,
              'this_kb':current_kb(),
              'container': self.container,
              'nothing': None,

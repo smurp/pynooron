@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.15 2003/04/14 22:27:13 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.16 2003/04/24 11:07:36 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -39,6 +39,25 @@ def split_uri (self):
     return self._split_uri
 http_request.split_uri = split_uri
 
+def reply_headers_items(self):
+    items = self.reply_headers.items()
+    ret_items = []
+    lst = type([])
+    for item in items:
+        if type(item[1]) == lst:
+            for val in item[1]:
+                ret_items.append((item[0],val))
+        else:
+            ret_items.append(item)
+    return ret_items
+http_request.reply_headers_items = reply_headers_items
+
+def build_reply_header (self):
+    return string.join (
+        [self.response(self.reply_code)] + \
+        map(lambda x: '%s: %s' % x, self.reply_headers_items()),
+        '\r\n') + '\r\n\r\n'
+http_request.build_reply_header=build_reply_header
 
 def form(self):
     if not self.__dict__.has_key('_form'):
@@ -140,7 +159,7 @@ def chop_up_query(self,query):
             else:
                 retdict[pair[0]] = [retdict[pair[0]]] + [pair[1]]
     return retdict
-http_request.chop_up_query = chop_up_query    
+http_request.chop_up_query = chop_up_query
 
 def split_query(self):
     if (not hasattr(self,'_split_query')) or getattr(self,'_split_query') is None:
@@ -159,7 +178,6 @@ http_request.effective_query = effective_query
 def _effective_query_init(self):
     query_copy = self.split_query().copy()
     self._effective_query = query_copy
-    
 http_request._effective_query_init = _effective_query_init    
 
 def effective_query_extend(self,incoming):
