@@ -11,7 +11,7 @@
 <tal:block
      condition="python:1" 
      define="groups python:call_procedure(get_procedure('group_by_year'),
-                                          arguments=(this_kb,'late','any'));
+                                          arguments=(this_kb,'early','any'));
              spawn python:[];
              sway  python:[]">
 
