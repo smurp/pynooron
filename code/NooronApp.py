@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.32 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.32 2003/03/28 11:04:42 smurp Exp $'
+__version__='$Revision: 1.33 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.33 2003/04/01 15:20:44 smurp Exp $'
 
 
 from pyokbc import *
@@ -87,8 +87,9 @@ class GenericFrame(AbstractApp):
             prev_ext = this_ext
             cp.append_pipe(pipesection)
 
-        request['Content-Type'] = cp.mimetype()        
         request['Content-Freshness'] = cp.prime()
+        request['Content-Type'] = cp.mimetype()
+
         final_producer = cp
 
         if hasattr(final_producer,'content_length'):
@@ -150,8 +151,12 @@ class GenericFrame(AbstractApp):
         mimetype=get_slot_value(extension_frame,'MimeType')[0]
         transformer_frame = 'transform_%s_2_%s' % (from_ext,to_ext)
         command=get_slot_value(transformer_frame,'LiteralExternalCommand')[0]
+        readsfrom=get_slot_value(transformer_frame,'ReadsFrom')[0]
+        writesto=get_slot_value(transformer_frame,'WritesTo')[0]
         return PipeSection(command=command,
                            extension=to_ext,
+                           readsfrom=readsfrom,
+                           writesto=writesto,
                            mimetype=mimetype)
 
     def get_pipe_section_for_spigot(app,to_ext,producer=None):
