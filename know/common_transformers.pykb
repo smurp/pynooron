@@ -94,7 +94,7 @@ create_individual('jpg_extension',
 
 create_individual('svg_extension',
                   direct_types=['FileExtension'],
-                  own_slots=[['MimeType','application/svg'],
+                  own_slots=[['MimeType','image/svg+xml'],
                              ['LiteralExtension','.svg'],
                              ['ApplicableTransformers',
                               'transform_pdf_2_ps']])
