@@ -1,0 +1,1 @@
+breadcrumbs: <hr tal:replace="python: request.split_uri()[0]"/>

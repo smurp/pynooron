@@ -1,11 +1,13 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.5 2002/07/24 11:22:16 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.6 2002/07/29 22:37:50 smurp Exp $'
 
 
 # GooseWorks support
 import GW
 from GWApp import GWApp
+
+from NooronRoot import NooronRoot
 
 DEBUG = 1
 from medusa import counter
@@ -20,7 +22,7 @@ class ProcHandler:
         self.graph = graph
         
     def preMergeMap(self,refUri,addedThemes):
-        print "now merging in %s" % refUri      
+        if DEBUG: print "now merging in %s" % refUri      
         
     def postMergeMap(self,e,refUri,addedThemes):
         if(e):
@@ -28,7 +30,7 @@ class ProcHandler:
             GW.clearError()
 
     def unprocessedTopicRefUri(self,uris):
-        print "\nunprocessed uris"
+        if DEBUG: print "\nunprocessed uris"
         for u in uris:
             print u
 
@@ -39,16 +41,16 @@ class ProcHandler:
         self.graph.addAssociation(a)
 
     def endRootElement(doh):
-        print "ending root element %s" % str(doh)
+        if DEBUG: print "ending root element %s" % str(doh)
 
 
 class GraphHandler:
     def association(assoc,role,member):
-        print "association: (%s,%s,%s)" % (str(assoc),str(role),str(member))
+        if DEBUG: print "association: (%s,%s,%s)" % (str(assoc),str(role),str(member))
     def startRootElement():
-        print "starting root element"
+        if DEBUG: print "starting root element"
     def endRootElement():
-        print "ending root element"
+        if DEBUG: print "ending root element"
 
 
 
@@ -58,23 +60,24 @@ class topicmap_handler:
 
     #  see canned_queries.py for old stuff
 
-    def __init__(self,from_root,pipeline_factory):
+    def __init__(self,from_root):
         self.hits = counter.counter()
         self.exceptions = counter.counter()
         self.from_root = from_root
         self.graphs = {}
-        self.pipeline_factory = pipeline_factory
-
 
     def status(self):
-        return medusa.producers.simple_producer("topicmap_handler maps:" + str(self.graphs))
+        return medusa.producers.simple_producer("topicmap_handler maps:" +\
+                                                str(self.graphs))
 
 
     def match(self,request):
         [path, params, query, fragment] = request.split_uri()
+
         retval = path.find(self.from_root)
         if retval < 0:
             retval = 0
+        #print "topicmap_handler %s %s\n" % (path,str(retval))
         return retval
 
 
@@ -84,8 +87,7 @@ class topicmap_handler:
         self.graphs[tm_name] = GWApp(g)
 
     def import_topicmap(self,tm_name,tm_uri):
-        if DEBUG:
-            print tm_name,tm_uri
+        if DEBUG: print tm_name,tm_uri
             
         u = GW.Uri(tm_uri)
 
@@ -107,8 +109,7 @@ class topicmap_handler:
         self.graphs[tm_name] = app
         app.tm_uri = tm_uri
         
-        if DEBUG:
-            print self.graphs[tm_name]
+        if DEBUG: print self.graphs[tm_name]
 
     def available_graphs(self):
         graph_name = self.graphs.keys()
@@ -219,6 +220,6 @@ class topicmap_handler:
         if not obj:
             obj = app
 
-        pl = self.pipeline_factory.build_pipeline(request,obj)
+        pl = NooronRoot().pipeline_factory.build_pipeline(request,obj)
         pl.publish()
         

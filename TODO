@@ -1,1 +1,53 @@
+Principles Guiding ToDo Prioritization
+  - scratch own itch
+  - do tough stuff early (to ensure they affect design early)
+  - release early, and have something usable (to promote participation)
+      (opposed to scratch own itch?)
+
+TODO (prioritized as above, roughly)
+  - store evaluations (in sql?)
+  - create evaluation facilities
+  - filter/sort/format things on the basis of evaluations 
+      (or other attributes)
+  
+  - links to TMObjects from within templates
+    Q. Are IDs in xtm only, not in graph?
+    A. Betcha...
+
+  - implement serving of /code/, /templates/
+  - implement serving of /map/
+    - load topicmaps as specified in the root topicmap
+    Q. make root (or /map) a topic map? 
+    A. I guess.
+  - write things to a topic map (and save them)
+  - ask Jan whether IDs are a part of the graph
+
+  - display instances in class-specific templates (if they exist)
+    ? are such associations in topic maps?  sounds like they should be
+    ? use ython code or templates to select the right template
+
+  - deal with nested TemplateManagers
+  - ensure that here/blah uses acquisition-like something
+  - test root/blah and container/blah
+  - implement adding of topics
+    - set up form and action architecture
+  - create user authentication system
+    - implement NotSoBasicAuth
+
+  - create a nano-fsa 
+  - display weblog.xtm
+  - generate some svg now
+  - time for users
+
+TODO  
+  - sTQML queries to figure out:
+    - instances of a class
+    - attributes of a topic
+    - classes of a topic
+    - 
+  - specific queries required for reproducing nanotech scenario 
+
+
+TODO for nanotech scenario
+  - create ontology for scenarios
 

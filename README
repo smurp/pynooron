@@ -22,24 +22,6 @@ questions:
   ? What is a forum  
       - a topic of type forum?
 
-TODO
-  - use templates from disk (reloadable without having to restart server)
-  - 
-  
-
-TODO  
-  - sTQML queries to figure out:
-    - instances of a class
-    - attributes of a topic
-    - classes of a topic
-    - 
-  - specific queries required for reproducing nanotech scenario 
-
-  - create 
-
-
-TODO for nanotech scenario
-  - create ontology for scenarios
 
 data will have skins
   Note how different these views of a person are:

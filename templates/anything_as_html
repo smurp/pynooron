@@ -1,0 +1,18 @@
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+
+Boo!
+
+
+<hr>
+$Id: anything_as_html,v 1.1 2002/07/29 22:37:50 smurp Exp $
+</div>
+</body>
+</html>

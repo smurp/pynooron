@@ -100,32 +100,15 @@
   </tr>
 </table>
 
+<br>
+Rember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
+
 <div tal:define="test python:0" tal:condition="test">
-<!-- $Revision: 1.3 $ -->
-<dl>
-  <dt>root</dt>
-  <dd tal:content="root"></dd>
-
-  <dt>here</dt>
-  <dd tal:content="here"></dd>
-
-  <dt>template</dt>
-  <dd>FIXME</dd>
-
-  <dt>container</dt>
-  <dd tal:content="container"></dd>
-
-  <dt>options</dt>
-  <dd tal:content="options"></dd>
-
-  <dt>request</dt>
-  <dd tal:content="request"></dd>
-</dl>
 
 </div>
 
 <hr>
-$Id: topic_as_html,v 1.3 2002/07/24 11:22:16 smurp Exp $
+$Id: topic_as_html,v 1.4 2002/07/29 22:37:50 smurp Exp $
 </div>
   </body>
 </html>

@@ -1,7 +1,8 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.4 2002/07/24 11:02:41 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.5 2002/07/29 22:37:50 smurp Exp $'
 
+DEBUG = 0
 
 from NooronRoot import NooronRoot
 from NooronPageTemplate import NooronPageTemplate
@@ -10,17 +11,6 @@ import string
 import medusa
 
 class producer:
-    domain = []
-    range = 'cdata'
-    def mime_type(self):
-        if self.def_mime_type:
-            return self.def_mime_type[0]
-        else:
-            try:
-                return self.content.mime_type()
-            except:
-                return 'text/plain'
-
     def more_content(self):
         try:
             return self.content.more()
@@ -31,6 +21,26 @@ class producer:
         self.content = content
         self.written = 0
         self.request = request
+
+class typed_producer(producer):
+    domain = []
+    range = 'cdata'
+    def mime_type(self):
+        if self.def_mime_type:
+            return self.def_mime_type[0]
+        else:
+            try:
+                return self.content.mime_type()
+            except:
+                return 'text/plain'
+    
+
+class typed_file_producer(typed_producer,medusa.producers.file_producer):
+    def_mime_type = ['text/plain']
+    def __init__(self,content,request=None):
+        producer.__init__(self,content,request)
+        medusa.producers.file_producer.__init__(self,content)
+
 
 class transformer(producer):
     """A transformer is a producer which processes a stream of character data.
@@ -77,10 +87,11 @@ class tgz(transformer):
     extensions = ['tgz']    
     def_mime_type = ['application/x-gzip']    
 
-class templated_producer(producer):
+class templated_producer(typed_producer):
     """Producers which generate their data through a PageTemplate."""
     template_name = "primordial"
     def __init__(self,content,request=None):
+        #print "templated_producer obj=",content,"request =",request
         producer.__init__(self,content)
         tr = NooronRoot().template_root()
         template=tr.obtain(self.template_name,
@@ -99,6 +110,18 @@ class templated_producer(producer):
             self.written = 1
             #print type(self.template)
             return self.template(content=str(self.more_content()))
+
+class arbitrary_producer(templated_producer):
+    domain = []
+    extensions = []
+    def_mime_type = ['text/html']
+    template_name = ''
+    def __init__(self,content,request=None,uri=None):
+        query = request.split_query()
+        print "query = ",query
+        self.template_name = query.get('with_template')
+        templated_producer.__init__(self,content,request)
+        
 
 class topic_html_producer(templated_producer):
     """Render a topic in a fashion specific to its class, or else generically.
@@ -133,9 +156,27 @@ class topicmap_html_producer(templated_producer):
     def_mime_type = ['text/html']
     template_name = "topicmap_as_html"
 
+class directory_html_producer(templated_producer):
+    domain = ['DirectoryFacade.DirectoryFacade']
+    extensions = ['html','htm']
+    def_mime_type = ['text/html']
+    template_name = "directory_as_html"
+
+    
+
+#class python_html_producer(typed_file_producer):
+#    domain = ["<type 'file'>"]
+#    extensions = ['py']
+#    def_mime_type = ['text/plain']
+
+
 class pipeline:
     def mime_type(self):
-        return self.producers[-1].mime_type()
+        try:
+            return self.producers[-1].mime_type()
+        except:
+            return 'text/html'            
+
     def __init__(self,producers,request):
         self.producers = producers
         self.request = request
@@ -151,7 +192,7 @@ class pipeline:
         while len(self.producers):
             p = self.producers.pop(0)
             d = p.more()
-            if 0:
+            if DEBUG:
                 print """==================\n%s %s %s\n==================\n""" % \
                       (str(len(d)),
                        str(len(self.producers)),

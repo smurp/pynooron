@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.2 2002/07/24 11:02:41 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.3 2002/07/29 22:37:50 smurp Exp $'
 
 """
 NooronRoot is the root object of a nooron instance.
@@ -23,6 +23,7 @@ class NooronRoot:
             
     fsroot = None
     http_server = None
+    pipeline_factory = None
 
     def make_fname(self,frag):
         if type(frag) == type([]):
