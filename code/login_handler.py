@@ -235,7 +235,9 @@ class friendly_favors_authenticator:
                                        group[0],      #favors group
                                        self._fqdn,
                                        group[1])      #group key
-                print "resp=",resp
+                print "logging in userid:%s, group:%s, resp=",(auth_info[0],
+                                                    group[0],
+                                                    str(resp))
                 #if resp['group_status'] != 'Active':
                 #    raise 'FriendlyFavorsGroupInactive',\
                 #          "group:%s status:%s" % (group[0],
