@@ -1,5 +1,9 @@
 
+WARNINGS = 0
+INCOMPLETE = 1
+
 import exceptions
+import copy
 
 class OkbcCondition(exceptions.Exception):
     pass
@@ -8,8 +12,8 @@ class CardinalityViolation(OkbcCondition):
     def __init__(self,*args):
         self.args = args
 
-class GenericError(OkbcCondition):
-    pass
+class ClassNotFound(OkbcCondition):    pass
+class GenericError(OkbcCondition):     pass
 
 class Node:
     pass # so Symbol can subclass it
@@ -44,33 +48,67 @@ class Node:
     _facet            = Symbol(':facet')
     _default          = Symbol(':default')
 
-    def class_p(self):
-        return None
-    def connection_p(self):
-        return None
-    def facet_p(self):
-        return None
-    def individual_p(self):
-        return None
-    def kb_p(self):
-        return None
-    def procedure_p(self):
-        return None
-    def slot_p(self):
-        return None
+    def class_p(self):       return None
+    def connection_p(self):  return None
+    def facet_p(self):       return None
+    def individual_p(self):  return None
+    def kb_p(self):          return None
+    def procedure_p(self):   return None
+    def slot_p(self):        return None
 
 
 
+def dump_frame(frame):
+    print frame.get_frame_name()
+    for klass in frame.get_instance_types(inference_level=Node._all)[0]:
+        print "  Class:", klass
+    if frame.class_p():
+        for super in frame.get_class_superclasses()[0]:
+            print "  Superclass:", super
+    for slot in frame.get_frame_slots():
+        print "  Slot:", slot
+        print "     values: "+str(frame.get_slot_values(slot)[0])
+    
+def warn(mess):
+    if WARNINGS:
+        print mess
+def incomplete(mess):
+    if INCOMPLETE:
+        warn(mess)
 
 def class_p(thing):
     return thing.class_p()
 
-def create_class(name,kb=None,kb_local_only_p=0):
+#def create_class(name,kb=None,kb_local_only_p=0):
+def create_class(name,kb=None,
+                 direct_types=[],
+                 direct_superclasses=[],
+                 primitive_p=1,
+                 doc = None,
+                 template_slots=[],
+                 template_facets=[],
+                 own_slots=[],
+                 own_facets=[],
+                 primitive_p=1,
+                 handle=None,
+                 pretty_name=None,
+                 kb_local_only_p=0):
     """Creates a class called name."""
-    # p45
     if not kb: kb = current_kb()
-    return kb.connection().create_frame_internal(name,KLASS,
-                                                 kb,kb_local_only_p)
+    return kb.create_frame_internal(name,Node._class,
+                                    direct_types=direct_types,
+                                    direct_superclasses=direct_superclasses,
+                                    primitive_p=primitive_p,
+                                    doc=doc,
+                                    template_slots = template_slots,
+                                    template_facets = template_facets,
+                                    own_slots = own_slots,
+                                    own_facets = own_facets,
+                                    handle = handle,
+                                    pretty_name = pretty_name,
+                                    kb_local_only_p = kb_local_only_p
+                                    )
+
 
 def create_frame(name,frame_type,kb=None,kb_local_only_p=0):
     """Creates a class called name."""
@@ -87,20 +125,19 @@ def create_individual(name,
                       own_facets = [],
                       handle = None,
                       pretty_name = None,
-                      kb_local_only_p=0):
+                      kb_local_only_p = 0):
     """Creates an individual frame called name.
     Type direct types of the instance are given by direct-types.
     The other parameters have the same meaning as for create-frame."""
     # p45
     if not kb: kb = current_kb()
     return kb.create_frame_internal(name,Node._individual,
-                                    kb=kb,
-                                    direct_types=direct_types,
+                                    direct_types = direct_types,
                                     own_slots = own_slots,
                                     own_facets = own_facets,
                                     handle = handle,
                                     pretty_name = pretty_name,
-                                    kb_local_only_p=kb_local_only_p)
+                                    kb_local_only_p = kb_local_only_p)
 
 def create_slot(name,kb=None,kb_local_only_p=0):
     """Creates a slot called name."""
@@ -216,9 +253,9 @@ class KB(Node):
                               primitive_p=1,
                               handle=None,
                               pretty_name=None,
-                              kb_local_only_p=1):
+                              kb_local_only_p=0):
         if frame_type == Node._class:
-            frame = CLASS(name,kb)
+            frame = KLASS(name,kb)
         elif frame_type == Node._individual:
             frame = INDIVIDUAL(name,kb)
         elif frame_type == Node._slot:
@@ -230,6 +267,7 @@ class KB(Node):
 
         for dirtype in direct_types:
             frame.coerce_to_class(dirtype,kb=kb,
+                                  error_p = 1,
                                   kb_local_only_p=kb_local_only_p)
 
         for slot_spec in own_slots:
@@ -245,8 +283,8 @@ class KB(Node):
                     slot_values.append(slot_value_spec)
                 frame.put_slot_values(slot,slot_values,
                                       kb_local_only_p=kb_local_only_p)
-
         return frame
+
 
 ##    def close_kb
 ##    def copy_kb
@@ -257,6 +295,7 @@ class KB(Node):
 ##    def find_kb
 ##    def find_kb_locator
 ##    def find_kb_of_type
+##    def frame_in_kb_p
 ##    def generate_individual_name
 ##    def get_kb_direct_children
 ##    def get_kb_direct_parents
@@ -294,7 +333,13 @@ class MemoryKb(KB):
         self._cache = {}
 
     def _add_frame_to_cache(self,frame):
-        self._cache[frame.get_frame_name()] = frame
+        fn = frame.get_frame_name()
+        self._cache[fn] = frame
+
+    def frame_in_kb_p_internal(kb,thing,
+                               kb_local_only_p = 0):
+        return kb._cache.has_key(str(thing))
+
 
 
 class FRAME(Node):
@@ -303,10 +348,27 @@ class FRAME(Node):
         self._kb = kb
         self._direct_types = []
         self._frame_in_cache_p = 0
+        self._pretty_name = None
         if kb:
             kb._add_frame_to_cache(self)
         self._own_slots = {}
         self._template_slots = {}
+
+    def get_instance_types(frame,
+                           kb = None,
+                           inference_level = Node._taxonomic,
+                           number_of_values = Node._all,
+                           kb_local_only_p = 0):
+        incomplete("get_instance_types ignores kb_local_only_p")
+        if inference_level in [Node._taxonomic,Node._all]:
+            taxonomic_types = []
+            for dclass in frame._direct_types:
+                if not (dclass in taxonomic_types):
+                    taxonomic_types.append(dclass)
+                    taxonomic_types.extend(dclass.get_class_superclasses()[0])
+            return (taxonomic_types,1,0)
+        else:
+            return (frame._direct_types,1,0)
 
 
     def __str__(self):
@@ -320,7 +382,9 @@ class FRAME(Node):
                         error_p = 1,
                         kb_local_only_p = 0):
         found_class = None
-        class_found_p = thing.class_p() and thing.frame_in_kb_p(kb=kb)
+        class_found_p = thing.class_p() \
+                        and thing.frame_in_kb_p(kb=kb,
+                                                kb_local_only_p=kb_local_only_p)
         if class_found_p:
             if thing not in self._direct_types:
                 self._direct_types.append(thing)
@@ -329,6 +393,8 @@ class FRAME(Node):
             raise ClassNotFound(thing,kb)            
         return (found_class,class_found_p)
         
+    def frame_in_kb_p(self,kb=None,kb_local_only_p=0):
+        return kb.frame_in_kb_p_internal(self,kb_local_only_p=kb_local_only_p)
 
     def get_frame_name(self):
         return self._name
@@ -415,12 +481,36 @@ class FRAME(Node):
                 self._template_slots[slot] = UNIT_SLOT(slot,values)
 
 class KLASS(FRAME):
+    _direct_super_classes = []
     def get_frame_type(self):
         return Node._class
     def _type_code(self):
         return "C"
     def class_p(self):
         return 1
+
+    def add_class_superclasses(self,new_superclass,
+                               kb=None,
+                               kb_local_only_p = 0):
+        if new_superclass not in self._direct_super_classes:
+            self._direct_super_classes.append(new_superclass)
+    
+    def get_class_superclasses(self,
+                               kb = None,
+                               inference_level = Node._taxonomic,
+                               number_of_values = Node._all,
+                               kb_local_only_p = 0):
+        if inference_level == Node._direct:
+            return (copy.copy(self._direct_super_classes),1,0)
+        supers = []
+        self.get_superclasses_recurse(supers)
+        return (supers,1,0)
+
+    def get_superclasses_recurse(self,supers):
+        for super in self._direct_super_classes:
+            if not (super in supers):
+                supers.append(super)
+                super.get_superclasses_recurse(supers)
     
 class INDIVIDUAL(FRAME):
     def get_frame_type(self):
