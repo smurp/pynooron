@@ -1,22 +1,26 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.12 2003/01/31 07:57:43 smurp Exp $')
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.13 2003/02/08 00:35:17 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
     ['Q',"What is Nooron?"],
     ['A',"""I finally got really annoyed with how hard it is for people to
-    think clearly together.  So I decided to [try to] solve the problem
+    think clearly together. So I decided to [try to] solve the problem
     once and for all [cue mad-scientist-music] by creating an online
     digital ecosystem in which knowledge, logic and presentation can all
     evolve in a globe-spanning, self-organizing, peer to peer system of
-    web servers which is simultaneously the handiest, most flexible
-    piece of software everybody uses and also the software substrate for an
-    emergent global collective intelligence. Take your pick.
-    See <a href="http://www.noosphere.org/background/how_to">How to Build a Global Brain</a>
-    for an expanded form of this vision.  [better keep the
-    mad-scientist-music playing, though.]"""]])
+    web servers which is simultaneously the handiest, most flexible piece
+    of software everybody[!] uses and also the software substrate for an
+    emergent global collective intelligence. Take your pick. See 
+    <a href="http://www.noosphere.org/background/how_to">How to Build a Global Brain</a>
+    for an expanded form of this vision. 
+    [Best keep the mad-scientist-music playing though.] 
+    The somewhat more sober
+    <a href="http://www.noosphere.org/background/whitepaper">Nooron White Paper</a>
+    covers the motivation for Nooron rather well, but is otherwise quite out of date.
+    """]])
 
 create_individual('U00200',direct_types=['faq'],
                   own_slots=[
@@ -27,7 +31,7 @@ create_individual('U00200',direct_types=['faq'],
     right now.
     <ul>
     <li>it comes with some demo 'Nooron Apps' for publishing
-    your own 'Pattern Language', 'Web Log', or 'FAQ'</li>
+    your own 'Pattern Language', 'Web Log', 'FAQ' or 'PERT Chart'</li>
     <li>it already knows how to present the above information
     in HTML, DocBook and graphical forms (using Graphviz)</li>
     <li>anybody who can create HTML manually or has a bit of programming
