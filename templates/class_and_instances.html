@@ -9,8 +9,6 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-
-
 <span  tal:define="items python:get_instance_types(here,inference_level=DIRECT)[0]" 
        tal:condition="items">
   <strong>classes:</strong>
@@ -22,7 +20,9 @@
   </span>
   <br/>
 </span>
-<i><p tal:content="structure python:get_slot_values(here,':DOCUMENTATION')[0] or ''"></p></i>
+<tal:dummy define="docs python:get_slot_values(here,':DOCUMENTATION')[0]">
+<i tal:condition="docs"><p tal:content="structure python:docs[0]"></p></i>
+</tal:dummy>
 <span  tal:define="items python:get_class_instances(here)[0]" 
        tal:condition="items">
   <strong>instances:</strong>
@@ -36,15 +36,8 @@
   </ul>
 </span>
 
-
-
-<div tal:define="test python:0" tal:condition="test">
-
-</div>
-
-
 <hr>
-$Id: class_and_instances.html,v 1.5 2003/04/13 22:16:25 smurp Exp $
+$Id: class_and_instances.html,v 1.6 2003/06/27 13:40:28 smurp Exp $
 </div>
   </body>
 </html>

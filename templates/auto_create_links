@@ -1,7 +1,6 @@
 <!-- auth_status -->
-<tal:dummy 
+<tal:block
      condition="python:AUTHENTICATED_USER != AnonymousUser">
-
 
 <tal:dummy
      define="app_classes python:get_class_instances('nooron_app_class')[0]"
@@ -15,13 +14,32 @@
       action=""
       tal:attributes="action python:request.object_request()+
                              '/%s__create_individual.html' % app_class">
- <input type="submit" tal:attributes="value python:'new '+str(app_class)"/>
+ <input 
+    type="submit" 
+    tal:attributes="value python:'New '+str(get_frame_pretty_name(app_class)
+                                            or get_frame_name(app_class))"/>
 </form>
-
 
     </tal:dummy>
   </tal:block>
 </tal:dummy>
+
+<tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
+  <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
+                     kb_to_save python:gmnadk(this_kb)">
+
+    <form 
+       method="GET"
+       action=""
+       tal:attributes="action python:request.object_request()+
+                                '__save_kb'">
+      <input type="hidden" name="kb" value="" 
+             tal:attributes="value kb_to_save">
+      <input type="submit" value="Save All Changes"/>
+    </form>
+
+  </tal:block>
+</tal:block>
  
-</tal:dummy>
+</tal:block>
 

@@ -36,18 +36,6 @@
       </td>
     </tr>
     <tr>
-      <td bgcolor="#CCFFFF" valign="top">
-         <metal:block define-slot="priority_options">
-           <tal:dummy replace="structure container/auto_create_links"/>
-         </metal:block>
-         <div metal:define-slot="available_garments" tal:omit-tag="">
-           <tal:dummy replace="structure container/available_garments"/>
-         </div>
-	<hr/>
-         <metal:block metal:define-slot="available_actions">
-           <tal:dummy replace="structure container/available_actions"/>
-         </metal:block>
-      </td>
       <td bgcolor="white" valign="top">
          <div metal:define-slot="main">
            The main content of the pages goes here.
@@ -75,19 +63,34 @@
 
 <a href="" tal:attributes="href python:'/templates/'+template_title">Show Source</a>
       </td>
+
+      <td bgcolor="#CCFFFF" valign="top">
+         <metal:block define-slot="priority_options">
+           <tal:dummy replace="structure container/auto_create_links"/>
+         </metal:block>
+         <div metal:define-slot="available_garments" tal:omit-tag="">
+           <tal:dummy replace="structure container/available_garments"/>
+         </div>
+	<hr/>
+         <metal:block metal:define-slot="available_actions">
+           <tal:dummy replace="structure container/available_actions"/>
+         </metal:block>
+      </td>
+
     </tr>
 
     <span tal:condition="python:0" tal:omit-tag="">
     <tr>
-      <td bgcolor="blue">name space</td>
       <td bgcolor="lightgreen"
-	  tal:content="structure container/namespace">req</td>
+	  tal:content="structure container/namespace">req
+      </td>
+      <td bgcolor="blue" align="center">&lt;--- various variables</td>
     </tr>
     </span>
   </tbody>
   </table>
 
 <hr>
-$Id: standard_master,v 1.33 2003/06/25 15:52:04 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.34 2003/06/27 13:40:28 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
