@@ -8,8 +8,10 @@ LOCAL_CONNECTION = None
 PRIMORDIAL_KB = ()
 
 import exceptions
+import string
 import copy
 import os
+__allow_access_to_unprotected_subobjects__ = 1
 
 ##########################################
 #    Classes
@@ -29,6 +31,7 @@ class Node:
     pass # so Symbol can subclass it
 
 class Symbol(Node):
+    __allow_access_to_unprotected_subobjects__ = 1 # for ZPT security    
     def __init__(self,name):
         self._name = name
     def __str__(self):
@@ -160,8 +163,10 @@ class Node(Symbol):
                                  _defaults)
 
 class FRAME(Node):
-    def __init__(self,frame_name,kb=None):
+    def __init__(self,frame_name,kb=None,frame_type=None):
         self._name = frame_name
+        self._frame_type = frame_type
+        if not frame_type :warn('FRAME.__init__ has no frame_type for '+frame_name)
         self._kb = kb
         self._direct_types = []
         self._frame_in_cache_p = 0
@@ -171,6 +176,7 @@ class FRAME(Node):
         self._own_slots = {}
         self._template_slots = {}
         self._doc = None
+        self._direct_superclasses = []        
 
     def __str__(self):
         #return "<"+self._name+">"
@@ -179,95 +185,36 @@ class FRAME(Node):
     def __repr__(self):
         return str(self)
 
-    def frame_in_kb_p(self,kb=None,kb_local_only_p=0):
-        return kb.frame_in_kb_p_internal(self,kb_local_only_p)
+#    def frame_in_kb_p(self,kb=None,kb_local_only_p=0):
+#        return kb.frame_in_kb_p_internal(self,kb_local_only_p)
 
-    def get_frame_name(frame,kb_local_only_p=0):
-        return frame._name
+#    def get_frame_name(frame,kb_local_only_p=0):
+#        return frame._name
 
-    def put_slot_value(self,slot, value,
-                       kb=None,
-                       slot_type=Node._own,
-                       value_selector = Node._known_true,
-                       kb_local_only_p = 0):
-        """Sets the values of slot in frame to be a singleton set
-        consisting of a single element: value.  This operation may
-        signal constraint violation conditions (see Section 3.8).
-        Returns no values. """
-        if type(value) == type([]): raise CardinalityViolation(value)
-        if slot_type == Node._own:
-            if self._own_slots.has_key(slot):
-                self._own_slots[slot].set_value(value)
-            else:
-                self._own_slots[slot] = UNIT_SLOT(slot,value)
-        elif slot_type == Node._template:
-            if self._template_slots.has_key(slot):
-                self._template_slots[slot].set_value(value)
-            else:
-                self._template_slots[slot] = UNIT_SLOT(slot,value)
 
-    def put_slot_values(self,slot, values,
-                        kb=None,
-                        slot_type=Node._own,
-                        value_selector = Node._known_true,
-                        kb_local_only_p = 0):
-        """Sets the values of slot in frame to be a singleton set
-        consisting of a single element: value.  This operation may
-        signal constraint violation conditions (see Section 3.8).
-        Returns no values. """
-        if type(values) != type([]): raise CardinalityViolation(values)
-        if slot_type == Node._own:
-            if self._own_slots.has_key(slot):
-                self._own_slots[slot].set_values(values)
-            else:
-                self._own_slots[slot] = UNIT_SLOT(slot,values)
-        elif slot_type == Node._template:
-            if self._own_slots.has_key(slot):
-                self._template_slots[slot].set_values(values)
-            else:
-                self._template_slots[slot] = UNIT_SLOT(slot,values)
 
-class KLASS(FRAME):
-    def __init__(klass,frame_name,kb=None):
-        FRAME.__init__(klass,frame_name,kb=kb)
-        klass._direct_superclasses = []        
-    def get_frame_type(klass):
-        return Node._class
-    def _type_code(klass):
-        return "C"
-#    def class_p(klass):
-#        return 1
+class KLASS(FRAME): pass
+#    def __init__(klass,frame_name,kb=None,frame_type=None):
+#        FRAME.__init__(klass,frame_name,kb=kb,frame_type=frame_type)
 
-    def add_class_superclass(klass,new_superclass,
-                             kb=None,
-                             kb_local_only_p = 0):
-        if new_superclass not in klass._direct_superclasses:
-            klass._direct_superclasses.append(new_superclass)
-    
-    
-class INDIVIDUAL(FRAME):
-    def get_frame_type(self):
-        return Node._individual
-    def _type_code(self):
-        return "I"
-#    def individual_p(self):
-#        return 1
+#    def get_frame_type(klass):
+#        return Node._class
+
+class INDIVIDUAL(FRAME): pass
+#    def get_frame_type(self):
+#        return Node._individual
         
-class SLOT(FRAME):
-    def get_frame_type(self):
-        return Node._slot
-    def _type_code(self):
-        return "S"
-    def slot_p(self):
-        return 1
+class SLOT(FRAME): pass
+#    def get_frame_type(self):
+#        return Node._slot
+#    def slot_p(self):
+#        return 1
 
-class FACET(FRAME):
-    def get_frame_type(self):
-        return Node._facet
-    def _type_code(self):
-        return "F"
-    def facet_p(self):
-        return 1
+class FACET(FRAME): pass
+#    def get_frame_type(self):
+#        return Node._facet
+#    def facet_p(self):
+#        return 1
 
 
 class Connection:
@@ -285,7 +232,8 @@ class Connection:
             kb_type = connection._default_kb_type
         my_meta_kb = connection._meta_kb
         
-        kb = kb_type(kb_locator,initargs=initargs)
+        kb = kb_type(kb_locator,initargs=initargs,
+                     meta=my_meta_kb)
         my_meta_kb._add_frame_to_cache(kb)
         return kb
 
@@ -312,18 +260,20 @@ class Connection:
 ##    def local_connection
 
 
-class KB(Node):
+#class KB(Node):
+class KB(FRAME):    
     """All OKBC methods which take a KB argument should be implemented here.
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
     here.  Oh I am sure this is all screwed up!"""
-    def __init__(kb,name,initargs = {}):
-        kb._name = name        
-        kb._initargs = initargs
+    def __init__(self,name,initargs = {},kb=None):
+        FRAME.__init__(self,name,frame_type=Node._kb,kb=kb)
+
+        self._initargs = initargs
+        
         parent_kbs = initargs.get(Node._parent_kbs,[])
-        if PRIMORDIAL_KB:
-            parent_kbs.append(PRIMORDIAL_KB)
-        kb._parent_kbs = parent_kbs
+        if PRIMORDIAL_KB: parent_kbs.append(PRIMORDIAL_KB) #FIXME not always!
+        self._parent_kbs = parent_kbs # FIXME
     
     def kb_p(kb):
         return 1
@@ -365,13 +315,13 @@ class KB(Node):
         is_name = type(name) == type('')
         if is_name:
             if frame_type == Node._class:
-                frame = KLASS(name,kb)
+                frame = KLASS(name,kb,frame_type=frame_type)
             elif frame_type == Node._individual:
-                frame = INDIVIDUAL(name,kb)
+                frame = INDIVIDUAL(name,kb,frame_type=frame_type)
             elif frame_type == Node._slot:
-                frame = SLOT(name,kb)
+                frame = SLOT(name,kb,frame_type=frame_type)
             elif frame_type == Node._facet:
-                frame = FACET(name,kb)
+                frame = FACET(name,kb,frame_type=frame_type)
             else:
                 raise GenericError()
         elif not isinstance(name,FRAME):
@@ -399,8 +349,8 @@ class KB(Node):
                         pass # we are in a list but first elem != default
                 else:
                     slot_values.append(slot_value_spec)
-            frame.put_slot_values(slot,slot_values,
-                                  kb_local_only_p=kb_local_only_p)
+            kb.put_slot_values(frame,slot,slot_values,
+                               kb_local_only_p=kb_local_only_p)
 
         for slot_spec in template_slots:
             slot = slot_spec[0]
@@ -413,9 +363,9 @@ class KB(Node):
                         pass # we are in a list but first elem != default
                 else:
                     slot_values.append(slot_value_spec)
-            frame.put_slot_values(slot,slot_values,
-                                  slot_type=Node._template,
-                                  kb_local_only_p=kb_local_only_p)
+            kb.put_slot_values(frame,slot,slot_values,
+                               slot_type=Node._template,
+                               kb_local_only_p=kb_local_only_p)
 
         if doc: frame._doc = doc
         if pretty_name != None: frame._pretty_name = pretty_name
@@ -530,9 +480,10 @@ class KB(Node):
         return (None,None)
         
     def get_frame_name_internal(kb,frame,kb_local_only_p=0):
-        if isinstance(kb,KB):
-            return frame._name
-        return frame.get_frame_name(kb_local_only_p=kb_local_only_p)
+        return frame._name
+        #if isinstance(kb,KB):
+        #    return frame._name
+        #return frame.get_frame_name(kb_local_only_p=kb_local_only_p)
     get_frame_name = get_frame_name_internal
 
     def get_frame_pretty_name_internal(kb,frame,kb_local_only_p=0):
@@ -540,6 +491,65 @@ class KB(Node):
         #    return frame._pretty_name
         return frame._pretty_name
     get_frame_pretty_name = get_frame_pretty_name_internal
+
+    def get_frame_sentences(kb, frame,
+                            number_of_values=Node._all,
+                            okbc_sentences_p=1,value_selector=Node._either,
+                            kb_local_only_p=0):
+        exact_p = 1
+        more_status = 0
+
+        (frame,frame_found_p) = kb.get_frame_in_kb(frame)
+        if not frame_found_p:
+            out =  "frame '"+str(frame)+"' not found"
+            raise 'bogusError',out
+            return ([],0,0)
+
+        frame_name = kb.get_frame_name(frame)
+        frame_type = kb.get_frame_type(frame)
+        frame_type_string = str(frame_type)[1:]
+
+        lines = []
+        def tel(st,lines=lines):
+            if type(st) == type(""):
+                lines.append("(" + st +")")
+            elif type(st) == type([]):
+                st = map(lambda x: str(x),st)
+                lines.append("(" + string.join(st," ") + ")")
+                
+        tel(frame_type_string + " " + frame_name )
+
+        for klass in kb.get_instance_types(frame,
+                                           inference_level=Node._direct)[0]:
+            tel(["instance-of",frame_name,klass])
+
+        if kb.class_p(frame):
+            get_supers = kb.get_class_superclasses
+            for klass in get_supers(frame,
+                                    inference_level=Node._direct)[0]:
+                tel(["subclass-of",frame_name,klass])                
+
+        for slot in get_frame_slots(frame,slot_type=Node._own)[0]:
+            some = 0
+            for val in get_slot_values(frame,slot,slot_type=Node._own):
+                some = 1
+                tel(["slot",slot,frame_name,val])
+            if not some:
+                tel(["slot-of",slot,frame_name])
+
+        for slot in get_frame_slots(frame,slot_type=Node._template,
+                                    inference_level=Node._direct)[0]:
+            some = 0
+            for val in get_slot_values(frame,slot,Node._template):
+                some = 1
+                tel(["template-slot-value",slot,frame,val])
+            if not some:
+                tel(['template-slot-or',slot,frame_name])
+
+        warn("get-frame-sentences skips prettyname, facets")
+        pretty_name = kb.get_frame_pretty_name(frame)
+
+        return (lines,exact_p,more_status)
 
     def get_frame_slots(kb,frame,
                         inference_level = Node._taxonomic,
@@ -668,6 +678,29 @@ class KB(Node):
     def individual_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,INDIVIDUAL)
 
+    def print_frame(kb,frame,
+                    slots = Node._filled,
+                    facets = Node._filled,
+                    stream = 1,
+                    inference_level = Node._taxonomic,
+                    number_of_values = Node._all,
+                    value_selector = Node._either,
+                    kb_local_only_p = 0):
+        (frame,frame_found_p) = kb.get_frame_in_kb(frame)
+        if not frame_found_p:
+            out =  "frame '"+str(frame)+"' not found"
+            print out
+            raise 'bogusError'
+            return out
+        sentences = kb.get_frame_sentences(frame,
+                                 value_selector=Node._known_true)[0]
+        out = string.join(sentences,"\n")
+        if stream:
+            print out
+            return None
+        else:
+            return out
+
     def put_direct_parents(kb,parent_kbs):
         for parent in parent_kbs:
             if not kb_p(parent):
@@ -699,16 +732,17 @@ class TupleKb(KB):
     """A simple in-RAM kb which has no saving or reading ability.
     
     Saving and reading ability can be left to subclasses. """
-    def __init__(self,name=''):
-        KB.__init__(self,name)
+    def __init__(self,name='',connection=None,kb=None):
+        KB.__init__(self,name,kb=kb)
         self._cache = {}
         self._typed_cache = {}
+        self._connection = connection
         for frame_type in Node._cache_types:
             self._typed_cache[frame_type] = []
 
     def _add_frame_to_cache(kb,frame):
         frame_name = kb.get_frame_name(frame)
-        frame_type = get_frame_type(frame,kb=kb)
+        frame_type = kb.get_frame_type(frame)
 #        print "_add_frame_to_cache",frame_name
         if not kb._cache.has_key(frame_name):
             #print "caching",frame,frame_name
@@ -719,6 +753,11 @@ class TupleKb(KB):
             warn("_add_frame_to_cache duplicate call for "+frame_name)
             # silently pass over any attempted duplication
             pass
+
+    def add_class_superclass(kb,klass,new_superclass,
+                             kb_local_only_p = 0):
+        if new_superclass not in klass._direct_superclasses:
+            klass._direct_superclasses.append(new_superclass)
 
     def class_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,KLASS)
@@ -792,6 +831,7 @@ class TupleKb(KB):
 
     def get_frame_type(kb,thing,kb_local_only_p=0):
         if thing:
+            return thing._frame_type
             if isinstance(thing,KB):
                 return Node._kb  # FIXME
             elif isinstance(thing,FRAME):
@@ -866,6 +906,47 @@ class TupleKb(KB):
                     new_direct_superclasses.append(new_class)
         klass._direct_superclasses = new_direct_superclasses
 
+    def put_slot_value(kb,frame,slot, value,
+                       slot_type=Node._own,
+                       value_selector = Node._known_true,
+                       kb_local_only_p = 0):
+        """Sets the values of slot in frame to be a singleton set
+        consisting of a single element: value.  This operation may
+        signal constraint violation conditions (see Section 3.8).
+        Returns no values. """
+        if type(value) == type([]): raise CardinalityViolation(value)
+        if slot_type == Node._own:
+            if frame._own_slots.has_key(slot):
+                frame._own_slots[slot].set_value(value)
+            else:
+                frame._own_slots[slot] = UNIT_SLOT(slot,value)
+        elif slot_type == Node._template:
+            if frame._template_slots.has_key(slot):
+                frame._template_slots[slot].set_value(value)
+            else:
+                frame._template_slots[slot] = UNIT_SLOT(slot,value)
+
+    def put_slot_values(kb,frame,slot, values,
+                        slot_type=Node._own,
+                        value_selector = Node._known_true,
+                        kb_local_only_p = 0):
+        """Sets the values of slot in frame to be a singleton set
+        consisting of a single element: value.  This operation may
+        signal constraint violation conditions (see Section 3.8).
+        Returns no values. """
+        if type(values) != type([]): raise CardinalityViolation(values)
+        if slot_type == Node._own:
+            if frame._own_slots.has_key(slot):
+                frame._own_slots[slot].set_values(values)
+            else:
+                frame._own_slots[slot] = UNIT_SLOT(slot,values)
+        elif slot_type == Node._template:
+            if frame._own_slots.has_key(slot):
+                frame._template_slots[slot].set_values(values)
+            else:
+                frame._template_slots[slot] = UNIT_SLOT(slot,values)
+
+
 class AbstractPersistentKb(TupleKb):
     """PersistentKb implements save_kb and save_kb_as to someplace.."""
     def save_kb(kb,error_p = 1):
@@ -900,14 +981,14 @@ class AbstractFileKb(AbstractPersistentKb):
         outfile.close()
 
 
-class META_KB(TupleKb):
-    def __init__(self,kb_name,
-                 connection=None):
-        # kb_name        the name of the new kb
-        # connection     the connection for which this is the meta_kb
-        meth = TupleKb.__init__
-        meth(self,kb_name)
-        self._connection = connection
+##class BOGUS_META_KB(TupleKb):
+##    def __init__(kb,kb_name,
+##                 connection=None):
+##        # kb_name        the name of the new kb
+##        # connection     the connection for which this is the meta_kb
+##        meth = TupleKb.__init__
+##        meth(kb,kb_name)
+##        kb._connection = connection
 
 
 class UNIT_SLOT:
@@ -977,6 +1058,10 @@ def warn(mess,level=10):
 #    Okbc methods
 ##########################################
 
+def add_class_superclass(klass,new_superclass,
+                         kb=None,kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.add_class_superclass(klass,new_superclass,kb_local_only_p)
 
 def class_p(thing,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()    
@@ -1138,6 +1223,13 @@ def get_frame_pretty_name(frame,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()
     return kb.get_frame_pretty_name(frame,kb_local_only_p=kb_local_only_p)
 
+def get_frame_sentences(frame, kb=None, number_of_values=Node._all,
+                        okbc_sentences_p=1,value_selector=Node._either,
+                        kb_local_only_p=0):
+    if not kb: kb = current_kb()
+    return kb.get_frame_sentences(frame,number_of_values,okbc_sentences_p,
+                                  value_selector,kb_local_only_p)
+
 def get_frame_slots(frame, kb=None, inference_level=Node._taxonomic,
                     slot_type=Node._all, kb_local_only_p=0):
     """Returns list-of-slots, a list of all the own, template, or own
@@ -1285,6 +1377,24 @@ def put_class_superclasses(klass,new_superclasses,kb=0,kb_local_only_p=0):
 def put_instance_types(frame,new_types,kb=0,kb_local_only_p = 0):
     if not kb: kb = current_kb()
     kb.put_instance_types(frame,new_types,kb_local_only_p)
+
+def put_slot_value(frame,slot, value,
+                   kb = None,
+                   slot_type=Node._own,
+                   value_selector = Node._known_true,
+                   kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.put_slot_value(frame,slot,value,slot_type,
+                             value_selector,kb_local_only_p)
+
+def put_slot_values(frame,slot, values,
+                    kb = None,
+                    slot_type=Node._own,
+                    value_selector = Node._known_true,
+                    kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.put_slot_values(frame,slot,values,slot_type,
+                              value_selector,kb_local_only_p)
 
 def save_kb(kb=None,error_p=1):
     if not kb: kb = current_kb()

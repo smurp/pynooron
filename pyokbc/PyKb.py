@@ -49,12 +49,19 @@ def to_slot_spec(frame,slot,slot_type):
     return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
 
 class PyKb(AbstractFileKb):
-    def __init__(self,filename):
+    _kb_type_file_extension = 'pykb'
+    def __init__(self,filename,place='',meta=None):
+        if place == '': # FIXME this should be passed in!
+            place = os.getcwd() + "/know/"
         self._name = filename
-        TupleKb.__init__(self,filename)
+        AbstractFileKb.__init__(self,filename,kb=meta)
+        fname = place+filename
         prev_kb = current_kb()
         goto_kb(self)
-        execfile(filename)
+        try:
+            execfile(fname)
+        except IOError:
+            raise "CantOpenPyKb",fname + " in " + place
         goto_kb(prev_kb)
 
     def print_frame(kb,frame,
@@ -72,9 +79,9 @@ class PyKb(AbstractFileKb):
             raise 'bogusError'
             return out
         lines = []
-        frame_name = frame.get_frame_name()
+        frame_name = kb.get_frame_name(frame)
         var_name = var_name_for_emit(frame)
-        frame_type = get_frame_type(frame)
+        frame_type = kb.get_frame_type(frame)
         frame_type_string = str(frame_type)[1:]
         if EMIT_STRINGS_NOT_VARS:
             assignment_line = ""
@@ -90,7 +97,6 @@ class PyKb(AbstractFileKb):
 
         line = "direct_types=["
         got_one = 0
-        #for klass in frame.get_instance_types(inference_level=Node._direct)[0]:
         for klass in kb.get_instance_types(frame,
                                            inference_level=Node._direct)[0]:
             line = line + var_name_for_emit(klass) + ","
@@ -100,10 +106,10 @@ class PyKb(AbstractFileKb):
         line = "direct_superclasses=["
         got_one = 0
         if kb.class_p(frame):
-            print frame,"is class_p"
-            
-            for klass in kb.get_class_superclasses(frame,
-                                                   inference_level=Node._direct)[0]:
+            #print frame,"is class_p"
+            get_supers = kb.get_class_superclasses
+            for klass in get_supers(frame,
+                                    inference_level=Node._direct)[0]:
                 line = line + var_name_for_emit(klass) + ","
                 got_one = 1
         if got_one: lines.append(line[:-1]+"]")

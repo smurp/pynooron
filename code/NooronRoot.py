@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.7 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.8 2002/10/18 07:21:02 smurp Exp $'
 
-DEBUG = 0
+DEBUG = 1
 
 """
 NooronRoot is the root object of a nooron instance.
@@ -16,6 +16,7 @@ from medusa import http_server, default_handler, logger
 from medusa import filesys, status_handler
 
 import http_request_mixin
+import http_channel_mixin
 #import TMObject_mixin
 
 from TemplateManager import TemplateManager

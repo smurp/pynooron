@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.7 2002/10/18 07:21:02 smurp Exp $'
 
 DEBUG = 1
 
@@ -111,7 +111,8 @@ class PipeLineFactory:
         return [next]
 
     def resolve_object(self,request):
-        return "This is the default text, and the path was: %s" % request.split_uri()[0]
+        return "This is the default text, and the path was: %s" % \
+               request.split_uri()[0]
 
         
     def build_pipeline(self,request,object):

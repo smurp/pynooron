@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.4 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.5 2002/10/18 07:21:02 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -108,6 +108,24 @@ def instrumented_getattr(me,key):
     return me.__dict__.get_attr(key)
 #http_request.__getattr__ = instrumented_getattr
 
+def error(self,code,message=None,tb=None):
+    self.reply_code = code
+    if not message: message = self.responses[code]
+    if 1:
+        (errtype,errval,t) = sys.exc_info()
+        tb = traceback.format_tb(t,15)
+        message = message + "\n<hr>"+ "\n<b>%s</b><br>%s<pre>%s</pre>" % \
+                  (errtype,errval,string.join(tb,"\n"))
+    s = self.DEFAULT_ERROR_MESSAGE % {
+        'code': code,
+        'message': message,
+        }
+    self['Content-Length'] = len(s)
+    self['Content-Type'] = 'text/html'
+    # make an error reply
+    self.push (s)
+    self.done()
+http_request.error = error
 
 # /usr/local/zope/Zope-2.5.1/lib/python/AccessControl/ZopeSecurityPolicy.py
 http_request.__roles__ = None

@@ -1,10 +1,11 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.7 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.8 2002/10/18 07:21:02 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
 
+from pyokbc import *
 import NooronRoot
 
 class NooronApp:
@@ -30,33 +31,28 @@ class NooronApp:
             return None
 
 # see http://www.noosphere.org/discuss/zwiki/VariousTemplateUseCases
-    def publish(self,request,topic_obj=None):
+    def publish(app,request,frame_name=None):
+        (frame,frame_found_p) = frame_name \
+                                and app._kb.get_frame_in_kb(frame_name) \
+                                or (None,None)
         npt_name = ""
-        args = {}
         this_is_app_front = 0
-        if not topic_obj:
+        if not frame_found_p:
             npt_name = "kb_as_html"
-            topic_obj = app.kb
+            frame = app._kb
         if this_is_app_front:
             npt_name = self.npt_for_app_front(request,topic_obj)
         if not npt_name:
-            npt_name = self.get_template_for_topic(request,topic_obj)
+            npt_name = self.get_template_for_frame(request,frame)
         if __debug__: print "npt_name = ",npt_name
         if npt_name:
             request.effective_query_extend({'with_template':
                                             npt_name})
-        nooron_root.publish(request,topic_obj)
+        nooron_root.publish(request,frame)
 
-    def npt_for_app_front(self,request,topic_obj):
-        print "topic_obj = "+str(topic_obj)
-        occs = topic_obj.getOccurrences()#typ='npt for app front')
-        # relies on typ-sensitivity in getOccurrences
-        occs = None
-        if occs:
-            print "we got occs! " + str(len(occs))
-            print str(occs[0][2].getSCR().getUris()[0])
-            print str(occs[1][2].getSCR().getUris()[0])
-            return str(occs[0][2].getSCR().getUris()[0])
+    def npt_for_app_front(app,request,frame):
+        print "frame =",frame
+        return None
 
     def get_template_for_topic(self,request,topic_obj):
         query = request.split_query()

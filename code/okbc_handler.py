@@ -1,10 +1,9 @@
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.1 2002/10/16 19:29:50 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.2 2002/10/18 07:21:02 smurp Exp $'
 
 
 from pyokbc import *
 
-#import NooronRoot
 import NooronApp
 
 DEBUG = 0
@@ -70,17 +69,24 @@ class okbc_handler:
                 request.error(401) # not found
                 return
 
+        app = NooronApp.NooronApp(kb)
+        
         if len(path_list) > 2:
             frame_name = path_list[2]
             frame_name = frame_name.replace('+',' ')
-            (frame,frame_in_kb_p) = get_frame_in_kb(frame_name,kb=kb)
+            app.publish(request,frame_name)
+        else:
+            app.publish(request)
 
-        #print globals()
 
-        print "nooron_root",nooron_root
 
-        app = NooronApp.NooronApp(kb)
-        app.publish(request,kb)
+
+
+    def junk_pile(self):
+        if frame_in_kb_p:
+            app.publish(request,frame)
+        else:
+            app.publish(request,kb)
         
         #print NooronRoot.the_root,NooronRoot.booger
         if frame_in_kb_p:
