@@ -20,7 +20,6 @@
            <span tal:omit-tag=""
                  tal:condition="current_skin_p"
                  tal:content="skin"></span>
-           </span>
-           &nbsp; <br/>
+           </span><br/>
          </div>
        </tal:dummy>

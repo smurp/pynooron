@@ -9,15 +9,18 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+<p><em tal:content="structure python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
+<img src=""
+     tal:attributes="src python:request.object_request()+'__linguistic_shell_contain_hier.dot.jpg'"/>
 
 
 <dl tal:define="items python:get_kb_direct_parents()" 
        tal:condition="items">
 
   <tal:dummy repeat="item items">
-    <tal:dummy condition="python:instance_of_p(item,'pattern_language_app')[0]">
+    <tal:dummy condition="python:instance_of_p(item,'pattern_language_app')[0] or 
+                                 instance_of_p(item,'linguistic_shell_app')[0]">
       <dt><a href="link"
           	   tal:define="url python:get_frame_name(item)"
 	  	   tal:attributes="href url"
@@ -29,7 +32,7 @@
 </dl>
 
 <hr>
-$Id: linguistic_shell_contains.html,v 1.1 2003/03/26 21:05:09 smurp Exp $
+$Id: linguistic_shell_contains.html,v 1.2 2003/03/26 23:17:14 smurp Exp $
 </div>
   </body>
 </html>

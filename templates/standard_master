@@ -1,6 +1,6 @@
 <html metal:define-macro="master">
   <head>
-    <title tal:content="here">template/title</title>
+    <title tal:content="python:document_title or here">template/title</title>
     <base href="" tal:attributes="href python:server_absolute_url+request.kb_request()+'/'"/>
   </head>
 
@@ -68,6 +68,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.24 2003/03/08 13:08:20 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.25 2003/03/26 23:17:14 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

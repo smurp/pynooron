@@ -22,7 +22,7 @@
 
          <tal:dummy repeat="garmie_set python:suitcase[0]">
            &nbsp;&nbsp;<tal:dummy content="python:garmie_set[0]">
-           </tal:dummy>:&nbsp;<tal:dummy 
+           </tal:dummy>:<br/>&nbsp;&nbsp;&nbsp;&nbsp;<tal:dummy 
                                    repeat="adornment python:len(garmie_set) > 1 and garmie_set[1] or []"
                 ><tal:dummy 
                       define="current_garmie_p 

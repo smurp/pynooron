@@ -14,7 +14,7 @@
    tal:attributes="action string:${request/object_request}__save_kb_as">
 
 <table border="1">
-  <tal:block define="slot_name string:new_name;
+  <tal:block define="slot_name string:new_name_or_locator;
                      slot_pretty_name string:New KB Name">
     <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
   </tal:block>
@@ -26,7 +26,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: save_kb_as.html,v 1.1 2003/02/26 18:51:57 smurp Exp $
+$Id: save_kb_as.html,v 1.2 2003/03/26 23:17:14 smurp Exp $
 </div>
 
   </body>

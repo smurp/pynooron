@@ -21,6 +21,9 @@
 </tal:block>
 </tal:block>
 
+
+
+
 <tal:block define="details python:get_frame_details(here)[0]">
 
 <table border="1">
@@ -49,17 +52,37 @@
     <tal:block metal:use-macro="container/form_master/macros/text_display_widget"/>
   </tal:block>
 
-  <tal:block define="slot_name        string::types;
-                     field_name       python:'details'+field_path_delim+slot_name;
-                     slot_pretty_name string:Types (Classes);
-                     slot_value       python:details[':types']">
-    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+  <tal:block 
+       define="slot_name               string::types;
+               field_name              python:'details'+field_path_delim+slot_name;
+               slot_pretty_name        string:Types (Classes);
+               my_slot_value_type      string::CLASS;
+               my_slot_collection_type string:set;
+               slot_values             python:details[':types']">
+    <tal:block metal:use-macro="container/form_master/macros/auto_widget"/>
   </tal:block>
   <input type="hidden" name="" value=":types" 
          tal:attributes="name string:details$field_path_delim">
 
-<tr><td colspan="2"><strong>Own Slots</strong></td></tr>
-  
+
+
+  <tal:block condition="python:class_p(here)">
+    <tal:block 
+         define="slot_name               string::superclasses;
+                 field_name              python:'details'+field_path_delim+slot_name;
+                 slot_pretty_name        string:Superclasses;
+                 my_slot_value_type      string::CLASS;
+                 my_slot_collection_type string:set;
+                 slot_values             python:details[':superclasses']">
+      <tal:block metal:use-macro="container/form_master/macros/auto_widget"/>
+    </tal:block>
+  </tal:block>
+  <input type="hidden" name="" value=":superclasses" 
+         tal:attributes="name string:details$field_path_delim">
+
+
+<tr><td colspan="2" bgcolor="lightblue"><strong>Own Slots</strong>
+<table border="1">
   <tal:block define="slots python:get_frame_slots(here,
                                                   slot_type=OWN)[0]">
 
@@ -83,22 +106,41 @@
   <input type="hidden" name="" value=":own-slots" 
          tal:attributes="name python:'details'+field_path_delim">
 
-
-  <tal:block condition="python:class_p(here)">
-  <tal:block define="slot_name string::superclasses;
-                     slot_pretty_name string:Superclasses;
-                     slot_value python:details[':superclasses']">
-    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
-  </tal:block>
+</table>
+</td></tr>
 
 
-  <tal:block define="slot_name          string::templates-slots;
-                     field_name         python:'own-slots'+field_path_delim+slot_name;
-                     slot_pretty_name   string:template_slots;
-                     slot_value python: details[':template-slots']">
-    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+<tr tal:condition="python:class_p(here)"
+    tal:define="det_key string::own-slots"><td colspan="2" bgcolor="orange">
+   <strong>Template Slots</strong>
+  <table border="1">
+  <tal:block define="slots python:get_frame_slots(here,
+                                                  slot_type=TEMPLATE)[0]">
+
+    <tal:block repeat="zlot python:call_procedure(
+                                   get_procedure('names_and_pretty_names'),
+                                   arguments=(slots,None,this_kb))">
+      <tal:block define="slot_name        python:zlot[0];
+                         slot_pretty_name python:zlot[1];
+                         field_name       python:'details'+field_path_delim+det_key+field_path_delim+slot_name;
+                         slot_values      python:get_slot_values(here,zlot[0])[0]">
+
+        <input type="hidden" name="" value=""
+           tal:attributes="value slot_name;
+                           name  python:'details'+field_path_delim+det_key+field_path_delim">
+        <tal:block 
+             metal:use-macro="container/form_master/macros/auto_widget">
+        </tal:block>
+      </tal:block>
+    </tal:block>
   </tal:block>
-  </tal:block>
+  <input type="hidden" name="" value="" 
+         tal:attributes="name python:'details'+field_path_delim;
+                         value det_key">
+
+  </table>
+</td></tr>
+
 
 
 </table>
@@ -110,7 +152,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: put_frame_details.html,v 1.2 2003/03/08 13:00:31 smurp Exp $
+$Id: put_frame_details.html,v 1.3 2003/03/26 23:17:14 smurp Exp $
 </div>
 
   </body>

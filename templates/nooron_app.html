@@ -9,6 +9,8 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
+for each nooron_app_class
+
 
 
 <dl tal:define="items python:get_kb_direct_parents(here)" 
@@ -74,7 +76,7 @@
 </div>
 
 <hr>
-$Id: nooron_app.html,v 1.3 2003/02/07 23:41:10 smurp Exp $
+$Id: nooron_app.html,v 1.4 2003/03/26 23:17:14 smurp Exp $
 </div>
   </body>
 </html>

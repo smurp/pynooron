@@ -41,8 +41,6 @@
 
 
 
-
-
 auto_widget expects the following arguments:
   slot_name
   field_name
@@ -52,9 +50,11 @@ auto_widget expects the following arguments:
 <metal:block metal:define-macro="auto_widget">
 
 <tal:block 
-  define="svt python:get_slot_values(slot_name,
-                                     ':SLOT-VALUE-TYPE')[0];
-          slot_value_type python:svt and str(svt[0]) or ':INTEGER';">
+  define="msvt exists:my_slot_value_type;
+          slot_value_type python:msvt and my_slot_value_type
+	                         or get_slot_value(slot_name,
+                                                   ':SLOT-VALUE-TYPE')[0]
+                                 or ':STRING'">
 
   <tr>
     <td valign="top">
@@ -98,9 +98,11 @@ auto_widget expects the following arguments:
                                not (slot_value_type in [':INTEGER',
                                                         ':STRING'])">
     <tal:dummy 
-      define="slot_cardinality python:get_slot_value(slot_name,
+      define="msct exists:my_slot_collection_type;
+              slot_cardinality python:get_slot_value(slot_name,
                                                      ':SLOT-CARDINALITY')[0];
-              slot_collection_type python:get_slot_value(slot_name,
+              slot_collection_type python:(msct and my_slot_collection_type) 
+                                          or get_slot_value(slot_name,
                                                      ':SLOT-COLLECTION-TYPE')[0];
               select_size python:slot_cardinality != None and 
                                    slot_cardinality > 1 and 5
@@ -113,7 +115,7 @@ auto_widget expects the following arguments:
               size python:len(options) > select_size and select_size
                                    or len(options)">
 
-
+    <tal:dummy replace="string:multiple=$multiple size=$size select_size=$select_size slot_collection_type=$slot_collection_type"/>
     <tal:dummy 
         replace="structure string:<select name=&quot;$field_name&quot; $multiple size=&quot;$size&quot;>"/>
 
@@ -146,9 +148,4 @@ auto_widget expects the following arguments:
 
 
 
-
-
-
-
-
-$Id: form_master,v 1.6 2003/03/08 13:07:11 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.7 2003/03/26 23:17:14 smurp Exp $ <a href="/templates/form_master">Show Source</a>
