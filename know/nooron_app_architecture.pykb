@@ -1,7 +1,27 @@
 
 create_slot('merges_in',
 	own_slots=[[':DOMAIN','nooron_app_component']])
+
+# NPT (Nooron Page Template) frames
+create_slot('npt_for_app_front',
+            doc="""Apps should have a resource of this kind.  It ought to
+            contain the url of an Nooron Page Template which is suitable for
+            use as the 'front page' of a nooron app.  Ideally, this is a page 
+            which is capable of displaying useful entry points into the 
+            current app_instance.""")
+create_slot('npt_for_instances',
+            doc="""App Skeletons should define occurrences of this type for
+            each class whose instances are supposed to be surfed.  The
+            associated resourceRef should contain the url of a Nooron Page
+            Template (NPT) which is appropriate for displaying instances of
+            the class on which ntp_for_instances is an occurrence.""")
+create_slot('npt_for_self',
+            doc="""App Skeletons can define occurrences of this type for each
+            topic for which a particular template is desired.  Npt_for_self
+            has precedence over npt_for_instances.""")
+
 create_class('knowledge_base')
+
 create_class('nooron_app_component',
              direct_superclasses=['knowledge_base'],        
              doc="""Nooron app components are knowledgebases which
@@ -16,6 +36,7 @@ create_class('data_schema',
              same kind, i.e. other data schema information existing elsewhere.
              """)
 create_class('nooron_schema_class',
+             template_slots=[['npt_for_self','class_and_instances_as_html']],
              doc="""Classes defined in data_schema knowledge bases should
              be marked as instances of nooron_schema_class.""")
 create_class('data_instances',
@@ -44,20 +65,3 @@ create_class('app_instance',
              combination of two things: an app skeleton and a set of data
              instances.""")
 
-# NPT (Nooron Page Template) frames
-create_slot('npt_for_app_front',
-            doc="""Apps should have a resource of this kind.  It ought to
-            contain the url of an Nooron Page Template which is suitable for
-            use as the 'front page' of a nooron app.  Ideally, this is a page 
-            which is capable of displaying useful entry points into the 
-            current app_instance.""")
-create_slot('npt_for_instances',
-            doc="""App Skeletons should define occurrences of this type for
-            each class whose instances are supposed to be surfed.  The
-            associated resourceRef should contain the url of a Nooron Page
-            Template (NPT) which is appropriate for displaying instances of
-            the class on which ntp_for_instances is an occurrence.""")
-create_slot('npt_for_self',
-            doc="""App Skeletons can define occurrences of this type for each
-            topic for which a particular template is desired.  Npt_for_self
-            has precedence over npt_for_instances.""")

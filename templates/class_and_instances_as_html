@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
+
+<span  tal:define="items python:get_instance_types(here,inference_level=Node._direct)[0]" 
+       tal:condition="items">
+  <strong>classes:</strong>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href url"
+           	   tal:content="url">click me</a></em>
+  </span>
+  <br/>
+</span>
+
+<p tal:content="python:get_slot_value(here,Node._DOCUMENTATION)[1] or ''"></p>
+
+<span  tal:define="items python:get_class_instances(here)[0]" 
+       tal:condition="items">
+  <strong>(plural for instances)</strong><br/>
+  <ul>
+  <span tal:repeat="item items">
+    <li	><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href url"
+           	   tal:content="url">click me</a></li>	
+  </span>
+  </ul>
+</span>
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+</div>
+
+<hr>
+$Id: class_and_instances_as_html,v 1.1 2002/10/23 20:05:04 smurp Exp $
+</div>
+  </body>
+</html>

@@ -1,5 +1,5 @@
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.3 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.4 2002/10/23 20:05:03 smurp Exp $'
 
 
 from pyokbc import *
@@ -34,7 +34,7 @@ class okbc_handler:
     def handle_request(self,request):
         [path, params, query, fragment] = request.split_uri()
         # path extensions query
-        print "======\n\n"
+        #print "======\n\n"
         while path and path[0] == '/':
             path = path[1:]
 
@@ -53,7 +53,7 @@ class okbc_handler:
                 path
                 )
             request['Location'] = loc
-            print "FIXME: is it legal to forward to root-relative url?"
+            #print "FIXME: is it legal to forward to root-relative url?"
             request.error (301) # moved permanently
             return
 
@@ -68,7 +68,7 @@ class okbc_handler:
 
         if len(path_list) > 1:
             kb_name = path_list[1]
-            print "opening kb",kb_name
+            #print "opening kb",kb_name
             kb = open_kb(kb_name)
             if not kb:
                 request.error(401) # not found

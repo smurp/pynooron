@@ -12,9 +12,9 @@
 
 
 <table border="1"
-       tal:define="items here/get_kb_frames" 
+       tal:define="items get_kb_frames" 
        tal:condition="items">
-  <caption><strong>get_kb_frames</strong></caption>
+  <caption><strong>get_kb_individuals</strong></caption>
   <tr tal:repeat="item items">
     <td tal:content="structure python: here.get_frame_name(item)">link</td>
     <td><a href="booger"
@@ -145,7 +145,7 @@
 </div>
 
 <hr>
-$Id: kb_as_html,v 1.4 2002/10/21 08:34:05 smurp Exp $
+$Id: kb_as_html,v 1.5 2002/10/23 20:05:04 smurp Exp $
 </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.17 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.18 2002/10/23 20:05:03 smurp Exp $'
 
 
 """
@@ -28,6 +28,7 @@ from NooronRoot import NooronRoot
 cwd = os.getcwd()
 
 default_place = cwd+'/know' # FIXME should use os.pathjoin (sp?)
+#default_place = cwd+'/pyokbc/tests' # FIXME should use os.pathjoin (sp?)
 
 import __main__
 

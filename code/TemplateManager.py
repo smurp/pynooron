@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: TemplateManager.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.7 2002/10/23 20:05:03 smurp Exp $'
 
 DEBUG = 0
 
@@ -61,7 +61,7 @@ class TemplateManager:
         template = NooronPageTemplate(request=request,
                                       obj=obj,
                                       container=self)
-        print "template_name =",template_name
+        #print "template_name =",template_name
         self.setObject(template_name,template)
                 
         src = self.obtain_template_src(template_name)

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.9 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.10 2002/10/23 20:05:03 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -64,5 +64,6 @@ class GenericFrame(AbstractApp):
         """Get the first npt specified by any of this frame's classes."""
         kb = app._kb
         (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
-                                                 number_of_values=1)
-        return vals and val[0]
+                                                 number_of_values=1,
+                                                 slot_type=Node._all)
+        return vals and vals[0] 

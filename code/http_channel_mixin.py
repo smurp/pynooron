@@ -72,10 +72,15 @@ def found_terminator (self):
                     h.handle_request (r)
                 except:
                     self.server.exceptions.increment()
-                    (file, fun, line), t, v, tbinfo = asyncore.compact_traceback()
-                    self.log_info(
-                                    'Server Error: %s, %s: file: %s line: %s' % (t,v,file,line),
-                                    'error')
+                    if 0:
+                        (file, fun, line), t, v, tbinfo = asyncore.compact_traceback()
+                        self.log_info(
+                            'Server Error: %s, %s: file: %s line: %s' % (t,v,file,line),
+                            'error')
+                    else:
+                        (errtype,errval,t) = sys.exc_info()
+                        tb = traceback.format_tb(t,15)                    
+                        self.log_info(string.join(tb,"\n"))
                     try:
                         r.error (500)
                     except:

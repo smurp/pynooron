@@ -8,6 +8,7 @@
 
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
+
 <dl>
 
 <dt tal:content="structure python:get_doc_for(get_frame_type)"></dt>
@@ -50,12 +51,12 @@
 <dd>
 <div tal:define="items python: get_frame_slots(here)[0]" 
        tal:condition="items">
-  <ul tal:repeat="item items">
+  <ul tal:repeat="slot items">
     <li><a href=""
-           tal:define="url item"
+           tal:define="url slot"
 	   tal:attributes="href url"
            tal:content="url">click me</a>
-       <ul tal:define="vals python: get_slot_values(here,item)[0]"
+       <ul tal:define="vals python: get_slot_values(here,slot,slot_type=Node._all)[0]"
 	   tal:condition="vals"
            tal:repeat="val vals">
        <li tal:content="val"></li>
@@ -84,7 +85,7 @@
 
 
 <hr>
-$Id: frame_as_html,v 1.2 2002/10/21 08:34:05 smurp Exp $
+$Id: frame_as_html,v 1.3 2002/10/23 20:05:04 smurp Exp $
 </div>
   </body>
 </html>

@@ -1,25 +1,25 @@
 
 put_direct_parents(['web_log_schema.pykb'])
 
-create_class('spoonerism',direct_superclasses=['web_log_category'],
-             direct_types=['nooron_schema_class'],
+create_class('spoonerism',
+             direct_types=['web_log_category'],
              doc="""Verbal constructions spontaneously constructed in
              homage to the dreat groctor Lysander Spooner.""")
-create_class('marvel',direct_superclasses=['web_log_category'],
-             direct_types=['nooron_schema_class'],             
+create_class('marvel',
+             direct_types=['web_log_category'],
              doc="""Things that make you go wow!""")
-create_class('book_blog_category',direct_superclasses=['web_log_category'],
-             direct_types=['nooron_schema_class'],
+create_class('book',
+             direct_types=['web_log_category'],
              doc="""About books, generally interesting.""")
-create_class('gear',direct_superclasses=['web_log_category'],
-             direct_types=['nooron_schema_class'],
+create_class('gear',
+             direct_types=['web_log_category'],
              doc="""Strange devices or products.""")
-create_class('architecture',direct_superclasses=['web_log_category'],
-             direct_types=['nooron_schema_class'],
+create_class('architecture',
+             direct_types=['web_log_category'],
              doc="""The subjugation of space to the will of an artist.""")
 
 create_individual('wle_1',
-                  direct_types = ['marvel','book_blog_category'],
+                  direct_types = ['web_log_entry','marvel','book'],
                   own_slots = [['web_log_text',
                                 """Hey Moses (er, Stephen) what are those tablets you're carrying?"""],
                                ['web_log_url',
@@ -27,7 +27,7 @@ create_individual('wle_1',
                   pretty_name = "A New Kind of Science")
 
 create_individual('wle_2',
-                  direct_types = ['marvel'],
+                  direct_types = ['web_log_entry','marvel'],
                   own_slots = [['web_log_text',
                                 """To think that these sorts of conversations  are going on all the time!"""],
                                ['web_log_url',
@@ -35,7 +35,7 @@ create_individual('wle_2',
                   pretty_name = "Endurantism and Perdurantism: An Ongoing Debate")
 
 create_individual('wle_3',
-                  direct_types = ['gear'],
+                  direct_types = ['web_log_entry','gear'],
                   own_slots = [['web_log_text',
                                 """It's bright, it's blue, you shake it..."""],
                                ['web_log_url',
@@ -43,14 +43,14 @@ create_individual('wle_3',
                   pretty_name = "A Permanent Flashlight, Finally")
 
 create_individual('wle_4',
-                  direct_types = ['spoonerism'],
+                  direct_types = ['web_log_entry','spoonerism'],
                   own_slots = [['web_log_text',
                                 """How tired I must have been when I caught myself
                                 using the phrase "freaking insleepwently"."""],],
                   pretty_name = "freaking insleepwently")
 
 create_individual('wle_5',
-                  direct_types = ['architecture'],
+                  direct_types = ['web_log_entry','architecture'],
                   own_slots = [['web_log_text',
                                 """Some quite amazing architecture."""],
                                ['web_log_url',

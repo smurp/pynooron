@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.8 2002/10/21 23:52:53 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.9 2002/10/23 20:05:03 smurp Exp $'
 
 DEBUG = 0
 
@@ -125,7 +125,7 @@ class PipeLineFactory:
             ### FIXME we should really ask the object and the user about
             ###       defaults and preferences
         transs = self.transformers_from_extensions(extens,object,request)
-        print "transs =",transs
+        #print "transs =",transs
         return transformers.pipeline(transs,request)
 
     def handle_request(self,request):

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.7 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.8 2002/10/23 20:05:03 smurp Exp $'
 
 import NooronRoot
 
@@ -15,7 +15,12 @@ from cStringIO import StringIO
 #Z_DEBUG_MODE = 0
 
 from pyokbc import *
-    
+
+import inspect
+
+okbc_functions={}
+for i in inspect.getmembers(Funcs,inspect.isfunction):
+    okbc_functions[i[0]]=i[1]
 
 SAFETY = 0 # safety off means that python in NPTs is omnipotent
 
@@ -64,6 +69,7 @@ class NooronPageTemplate(PageTemplate):
              'request': self.request,
              #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,
+             'Node': Node
              }
         return c
 

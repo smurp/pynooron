@@ -22,7 +22,7 @@ Other skins:<br/>
    tal:attributes="href python:baseurl+'?with_template=anything_as_html'">anything_as_html</a>
 <br/>
 <a href="" 
-   tal:attributes="href python:baseurl+'?with_template=topic_as_html'">topic_as_html</a>
+   tal:attributes="href python:baseurl+'?with_template=frame_as_html'">frame_as_html</a>
 </span>
 
          </div>
@@ -50,6 +50,6 @@ Other skins:<br/>
 Rember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
 
 <hr>
-$Id: standard_master,v 1.8 2002/10/21 23:50:20 smurp Exp $
+$Id: standard_master,v 1.9 2002/10/23 20:05:04 smurp Exp $
   </body>
 </html>
