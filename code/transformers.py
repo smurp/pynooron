@@ -1,30 +1,25 @@
 
-# PageTemplate Support
-import sys
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python')
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python/Products')
-from PageTemplates.PageTemplate import PageTemplate
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.2 2002/07/22 19:33:43 smurp Exp $'
 
 
+from NooronRoot import NooronRoot
+from NooronPageTemplate import NooronPageTemplate
 import types
 import string
 import medusa
 
-topic_template = """
-<html><head><title>Boo</title></head><body>
+default_template = """
+<html><head><title>Boo</title></head>
+<body bgcolor="gray">
+<table border="1" bgcolor="white">
+<tr><td>
+This template is <a href="/code/transformers.py">transformers.topic_template</a>
 <div>
-  <pre tal:define="breadcrumbs options/breadcrumbs" tal:replace="python:breadcrumbs">???</pre>
+  <pre tal:define="content options/content" tal:replace="python:content">???</pre>
 </div>
-        <hr>
-        <dl>
-          <dt>path<dd>%s
-          <dt>params<dd>%s
-          <dt>query<dd>%s
-          <dt>fragment<dd>%s
-        </dl>
-        <hr>
-        timstamp = %s
-        </body></html>
+</td></tr></table>
+</body></html>
 """
 
 class producer:
@@ -45,13 +40,18 @@ class producer:
         except:
             return str(self.content)
     
-    def __init__(self,content):
+    def __init__(self,content,request=None):
         self.content = content
         self.written = 0
+        self.request = request
 
 class transformer(producer):
-    domain = 'cdata'
-    range = None
+    """A transformer is a producer which processes a stream of character data.
+
+    They can be nested arbitrarily.  Examples include upper, lower, gz.
+    """
+    domain = 'text/*'     # how to use this stuff?
+    range = 'text/plain'  # oh, how to use it!
     def more(self):
         return self.more_content()
 
@@ -90,26 +90,16 @@ class tgz(transformer):
     extensions = ['tgz']    
     def_mime_type = ['application/x-gzip']    
 
-class topicmap_html_producer(producer):
-    domain = ['topicmap']
-    extensions = ['html','htm']
-    def_mime_type = ['text/html']
-
-class topic_html_producer(producer):
-    domain = ['topic']
-    extensions = ['html','htm']
-    def_mime_type = ['text/html']
-    def __init__(self,content,template=None):
+class templated_producer(producer):
+    """Producers which generate their data through a PageTemplate."""
+    template_name = "primordial.html"
+    def __init__(self,content,request=None):
         producer.__init__(self,content)
-        if not template:
-            template=PageTemplate()
-            template.write(topic_template)
-
-#            template.write("""Not yellow here.<table bgcolor="yellow" border="1"><tr><td>
-#            <pre tal:define="x options/x" tal:replace="python:x">???</pre></td></tr></table>
-#            Not yellow here.""")
-
-            self.set_template(template)
+        tr = NooronRoot().template_root()
+        template=tr.obtain(self.template_name,
+                           request=request,
+                           obj=content)
+        self.set_template(template)
 
     def set_template(self,template):
         self.template = template
@@ -119,7 +109,19 @@ class topic_html_producer(producer):
             return ''
         else:
             self.written = 1
-            return self.template(breadcrumbs=str(self.more_content()))
+            print type(self.template)
+            return self.template(content=str(self.more_content()))
+
+class topic_html_producer(templated_producer):
+    domain = ['GWApp.TMObject']
+    extensions = ['html','htm']
+    def_mime_type = ['text/html']
+    template_name = "topic_as_html"
+
+class topicmap_html_producer(templated_producer):
+    domain = ['GWApp.GWApp']
+    extensions = ['html','htm']
+    def_mime_type = ['text/html']
 
 class pipeline:
     def mime_type(self):
@@ -157,6 +159,7 @@ class pipeline:
             response.append(ut)
             cont = len(ut)
         resp = string.join(response,"\n")
-        request['Content-Length'] = len(resp)        
+        #request['Content-Length'] = len(resp)        
         request.push(resp)
         request.done()
+        #request.flush()

@@ -4,8 +4,8 @@ overview:
 scratch my own itches, in order:
   - add topic
   - display multiple topics in SVG
-  - display multiple topics in text
-  - display a single topic in text
+  - display multiple topics in html
+  - display a single topic in html
   - create identity/account
   - add criterion
   - evaluate items
@@ -16,19 +16,24 @@ scratch my own itches, in order:
 architecture:
   - use gooseworks
   - use REST
-  ? use medusa
+  - use medusa
   
-question:
+questions:
   ? What is a forum  
       - a topic of type forum?
-    
+
+TODO
+  - use templates from disk (reloadable without having to restart server)
+  - 
+  
+
 TODO  
   - sTQML queries to figure out:
     - instances of a class
     - attributes of a topic
     - classes of a topic
     - 
-  - specific queries reqiured for reproducing nanotech scenario 
+  - specific queries required for reproducing nanotech scenario 
 
   - create 
 

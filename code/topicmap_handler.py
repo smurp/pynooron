@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.1 2002/07/18 20:44:37 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.2 2002/07/22 19:33:43 smurp Exp $'
 
 
 # GooseWorks support
@@ -201,25 +201,109 @@ class topicmap_handler:
             
         return retval + sir_summ + bn_summ + inst_summ + occ_summ
 
-
-    def present(self,input):
-        if type(input) == type(''):
-            return input
-        elif type(input) == type([]):
-            retarray = []
-            for t in input:
-                if str(t.__class__) == 'GWApp.TMObject':
-                    retarray.append(self.present_tmobject(t))
-                else:
-                    retarray.append(str(type(t)))
-            return string.join(retarray,'<LI>')
-#        elif str(input.__class__) == 'GWApp.TMObject':
-#            return self.present_tmobject(input)
-        else:
-            return str(input)
         
 
     def handle_request(self,request):
+        
+        [path, params, query, fragment] = request.split_uri()
+        # path extensions query
+        while path and path[0] == '/':
+            path = path[1:]
+
+        if '%' in path:
+            path = unquote (path)
+
+
+        obj = None
+        app = None
+
+        
+        path_list = path.split('/')
+        header = self.breadcrumbs(path_list) + "<hr>\n"        
+        if path_list[-1] == '':
+            del path_list[-1]
+
+        if len(path_list) > 1:
+            tm_name = path_list[1]
+            app = self.graphs[tm_name]
+
+        if len(path_list) > 2:
+            topic_name = path_list[2]
+            obj = app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % topic_name)
+            
+            
+        if not obj:
+            obj = app
+        pl = self.pipeline_factory.build_pipeline(request,obj)
+        pl.publish()
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def old_handle_request(self,request):
         
         [path, params, query, fragment] = request.split_uri()
 
@@ -306,8 +390,12 @@ class topicmap_handler:
             content="duh len(path_list) = %i" % len(path_list)
 
         content = content + "<hr> path_list  = " + str(path_list)
-
+        pl = self.pipeline_factory.build_pipeline(request,content)
+        pl.publish()
         
+        
+
+    def old_stuff(self,request):
 
         response =  """<html><head><title>Boo</title></head><body>
         %s

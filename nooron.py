@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.3 2002/07/18 20:44:36 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.4 2002/07/22 19:33:42 smurp Exp $'
 
 
 """
@@ -33,9 +33,14 @@ from medusa import counter
 sys.path.append('code')
 import inspect_module
 import transformers
-import extension_handler
+import PipeLineFactory
 import topicmap_handler
 import code_handler
+
+global NooronRoot
+from NooronRoot import NooronRoot
+
+
 
 lg = logger.file_logger (sys.stdout)
 
@@ -44,7 +49,7 @@ fs = filesys.os_filesystem (PUBLISHING_ROOT + "/code",wd="/code")
 code_dh = code_handler.code_handler (fs)
 #code_dh = default_handler.default_handler (fs)
 
-pipelineFactory = extension_handler.extension_handler()
+pipelineFactory = PipeLineFactory.PipeLineFactory()
 
 # the topicmap_handler (to be spruced up with extension smarts)
 tmh = topicmap_handler.topicmap_handler('map',pipelineFactory)
@@ -60,7 +65,9 @@ hs = http_server.http_server ('', 8081, logger_object = lg)
 sh = status_handler.status_extension([hs,tmh,pipelineFactory])
 hs.install_handler(sh)
 
-
+nooron_root = NooronRoot()
+nooron_root.fsroot = PUBLISHING_ROOT
+nooron_root.http_server = hs
 
 hs.install_handler(tmh)
 #hs.install_handler(code_dh)
