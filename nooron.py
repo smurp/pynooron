@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.29 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.29 2003/03/08 12:57:23 smurp Exp $'
+__version__='$Revision: 1.30 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.30 2003/03/28 07:43:36 smurp Exp $'
 
 
 """
@@ -30,6 +30,12 @@ UID = 'smurp'
 default_place = cwd+'/know' 
 #default_place = cwd+'/pyokbc/tests'
 
+from OkbcOperation import IPListSecurityEngine 
+security_engine = IPListSecurityEngine(allow=['192.168.1.14',
+                                              '24.52.220.100',
+                                              '208.38.8.158'],
+                                       deny=1)
+
 import __main__
 
 __main__.__builtins__.nooron_root = \
@@ -39,7 +45,8 @@ __main__.__builtins__.nooron_root = \
                     site_front = 'www_nooron_org_front.html',
                     server_port = 9001,
                     log_to = sys.stdout,
-                    initargs = {'default_place':default_place})
+                    initargs = {'default_place':default_place},
+                    security_engine=security_engine)
 
 
 try:
