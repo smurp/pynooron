@@ -256,4 +256,4 @@ create_individual('CreateNewFramesInRightKB',
               nooron_app_class, those instances should be created in
               the appropriate nooron_app_data kb."""],
                             ])
-v
+
