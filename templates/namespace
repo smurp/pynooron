@@ -1,4 +1,4 @@
-<!-- $Revision: 1.2 $ -->
+
 <dl>
   <dt>root</dt>
   <dd tal:content="root"></dd>
@@ -18,4 +18,5 @@
   <dt>request</dt>
   <dd tal:content="request"></dd>
 </dl>
-
+<hr>
+$Id: namespace,v 1.3 2002/07/24 11:22:16 smurp Exp $

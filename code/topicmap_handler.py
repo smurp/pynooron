@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.4 2002/07/24 11:02:41 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.5 2002/07/24 11:22:16 smurp Exp $'
 
 
 # GooseWorks support
@@ -199,11 +199,9 @@ class topicmap_handler:
         if '%' in path:
             path = unquote (path)
 
-
         obj = None
         app = None
 
-        
         path_list = path.split('/')
         header = self.breadcrumbs(path_list) + "<hr>\n"        
         if path_list[-1] == '':
@@ -218,9 +216,9 @@ class topicmap_handler:
             path = app.tm_uri
             obj = app.getTopicWithID('%s#%s' % (path,topic_name))
             
-            
         if not obj:
             obj = app
+
         pl = self.pipeline_factory.build_pipeline(request,obj)
         pl.publish()
         
