@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: CachingMixin.py,v 1.5 2003/03/28 11:05:56 smurp Exp $'
+_version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: CachingMixin.py,v 1.6 2003/04/01 19:17:04 smurp Exp $'
 
 
 from __future__ import nested_scopes
@@ -51,12 +51,16 @@ def make_cache_clearing_wrapper(kb,wrapped_method,name_of_method):
     """Return the wrapped method with a cache clearing routine before it."""
     def cache_clearing_wrapper(*args,**kwargs):
         ## FIXME can't we use a sniper rifle instead of a doomsday device?
+        ## I have a proof too long to fit in this margin...
+        ## Just hang cache maintenance functions off the Funcs, ala okbc-lisp
         kb._cache = {}
         for child in kb.get_kb_direct_children():
             child._cache = {}
         args = [kb] + list(args)
-        kb.put_slot_value_internal(kb,'ModificationTime',time.time())
-        #print "BOOGER dumping cache %s" % str(kb), time.time(),wrapped_method
+        if kb.allow_caching_p():
+            #print "===> ",kb,"ModificationTime",time.time()
+            kb.put_slot_value_internal(kb,'ModificationTime',time.time())
+        #print "dumping cache %s" % str(kb), time.time(),wrapped_method
         return apply(wrapped_method,args,kwargs)
     return cache_clearing_wrapper
     

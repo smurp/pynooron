@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.16 2003/03/28 11:05:56 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.17 2003/04/01 19:17:04 smurp Exp $'
 
 import string
 
@@ -67,11 +67,11 @@ class PyKb(AbstractFileKb,CachingMixin):
         #fname = place+filename # FIXME should os.pathjoin be used?
         prev_kb = current_kb()
         goto_kb(self)
-        for (key,val) in stats.items():
-            #print "putting",key,val
-            self.put_slot_value(self,str(key),val)
         orig_allow_caching_p = self.allow_caching_p()
         self._allow_caching_p = 0
+        for (key,val) in stats.items():
+            self.put_slot_value(self,str(key),val)
+        
         try:
             whole = string.join(raw_kb,"")
             stanzas = whole.split('\n\n')
