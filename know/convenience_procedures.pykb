@@ -1,0 +1,16 @@
+
+put_frame_pretty_name(current_kb(),"convenience_procedures")
+put_slot_values(current_kb(),':DOCUMENTATION',
+                ["""These convenience PyOKBC procedures are an experiment
+                to discover whether the deficits of ZPTs as a programming
+                language can be largely overcome by putting procedures
+                in the knowledge."""])
+
+def sort_frames(these):
+    str_sort=lambda a,b: cmp(str(a),str(b))
+    these.sort(str_sort)
+    return these
+
+register_procedure('sort_frames',
+                   procedure=create_procedure(body=sort_frames))
+del sort_frames

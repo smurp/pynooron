@@ -1,5 +1,5 @@
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.17 2002/11/18 23:43:59 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.18 2002/11/20 15:20:58 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -104,6 +104,7 @@ class Node(Symbol):
 
 class FRAME(Node):
     __allow_access_to_unprotected_subobjects__ = 1
+        
     def __init__(self,frame_name,kb=None,frame_type=None):
         self._name = frame_name
         #self._frame_type = frame_type
@@ -336,9 +337,45 @@ Node._value_selectors          = (Node._either,Node._default_only,Node._known_tr
 Node._slot_types               = (Node._all,Node._template,Node._own)
 Node._inference_levels         = (Node._taxonomic,Node._all,Node._direct)
 
+class Programmable:
+    def call_procedure(kb,procedure,arguments=None):
+        return apply(procedure,arguments)
+    
+    def create_procedure(kb,arguments=None,body=None,environment=None):
+        # For the moment, body must be a python function, for example
+        #   def boo():
+        #       return "boo"
+        #   create_procedure(body=boo)
+        # This is obviously abominable, first because it doesn't obey the
+        # spec, but also because it has nasty security implications.
+        # Regardless, I will implement this shortcut so call_procedure
+        # can immediately be used for such simple things as sorting.
+        # Likewise, environment and arguments are simply dropped.
+        # The goal of this implementation is to make it possible to use
+        # call_procedure AS IF procedures were properly implemented.  This
+        # works nicely with the inanity of PyKb files simply being python.
+        # See /know/convenience_procedures.pykb for examples.
+        return body
+    
+    def get_procedure(kb,name):
+        for kaybee in [kb] +  kb.get_kb_parents():
+            if not hasattr(kaybee,'_procedures'):
+                kaybee._procedures={}
+            proc = kaybee._procedures.get(name)
+            if proc: return proc
+        return None
+    
+    def register_procedure(kb,name,procedure):
+        if not hasattr(kb,'_procedures'):
+            kb._procedures={}
+        kb._procedures[name]=procedure
 
+    def unregister_procedure(kb,name):
+        if not hasattr(kb,'_procedures'):
+            kb._procedures={}
+        del kb._procedures[name]
 
-class KB(FRAME):
+class KB(FRAME,Programmable):
     """All OKBC methods which take a KB argument should be implemented here.
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
