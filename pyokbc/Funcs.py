@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.15 2003/03/06 09:42:44 smurp Exp $'
+_version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.16 2003/03/08 13:05:05 smurp Exp $'
 
 
 from PyOkbc import *
@@ -743,7 +743,16 @@ put_class_superclasses.write=1
 
 # def put_facet_value
 # def put_facet_values
-# def put_frame_details
+
+def put_frame_details(frame,details,kb=None,kb_local_only_p=0):
+    kb = _coerce_to_kb(kb)
+    kb.put_frame_details(frame,details,kb_local_only_p)
+put_frame_details.enumerator=0
+put_frame_details.optional=1
+put_frame_details.read=0
+put_frame_details.mandatory=0
+put_frame_details.write=1
+put_frame_details.causes_side_effects=1
 
 def put_frame_name(frame,new_name,kb=0,kb_local_only_p=0):
     kb = _coerce_to_kb(kb)
