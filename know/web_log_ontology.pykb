@@ -1,5 +1,5 @@
 
-put_direct_parents(['nooron_app_architecture.pykb'])
+put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
 create_slot('web_log_url',

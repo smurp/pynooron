@@ -1,6 +1,6 @@
 
-put_direct_parents(['faq_wardrobe.pykb',
-                    'nooron_faq_data.pykb'])
+put_direct_parents(['faq_wardrobe',
+                    'nooron_faq_data'])
 put_instance_types(current_kb(),['faq_app'])
 put_frame_pretty_name(current_kb(),"Nooron FAQ")
 put_slot_values(current_kb(),':DOCUMENTATION',

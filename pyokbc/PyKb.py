@@ -52,9 +52,9 @@ def to_slot_spec(frame,slot,slot_type):
 class PyKb(AbstractFileKb):
     _kb_type_file_extension = 'pykb'
     def __init__(self,filename,place='',connection=None,name=None):
-        #self._name = filename
         if name == None:
             name = filename
+        #print name,filename
         ext = self._kb_type_file_extension 
         if not (len(filename) > len(ext) and \
            filename[-1 * len(ext):] == ext):

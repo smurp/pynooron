@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.4 2002/11/18 23:45:14 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.5 2002/11/26 21:52:41 smurp Exp $'
 
 import os
 import sys
@@ -17,23 +17,24 @@ class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd() + '/../know'
-        mykb = open_kb("smurp_web_log.pykb")
+        mykb = open_kb("smurp_web_log")
         goto_kb(mykb)
 
     def test_get_class_instances_of_marvel(self):
-        good = "[wle_1, wle_2]"
+        good = "[wle_0001, wle_0002]"
         resp = list(get_class_instances('marvel')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_class_instances_of_web_log_entry(self):
-        good = "[wle_1, wle_2, wle_3, wle_4, wle_5]"
+        good = "[wle_0001, wle_0002, wle_0003, wle_0004, wle_0005]"
         resp = list(get_class_instances('web_log_entry')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_frame_slots_all_gear(self):
-        good = "[':DOCUMENTATION', 'npt_for_self', 'slot_display_order']"
+        good = "[':DOCUMENTATION', 'npt_for_instances'," + \
+               " 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots('web_log_category',
                                     slot_type=Node._all,
                                     inference_level=Node._all)[0])
@@ -41,8 +42,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_frame_slots_all_nooron_faq(self):
-        nooron_faq = find_kb('nooron_faq.pykb')
-        good = "[':DOCUMENTATION', 'npt_fo_self', 'slot_display_order']"
+        nooron_faq = find_kb('nooron_faq')
+        good = "[':DOCUMENTATION', 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots(nooron_faq,
                                     kb=nooron_faq,
                                     slot_type=Node._all,
@@ -51,7 +52,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))    
 
     def test_get_frame_slots_all_web_log_category(self):
-        good = "[':DOCUMENTATION', 'npt_for_self', 'slot_display_order']"
+        good = "[':DOCUMENTATION', 'npt_for_instances'," + \
+               " 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots('web_log_category',
                                     slot_type=Node._all,
                                     inference_level=Node._all)[0])
@@ -59,7 +61,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_frame_slots_all_THING(self):
-        good = "['npt_for_self']"
+        good = "[':DOCUMENTATION', 'npt_for_self']"
         resp = list(get_frame_slots(':THING',
                                     slot_type=Node._all,
                                     inference_level=Node._all)[0])
@@ -73,9 +75,9 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_get_instance_types_wle_3(self):
+    def test_get_instance_types_wle_0003(self):
         good = "[:INDIVIDUAL, gear, web_log_entry]"
-        resp = list(get_instance_types('wle_3',
+        resp = list(get_instance_types('wle_0003',
                                        inference_level=Node._direct)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -88,9 +90,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_parents(self):
-        good = "[PRIMORDIAL_KB, nooron_app_architecture.pykb," +\
-               " smurp_web_log_data.pykb, web_log_ontology.pykb," +\
-               " web_log_wardrobe.pykb]"
+        good = "[PRIMORDIAL_KB, convenience_procedures," + \
+               " nooron_app_architecture," +\
+               " smurp_web_log_data, web_log_ontology," +\
+               " web_log_wardrobe]"
         resp = current_kb().get_kb_parents()
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))        
@@ -166,8 +169,6 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
         PyOkbc.DEBUG = 0        
-
-
 
 
 if __name__ == "__main__":

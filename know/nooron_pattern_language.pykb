@@ -1,6 +1,6 @@
 
-put_direct_parents(['pattern_language_wardrobe.pykb',
-                    'nooron_pattern_language_data.pykb'])
+put_direct_parents(['pattern_language_wardrobe',
+                    'nooron_pattern_language_data'])
 put_instance_types(current_kb(),['pattern_language_app'])
 put_frame_pretty_name(current_kb(),"The Nooron Pattern Language")
 put_slot_value(current_kb(),

@@ -1,5 +1,5 @@
 
-put_direct_parents(['pattern_language_ontology.pykb'])
+put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
 
 create_individual('KnowledgeRepresentation',

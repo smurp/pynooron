@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.21 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.21 2002/11/26 00:33:37 smurp Exp $'
+__version__='$Revision: 1.22 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.22 2002/11/26 21:52:40 smurp Exp $'
 
 
 """
@@ -36,6 +36,3 @@ __main__.__builtins__.nooron_root = \
                     initargs = {'default_place':default_place})
 
 asyncore.loop()
-
-
-

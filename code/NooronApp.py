@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.15 2002/11/24 17:46:10 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.16 2002/11/26 21:52:40 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -90,6 +90,7 @@ class GenericFrame(AbstractApp):
 
     def get_npt_for_subclasses(app,request,frame):
         kb = app._kb
+        print "kb is",kb
         if not kb.class_p(frame):
             return None
         (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_subclasses',

@@ -1,13 +1,12 @@
 
 TODO for Nooron
 
-for v0.2.0 release
-* cleanliness
+BUGS
 ** wrong garment options on site_front_as_html
 ** orange and green!
-** remove junk from http log output
-* skins for kbs
 ** ensure that kb_as_html is default template for kbs
+** nooron.py can't start on port 80 except as root, doh I forgot!
+* why doesnt nooron_pattern_language.get_instance_types return :KB?
 
 after v0.2
 * implement IntermediateReferent (or SubjectIndicators?)

@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.1 2002/11/26 20:32:11 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.2 2002/11/26 21:52:40 smurp Exp $'
 
 import string
 
@@ -16,10 +16,10 @@ from TellKb import *
 
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
-
+pyokbc_mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
 
 class FileSystemKb(AbstractFileKb):
-    _mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
+    #_mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
     def __init__(kb,filename,place='',connection=None):
         #print kb._mimetypes
         AbstractFileKb.__init__(kb,filename,connection=connection)
@@ -61,7 +61,7 @@ class FileSystemKb(AbstractFileKb):
 
             return (frame,1)
 
-        for (ext,mime_type) in kb._mimetypes.items():
+        for (ext,mime_type) in pyokbc_mimetypes.items():
             #possible_kb_filename = os.path.join(str(kb),filename+ext)
             possible_kb_filename = thing + ext
             if possible_kb_filename in os.listdir(str(kb)):

@@ -4,6 +4,7 @@ from OkbcConditions import *
 import dircache
 import os
 from FileSystemKb import *
+import string
 
 class FileSystemConnection(Connection):
     def __init__(connection,initargs=None):
@@ -25,15 +26,19 @@ class FileSystemConnection(Connection):
         entries = dircache.listdir(place)
         
         rets = ['PRIMORDIAL_KB']
+
         for e in entries:
             splits = os.path.splitext(e)
-            try:
-                if not (connection._ignore_tildes and e[-1] == '~') and \
-                   not (e[0] == e[-1] and e[0] == '#') or \
-                   os.path.isdir(os.path.join(place,e)):
+
+            if not (connection._ignore_tildes and e[-1] == '~') and \
+               not (e[0] == e[-1] and e[0] == '#') or \
+               os.path.isdir(os.path.join(place,e)):
+
+                if splits[-1] in pyokbc_mimetypes.keys():
+                    just_the_name = string.join(list(splits[:-1]),'')
+                    rets.append(just_the_name)
+                else:
                     rets.append(e)
-            except:
-                pass
         rets.sort()
         return rets
 
