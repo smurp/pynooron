@@ -3,7 +3,7 @@ put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
 create_individual('KnownSpace',
                   pretty_name='Known Space',
-                  direct_types=['pattern'],)
+                  direct_types=['pattern'])
 create_individual('Void',
                   pretty_name='Void',
                   direct_types=['pattern'])
@@ -17,23 +17,24 @@ create_individual('ProtoSpace',
                   pretty_name='ProtoSpace',
                   direct_types=['pattern'],
                   own_slots=[['Intent', ' The combination of the known space and the void.'],
-                             ['RelatedPatterns', 'KnownSpace', 'Void', 'NamedVoid', 'Stuff'],
+                             ['RelatedPatterns', 'KnownSpace', 'Void', 'NamedVoid', 'Stuff']
                             ])
 create_individual('ExpectedProperties',
                   pretty_name='Expected Properties',
                   direct_types=['pattern'])
 create_individual('ExpectationFailure',
                   pretty_name='Expectation Failure',
-                  direct_types=['pattern'],)
-create_individual('Adjacent Possible',
-                  pretty_name='AdjacentPossible',
+                  direct_types=['pattern'])
+create_individual('AdjacentPossible',
+                  pretty_name='Adjacent Possible',
                   direct_types=['pattern'],
                   own_slots=[['Intent', 'That portion of the void which is knowable via the named voids already inside the known space. '],
                              ['References', 'KnownSpace', 'NamedVoid'],
                             ])
 create_individual('Stuff',
                   direct_types=['pattern'],
-                  own_slots=[['Intent', 'That which is in the known space, including the Named Voids which link to the unknown '],])
+                  own_slots=[['Intent', 'That which is in the known space, including the Named Voids which link to the unknown ']
+                             ])
 create_individual('SelfDiscovery',
                   pretty_name='Self Discovery',
                   direct_types=['pattern'],
@@ -210,6 +211,7 @@ create_individual('UnknowledgePool',
                              ['Method', ''],
                              ['Motivation', 'The pool allows discoure to proceed, naming voids to be filled in later.', ''],
                              ['References', ''],
-                             ['RelatedPatterns', 'Tapestry', 'NamedVoid', 'KnownSpace', 'Diachronic', 'Adjacent Possible', 'LinguisticShell', 'UnknowledgeLoop'],
+                             ['RelatedPatterns', 'Tapestry', 'NamedVoid', 'KnownSpace', 'Diachronic', 'AdjacentPossible', 'LinguisticShell', 'UnknowledgeLoop'],
                              ['Variations', ''],
                             ])
+
