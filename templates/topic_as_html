@@ -1,12 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html metal:use-macro="container/standard_master/macros/master">
   <head>
-    <title>topic_as_html</title>
+    <title tal:content="template/title"></title>
   </head>
 
-  <body bgcolor="orange">
+  <body>
+
+<div metal:fill-slot="main">
 <h1 tal:content="here/getBaseNames"></h1>
-<strong tal:content="here"></strong>
+
 
 <table border="1"
        tal:define="items here/getSIRs" 
@@ -99,17 +101,36 @@
 </table>
 
 <div tal:define="test python:0" tal:condition="test">
+<!-- $Revision: 1.2 $ -->
+<dl>
+  <dt>root</dt>
+  <dd tal:content="root"></dd>
+
+  <dt>here</dt>
+  <dd tal:content="here"></dd>
+
+  <dt>template</dt>
+  <dd>FIXME</dd>
+
+  <dt>container</dt>
+  <dd tal:content="container"></dd>
+
+  <dt>options</dt>
+  <dd tal:content="options"></dd>
+
+  <dt>request</dt>
+  <dd tal:content="request"></dd>
+</dl>
+
 </div>
 
-
-
-
     <hr>
-$Revision: 1.1 $
+$Revision: 1.2 $
 <br>
 <!-- Created: Fri Jul 19 12:02:05 MDT 2002 -->
 <!-- hhmts start -->
 Last modified: Fri Jul 19 12:06:00 MDT 2002
 <!-- hhmts end -->
+</div>
   </body>
 </html>

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.3 2002/07/23 18:33:37 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.4 2002/07/24 11:02:41 smurp Exp $'
 
 
 from NooronRoot import NooronRoot
@@ -10,7 +10,7 @@ import string
 import medusa
 
 class producer:
-    domain = None
+    domain = []
     range = 'cdata'
     def mime_type(self):
         if self.def_mime_type:
@@ -37,7 +37,7 @@ class transformer(producer):
 
     They can be nested arbitrarily.  Examples include upper, lower, gz.
     """
-    domain = 'text/*'     # how to use this stuff?
+    domain = []     # how to use this stuff?
     range = 'text/plain'  # oh, how to use it!
     def more(self):
         return self.more_content()
@@ -86,6 +86,7 @@ class templated_producer(producer):
         template=tr.obtain(self.template_name,
                            request=request,
                            obj=content)
+        template.title = self.template_name
         self.set_template(template)
 
     def set_template(self,template):
@@ -104,6 +105,10 @@ class topic_html_producer(templated_producer):
 
     It does this by attemping to find a template called
       'instance_of_CLASSNAME_as_html'
+    or should it be
+      NR/templates/by_tclass/TKLASS/instance_as_html
+      NR/templates/by_tclass/TKLASS/instance_as_svg
+      NR/templates/by_tclass/TKLASS/instance_as_html?cvstag=TRICKY
     and uses it or else it just uses 'topic_as_html'."""
     domain = ['GWApp.TMObject']
     extensions = ['html','htm']

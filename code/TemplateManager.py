@@ -8,6 +8,7 @@ from NooronPageTemplate import NooronPageTemplate
 
 class TemplateManager:
     """Each nested template directory gets one of these acquisition supporters."""
+
     aq_parent = None
     def __init__(self,parent,path):
         self.aq_parent = parent
@@ -15,6 +16,10 @@ class TemplateManager:
     def setObject(self,id,obj):
         #obj.aq_inner = AqInner(self)
         obj.aq_parent = self
+
+    def __getitem__(self,key):
+        return self.obtain(key)
+        
     def __str__(self):
         return "TemplateManager_"+str(self.__dict__)
         

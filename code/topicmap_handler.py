@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.3 2002/07/23 18:33:37 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.4 2002/07/24 11:02:41 smurp Exp $'
 
 
 # GooseWorks support
@@ -8,15 +8,6 @@ import GW
 from GWApp import GWApp
 
 DEBUG = 1
-# Medusa support
-#import asyncore
-#from medusa import http_server
-#from medusa import default_handler
-#from medusa import logger
-#from medusa import script_handler
-#from medusa import filesys
-#from medusa import status_handler
-#from medusa import producers
 from medusa import counter
 import medusa
 
@@ -162,12 +153,6 @@ class topicmap_handler:
             retval = retval + """<LI><a href="%s">%s</a>""" % (link,label)
         return retval
 
-    def topic(self,app,node_name):
-        return app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % node_name)
-
-    def noogie(self,app,discard):
-        return app.getTopicWithID('file:///home/smurp/src/nooron/catalog.xtm#%s' % discard)
-        return app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % discard)    
 
     def present_tmobject(self,topic):
         retval =  "a TMObject<br>"
@@ -203,7 +188,6 @@ class topicmap_handler:
             
         return retval + sir_summ + bn_summ + inst_summ + occ_summ
 
-        
 
     def handle_request(self,request):
         
@@ -231,7 +215,8 @@ class topicmap_handler:
 
         if len(path_list) > 2:
             topic_name = path_list[2]
-            obj = app.getTopicWithID('file:///download/knowledge/jill.xtm#%s' % topic_name)
+            path = app.tm_uri
+            obj = app.getTopicWithID('%s#%s' % (path,topic_name))
             
             
         if not obj:
@@ -239,184 +224,3 @@ class topicmap_handler:
         pl = self.pipeline_factory.build_pipeline(request,obj)
         pl.publish()
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def old_handle_request(self,request):
-        
-        [path, params, query, fragment] = request.split_uri()
-
-        while path and path[0] == '/':
-            path = path[1:]
-
-        if '%' in path:
-            path = unquote (path)
-
-        path_list = path.split('/')
-        header = self.breadcrumbs(path_list) + "<hr>\n"        
-        if path_list[-1] == '':
-            del path_list[-1]
-
-        if len(path_list) == 1 and path_list[0] == 'map':
-            content = self.available_graphs()
-            content = content + """
-            <hr>
-            TBD: show list of available topic maps"""
-        elif len(path_list) == 2:
-            content = self.available_queries_for_graph(path_list[1])
-            content = content + """
-            <hr>
-            topicmap = %s<br>TBD: show list of available actions (topic,class,scope,etc)""" % path_list[1]
-        elif len(path_list) == 3:
-            #if self.is_query(path_list[2]):
-            #    content = self.do_query(tm_name=path_list[1],query_name=path_list[2])
-            if 0:
-                pass
-            else:
-                meth_name = path_list[2]
-                content = self.graph_query(path_list[1],meth_name)
-                if 0:
-                    if self.__dict__.has_key(meth_name) and type(self[meth_name]) == type(self.__init__):
-                        content = self.query(path_list[1],meth_name)
-                        #content = "results of <code>%s()</code> here" % meth_name
-                    else:
-                        content = "don't know what to do for '%s'" % meth_name
-                
-            content = content + """
-            <hr>
-            topicmap = %s<br>
-            action=%s<br>
-            TBD: show list of available subjects of action
-               (e.g. for action=topic: smurp,criterion,evaluation,etc))""" % (path_list[1],path_list[2])
-        elif len(path_list) == 4:
-            #content = self.do_query(tm_name=path_list[1],query_name=path_list[2],as=path_list[3])
-            tm_name = path_list[1]
-            meth_name = path_list[2]
-            fragment = path_list[3]
-            app = self.graphs[tm_name]
-            coerce_arg = {'TMObject':int}
-
-            # coerce type of fragment if need be
-            if coerce_arg.has_key(meth_name):
-                fragment = coerce_arg[meth_name](fragment)
-
-            # cascade attempts to run method
-            try:
-                meth = getattr(app,meth_name)
-                args = [fragment]
-            except:
-                meth = None
-            if not meth:
-                try:
-                    meth = getattr(self,meth_name)
-                    args = [app,fragment]
-                except:
-                    meth = None
-            if meth:
-                content = self.present(apply(meth,args,{}))
-            else:
-                content = " no damn luck finding %s on app or self" % meth_name
-            content = content + """
-            <hr>
-            topicmap = %s<br>
-            action=%s<br>
-            subject=%s<br>
-            TBD: show default html view of the subject
-            TBD: show list of available views (html,xtm,atm,svg) or actions (???)""" % (path_list[1],
-                                                                                        path_list[2],
-                                                                                        path_list[3])
-        else:
-            content="duh len(path_list) = %i" % len(path_list)
-
-        content = content + "<hr> path_list  = " + str(path_list)
-        pl = self.pipeline_factory.build_pipeline(request,content)
-        pl.publish()
-        
-        
-
-    def old_stuff(self,request):
-
-        response =  """<html><head><title>Boo</title></head><body>
-        %s
-        %s
-        <hr>
-        <dl>
-          <dt>path<dd>%s
-          <dt>params<dd>%s
-          <dt>query<dd>%s
-          <dt>fragment<dd>%s
-        </dl>
-        <hr>
-        timstamp = %s
-        </body></html>""" % (header
-                             ,content
-                             ,str(path),str(params),str(query),str(fragment)
-                             ,request.reply_headers['Date']
-                             )
-        request['Content-Length'] = len(response)
-        request.push(response)
-        request.done()
-

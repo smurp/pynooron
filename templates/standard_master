@@ -1,0 +1,32 @@
+<html metal:define-macro="master">
+  <head>
+    <title tal:content="template/title">template/title</title>
+  </head>
+
+  <body bgcolor="orange">
+  <table width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="white"><a href="http://www.noosphere.org/discuss/zwiki/Nooron">Nooron<a/></td>
+      <td tal:content="structure container/main_menu">main menu</td>
+    </tr>
+
+    <tr>
+      <td>
+	  Looks<br>like a<br>good place<br>for a<br>context-<br>sensitive<br>menu.
+      </td>
+      <td bgcolor="white" >
+         <div metal:define-slot="main">
+           The main content of the pages goes here.
+         </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td bgcolor="white">name space</td>
+      <td tal:content="structure container/namespace">req</td>
+    </tr>
+  </tbody>
+  </table>
+  </body>
+</html>

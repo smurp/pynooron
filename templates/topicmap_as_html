@@ -1,9 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html metal:use-macro="container/standard_master/macros/master">
   <head>
-    <title></title>
+    <title tal:content="template/title"></title>
   </head>
-<body bgcolor="lightgreen">
+
+  <body>
+
+<div metal:fill-slot="main">
 
 <table border="1"
        tal:define="classes here/getAllClasses" 
@@ -78,10 +80,11 @@
 
 
 <hr>
-$Revision: 1.1 $
+$Revision: 1.2 $
 <br>
 <!-- hhmts start -->
 Last modified: Fri Jul 19 12:06:00 MDT 2002
 <!-- hhmts end -->
+</div>
 </body>
 </html>

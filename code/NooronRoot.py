@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.1 2002/07/22 19:33:42 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.2 2002/07/24 11:02:41 smurp Exp $'
 
 """
 NooronRoot is the root object of a nooron instance.
@@ -19,6 +19,7 @@ class NooronRoot:
         if not self.__dict__.has_key('prepped'):
             self._template_root = TemplateManager(self,'templates')
             self.__dict__['prepped'] = 1
+            self.__dict__['trout'] = 'booger'
             
     fsroot = None
     http_server = None
