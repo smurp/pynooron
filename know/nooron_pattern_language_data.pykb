@@ -4,7 +4,13 @@ put_instance_types(current_kb(),['nooron_app_data'])
 
 create_individual('KnowledgeRepresentation',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',""" """],
+                  own_slots=[['Intent',
+                              """Represent knowledge in the form of
+                              conceptual categories (called classes) and
+                              instances of those classes (called individuals)
+                              in such a way that computers can manipulate the
+                              knowledge by storing it, retrieving it and
+                              performing inferences on it."""],
                              ['Motivation',""" """],
                              ['Applicability',""" """],
                              ['Method',""" """],
@@ -17,13 +23,33 @@ create_individual('KnowledgeRepresentation',
 
 create_individual('Versioning',
                   direct_types=['pattern'],
-                  own_slots=[['Intent',""" """],
-                             ['Motivation',""" """],
+                  own_slots=[['Intent',
+                              """Keep track of the distinct, successive
+                              (possibly branching) states that information
+                              goes through."""],
+                             ['Motivation',
+                              """Digital information is typically frequently
+                              copied and revised.  It is often the case that
+                              useful information is lost in this process or
+                              that the very history of successive versions
+                              is itself of interest.  Keeping each successive
+                              significant revision of a digital artifact
+                              supports important goals such as restoration
+                              of previous state, discovery of who performed
+                              what changes and understanding of the
+                              significance of changes.  It is particularly
+                              useful when there are a large number of
+                              people involved with the data in question and
+                              also when there are a large number of digital
+                              objects under management."""],
                              ['Applicability',""" """],
                              ['Method',""" """],
                              ['Consequences',""" """],
                              ['Variations',""" """], 
-                             ['KnownUses',""" """], 
+                             ['KnownUses',
+                              'http://www.gnu.org/software/rcs/rcs.html',
+                              'http://www.gnu.org/software/cvs/',
+                              'http://nodal.sourceforge.net/'], 
                              ['RelatedPatterns']],
                   )
 

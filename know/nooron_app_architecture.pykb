@@ -1,4 +1,6 @@
 
+put_direct_parents(['convenience_procedures.pykb'])
+
 create_slot('merges_in',
             doc="""Which nooron_app_components does this kind of
             nooron_app_component have as direct_parents?""",
