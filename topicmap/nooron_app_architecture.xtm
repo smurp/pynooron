@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: nooron_app_architecture.xtm,v 1.1 2002/08/07 20:19:06 smurp Exp $ -->
+<!-- $Id: nooron_app_architecture.xtm,v 1.2 2002/08/08 20:47:29 smurp Exp $ -->
 
 <topicMap id="nooron_app_architecture"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -232,6 +232,20 @@
       resourceRef should contain the url of a Nooron Page Template (NPT) 
       which is appropriate for displaying instances of the class on which 
       ntp_for_instances is an occurrence.
+    </resourceData>
+  </occurrence>  
+</topic>
+
+
+<topic id="npt_for_self">
+  <baseName>
+    <baseNameString>npt_for_me</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      App Skeletons can define occurrences of this type for each topic
+      for which a particular template is desired.  Npt_for_self has
+      precedence over npt_for_instances.
     </resourceData>
   </occurrence>  
 </topic>

@@ -90,7 +90,7 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.amazon.com/exec/obidos/ASIN/1579550088" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
@@ -111,7 +111,8 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <!--subjectIndicatorRef xlink:href="#web_log_url"/-->
       </instanceOf>
       <resourceRef xlink:href="http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
@@ -132,7 +133,7 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.excaliburelectronics.com/foreverflashl.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
@@ -167,13 +168,14 @@
     </baseName>
     <occurrence>
       <instanceOf>
-        <topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <!--topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"-->
       </instanceOf>
       <resourceRef xlink:href="http://www.radio.cbc.ca/programs/ideas/libeskind/index.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
     <occurrence>
       <instanceOf>
-        <topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.daniel-libeskind.com/" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
