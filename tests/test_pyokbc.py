@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.13 2003/02/17 18:45:49 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.14 2003/02/28 19:35:49 smurp Exp $'
 
 import os
 import sys
@@ -36,7 +36,6 @@ class ReadOnlyTestCase(unittest.TestCase):
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd() + '/../know'
         #std_tranny = open_kb("standard_transmission_fsa")
         mykb = open_kb("smurp_web_log")
-        
         goto_kb(mykb)
 
     def test_get_class_instances_of_marvel(self):
@@ -49,6 +48,13 @@ class ReadOnlyTestCase(unittest.TestCase):
         good = "[wle_0001, wle_0002, wle_0003, wle_0004, wle_0005," +\
                " wle_0006, wle_0007]"
         resp = list(get_class_instances('web_log_entry')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_class_instances_of_nooron_app_class(self):
+        pert = open_kb('nooron_pert')
+        good = "[pert_class, transformer_class]"
+        resp = list(get_class_instances('nooron_app_class',kb=pert)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
@@ -100,7 +106,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_frame_slots_all_THING(self):
-        good = "[':DOCUMENTATION', 'npt_for_self']"
+        good = "[':DOCUMENTATION', 'actions_for_self', 'npt_for_self']"
         resp = list(get_frame_slots(':THING',
                                     slot_type=Node._all,
                                     inference_level=Node._all)[0])
@@ -181,6 +187,11 @@ class ReadOnlyTestCase(unittest.TestCase):
                                               kb_local_only_p=0)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_smurp_web_log_is_nooron_app_instance(self):
+        swl = current_kb()
+        print instance_of_p(swl,'nooron_app_instance')
+        self.assertEquals((1,1),instance_of_p(swl,'nooron_app_instance'))
 
     def test_smurp_web_log_is_same_as_original(self):
         src_kb = 'smurp_web_log'
