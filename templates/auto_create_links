@@ -1,11 +1,11 @@
 
-<!-- auto_create_links $Id: auto_create_links,v 1.4 2003/06/30 21:09:16 smurp Exp $ -->
+<!-- auto_create_links $Id: auto_create_links,v 1.5 2003/07/02 18:03:00 smurp Exp $ -->
 <tal:block
      condition="python:AUTHENTICATED_USER != AnonymousUser">
 
 <tal:dummy
      define="app_classes python:get_class_instances('nooron_app_class')[0]"
-     condition="app_classes">
+     condition="python:app_classes and not instance_of_p(here,'nooron_app_ontology')">
   <tal:block
        repeat="app_class app_classes">
     <tal:dummy
@@ -25,6 +25,18 @@
   </tal:block>
 </tal:dummy>
 
+
+<tal:dummy condition="python:here != meta_kb()">
+<form method="GET"
+      tal:attributes="action python:request.object_request()+
+                             '__put_frame_details.html'">
+ <input 
+    type="submit" 
+    tal:attributes="value python:'Edit '+str(get_frame_name(here))"/>
+</form>
+</tal:dummy>
+
+
 <tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
   <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
                      kb_to_save python:gmnadk(this_kb)">
@@ -35,7 +47,7 @@
                                 '__save_kb'">
 
       <input type="hidden" name="OnSuccessRedirectTo" 
-             tal:attributes="value here"/>
+             tal:attributes="value python:request.kb_request()"/>
       <input type="hidden" name="kb" value="" 
              tal:attributes="value kb_to_save">
       <input type="submit" value="Save All Changes"/>
