@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.45 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.45 2003/05/13 16:28:14 smurp Exp $'
+__version__='$Revision: 1.46 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.46 2003/05/22 20:28:39 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -2348,12 +2348,16 @@ class Connection: #abstract
         meta = connection.meta_kb()
         return meta.get_frame_in_kb(name_or_kb_or_kb_locator)[0]
 
+    def get_kb_types(connection):
+        list_of_kb_types = connection.meta_kb()._kb_types.values()
+        return list_of_kb_types
+
     def meta_kb(connection):
         return connection._meta_kb
 
     def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
         if not kb_type:
-            kb_types = connection.meta_kb()._kb_types.values()
+            kb_types = connection.get_kb_types()
             #kb_type = connection._default_kb_type
         for kb_type in kb_types:
             my_meta_kb = kb = connection._meta_kb
@@ -2362,6 +2366,7 @@ class Connection: #abstract
                 kb = kb_type(kb_locator,connection=connection)
                 my_meta_kb._add_frame_to_store(kb)
         return kb
+
 
     def openable_kbs(connection, kb_type = None, place = None):
         warn("Connection.openable_kbs is abstract",20)

@@ -15,6 +15,9 @@ def _make_allowed_fname(allowed_place,kb_locator):
     #print "_make_allowed_fname",allowed_place,kb_locator
     fullpath = os.path.join(allowed_place,kb_locator)
     normpath = os.path.normpath(fullpath)
+    if string.find(kb_locator,'pert') == 0:
+        print "LOOKING FOR pert IN",allowed_place,normpath
+        
     #if DEBUG: print "normpath =",normpath
     if normpath.find(allowed_place) != 0:
         raise "Illegal path requested",\
@@ -47,8 +50,8 @@ class FileSystemConnection(Connection):
             splits = os.path.splitext(e)
 
             if not (connection._ignore_tildes and e[-1] == '~') and \
-               not (e[0] == e[-1] and e[0] == '#') or \
-               os.path.isdir(os.path.join(place,e)):
+                   not (e[0] == e[-1] and e[0] == '#') or \
+                   os.path.isdir(os.path.join(place,e)):
 
                 if splits[-1] in pyokbc_mimetypes.keys():
                     just_the_name = string.join(list(splits[:-1]),'')
@@ -60,7 +63,6 @@ class FileSystemConnection(Connection):
     def openable_kbs(connection,kb_type,place=None):
         if not place: place = connection._default_place
         warn("openable_kbs doing listdir of "+place)
-
 
         rets = ['PRIMORDIAL_KB']
         for place in connection._path:
@@ -82,10 +84,13 @@ class FileSystemConnection(Connection):
                 fname = os.path.join(place,filename)
             try:
                 f = open(fname)
+                print "found",fname
+                #raise bogusissue
                 lines = f.readlines()
                 f.close()
                 break
             except:
+                print "failing to find",fname
                 continue
         if lines:
             st = os.stat(fname)

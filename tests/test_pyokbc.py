@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.17 2003/04/14 18:24:56 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.18 2003/05/22 20:28:39 smurp Exp $'
 
 import os
 import sys
@@ -33,7 +33,19 @@ def copy_same_as_original(self,src_kb,loc):
 class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
-        os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd() + '/../know'
+
+        cwd = os.getcwd()
+        kr_root = '/home/smurp/knowledge/'
+        places = [kr_root+'apps_of/nooron',
+                  kr_root+'apps_of/smurp',          
+                  kr_root+'apps_of/givingspace',
+                  kr_root+'apps_of/demo',
+                  kr_root+'apps_of/kaliya',
+                  kr_root+'nooron_apps',
+                  kr_root+'nooron_foundations',
+                  cwd+'/../know']
+        
+        os.environ["LOCAL_CONNECTION_PLACE"] = string.join(places,':')
         #std_tranny = open_kb("standard_transmission_fsa")
         mykb = open_kb("smurp_web_log")
         goto_kb(mykb)

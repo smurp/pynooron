@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.19 2003/04/28 14:06:44 smurp Exp $'
+_version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.20 2003/05/22 20:28:39 smurp Exp $'
 
 
 from PyOkbc import *
@@ -655,6 +655,15 @@ local_connection.write=0
 # def member_behaviour_values_p
 # def member_facet_value_p
 # def member_slot_value_p
+
+def get_kb_types(connection = None):
+    if not connection: connection = local_connection()
+    return connection.get_kb_types()
+get_kb_types.enumerator=1
+get_kb_types.optional=1
+get_kb_types.read=1
+get_kb_types.mandatory=0
+get_kb_types.write=0
 
 def meta_kb(connection = None):
     if not connection: connection = local_connection()

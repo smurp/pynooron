@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: test_fs_connection.py,v 1.4 2003/04/15 19:21:10 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: test_fs_connection.py,v 1.5 2003/05/22 20:28:39 smurp Exp $'
 
 import os
 import sys
@@ -28,8 +28,8 @@ class FSConnectionTestCase(unittest.TestCase):
         self.assertEquals(good,str(merge_kb))
 
     def test_open_kb_along_path(self):
-        good = 'MoreDudes'
-        merge_kb = open_kb('MoreDudes')
+        good = 'Silly'
+        merge_kb = open_kb('SillyChild')
         self.assertEquals(good,str(merge_kb))
 
     def skip_test_openable_kbs(self):

@@ -121,20 +121,3 @@ class BrainKb(AbstractFileKb,CachingMixin):
                                    own_slots=own_slots)
 
 
-
-
-
-    def _old_parse_brain(self,stuff):
-        self._brn_file_header = whole[0:4]
-        print "file_header =",self._brn_file_header
-        fpos = 4
-        more = 1
-        while more:
-            record_offset = whole[fpos:fpos+4]
-            fpos = fpos+4
-            rec_len = word2int(record_offset)
-            record_body = whole[fpos:fpos+rec_len]
-            fpos = fpos + rec_len
-            print "== %i %i ==================================="%(fpos,rec_len)
-            print record_body
-            more == fpos < whole_len
