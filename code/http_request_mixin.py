@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.14 2003/02/07 22:54:08 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.15 2003/04/14 22:27:13 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -98,7 +98,7 @@ def name_of_garmie(request):
        aon.dot
        """
     br = request.base_request()
-    wedgies = string.split(br,'__')
+    wedgies = string.split(br,wedge_string)
     return wedgies[-1]
 http_request.name_of_garmie = name_of_garmie
 
@@ -180,8 +180,20 @@ def breadcrumbs(self):
     crumbs = ''
     for part in parts:
         pth = pth + '/' + part # + '/'
-        atag = """<a href="%s">%s</a>""" % (pth,part)
-        crumbs = crumbs + '&nbsp;/&nbsp;' + atag
+        # lets break out a link to here
+        if string.find(part,wedge_string) > 0:
+            # yes 0, in case the name of the thing is of length 1
+            here_name,garm_name = string.split(part,wedge_string,2)
+            garm_path = pth
+            shorten_by = len(garm_name) + len(wedge_string)
+            here_path = garm_path[:-1 * shorten_by]
+            here_link = """<a href="%s">%s</a>""" % (here_path,here_name)
+            garm_link = """<a href="%s">%s</a>""" % (garm_path,garm_name)
+            crumbs = crumbs + '&nbsp;/&nbsp;' + here_link +\
+                     ' ' + wedge_string + ' ' + garm_link
+        else:
+            atag = """<a href="%s">%s</a>""" % (pth,part)
+            crumbs = crumbs + '&nbsp;/&nbsp;' + atag
     return crumbs
 http_request.breadcrumbs = breadcrumbs
 
