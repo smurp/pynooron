@@ -166,7 +166,8 @@ class FRAME(Node):
     def __init__(self,frame_name,kb=None,frame_type=None):
         self._name = frame_name
         self._frame_type = frame_type
-        if not frame_type :warn('FRAME.__init__ has no frame_type for '+frame_name)
+        if not frame_type :
+            warn('FRAME.__init__ has no frame_type for '+frame_name)
         self._kb = kb
         self._direct_types = []
         self._frame_in_cache_p = 0
@@ -185,37 +186,13 @@ class FRAME(Node):
     def __repr__(self):
         return str(self)
 
-#    def frame_in_kb_p(self,kb=None,kb_local_only_p=0):
-#        return kb.frame_in_kb_p_internal(self,kb_local_only_p)
-
-#    def get_frame_name(frame,kb_local_only_p=0):
-#        return frame._name
-
-
-
 class KLASS(FRAME): pass
-#    def __init__(klass,frame_name,kb=None,frame_type=None):
-#        FRAME.__init__(klass,frame_name,kb=kb,frame_type=frame_type)
-
-#    def get_frame_type(klass):
-#        return Node._class
 
 class INDIVIDUAL(FRAME): pass
-#    def get_frame_type(self):
-#        return Node._individual
         
 class SLOT(FRAME): pass
-#    def get_frame_type(self):
-#        return Node._slot
-#    def slot_p(self):
-#        return 1
 
 class FACET(FRAME): pass
-#    def get_frame_type(self):
-#        return Node._facet
-#    def facet_p(self):
-#        return 1
-
 
 class Connection:
     def __init__(connection,initargs=None):
@@ -246,7 +223,7 @@ class Connection:
         my_meta_kb = kb=connection._meta_kb
         (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
         if not kb:
-            kb = kb_type(kb_locator)
+            kb = kb_type(kb_locator,connection=connection)
             my_meta_kb._add_frame_to_cache(kb)
         return kb
 
@@ -257,16 +234,19 @@ class Connection:
 ##    def all_connections
 ##    def close_connection
 ##    def establish_connection
-##    def local_connection
 
 
-#class KB(Node):
 class KB(FRAME):    
     """All OKBC methods which take a KB argument should be implemented here.
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
     here.  Oh I am sure this is all screwed up!"""
-    def __init__(self,name,initargs = {},kb=None):
+    def __init__(self,name,initargs = {},connection=None):
+        if connection:
+            kb = connection.meta_kb()
+        else:
+            kb = None
+        self._connection = connection
         FRAME.__init__(self,name,frame_type=Node._kb,kb=kb)
 
         self._initargs = initargs
@@ -732,11 +712,10 @@ class TupleKb(KB):
     """A simple in-RAM kb which has no saving or reading ability.
     
     Saving and reading ability can be left to subclasses. """
-    def __init__(self,name='',connection=None,kb=None):
-        KB.__init__(self,name,kb=kb)
+    def __init__(self,name='',connection=None):
+        KB.__init__(self,name,connection=connection)
         self._cache = {}
         self._typed_cache = {}
-        self._connection = connection
         for frame_type in Node._cache_types:
             self._typed_cache[frame_type] = []
 
@@ -786,9 +765,9 @@ class TupleKb(KB):
         subclasses = []
         #print kb._name,kb._typed_cache
         for a_class in kb._typed_cache[Node._class]:
-            if kb.subclass_of_p(a_class,klass,inference_level,kb_local_only_p):
+            if kb.subclass_of_p(a_class,klass,inference_level,
+                                kb_local_only_p):
                 subclasses.append(a_class)
-                #print a_class,"is a subclass of",klass
         return (subclasses,1,0)
     
     def get_class_superclasses_internal(kb,klass,
@@ -1066,6 +1045,9 @@ def add_class_superclass(klass,new_superclass,
 def class_p(thing,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()    
     return kb.class_p(thing,kb_local_only_p)
+
+def connection(kb):
+    return kb._connection
 
 def connection_p(thing):
     return isinstance(thing,Connection)

@@ -3,6 +3,7 @@ import string
 
 from PyOkbc import *
 import string
+import os
 
 EMIT_STRINGS_NOT_VARS = 1
 
@@ -50,18 +51,17 @@ def to_slot_spec(frame,slot,slot_type):
 
 class PyKb(AbstractFileKb):
     _kb_type_file_extension = 'pykb'
-    def __init__(self,filename,place='',meta=None):
-        if place == '': # FIXME this should be passed in!
-            place = os.getcwd() + "/know/"
-        self._name = filename
-        AbstractFileKb.__init__(self,filename,kb=meta)
-        fname = place+filename
+    def __init__(self,filename,place='',connection=None):
+        #self._name = filename
+        AbstractFileKb.__init__(self,filename,connection=connection)
+        raw_kb = connection._obtain_raw_kb(filename,place)
+        #if place == '': # FIXME this should be passed in!
+            #place = os.getcwd() + '/know/'
+        #    place = connection._default_place        
+        #fname = place+filename # FIXME should os.pathjoin be used?
         prev_kb = current_kb()
         goto_kb(self)
-        try:
-            execfile(fname)
-        except IOError:
-            raise "CantOpenPyKb",fname + " in " + place
+        exec(string.join(raw_kb,"\n"))
         goto_kb(prev_kb)
 
     def print_frame(kb,frame,
