@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.14 2003/02/28 19:35:49 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.15 2003/04/14 15:35:07 smurp Exp $'
 
 import os
 import sys
@@ -71,7 +71,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_class_superclasses('web_log_app',kb=kb)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
-        
+
+
+    def test_get_frame_details(self):
+        self.assertEquals(type(get_frame_details('wle_0003')[0]),type({}))
 
     def test_get_frame_slots_all_gear(self):
         #good = "[':DOCUMENTATION', 'actions_for_instances'," +\
