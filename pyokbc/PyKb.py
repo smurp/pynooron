@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.17 2003/04/01 19:17:04 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.18 2003/04/13 22:33:07 smurp Exp $'
 
 import string
 
@@ -69,6 +69,7 @@ class PyKb(AbstractFileKb,CachingMixin):
         goto_kb(self)
         orig_allow_caching_p = self.allow_caching_p()
         self._allow_caching_p = 0
+        self._changes_register_as_modifications_p = 0
         for (key,val) in stats.items():
             self.put_slot_value(self,str(key),val)
         
@@ -83,6 +84,9 @@ class PyKb(AbstractFileKb,CachingMixin):
             #raise GenericError,str(e)+ " of "+str(filename)
             #print stanza
             raise GenericError,str(e)+ " in "+str(filename)
+        #return self._changes_register_as_modifications_p        
+        self._changes_register_as_modifications_p = 1
+        #print "setting changes_register... ",self.changes_register_as_modifications_p(),"in",self
         self._allow_caching_p = orig_allow_caching_p
         goto_kb(prev_kb)
 

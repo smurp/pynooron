@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.39 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.39 2003/04/02 12:27:42 smurp Exp $'
+__version__='$Revision: 1.40 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.40 2003/04/13 22:33:07 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -494,6 +494,10 @@ class KB(FRAME,Programmable):
         self._cache = {}
         self._cache_timestamp = time.clock()
         self._allow_caching_p = 1
+        self._changes_register_as_modifications_p = 1
+
+    def changes_register_as_modifications_p(self):
+        return self._changes_register_as_modifications_p
 
     def allow_caching_p(kb):
         return kb._allow_caching_p
@@ -2036,9 +2040,14 @@ class TupleKb(KB,Constrainable):
         klass._direct_superclasses = new_direct_superclasses
 
     def put_frame_details(kb,frame,details,kb_local_only_p=0):
-        print "***********************************"
+        #print "***********************************"
+        #print kb.changes_register_as_modifications_p()
+        print kb.allow_caching_p()
+        print kb
         print details
         print "***********************************"
+
+        
         if details.has_key(':pretty-name'):
             kb.put_frame_pretty_name_internal(frame,
                                               details[':pretty-name'],
