@@ -1,9 +1,19 @@
+
+
+
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
-// $Id: uml_class_diagram.dot,v 1.1 2003/07/04 19:48:44 smurp Exp $
+// $Id: uml_class_diagram.dot,v 1.2 2003/07/04 20:08:02 smurp Exp $
 //  size="7.5,10"
 //  rotate=90
  ratio=compress
+
+
+subgraph legend {
+  label="Legend"
+
+}
+
 
 
 <tal:block
@@ -43,13 +53,12 @@
                  needs_anchor
                      python:this_svt in app_class_names;
                  port_anchor
-                     python:needs_anchor and ' <%s>'%(str(slot)) 
-                            or '';
+                     python:'' # needs_anchor and ' <%s>'%(str(slot)) or '';
                  not_bookkeeping
                      python:not instance_of_p(slot,'BookKeepingSlot')[0];
                  bogus
                      python:not_bookkeeping and 
-                            atts.append(attr_name+port_anchor+'\l|')"
+                            atts.append(attr_name+port_anchor+'\l')"
          condition="not_bookkeeping">
 
       // <hr tal:replace="python:str(slot) + ' is not BOOKKEEPING'">
@@ -60,8 +69,8 @@
                                             ':SLOT-VALUE-TYPE')[0]"
             condition="needs_anchor"
             replace="structure 
-                     python:'%s:%s -> %s:top_port [arrowhead=odot];'
-                            %(app_class[0],str(slot),this_svt)"/>
+                     python:'%s -> %s[arrowhead=odot,headport=n];'
+                            %(app_class[0],this_svt)"/>
 
 
       </tal:dummy>
@@ -100,7 +109,7 @@
               define="super_name python:get_frame_name(a_super)"
               condition="python:super_name in app_class_names"
               replace="structure 
-                         python:'%s -> %s [arrowhead=inv,headport=w,tailport=e];' % 
+                         python:'%s -> %s [arrowhead=inv,headport=s,tailport=n];' % 
                                 (app_class[0],super_name)">
            </tal:dummy>
          </tal:block>
