@@ -246,8 +246,7 @@ create_individual('DocBookWithPictures',
                   direct_types=['Task'],
                   own_slots=[['EstimatedHours', 4],
                              ['Predecessors', 'CachedOutput'],
-                             ['TaskDescription', """Put pictures (.jpg,.ps) from graphviz into DocBook
-              output."""],
+                             ['TaskDescription', """Connive to insert images into docbook output, URLs for the remote renderings and cached files for the local renderings (such as PS and PDF).  This is the tricky part, refactoring the code so that the name of the appropriate cached version of the image is emitted in the docbook output.  This is starting to strain [indeed!] the whole business about the cached files having those silly MD5 names.  Maybe its time to make the cached file names exactly match the paths in the URLs which invoke them."""],
                             ])
 create_individual('CreateInNooronData',
                   pretty_name='Create in nooron_app_data kbs',
