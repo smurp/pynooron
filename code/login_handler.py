@@ -59,7 +59,7 @@ class login_handler:
             for name_val in cookie_list:
                 pair = string.split(name_val,'=')
                 if len(pair) == 2:
-                    print "pair",pair
+                    #print "pair",pair
                     cookie_dict[string.strip(pair[0])]=pair[1]
         return cookie_dict
         
@@ -67,7 +67,7 @@ class login_handler:
         auth_info = self.get_auth_info_from_cookie(request)
         if not auth_info:
             auth_info = self.get_auth_info_from_form(request)
-        print "authenticator ==> auth_info",auth_info
+        #print "authenticator ==> auth_info",auth_info
         if self.authorizer.authorize(auth_info):
             self.set_auth_cookies(request,auth_info)
             return auth_info
@@ -97,11 +97,11 @@ class login_handler:
     def get_auth_info_from_cookie(self,request):
         auth_info = []
         cookies = self.get_cookies_as_dict(request)
-        print "cookies",cookies
+        #print "cookies",cookies
         if cookies:
             the_user_id = cookies.get(self.the_user_id_name)
             the_user_pw = cookies.get(self.the_user_pw_name)
-            print "raw",the_user_id,the_user_pw
+            #print "raw",the_user_id,the_user_pw
             if the_user_id != None and the_user_pw != None:
                 auth_info = [the_user_id,the_user_pw]
         return auth_info
