@@ -106,8 +106,8 @@
   </tbody>
   </table>
 
-<hr>
-$Id: standard_master,v 1.36 2003/07/09 16:12:45 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+<hr/>
+$Id: standard_master,v 1.37 2003/07/09 16:35:13 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
 </metal:block>

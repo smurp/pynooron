@@ -1,11 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html metal:use-macro="container/standard_master/macros/master">
-  <head>
-    <title tal:content="template/title"></title>
-  </head>
-
-  <body>
-
+<tal:block 
+     metal:use-macro="container/standard_master/macros/master">
 
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
@@ -13,13 +7,13 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
-<img src="" 
-     tal:attributes="src python:request.object_request()+'__pattern_language_graph.dot.jpg'"/>
+<img 
+  alt="pattern language graph"
+  tal:attributes="src python:request.object_request()+'__pattern_language_graph.dot.jpg'"/>
 
 <dl tal:define="items python:get_class_instances('pattern')[0]" 
        tal:condition="items">
-  <span tal:repeat="item items"
-        tal:omit-tag="">
+  <tal:block tal:repeat="item items">
     <dt><a href="link"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
@@ -27,14 +21,13 @@
     <tal:dummy define="intent python:get_slot_values(item,'Intent')[0]">
     <dd tal:content="python:intent and intent[0] or ''"></dd>
     </tal:dummy>
-
 	
-  </span>
+  </tal:block>
 </dl>
 
 
-<hr>
-$Id: pattern_language_intents.html,v 1.9 2003/06/27 12:08:49 smurp Exp $
+<hr/>
+$Id: pattern_language_intents.html,v 1.10 2003/07/09 16:35:13 smurp Exp $
 </div>
-  </body>
-</html>
+
+</tal:block>

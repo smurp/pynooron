@@ -1,10 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html metal:use-macro="container/standard_master/macros/master">
-  <head>
-    <title tal:content="template/title"></title>
-  </head>
-
-  <body>
+<tal:block 
+     metal:use-macro="container/standard_master/macros/master">
 
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or here"></h1>
@@ -63,22 +58,7 @@ This knowledgebase merges together these others:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div tal:define="test python:0" tal:condition="test">
-
-
 
 
 <dl tal:define="items python:get_kb_direct_children(here)" 
@@ -95,37 +75,11 @@ This knowledgebase merges together these others:
 </dl>
 
 
-
-
-
-
-<table border="1"
-       tal:define="items python:get_class_instances('nooron_app_class')[0]" 
-       tal:condition="items">
-  <caption><strong tal:content="structure python:get_doc_for(get_class_instances) + '(nooron_app_class)'">link</strong></caption>
-  <tr tal:repeat="item items">
-    <td><a href="link"
-           tal:define="url python:here.get_frame_name(item)"
-	   tal:attributes="href url"
-           tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
-  </tr>
-</table>
-
-
 </div>
 
 
-
-
-
-
-
-
-
-
-<hr>
-$Id: nooron_app.html,v 1.8 2003/06/27 13:40:28 smurp Exp $
+<hr/>
+$Id: nooron_app.html,v 1.9 2003/07/09 16:35:13 smurp Exp $
 </div>
-  </body>
-</html>
+
+</tal:block>

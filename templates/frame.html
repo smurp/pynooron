@@ -1,10 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html metal:use-macro="container/standard_master/macros/master">
-  <head>
-    <title>frame as html</title>
-  </head>
-
-  <body>
+<tal:block 
+     metal:use-macro="container/standard_master/macros/master">
 
 <div metal:fill-slot="lay_docs">
 This is a slightly pretty view of the frame <em tal:content="this"></em>
@@ -59,13 +54,9 @@ this template is available to every KB, CLASS, INDIVIDUAL, SLOT, and FACET.
   </span>
 </dl>
 
-<div tal:define="test python:0" tal:condition="test">
 
+<hr/>
+$Id: frame.html,v 1.6 2003/07/09 16:35:13 smurp Exp $
 </div>
 
-<hr>
-$Id: frame.html,v 1.5 2003/03/28 12:53:38 smurp Exp $
-</div>
-  </body>
-</html>
-
+</tal:block>
