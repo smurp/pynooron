@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.41 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.41 2003/04/13 23:20:58 smurp Exp $'
+__version__='$Revision: 1.42 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.42 2003/04/14 16:09:58 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1005,9 +1005,12 @@ class KB(FRAME,Programmable):
                           number_of_values=Node._all,kb_local_only_p=0):
         (found_frame,
          frame_found_p)\
-         = kb.get_frame_in_kb_internal(frame,error_p=1,kb_local_only_p=kb_local_only_p)
+         = kb.get_frame_in_kb(frame,error_p=1,kb_local_only_p=kb_local_only_p)
+        #print "found this",found_frame,frame,kb
         details = {}
         inexact_p = 0
+        if not frame_found_p:
+            return (details, not inexact_p)
         # :handle get-frame-handle
         details[':name'] = kb.get_frame_name_internal(found_frame)
         details[':pretty-name'] = kb.get_frame_pretty_name_internal(found_frame)
@@ -1024,10 +1027,10 @@ class KB(FRAME,Programmable):
                                                          number_of_values)
         if not exact_p: inexact_p = 1
         details[':types'],exact_p,ignore_more = \
-                        kb.get_instance_types_internal(found_frame,
-                                                       inference_level,
-                                                       number_of_values,
-                                                       kb_local_only_p)
+                        kb.get_instance_types(found_frame,
+                                              inference_level,
+                                              number_of_values,
+                                              kb_local_only_p)
         own_slots,exact_p = kb.get_frame_slots_internal(found_frame,
                                                         inference_level,
                                                         Node._own,
