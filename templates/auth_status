@@ -1,4 +1,4 @@
-<!-- auth_status -->
+<!-- auth_status $Id: auth_status,v 1.5 2003/06/27 14:06:49 smurp Exp $ -->
 <tal:dummy condition="python:1" define="sep string:&lt;b&gt;||&lt;/b&gt;">
   <tal:dummy 
        condition="python: AUTHENTICATED_USER != AnonymousUser">
@@ -32,4 +32,4 @@
     </tr>
   </tal:dummy>
 </tal:dummy>
-
+<!-- /auth_status -->
