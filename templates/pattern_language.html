@@ -24,28 +24,9 @@
 <img src="" 
      tal:attributes="src python:request.object_request()+'__pattern_language.dot.jpg'"/>
 
-<div tal:define="test python:0" tal:condition="test">
-<span  tal:define="sort_frames python:get_procedure('sort_frames');
-                   patterns python:call_procedure(sort_frames,
-				arguments=get_class_instances(here)[0])"
-       tal:condition="items">
-  <!-- better would be some sort of slot value e.g. plural_for_instances-->
-  <ul>
-  <span tal:repeat="pattern patterns">
-    <li	><a href="booger"
-        	   tal:define="url python:get_frame_name(pattern)"
-		   tal:attributes="href url"
-           	   tal:content="python: get_frame_pretty_name(pattern) or 
-                                        get_frame_name(pattern)">click</a></li>
-	
-  </span>
-  </ul>
-</span>
-
-</div>
 
 <hr>
-$Id: pattern_language.html,v 1.3 2002/12/06 20:45:07 smurp Exp $
+$Id: pattern_language.html,v 1.4 2003/01/31 07:57:56 smurp Exp $
 </div>
   </body>
 </html>

@@ -12,6 +12,9 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
+<img src="" 
+     tal:attributes="src python:request.object_request()+'__pattern_language.dot.jpg'"/>
+
 <dl tal:define="items python:get_class_instances('pattern')[0]" 
        tal:condition="items">
   <span tal:repeat="item items"
@@ -27,7 +30,7 @@
 </dl>
 
 <hr>
-$Id: pattern_language_intents.html,v 1.1 2002/12/05 14:19:39 smurp Exp $
+$Id: pattern_language_intents.html,v 1.2 2003/01/31 07:57:56 smurp Exp $
 </div>
   </body>
 </html>
