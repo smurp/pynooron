@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: test_primordial.py,v 1.1 2002/11/08 10:49:55 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: test_primordial.py,v 1.2 2002/11/08 21:35:13 smurp Exp $'
 
 import os
 import sys
@@ -47,7 +47,6 @@ class PrimordialTestCase(unittest.TestCase):
         resp = list(get_frame_slots(':THING')[0])
         resp.sort(str_sort)
         self.assertEquals(good,str(resp))
-
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.8 2002/11/08 10:47:16 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.9 2002/11/08 21:35:13 smurp Exp $'
 
 import os
 import sys
@@ -175,6 +175,9 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_slot_values_all(self): # bugged
+        PyOkbc.DEBUG_METHODS.append('get_slot_values_in_detail_internal')
+        PyOkbc.DEBUG = 0
+
         good = "['Apple', 'Berry', 'Cookie', 'DairyProducts', " + \
                "'Grains', 'Meats', 'Vegetables']"
         resp = list(get_slot_values('SamuelBeckett','Eats',
@@ -182,12 +185,14 @@ class ReadOnlyTestCase(unittest.TestCase):
                                     kb_local_only_p=0)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+        PyOkbc.DEBUG = 0
 
         good = """['English']"""
         resp = list(get_slot_values('SamuelBeckett','Speaks',
                                     slot_type=Node._all)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+        
 
     def test_get_slot_values_all_klop(self):
         good = "['Apple', 'Berry', 'Cookie']"
@@ -209,7 +214,6 @@ class ReadOnlyTestCase(unittest.TestCase):
                                     slot_type=Node._own)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
-
 
     def test_get_slot_values_template(self): # bugged
         good = """['DairyProducts', 'Grains', 'Meats', 'Vegetables']"""
