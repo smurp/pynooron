@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.11 2002/12/12 18:34:21 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.12 2003/01/07 18:38:15 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -23,7 +23,7 @@ http_request.__allow_access_to_unprotected_subobjects__ = 1
 
 
 def absolute_url(server):
-    retval = 'http://'+str(server.ip)
+    retval = 'http://'+(server.server_name or str(server.ip))
     if server.port != 80:
         retval = retval + ':' + str(server.port)
     return retval
