@@ -1,7 +1,7 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
   mclimit=8    // run longer, do better
-  size="5,5"   // bounding box in inches
+  size="6,6"   // bounding box in inches
   center=1
   //  node[fontname="Courier";fontsize=10]
 
