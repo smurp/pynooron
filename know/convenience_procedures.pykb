@@ -21,9 +21,9 @@ del sort_frames
 def npts_for_self_and_instances(here):
     npt_for_self = get_slot_values(here,'npt_for_self',
                                    slot_type=Node._all)[0] or \
-                                   ['frame_details.html',
-                                    'frame.html',
-                                    'kb_ancestry.dot'];
+                                   ['frame.html',
+                                    'frame_details.html',
+                                    'kb_ancestry.dot']
 
     if class_p(here):
         npt_for_instances = get_slot_values(here,'npt_for_instances',
