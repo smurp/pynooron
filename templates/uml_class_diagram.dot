@@ -3,7 +3,7 @@
 
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
-// $Id: uml_class_diagram.dot,v 1.3 2003/07/04 20:28:01 smurp Exp $
+// $Id: uml_class_diagram.dot,v 1.4 2003/07/04 20:29:24 smurp Exp $
 //  size="7.5,10"
 //  rotate=90
 // ratio=compress
@@ -130,7 +130,7 @@ subgraph cluster_legend {
   fontsize=8
   bgcolor=lightgrey
   ratio=compress
-  label="Legend"
+  label="UML Class Diagram Legend $Rev: $"
   legend_subclass [label="Subclass"];
   legend_superclass [label="Superclass"];
   legend_subclass -> legend_superclass [arrowhead=inv,headport=s,tailport=n];
