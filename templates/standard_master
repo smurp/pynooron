@@ -4,8 +4,6 @@
     <base href="" tal:attributes="href python:server_absolute_url+request.kb_request()+'/'"/>
   </head>
 
-  <tal:dummy define="global textarea_threshold python:30"/>
-
 
   <body bgcolor="#CCCCCC">
   <tal:dummy define="global lay_reader   string:1;
@@ -70,6 +68,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.23 2003/03/07 14:11:30 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.24 2003/03/08 13:08:20 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
