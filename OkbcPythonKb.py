@@ -100,8 +100,9 @@ class OkbcPythonKb(AbstractFileKb):
 
         line = "direct_superclasses=["
         got_one = 0
-        if frame.class_p():
-            for klass in frame.get_class_superclasses(inference_level=Node._direct)[0]:
+        if kb.class_p(frame):
+            for klass in kb.get_class_superclasses(frame,
+                                                   inference_level=Node._direct)[0]:
                 line = line + var_name_for_emit(klass) + ","
                 got_one = 1
         if got_one: lines.append(line[:-1]+"]")

@@ -11,10 +11,7 @@ which this should break.
 ** multiple parallel KBs (ie meta_kb)
 ** default values  [so there can be default values for assocated NPTs]
 ** value inheritance, from class to individual (template_slots)
-** merging KBs (parent_kbs) for the NooronApp architecture
-** refering to frames by frame_name
-*** coerce_to_frame
-*** coerce_to_handle
+*** coerce_to_handle [how the hell does a handle work]
 
 """
 
@@ -34,9 +31,12 @@ if 0:
 if 1:
     mykb = open_kb("t/PeopleData.pyokbc")
     goto_kb(mykb)
-    for f in get_kb_frames(kb_local_only_p=1):
-        print f
+    #for f in get_kb_frames(kb_local_only_p=1):
+    #    print f
     #save_kb_as('/tmp/booger.pyokbc')
+    print get_slot_values('Shawn','Eats')
+    shawn = get_frame_in_kb('Shawn')
+    print_frame('Shawn')
     #dump_kb(mykb)
     #(AdultHuman,w) = get_frame_in_kb('AdultHuman')
     #print "====\n", AdultHuman
