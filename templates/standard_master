@@ -79,6 +79,8 @@
 </metal:block>
 
 <a href="" tal:attributes="href python:'/templates/'+template_title">Show Source</a>
+
+         <tal:dummy replace="structure container/evaluate_this_wrt_pertinent_criteria"/>
       </td>
 
       <td bgcolor="#CCFFFF" valign="top">
@@ -96,19 +98,20 @@
 
     </tr>
 
-    <span tal:condition="python:0" tal:omit-tag="">
+
+    <tal:block tal:condition="nothing">
     <tr>
       <td bgcolor="lightgreen"
 	  tal:content="structure container/namespace">req
       </td>
       <td bgcolor="blue" align="center">&lt;--- various variables</td>
     </tr>
-    </span>
+    </tal:block>
   </tbody>
   </table>
 
 <hr/>
-$Id: standard_master,v 1.40 2003/07/11 12:53:05 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.41 2003/07/19 16:03:37 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
 <a href="javascript:void(window.open('http://validator.w3.org/check?uri='+escape(document.location.href)))">Validate</a>
   </body>
 </html>

@@ -59,7 +59,7 @@ or failing that, a short random string will be used.;
 
       <tal:block define="slot_name        python:zlot[0];
 	                 field_name       slot_name;
-                         slot_help string:;
+                         slot_help        python:get_slot_value(zlot[0],'PromptForDataEntry')[0];
                          slot_pretty_name python:zlot[1];
 	                 slot_values      python:[]">
         <tal:dummy
@@ -83,7 +83,7 @@ or failing that, a short random string will be used.;
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.11 2003/06/25 15:52:04 smurp Exp $
+$Id: create_individual.html,v 1.12 2003/07/19 16:03:37 smurp Exp $
 </div>
 
   </body>

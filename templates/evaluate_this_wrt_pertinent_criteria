@@ -1,0 +1,36 @@
+
+<!-- $Id: evaluate_this_wrt_pertinent_criteria,v 1.1 2003/07/19 16:03:37 smurp Exp $ -->
+<tal:block
+     condition="python:AUTHENTICATED_USER != AnonymousUser">
+
+
+<tal:dummy
+     define="criteria python:get_slot_values(here,'PertinentCriteria')[0]">
+  <table tal:condition="criteria">
+    <tdata>
+      <tr tal:repeat="criterion criteria">
+        <table border="1">
+        <tdata>
+        <tr>
+          <td>
+            <a tal:attributes="href python:get_frame_name(criterion)"
+               tal:content="python:get_frame_name(criterion)"></a>
+          </td>
+          <td tal:content="python:get_slot_value(criterion,'QuestionCriterionAsks')[0]"></td>
+        </tr>
+        </tdata>
+        </table>
+      </tr>
+    </tdata>
+  </table>
+
+  <p tal:condition="python:not criteria"><em>No Pertinent Criteria</em></p>
+
+  <form method="GET"
+        action="Criterion__create_individual.html">
+    <input type="submit" value="Add Criterion"/>
+  </form>
+</tal:dummy>
+ 
+</tal:block>
+<!-- / $Id: evaluate_this_wrt_pertinent_criteria,v 1.1 2003/07/19 16:03:37 smurp Exp $ -->
