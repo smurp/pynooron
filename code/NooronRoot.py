@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.33 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.33 2003/04/22 08:26:15 smurp Exp $'
+__version__='$Revision: 1.34 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.34 2003/04/22 17:32:58 smurp Exp $'
 
 DEBUG = 0
 
@@ -66,7 +66,7 @@ class NooronRoot:
                  log_to=None,
                  use_auth = 0, initargs = {},
                  template_path = ['templates'],
-                 knowledge_under = None,
+                 knowledge_under = 'know',
                  site_front='site_front.html',
                  title = '',
                  security_engine=None,
