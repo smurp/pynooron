@@ -113,10 +113,11 @@ eg: /know/nooron_pert/FormActions/EstimatedHours/put_slot_value
     unsized images are available
 
 * correctness
+** get_instance_types should not return :INDIVIDUAL when inference_level=DIRECT
+** not all KBs should not have PRIMORDIAL_KB as a direct_parent
 ** ensure that slots with a CARDINALITY of 1 only return a single value
    (specifically, the :DOCUMENTATION slot on frames in the PRIMORDIAL_KB)
 ** what the hell is http://192.168.1.11/__openable_kbs.html doing?
-** not automatically writing to the correct kb (ie a nooron_data KB)
 ** save_kb (respect kb_local_only_p by telling parent kbs to save too)
 
 * performance
