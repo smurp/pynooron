@@ -7,7 +7,7 @@
   <body>
 
 <div metal:fill-slot="main">
-<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
+<h1 tal:content="python:document_title or get_frame_name(here)"></h1>
 
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
@@ -63,7 +63,7 @@
 </div>
 
 <hr>
-$Id: web_log_app.html,v 1.3 2003/02/08 00:35:27 smurp Exp $
+$Id: web_log_app.html,v 1.4 2003/04/05 18:51:25 smurp Exp $
 </div>
   </body>
 </html>

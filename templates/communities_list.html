@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
+
+
+
+<span  tal:define="items python:get_instance_types('Community',inference_level=DIRECT)[0]" 
+       tal:condition="items">
+  <strong>classes:</strong>
+  <span tal:repeat="item items">
+    <em><a href="link"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href url"
+           	   tal:content="url">click me</a></em>, 
+  </span>
+  <br/>
+</span>
+<i><p tal:content="structure python:get_slot_value('Community',':DOCUMENTATION')[0] or ''"></p></i>
+<span  tal:define="items python:get_class_instances('Community')[0]; 
+	           slots python:items and get_slot_values('Community','slot_display_order')[0] 
+                                      or get_frame_slots(items[0])[0] or []"
+       tal:condition="items">
+  <table border="1">
+  <tr tal:repeat="item items">
+     <tal:dummy define="det python:get_frame_details(item)[0]">
+       <td><a href="link"
+              tal:define="url python:get_frame_name(item)"
+	      tal:attributes="href url"
+              tal:content="python:get_frame_pretty_name(item) or url">click me</a>
+       </td>
+       
+       <tal:dummy repeat="a_slot slots">
+         <td tal:content="a_slot">
+
+         </td>
+       </tal:dummy>
+     </tal:dummy>
+  </tr>
+  </table>
+</span>
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
+
+
+<hr>
+$Id: communities_list.html,v 1.1 2003/04/05 18:51:24 smurp Exp $
+</div>
+  </body>
+</html>
+

@@ -1,6 +1,5 @@
 
 
-
 <metal:block metal:define-macro="text_display_widget">
 <tr>
   <td><strong tal:content="slot_pretty_name">slot_pretty_name</strong></td>
@@ -191,4 +190,4 @@ msct exists:my_slot_collection_type;
 
 
 
-$Id: form_master,v 1.9 2003/03/28 11:44:18 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.10 2003/04/05 18:51:24 smurp Exp $ <a href="/templates/form_master">Show Source</a>

@@ -1,0 +1,19 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+<tal:dummy replace="python:request.set_header('Content-Type','text/xml')"/>
+
+<metal:block metal:use-macro="container/docbook_master/macros/prepare_ONLYONE"/>
+
+<book>
+<tal:dummy define="global baseurl python:request.split_uri()[0]"/>
+
+<para tal:content="ONLYONE"></para>
+
+<tal:block define="me here">
+  <metal:block metal:use-macro="container/docbook_master/macros/bookinfo"/>
+  
+  <metal:block metal:use-macro="container/docbook_master/macros/parents_as_chapters"/>
+
+
+</tal:block>
+<para tal:content="ONLYONE"></para>
+</book>

@@ -1,0 +1,118 @@
+
+<metal:block metal:define-macro="prepare_ONLYONE">
+  <tal:dummy define="global ONLYONE python:{'PRIMORDIAL_KB':0,
+                                           'nooron_app_architecture':0}"/>
+</metal:block>
+
+
+<metal:block metal:define-macro="testes">
+TEST IS A SUCCESS FROM DOCBOOK
+</metal:block>
+
+<metal:block metal:define-macro="title_element">
+  <title tal:content="python: get_frame_pretty_name(me) or get_frame_name(me)"></title>
+</metal:block>
+
+<metal:block metal:define-macro="kb_as_nested_sections">
+<tal:dummy define="sections python:get_kb_direct_parents(me)">
+<section id="" tal:attributes="id python:get_frame_name(me)">
+  <tal:dummy metal:use-macro="container/docbook_master/macros/title_element"/>
+  <para>intentionally laughed frank</para>
+
+  <tal:block repeat="me sections">
+
+    <tal:block   define="doit python:ONLYONE.get(str(me),1)">
+      <para tal:content="string:$me is not in $ONLYONE"></para>
+      <tal:block condition="doit">
+        <tal:dummy define="ignore_me python:ONLYONE.update({str(me):0});
+                           global ONLYONE ONLYONE"/>
+      <para tal:content="string:$me is NOW in $ONLYONE"></para>
+        <para>
+           This is where the contents of this section will go.
+        </para>
+        
+        <tal:block repeat="me python:get_kb_direct_parents(kb=me)">
+           <metal:block metal:use-macro="container/docbook_master/macros/kb_as_nested_sections"/>
+           <tal:dummy replace="ONLYONE"/>
+        </tal:block>
+
+      </tal:block>
+
+    </tal:block>
+
+  </tal:block>
+
+
+</section>
+</tal:dummy>
+</metal:block>
+
+
+
+
+
+<metal:block metal:define-macro="parents_as_chapters">
+<tal:block repeat="me python:get_kb_direct_parents(kb=me)">
+  <tal:block   define="doit python:ONLYONE.get(str(me),1)">
+     <tal:block condition="doit">
+
+        <tal:dummy define="ignore_me python:ONLYONE.update({str(me):0});
+                           global ONLYONE ONLYONE"/>
+
+<chapter id="" tal:attributes="id me">
+  <tal:block metal:use-macro="container/docbook_master/macros/title_element"/>
+  <para>a paragraph befitting a chapter</para>
+  <metal:block metal:use-macro="container/docbook_master/macros/kb_as_nested_sections"/>
+</chapter>
+
+    </tal:block>
+  </tal:block>
+</tal:block>
+</metal:block>
+
+
+
+
+
+
+
+
+
+
+<metal:block metal:define-macro="bookinfo">
+  <bookinfo>
+       <tal:block metal:use-macro="container/docbook_master/macros/title_element"/>
+       <abstract>
+        <para><ulink url=""
+                 tal:define="url python:server_absolute_url
+                                        +request.object_request()"
+                 tal:attributes="url url"
+                 tal:content="url"></ulink></para>
+        <para tal:content="python:get_slot_value(me,':DOCUMENTATION')[0] 
+                                  or ''"></para>
+       </abstract>
+
+  </bookinfo>
+</metal:block>
+
+
+<metal:block metal:define-macro="colophon">
+  <colophon>
+    <para>
+      This document was prepared using Nooron, which itself uses
+      DocBook, Jade, TeX and Graphviz for document preparation, processing,
+      and rendering.
+    </para>
+    <para>
+      The Nooron Garments used to generate this book are:
+      <itemizedlist>
+        <listitem tal:content="container/docbook_master/macros/CVS_ID"></listitem>
+      </itemizedlist>
+    </para>
+  </colophon>
+</metal:block>
+
+
+<metal:block metal:define-macro="CVS_ID">
+$Id: docbook_master,v 1.1 2003/04/05 18:51:24 smurp Exp $
+</metal:block>
