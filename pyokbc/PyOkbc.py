@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.38 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.38 2003/03/28 11:05:56 smurp Exp $'
+__version__='$Revision: 1.39 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.39 2003/04/02 12:27:42 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -817,6 +817,7 @@ class KB(FRAME,Programmable):
                                                number_of_values,
                                                kb_local_only_p=1)
         (list_of_instances,exact_p,more_status) = rets
+        list_of_instance_names = map(lambda x:str(x),list_of_instances)
         if not kb_local_only_p:
             for parent in kb.get_kb_direct_parents():
                 if not (parent in checked_kbs):
@@ -827,7 +828,8 @@ class KB(FRAME,Programmable):
                                                               kb_local_only_p,
                                                               checked_kbs)
                     for inst in rets[0]:
-                        if not inst in list_of_instances:
+                        if not str(inst) in list_of_instance_names:
+                            list_of_instance_names.append(str(inst))
                             list_of_instances.append(inst)
         return (list_of_instances,exact_p,more_status)
 
