@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.25 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.25 2002/12/17 08:22:47 smurp Exp $'
+__version__='$Revision: 1.26 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.26 2003/01/07 18:35:23 smurp Exp $'
 
 
 from pyokbc import *
@@ -76,7 +76,6 @@ class GenericFrame(AbstractApp):
         cp.set_canonical_request(canonical_request)
         cp.set_cachedir('/tmp/nooron_cache')
         
-
         if spigot:
             cp.append_pipe(spigot)
         for this_ext in extensions:
@@ -88,8 +87,8 @@ class GenericFrame(AbstractApp):
         request['Content-Type'] = cp.mimetype()
         #print         request['Content-Type'] 
 
-        cmds = cp.source_and_commands()[1]
-        (src_prod,cmds) = cp.source_and_commands()
+        #cmds = cp.source_and_commands()[1]
+        (src_prod,cmds) = cp.producer_and_commands()
         #print "==========\n",src_prod,cmds,"\n=========="
         if src_prod:
             (fout,fin)=popen2.popen2(cmds,1<<16)

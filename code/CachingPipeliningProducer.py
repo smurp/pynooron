@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.6 2002/12/12 14:00:18 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.7 2003/01/07 18:35:23 smurp Exp $'
 
 import string
 import md5
@@ -66,10 +66,9 @@ class CachingPipeliningProducer:
         #sections.reverse()
         while sections and not mt:
             section = sections.pop()
-            #print "========>>",section
             mt = section.mimetype()
         return mt or 'text/plain'
-    def source_and_commands(piper):
+    def producer_and_commands(piper):
         """Return (source,commands) where source is either a
         producer or None and commands is either None or a string
         which constitutes a unix shell pipeline which does
@@ -84,27 +83,28 @@ class CachingPipeliningProducer:
         cmds = []
         while sections and not source_p:
             section = sections.pop()
-            (src,cmd,source_p) = section.pipe_or_cached_source()
-            #print "===>",src,cmd,source_p
-            cmds.append(cmd)
-            if src:
-                source = src
+            (prod,cmd) = section.producer_and_command()
+            if cmd:
+                cmds.append(cmd)
+            if prod:
+                source = prod
         if cmds:
             cmds.reverse()
             commands = string.join(cmds,' | ')
         else:
             commands = None
+
         return [source,commands]
 
     def more(piper):
-        if not piper.__dict__.get('_s_and_c'):
-           piper._s_and_c = piper.source_and_commands()
-        (source,commands) = piper._s_and_c
+        if not piper.__dict__.get('_p_and_c'):
+           piper._p_and_c = piper.producer_and_commands()
+        (source,commands) = piper._p_and_c
         # drain the source into the 
         if source:
            data = source.more()
            #if data:
-        
+
 class PipeSection:
     """A PipeSection is an encapsulated shell command which can be
     piped together with others and have mimetype, extension and caching
@@ -139,27 +139,29 @@ class PipeSection:
                                 pipesection._extension)
         else:
             return None
-         
-    def pipe_or_cached_source(pipesection):
-        """Returns (command,source_p) where command is either a command
+
+    def do_caching(pipesection):
+        return pipesection._cachedir and os.path.isdir(pipesection._cachedir)
+    
+    def producer_and_command(pipesection):
+        """Returns (producer,command) where producer is only included
+        if a cached result is not available.  Command is either a command
         which transforms stdin to stdout or a command which starts a
         pipeline by catting to stdout the contents of a cached file
         if it exists.  The pipeline command will tee off a cached copy
         if cachedir is not None.  The intention is that the command
         returned by this method be combined with others in a complete
-        shell pipeline.  Source_p is true means that the command ignores
-        stdin and hence defines the begining of a pipeline."""
-        cmd_or_prod = pipesection._command or pipesection._producer
-        if pipesection._cachedir and os.path.isdir(pipesection._cachedir):
+        shell pipeline."""
+        if pipesection.do_caching():
             fullpath = pipesection.full_path()
             if fullpath:
                 if os.path.isfile(fullpath):
-                    return (None,"cat %s" % fullpath,1)
+                    return (None,"cat %s" % fullpath)
                 else:
                     return (pipesection._producer,
                             "%s | tee %s" % (pipesection._command or 'cat',
-                                             fullpath),0)
-        return (None,cmd_or_prod,0)  #bugged?
+                                             fullpath))
+        return (pipesection._producer,pipesection._command)
 
 
 
