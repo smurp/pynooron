@@ -1,30 +1,27 @@
 #!/usr/bin/python
 
 from OKBC import *
+from OkbcPythonKb import OkbcPythonKb
 
-#print Node._all
-#print Node._slot_types
+mykb = OkbcPythonKb()
+#mykb = TupleKb()
+goto_kb(mykb)
 
-mykb = MemoryKb()
-
-sam = INDIVIDUAL('sam',mykb)
 FoodsSlot = SLOT('Foods',mykb)
-Berry = KLASS('Berry',mykb)
-Cookie = KLASS('Cookie',mykb)
-Apple = KLASS('Apple',mykb)
 Age = SLOT('Age',mykb)
 
-Thing = KLASS('Thing',mykb)
-Child = KLASS('Child',mykb)
-Person = KLASS('Person',mykb)
-Child.add_class_superclasses(Person)
-Agent = KLASS('Agent',mykb)
-Person.add_class_superclasses(Agent)
+Thing  = create_class('Thing')
 
-Food = create_class('Food',kb=mykb,direct_superclasses = [Thing])
+Food   = create_class('Food',direct_superclasses = [Thing])
+Berry = create_class('Agent',direct_superclasses = [Food])
+Cookie = create_class('Agent',direct_superclasses = [Food])
+Apple = create_class('Agent',direct_superclasses = [Food])
 
-ethan = create_individual('Ethan',
-                          kb=mykb,
+Agent  = create_class('Agent',direct_superclasses = [Thing])
+Person = create_class('Person',direct_superclasses = [Agent])
+Child  = create_class('Child',direct_superclasses = [Person])
+
+Ethan = create_individual('Ethan',
                           direct_types=[Child],
                           own_slots = ((Age,3),
                                        (FoodsSlot,
@@ -32,14 +29,20 @@ ethan = create_individual('Ethan',
                                         Cookie)),
                           pretty_name = 'Ethan Brown')
 
-sam.put_slot_values(FoodsSlot,[])
-sam.put_slot_value(FoodsSlot,Cookie)
-sam.put_slot_values(FoodsSlot,[Apple,Berry,Cookie])
+Sam = create_individual('Sam',
+                        kb=mykb,
+                        direct_types=[Child],
+                        own_slots = ((Age,3),
+                                     (FoodsSlot,
+                                      Apple,
+                                      Berry,
+                                      Cookie)),
+                        pretty_name = 'Ethan Brown')
 
-sam.put_slot_values(Age,[1])
 
 
-for inst in [sam,ethan,Food]:
-    dump_frame(inst)
-    print " "
+#for frame in get_kb_frames():
+#    dump_frame(frame)
+#    print " "
 
+mykb.save_kb()
