@@ -32,12 +32,13 @@
            <tal:dummy replace="structure container/available_actions"/>
          </metal:block>
       </td>
-      <td bgcolor="white">
+      <td bgcolor="white" valign="top">
          <div metal:define-slot="main">
            The main content of the pages goes here.
          </div>
 
 
+<metal:block tal:condition="python:exists('show_bottom_docs') and show_bottom_docs">
 <table border=1 
        tal:condition="here">
 <tr bgcolor="yellow">
@@ -54,6 +55,7 @@
   ><div metal:define-slot="nerd_docs"></div>&nbsp;</td>
 </tr>
 </table>
+</metal:block>
 
 <a href="" tal:attributes="href python:'/templates/'+template_title">Show Source</a>
       </td>
@@ -70,6 +72,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.26 2003/03/28 11:44:18 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.27 2003/04/03 12:38:45 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
