@@ -5,6 +5,7 @@ import os
 import sys
 import unittest
 from test_funcs import *
+from test_primordial import *
 
 if __name__ == "__main__":
     unittest.main()

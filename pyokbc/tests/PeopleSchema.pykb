@@ -9,6 +9,8 @@ create_slot('Weight',
 create_slot('BirthTime',
             own_slots=[['SLOT-CARDINALITY',1]],
             pretty_name='Birth Time')
+create_slot('Friend',
+            own_slots=[[':DOMAIN','Agent']])
 create_slot('Speaks',
             own_slots=[[':DOMAIN','Language']])
 create_slot('Species',

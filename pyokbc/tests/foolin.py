@@ -1,10 +1,10 @@
-#!/usr/bin/python2.1
+#!/usr/bin/python2.1 -i
 
 """
 TODO moved to pyokbc/TODO
 
 """
-
+import pdb
 import sys
 sys.path.append('../..')
 from pyokbc import *
@@ -25,6 +25,7 @@ if 0:
 
 if 1:
     mykb = open_kb("PeopleData.pykb")
+    mykb = open_kb("Addenda.pykb")
     goto_kb(mykb)
 
 if 0:
@@ -46,10 +47,13 @@ if 0:
     print get_slot_value('AliceLidell',Node._DOCUMENTATION,
                          slot_type=Node._all)[0]
 
-if 1:
+if 0:
     print_frame(":THING")
     print_frame(":CLASS")
     print string.join(get_frame_sentences(":THING")[0],"\n")
     print get_slot_values(':THING','nonexistent',
                           number_of_values=1,
                           slot_type=Node._all)[0]
+if 1:
+    print "========================"
+    print get_instance_types('SamuelBeckett',inference_level=Node._all)

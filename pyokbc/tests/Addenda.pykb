@@ -3,6 +3,7 @@
 put_direct_parents(['PeopleData.pykb'])
 
 create_individual('SamuelBeckett',
-                  direct_types=['AdultHuman'],
-                  own_slots=[['Wrote','MorePricksThanKicks','Murphy']],
+#                  direct_types=['AdultHuman'],
+                  own_slots=[['Wrote','MorePricksThanKicks','Murphy'],
+                             ['Friend','JamesJoyce']],
                   )

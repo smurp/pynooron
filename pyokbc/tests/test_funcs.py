@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.7 2002/11/04 22:45:34 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.8 2002/11/08 10:47:16 smurp Exp $'
 
 import os
 import sys
@@ -12,41 +12,6 @@ from pyokbc import *
 
 def str_sort(a,b):
     return cmp(str(a),str(b))
-
-
-class PrimordialTestCase(unittest.TestCase):
-    def __init__(self,hunh):
-        unittest.TestCase.__init__(self,hunh)
-        os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
-        mykb = open_kb("PeopleData.pykb")
-        goto_kb(mykb)
-
-    def test_all_classes_instances_of_CLASS(self):
-        # see CLASS_RECURSION in PyOkbc.py
-        for klass in get_kb_classes():
-            if not (klass in []):
-                self.failUnless(instance_of_p(klass,Node._CLASS)
-                                ,"%s not instance of %s" % (klass,Node._CLASS))
-
-    def test_all_classes_subs_of_THING(self):
-        # see CLASS_RECURSION in PyOkbc.py
-        for klass in get_kb_classes():
-            if not (klass in [Node._THING]):
-                self.failUnless(subclass_of_p(klass,Node._THING)
-                                ,"%s not sub of %s" % (klass,Node._THING))
-
-    def test_get_class_superclasses_of_THING(self):
-        good = "[]"
-        resp = list(get_class_superclasses(':THING')[0])
-        resp.sort(str_sort)
-        self.assertEquals(good,str(resp))
-
-
-    def test_get_frame_slots_of_THING(self):
-        good = "[]"
-        resp = list(get_frame_slots(':THING')[0])
-        resp.sort(str_sort)
-        self.assertEquals(good,str(resp))
 
 class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
@@ -83,9 +48,13 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort()
         self.assertEquals(good, string.join(resp,"\n"))
 
-    def skip_test_get_frame_slots_all(self):
-        good = "['Age', 'BirthTime', 'Eats', 'Speaks', 'Species', 'Wrote']"
-        resp = list(get_frame_slots('SamuelBeckett',
+    def test_get_frame_slots_all(self):
+        mykb = find_kb('Addenda.pykb')
+        #mykb = current_kb()
+        good = "['Age', 'BirthTime', 'Eats', 'Friend'," + \
+               " 'Speaks', 'Species', 'Wrote']"
+        resp = list(get_frame_slots('SamuelBeckett',kb=mykb,
+                                    slot_type=Node._all,
                                     inference_level=Node._all)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -97,7 +66,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def skip_test_get_frame_slots_taxonomic(self):
+    def test_get_frame_slots_taxonomic(self):
         good = "['Age', 'BirthTime', 'Eats', 'Speaks', 'Species', 'Wrote']"
         resp = list(get_frame_slots('SamuelBeckett',
                                     inference_level=Node._taxonomic)[0])
@@ -118,7 +87,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 75
+        good = 78
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
@@ -155,8 +124,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(parent[0],parent[1])
 
     def test_get_instance_types_all(self):
+        mykb = find_kb('Addenda.pykb')        
         good = '[:THING, AdultHuman, Agent, Animal, Human, Mammal, Primate]'
         resp = list(get_instance_types('SamuelBeckett',
+                                       kb = mykb,
                                        inference_level=Node._all)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -255,4 +226,4 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main('test_CLASS*')
+    unittest.main()
