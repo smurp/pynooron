@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.47 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.47 2003/06/28 21:41:10 smurp Exp $'
+__version__='$Revision: 1.48 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.48 2003/07/18 17:08:31 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -206,6 +206,9 @@ class FRAME(Node):
         #return "<"+self._name+">"
         return self._name
 
+#    def __cmp__(self,other):
+#        return str(self).__cmp__(str(other))
+
     #def __repr__(self):
     #    return str(self)
 
@@ -277,6 +280,7 @@ primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME",
 
 # Slots on slot frames okbc2.html#3169
 primordial['slot'] = (":DOCUMENTATION",
+                      ":DOCUMENTATION-LINK",
                       ":DOMAIN",":SLOT-VALUE-TYPE",":SLOT-INVERSE",
                       ":SLOT-CARDINALITY",":SLOT-MAXIMUM-CARDINALITY",
                       ":SLOT-MINIMUM-CARDINALITY",":SLOT-SAME-VALUES",
@@ -1771,9 +1775,17 @@ class TupleKb(KB,Constrainable):
             pass
 
     def _remove_frame_from_store(kb,frame):
-        frame_name = kb.get_frame_name(frame)
-        if kb._store.has_key(frame_name):
-            del kb._store[frame_name]
+        (found_frame,
+         frame_found_p) = kb.get_frame_in_kb(frame,kb_local_only_p=1)
+        if frame_found_p:
+            frame_name = kb.get_frame_name(found_frame)
+            frame_type = kb.get_frame_type(found_frame)
+            if kb._store.has_key(frame_name):
+                del kb._store[frame_name]
+                try:
+                    kb._typed_cache[frame_type].remove(found_frame)
+                except:
+                    pass
 
     def _rename_frame_in_store(kb,frame,new_name,kb_local_only_p):
         frame_name = kb.get_frame_name(frame)
@@ -1885,11 +1897,20 @@ class TupleKb(KB,Constrainable):
 
     def get_frame_type(kb,thing,kb_local_only_p=0):
         if thing:
-            return thing._frame_type
-            if isinstance(thing,KB):
-                return Node._kb  # FIXME
-            elif isinstance(thing,FRAME):
-                return thing.get_frame_type()
+            if type(thing) == type(''):
+                error_p = 0
+                (found_frame,
+                 frame_found_p)\
+                 = kb.get_frame_in_kb_internal(thing,error_p,kb_local_only_p)
+                if frame_found_p:
+                    return found_frame._frame_type
+                return 0
+            else:
+                return thing._frame_type
+            #if isinstance(thing,KB):
+            #    return Node._kb  # FIXME
+            #elif isinstance(thing,FRAME):
+            #    return thing.get_frame_type()
         else:
             return 0
 
@@ -1976,6 +1997,7 @@ class TupleKb(KB,Constrainable):
         #print str(frame)
         #if str(frame) == 'smurp_web_log.pykb':
         #    print "get_slot_values_in_detail_internal",frame
+
         if slot_type in [Node._own,Node._all]:
             if frame._own_slots.has_key(slot_key):
                 for v in frame._own_slots[slot_key].values():
@@ -1984,6 +2006,7 @@ class TupleKb(KB,Constrainable):
             if frame._template_slots.has_key(slot_key):
                 for v in frame._template_slots[slot_key].values():
                     list_of_specs.append([v,1,0])
+        #print "get_slot_values_in_detail",frame,slot,list_of_specs
         return (list_of_specs,exact_p,more_status,default_p)
 
     def OLD_get_slot_values_internal(kb,frame,slot,
@@ -2190,8 +2213,8 @@ class PrimordialKb(TupleKb):
         tkb_gfsi = TupleKb.get_frame_slots_internal
         (list_of_slots,exact_p) = tkb_gfsi(kb,frame,inference_level,
                                            slot_type,kb_local_only_p)
-        if not (':DOCUMENTATION' in list_of_slots):
-            list_of_slots.append(':DOCUMENTATION')
+        if not (':DOCUMENTATION-LINK' in list_of_slots):
+            list_of_slots.append(':DOCUMENTATION-LINK')
         return (list_of_slots,exact_p)
             
     def get_slot_values_in_detail_internal(kb,frame,slot,
@@ -2202,7 +2225,7 @@ class PrimordialKb(TupleKb):
                                           kb_local_only_p = 0,
                                           checked_kbs=[],checked_classes=[]):
         if kb.coerce_to_frame_internal(str(frame)):
-            if str(slot) == ':DOCUMENTATION' and \
+            if str(slot) == ':DOCUMENTATION-LINK' and \
                str(frame) != 'PRIMORDIAL_KB':
                 #FIXME more generally skip things which are not in OKBC Spec
                 # list-of-specs,exact-p,more-status,default-p
