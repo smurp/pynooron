@@ -1,0 +1,16 @@
+digraph kb_ancestry {
+<span tal:condition="python:1" 
+      tal:define="allkbs python:current_kb().get_kb_parents()"
+      tal:omit-tag="">
+  <span tal:define="ballkbs  python:allkbs.append(current_kb())"
+        tal:omit-tag=""> 
+    <span tal:repeat="first allkbs"
+          tal:omit-tag="">
+      <span tal:repeat="second python:get_kb_direct_parents(kb=first)"
+            tal:omit-tag="">
+        <hr tal:replace="python:str(first).replace('.pykb','')"/>
+        -> <hr tal:replace="python:str(second).replace('.pykb','')"/>;
+      </span>
+    </span>
+  </span>
+</span>}

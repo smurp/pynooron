@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="here"></h1>
+
+<b tal:content="structure python:get_doc_for(get_kb_direct_parents)"></b>
+<ul tal:define="items python:get_kb_direct_parents(here)" 
+       tal:condition="items">
+  <span tal:repeat="item items">
+    <li><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></li>
+  </span>
+</ul>
+
+<p>The following is a very primitive graph of the nesting of this 
+KB and its parents.  It uses the Java 1.4 version of GraphLayout.class
+which is too new for my Linux netscape 4.7 browser, but works with Java 1.4
+appletviewer.  The graph is confusing because it fails to show the
+direction of the parentage.  This is obviously just a quick hack.  
+Some obvious alternatives to this mess are to integrate with </p>
+<ul>
+<li><a href="http://www.touchgraph.com/">touchgraph</a></li>
+<li><a href="http://www.w3.org/Graphics/SVG/SVG-Implementations">SVG</a></li>
+<li>or graphviz <a href="http://www.graphviz.org/webdot/">webdot</a></li>
+</ul>
+<p>
+Webdot is maybe the easiest and most user friendly at the moment.
+A pure python version of 
+<a href="http://www.research.att.com/sw/tools/graphviz/webdot.cgi.pl">perl webdot</a>
+ would be cool.  Actually, something even more integrated into Nooron
+is the real goal, including the whole file-extension-drives-generation 
+business.
+</p>
+<span tal:condition="python:1" tal:define="global edges string:"
+  tal:omit-tag="">
+  <span tal:repeat="parent python:current_kb().get_kb_parents()"
+  tal:omit-tag="">
+    <span tal:define="global edges python:edges+','+str(parent)+'-'+str(current_kb())"
+    tal:omit-tag="">
+      <span tal:repeat="granny python:get_kb_direct_parents(kb=parent)"
+      tal:omit-tag="">
+        <span tal:define="global edges python:edges+','+str(parent)+'-'+str(granny)"
+        tal:omit-tag="">
+        </span>
+      </span>
+    </span>
+  </span>
+  <applet codebase="/templates" code="Graph.class" width=500 height=500>
+  <param name=edges value="" tal:attributes="value edges">
+  </applet>
+</span>
+
+
+<hr>
+$Id: kb_ancestry_as_graph,v 1.1 2002/11/14 10:21:39 smurp Exp $
+</div>
+  </body>
+</html>

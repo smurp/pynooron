@@ -1,0 +1,22 @@
+digraph class_hierarchy {
+<span tal:condition="python:1" 
+      tal:define="allsupers python:get_class_superclasses(here)"
+      tal:omit-tag="">
+
+  <hr tal:replace="allsupers"/>
+</span>}
+
+
+<span tal:condition="python:0">
+    <span tal:repeat="first allsupers"
+          tal:omit-tag="">
+            
+      <span tal:repeat="second python:get_class_superclasses(first,
+                                                             inference_level=DIRECT)[0]">
+        <hr tal:replace="first"/>
+        -> <hr tal:replace="second"/>;
+      </span>
+
+    </span>
+
+</span>
