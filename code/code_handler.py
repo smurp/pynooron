@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: code_handler.py,v 1.3 2002/07/30 17:53:18 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: code_handler.py,v 1.4 2002/08/02 18:47:18 smurp Exp $'
 
 
 """Serve up the /code/ directory as described at 
@@ -13,10 +13,12 @@ from medusa.default_handler import *
 from medusa import default_handler
 from medusa import producers
 
-from NooronRoot import NooronRoot
+#from NooronRoot import NooronRoot
+import NooronRoot
 from DirectoryFacade import DirectoryFacade
 
-from transformers import typed_file_producer
+#from transformers import typed_file_producer
+import transformers
 
 class code_handler(default_handler.default_handler):
     def __init__ (self, filesystem, list_directories = 0,serve=[],skip=[]):
@@ -82,13 +84,14 @@ class code_handler(default_handler.default_handler):
                 return
             obj = DirectoryFacade(path)
         elif self.filesystem.isfile(path):
-            obj = typed_file_producer(open(path,'ro'))
+            obj = transformers.typed_file_producer(open(path,'ro'))
         else:
             request.error(401)
             return
 
-        pl = NooronRoot().pipeline_factory.build_pipeline(request,obj)
-        pl.publish()
+        NooronRoot.NooronRoot().publish(request,obj)
+        #pl = NooronRoot().pipeline_factory.build_pipeline(request,obj)
+        #pl.publish()
         
     
 

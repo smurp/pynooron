@@ -1,22 +1,19 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.7 2002/07/30 17:53:18 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.8 2002/08/02 18:47:18 smurp Exp $'
 
 
 # GooseWorks support
 import GW
 from GWApp import GWApp
 
-from NooronRoot import NooronRoot
+import NooronRoot
 
 DEBUG = 1
 
 from medusa import counter
 import medusa
 
-def link_to_tmobject(topic):
-    return """<a href="../TMObject/%s">%s</a>""" % ( topic.getIndex(),
-                                                        str(topic.getBaseNames()) )
 
 class ProcHandler:
     def __init__(self,graph):
@@ -72,7 +69,17 @@ class topicmap_handler:
                                                 str(self.graphs))
 
 
+    _loaded = None
+    def _load(self):
+        self._loaded = 1
+        self.import_topicmap('jill','file:///download/knowledge/jill.xtm')
+        self.import_topicmap('weblog','file:///home/smurp/src/nooron/weblog.xtm')
+        self.import_topicmap('smurp','file:///home/smurp/src/nooron/smurp_as_agent.xtm')
+
     def match(self,request):
+        if not self._loaded:
+            self._load()
+            
         [path, params, query, fragment] = request.split_uri()
 
         retval = path.find(self.from_root)
@@ -240,6 +247,5 @@ class topicmap_handler:
         if not obj:
             obj = app
 
-        pl = NooronRoot().pipeline_factory.build_pipeline(request,obj)
-        pl.publish()
+        NooronRoot.NooronRoot().publish(request,obj)
         

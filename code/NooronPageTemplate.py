@@ -1,9 +1,8 @@
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.1 2002/07/22 19:33:42 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.2 2002/08/02 18:47:18 smurp Exp $'
 
 import NooronRoot
-
 
 # PageTemplate Support
 import sys
@@ -13,7 +12,6 @@ from PageTemplates.PageTemplate import PageTemplate
 
 #print sys.pwd
 #sys.path.append('code')
-
 
 class NooronPageTemplate(PageTemplate):
     request = None
@@ -33,6 +31,7 @@ class NooronPageTemplate(PageTemplate):
              'options': {},
              'root': self.root,
              'request': self.request,
+             'user': self.request.user(),
              'modules': None,
              }
         return c

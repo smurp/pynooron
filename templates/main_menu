@@ -1,10 +1,11 @@
-<!-- $Revision: 1.2 $ -->
+<!-- $Revision: 1.3 $ -->
     <a href="/status">/status</a> 
 <strong>|</strong>
-    <a href="/map/">/map/</a>
+    <a href="/know/">/know/</a>
 <strong>|</strong>
     <a href="/templates/">/templates/</a>
 <strong>|</strong>
     <a href="/code/">/code/</a>
 <strong>|</strong>
-    <a href=""></a>
+    <a href="/topicmap/">/topicmap/</a>
+

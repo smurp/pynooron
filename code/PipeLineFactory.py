@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.2 2002/07/29 22:37:50 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.3 2002/08/02 18:47:18 smurp Exp $'
 
 DEBUG = 0
 
@@ -8,7 +8,7 @@ import inspect_module
 import transformers
 import string,re
 import medusa
-from NooronRoot import NooronRoot
+from medusa import status_handler
 
 class PipeLineFactory:
     """Detect the extension and apply an appropriate output producer."""
@@ -39,8 +39,10 @@ class PipeLineFactory:
         
         
     def status(self):
-        return medusa.producers.simple_producer("PipelineFactory extensions: " + \
-                                                str(self.transformers))
+        return medusa.producers.simple_producer("<li>" + status_handler.html_repr(self) + 
+                                                "<pre>\n" +
+                                                str(self.transformers) +
+                                                "</pre></li>\n")
 
     def register(self,producer):
         try:

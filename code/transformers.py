@@ -1,10 +1,13 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.6 2002/07/30 17:53:18 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.7 2002/08/02 18:47:18 smurp Exp $'
 
 DEBUG = 0
 
-from NooronRoot import NooronRoot
+#from NooronRoot import NooronRoot
+import NooronRoot
+#NooronRoot = NooronRoot.NooronRoot
+
 from NooronPageTemplate import NooronPageTemplate
 import types
 import string
@@ -93,7 +96,7 @@ class templated_producer(typed_producer):
     def __init__(self,content,request=None):
         #print "templated_producer obj=",content,"request =",request
         producer.__init__(self,content)
-        tr = NooronRoot().template_root()
+        tr = NooronRoot.NooronRoot().template_root()
         template=tr.obtain(self.template_name,
                            request=request,
                            obj=content)
@@ -157,7 +160,9 @@ class topicmap_html_producer(templated_producer):
     template_name = "topicmap_as_html"
 
 class directory_html_producer(templated_producer):
-    domain = ['DirectoryFacade.DirectoryFacade','topicmap_handler.topicmap_handler']
+    domain = ['DirectoryFacade.DirectoryFacade'
+              ,'NooronRoot.NooronRoot'
+              ,'topicmap_handler.topicmap_handler']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "directory_as_html"

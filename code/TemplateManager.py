@@ -5,7 +5,6 @@ import NooronRoot
 from NooronPageTemplate import NooronPageTemplate
 
 
-
 class TemplateManager:
     """Each nested template directory gets one of these acquisition supporters."""
 

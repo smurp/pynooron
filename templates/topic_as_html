@@ -26,13 +26,11 @@
 <table border="1"
        tal:define="items here/getSCR" 
        tal:condition="items">
-  <caption><strong>getSCRs</strong></caption>
-  <tr tal:repeat="item items">
-    <td><a href=""
-           tal:define="url python:item.getUris()[0]"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-    </td>
+  <caption><strong>getSCR</strong></caption>
+  <tr>
+    <td tal:content="python:items.getUris()"></td>
+    <td tal:content="python:dir(items)"></td>
+    <td tal:content="python:items.getData()"></td>
   </tr>
 </table>
 
@@ -60,10 +58,18 @@
        tal:condition="items">
   <caption><strong>getOccurrences</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item">occurrence tuple</td>
-    <td tal:content="python: item[0].getBaseNames()"></td>
-    <td tal:content="python: item[1].getBaseNames()"></td>
-    <td tal:content="python: item[2].getBaseNames()"></td>
+    <td tal:content="structure python: item[0] and item[0].getLink()"></td>
+    <td tal:content="structure python: item[1] and item[1].getLink()"></td>
+    <td tal:content="structure python: item[2].getSCR().getData()"></td>
+  </tr>
+</table>
+
+<table border="1"
+       tal:define="items here/getOccurrenceResources" 
+       tal:condition="items">
+  <caption><strong>getOccurrenceResources</strong></caption>
+  <tr tal:repeat="item items">
+    <td tal:content="python:item.getData()">data</td>
   </tr>
 </table>
 
@@ -123,7 +129,7 @@
 </div>
 
 <hr>
-$Id: topic_as_html,v 1.5 2002/07/30 17:53:18 smurp Exp $
+$Id: topic_as_html,v 1.6 2002/08/02 18:47:19 smurp Exp $
 </div>
   </body>
 </html>

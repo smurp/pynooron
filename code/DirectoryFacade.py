@@ -1,4 +1,7 @@
 
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: DirectoryFacade.py,v 1.2 2002/08/02 18:47:18 smurp Exp $'
+
 import os
 
 class DirectoryFacade:

@@ -17,6 +17,10 @@
 
   <dt>request</dt>
   <dd tal:content="request"></dd>
+
+  <dt>user</dt>
+  <dd tal:content="user"></dd>
+
 </dl>
 <hr>
-$Id: namespace,v 1.3 2002/07/24 11:22:16 smurp Exp $
+$Id: namespace,v 1.4 2002/08/02 18:47:19 smurp Exp $

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.1 2002/07/30 17:53:18 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.2 2002/08/02 18:47:18 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -12,6 +12,7 @@ if __name__ == "__main__":
         pass
 else:
     from medusa.http_server import http_request
+    from NooronUser import NooronUser, NullUser
 
 def split_uri (self):
     if self._split_uri is None:
@@ -61,6 +62,17 @@ def breadcrumbs(self):
         crumbs = crumbs + ' / ' + atag
     return crumbs
 http_request.breadcrumbs = breadcrumbs
+
+def set_user(self,user):
+    self._user = user
+http_request.set_user = set_user
+    
+def user(self):
+    if (not hasattr(self,'_user')) or getattr(self,'_user') is None:
+        self._user = NullUser()
+    return self._user
+http_request.user = user
+        
 
 if __name__ == "__main__":
     errcount = 0

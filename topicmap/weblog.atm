@@ -2,40 +2,56 @@
 weblog : iso-8859-1
 
 #
-# $Revision: 1.2 $
-# $Id: weblog.atm,v 1.2 2002/07/11 17:17:39 smurp Exp $
+# $Revision: 1.3 $
+# $Id: weblog.atm,v 1.3 2002/08/02 18:47:18 smurp Exp $
+#
+#  astma2xtm.pl < weblog.atm | prettifyxtm.pl > weblog.xtm
 #
 
-marvel
-bn: a thing to marvel at
+
 
 url
 
-web-log-entry
+web_log_entry
 
-wle-1 (web-log-entry)
+web_log_category
+
+
+spoonerism (web_log_category)
+
+gear (web_log_category)
+
+marvel (web_log_category)
+
+architecture (web_log_category)
+
+
+
+wle_1 (web_log_entry)
 bn: A New Kind of Science
 in: Hey Moses (er, Stephen) what are those tablets you're carrying?
 oc (url): http://www.amazon.com/exec/obidos/ASIN/1579550088
 
-wle-2 (web-log-entry marvel)
+wle-2 (web_log_entry marvel)
 bn: Endurantism and Perdurantism: An Ongoing Debate
 in: To think that these sorts of conversations \
  are going on all the time!
 oc (url): http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html
 
-wle-3 (web-log-entry gear)
+wle-3 (web_log_entry gear)
 bn: A Permanent Flashlight, Finally
 in: It's bright, it's blue, you shake it...
 oc (url): http://www.excaliburelectronics.com/foreverflashl.html
 
-wle-4 (web-log-entry spoonerism)
+wle-4 (web_log_entry spoonerism)
 bn: freaking insleepwently
 in: How tired I must have been when I caught myself using the phrase\
  "freaking insleeepwently".  Spooner would be pleased.
 
 
-wle-5 (web-log-entry architecture)
+wle-5 (web_log_entry architecture)
 bn: Libeskind's Architecture
 oc (url): http://www.radio.cbc.ca/programs/ideas/libeskind/index.html
 oc (url): http://www.daniel-libeskind.com/
+in: Some quite amazing architecture.
+
