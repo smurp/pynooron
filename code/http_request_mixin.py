@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.5 2002/10/18 07:21:02 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.6 2002/11/14 16:33:30 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -25,6 +25,10 @@ def split_uri (self):
             self._split_uri = m.groups()
     return self._split_uri
 http_request.split_uri = split_uri
+
+def set_header(self,key,val):
+    self.reply_headers[key]=val
+http_request.set_header = set_header
 
 def chop_up_query(self,query):
     if not query:
