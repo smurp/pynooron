@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.15 2003/02/13 12:16:24 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.16 2003/03/06 14:40:22 smurp Exp $'
 
 import os
 import sys
@@ -47,6 +47,14 @@ class ReadOnlyTestCase(unittest.TestCase):
         good = "[AdultHuman, Child, Human]"
         self.assertEquals(good,str(resp))
 
+    def test_get_frame_details(self):
+        resp = get_frame_details('SamuelBeckett')[0]
+        str_resp = str(resp)
+        len_str_resp = len(str(resp))
+        self.assertEquals(662,len_str_resp)
+        num_keys = len(resp.keys())
+        self.assertEquals(8,num_keys)
+
     def test_get_frame_sentences(self):
         good = \
              """(individual SamuelBeckett)\n""" + \
@@ -87,7 +95,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_get_kb_direct_children(self):
+    def skip_test_get_kb_direct_children(self):
         schema = find_kb('PeopleSchema')
         good = "[OtherPeople, PeopleData]"
         resp = list(get_kb_direct_children(schema))
@@ -101,7 +109,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 88
+        good = 87
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
