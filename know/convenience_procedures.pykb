@@ -170,7 +170,8 @@ def npts_by_parentage(direct_types,transformations):
     # a cached okbc procedure call.
     if transformations == None:
         transformations = {'ps':['pdf','jpg'],
-                           'dot':['ps','jpg','svg',['pdf','ps.pdf']]}
+                           'dot':['ps','jpg','svg',['pdf','ps.pdf']],
+                           'dbk':['rtf','pdf','tex']} # txt,ps,dvi,tex,texi
 
     train = [] # filled with passengers and their luggage
     #print "parentage: ",direct_types

@@ -123,6 +123,13 @@ create_individual('txt_extension',
                              ['ApplicableTransformers',
                               'transform_dbk_2_txt']])
 
+create_individual('tex_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','application/x-tex'],
+                             ['LiteralExtension','.tex'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_tex']])
+
 create_individual('rtf_extension',
                   direct_types=['FileExtension'],
                   own_slots=[['MimeType','text/rtf'],
@@ -194,5 +201,15 @@ create_individual('transform_dbk_2_txt',
                              ['WritesTo','file'],
                              ['LiteralExternalCommand',
                               'docbook2txt --output %(cache_dir)s %(precursor)s'
+                              ]])
+
+create_individual('transform_dbk_2_tex',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','tex_extension'],
+                             ['RequiresProgram','docbook2tex'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2tex --output %(cache_dir)s %(precursor)s'
                               ]])
 

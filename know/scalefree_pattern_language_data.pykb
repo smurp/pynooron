@@ -181,6 +181,6 @@ create_individual('FractaLink',
                              ['Method', ''],
                              ['Motivation', """ """],
                              ['References', ''],
-                             ['RelatedPatterns','FoamySpace','Intrinsics','CharacteristicScale','Diachronic' ],
+                             ['RelatedPatterns','FoamySpace','Intrinsic','CharacteristicScale','Diachronic' ],
                              ['Variations', """ """],
                             ])
