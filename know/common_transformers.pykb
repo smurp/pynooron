@@ -144,8 +144,8 @@ create_individual('linenum_extension',
                   own_slots=[['MimeType','text/plain'],
                              ['LiteralExtension','.linenum'],
                              ['ApplicableTransformers',
-                              'transform_dbk_2_linenum']])
-
+                              'transform_dbk_2_linenum',
+                              'transform_dot_2_linenum']])
 
 
 ##########################################################
@@ -223,7 +223,7 @@ create_individual('transform_dbk_2_tex',
                               ]])
 
 
-create_individual('transform_dbk_2_linenum',
+create_individual('transform_any_2_linenum',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','linenum_extension'],
                              ['RequiresProgram','awk'],

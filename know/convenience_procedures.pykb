@@ -101,37 +101,38 @@ del names_and_pretty_names
 
 
 ####################################################################
-def parent_kb_tree_skipping(kb=None,skip=[]):
-    """Return a tree of kbs avoiding duplicates and skipping those indicated.
+def hierarchy_of_nooron_app_instances(kb=None):
+    """Return the hierarchy of nooron_app_instances.
 
     What is returned is a tree of kbs in the form of nested lists.
-    example = [kb,
-               [kb_a,
-                [kb_a1,kb_a2]],
-               kb_b,
-               [kb_c,
-                [kb_c1,
-                 [kb_c2,
-                  [kb_c2A,kb_c2B]],
-                 kb_c3]]]
-    """
-
+    meta = [meta_linguistic_shell,
+            nooron_pattern_language,
+            [uplift_linguistic_shell,
+             uplift_pattern_language,
+             scalefree_pattern_language,
+             conversation_pattern_language]]
+    The task is to return a tree structure where any branch,
+    however rootward, may itself have leaves.  """
+    skip=[]
     if not kb: kb = current_kb()
+    skippers = []
     skippers.extend(skip)
-    def recorse(kb,skippers):
-        tree = [kb]
+    root = kb
+    def recorse(kb,skippers,recorse):
+        branch = [kb]
         parents = get_kb_direct_parents(kb=kb)
         for parent in parents:
             if not (parent in skippers):
                 skippers.append(parent)
-                tree.append(recurse(parent,skippers))
-        if len(tree) == 1:
-            return 
-        return tree
-    return recorse(kb,skippers)
-register_procedure('parent_kb_tree_skipping',
-                   procedure=create_procedure(body=parent_kb_tree_skipping))
-del parent_kb_tree_skipping
+                if instance_of_p(parent,'nooron_app_instance',kb=parent)[0]:
+                    branch.append(recorse(parent,skippers,recorse))
+        if len(branch) == 1:
+            return branch[0]
+        return branch
+    return recorse(kb,skippers,recorse)
+register_procedure('hierarchy_of_nooron_app_instances',
+                   procedure=create_procedure(body=hierarchy_of_nooron_app_instances))
+del hierarchy_of_nooron_app_instances
 
 
 
