@@ -31,4 +31,7 @@ if 1:
     print_frame('Human')
     print_frame('Age')
     print_frame('Species')
-    print get_slot_values('Species',':DOCUMENTATION-IN-FRAME')
+    print get_slot_values('Species',':DOCUMENTATION')
+    print "SamuelBeckett Eats",get_slot_values('SamuelBeckett','Eats',
+                                               slot_type=Node._all)[0]
+    print "instance types of Beckett:",get_instance_types('SamuelBeckett')

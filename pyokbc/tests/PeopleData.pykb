@@ -16,6 +16,7 @@ create_individual('AliceLidell',
                             ],
                   pretty_name='Alice in Wonderland')
 create_individual('SamuelBeckett',
+                  doc="You know, Mark Twain! Right?",
                   direct_types=['AdultHuman'],
                   own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
                              ['Age', 83],

@@ -7,8 +7,10 @@ import unittest
 sys.path.append('../..')
 from pyokbc import *
 
+def str_sort(a,b):
+    return cmp(str(a),str(b))
 
-class ClassHierarchyTestCase(unittest.TestCase):
+class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
@@ -37,6 +39,90 @@ class ClassHierarchyTestCase(unittest.TestCase):
         resp = list(get_frame_sentences('SamuelBeckett')[0])
         resp.sort()
         self.assertEquals(good, string.join(resp,"\n"))
+
+    def test_get_frame_slots_all(self):
+        good = "['Age', 'BirthTime', 'Eats', 'Speaks', 'Species']"
+        resp = list(get_frame_slots('SamuelBeckett',
+                                    inference_level=Node._all)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_frame_slots_direct(self):
+        good = "['Age', 'BirthTime', 'Eats']"
+        resp = list(get_frame_slots('SamuelBeckett',
+                                    inference_level=Node._direct)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_frame_slots_taxonomic(self):
+        good = "['Age', 'BirthTime', 'Eats', 'Speaks', 'Species']"
+        resp = list(get_frame_slots('SamuelBeckett',
+                                    inference_level=Node._taxonomic)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_instance_types_all(self):
+        good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
+        resp = list(get_instance_types('SamuelBeckett',
+                                       inference_level=Node._all)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_instance_types_direct(self):
+        good = '[AdultHuman]'
+        resp = list(get_instance_types('SamuelBeckett',
+                                       inference_level=Node._direct)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_instance_types_taxonomic(self):
+        good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
+        resp = list(get_instance_types('SamuelBeckett',
+                                       inference_level=Node._taxonomic)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_slot_values_all(self):
+        good = """['Apple', 'Berry', 'Cookie', 'DairyProducts', 'Grains', 'Meats', 'Vegetables']"""
+        resp = list(get_slot_values('SamuelBeckett','Eats',
+                                    slot_type=Node._all)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+        good = """['English']"""
+        resp = list(get_slot_values('SamuelBeckett','Speaks',
+                                    slot_type=Node._all)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_slot_values_own(self):
+        good = """['Apple', 'Berry', 'Cookie']"""
+        resp = list(get_slot_values('SamuelBeckett','Eats',
+                                    slot_type=Node._own)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+        good = """[]"""
+        resp = list(get_slot_values('SamuelBeckett','Speaks',
+                                    slot_type=Node._own)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+
+    def test_get_slot_values_template(self):
+        good = """['DairyProducts', 'Grains', 'Meats', 'Vegetables']"""
+        resp = list(get_slot_values('SamuelBeckett','Eats',
+                                    slot_type=Node._template)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def skip_test_documentation(self):
+        good = doc="You know, Mark Twain! Right?"
+        resp = list(get_slot_values('SamuelBeckett',Node._DOCUMENTATION,
+                                    slot_type=Node._own)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
 
 if __name__ == "__main__":
     unittest.main()
