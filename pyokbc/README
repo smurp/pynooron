@@ -19,17 +19,17 @@ interaction of knowledge (or data) from multiple sources and the
 creation of generic user interfaces to access knowledge irrespective
 of source. This work was begun to support the requirements of Nooron
     http://www.noosphere.org/software/nooron
-which provides a flexible web-based user interface for knowledge and
-various evolutionary components. Together Nooron and PyOKBC are
-intended to create a "self-improving container for self-improving
-knowledge".
+which provides a flexible web-based user interface for knowledge
+publishing, management, evolution and distribution.  Together Nooron and
+PyOKBC are intended to create a "self-improving container for
+self-improving knowledge".
 
 Directions:
 -----------
 PyOKBC is an effort to perform a faithful implementation of the OKBC
 spec. PyOKBC includes PyKB.py which is a simple Knowledge
 Representation System backend accessible through PyOKBC. The goal is
-to implement other backends such as:
+to implement other backends such as (in no particular order):
 
   NetworkConnection
     interact with lisp or java OKBC servers 
@@ -56,15 +56,20 @@ Contributing can be relatively easy, because the goal is a faithful
 implementation of the absolutely excellent OKBC Spec.
 
   - write a backend
-  - flesh out the optional okbc methods (there are many not yet
-      implemented)
+  - flesh out the optional okbc methods (most are missing)
   - oh yeah, and about the mandatory ones...
-  - improve (or constructively critique) the quickly hacked together code
+  - improve (or constructively critique) the rather hackhazard code
+  - write unittests
   - find bugs
+  - help me understand how OKBC handles should work in PyOKBC
   - help with Nooron
+  - feed me :-)
 
+License:
+--------
+GPL2.0 (or talk me into the python license if you want to try)
 
 
 Shawn Murphy <smurp@emergence.com>
 
-$Id: README,v 1.1 2002/10/22 11:23:09 smurp Exp $
+$Id: README,v 1.2 2002/10/22 20:56:15 smurp Exp $
