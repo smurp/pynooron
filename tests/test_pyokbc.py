@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.7 2002/12/12 14:00:20 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.8 2002/12/12 19:23:37 smurp Exp $'
 
 import os
 import sys
@@ -33,11 +33,11 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_class_superclasses_of_web_log_app(self):
-        good = "[:THING]"
+        #good = "[:THING]"
+        good = "[:KB, :THING, nooron_app_component, nooron_app_instance]"
         resp = list(get_class_superclasses('web_log_app')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
-
 
     def test_get_class_superclasses_of_web_log_app_in_blog_ontology(self):
         kb = find_kb('web_log_ontology')

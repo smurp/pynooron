@@ -1,9 +1,12 @@
 
 TODO for Nooron
 
+* required for v0.2.2
+** make /know --> /know__openable_kbs.html
+
+
 * correctness
-** why doesnt nooron_pattern_language.get_instance_types return :KB?
-** because get_class_superclasses is buggy!!
+** what the hell is http://192.168.1.11/__openable_kbs.html doing?
 ** not automatically writing to the correct kb (ie a nooron_data KB)
 ** save_kb (respect kb_local_only_p by telling parent kbs to save too)
 * performance
@@ -16,7 +19,7 @@ TODO for Nooron
 ** make /know/pert/ a surfable thing (kb?, place?)
 ** implement proper cache flushing, tee hee
 * useability
-** make /know --> /know__openable_kbs.html
+** clean up /template/nooron_app.html
 ** fix available garments defaults for site_front.html and other weirdos
 ** fix truncated (at char 1024) error reporting
 ** redesign "available garments" to add links for typical conversions

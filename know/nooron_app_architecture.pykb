@@ -61,7 +61,6 @@ create_slot('slot_display_order',
 
 create_class('nooron_app_component',
              direct_superclasses=[':KB'],
-             template_slots=[['npt_for_self','kb_as_html']],
              doc="""Nooron app components are knowledgebases which
              have features which are made use of by code/NooronApp.py
              """)
@@ -101,7 +100,7 @@ create_class('nooron_app_wardrobe',
              resources are required to make the app work.""")
 create_class('nooron_app_instance',
              direct_superclasses=['nooron_app_component'],
-             template_slots=[['npt_for_self','kb_ancestry_as_dot','nooron_app_as_html']],
+             template_slots=[['npt_for_self','nooron_app.html']],
              own_slots=[['merges_in','nooron_app_wardrobe','nooron_app_data']],
              doc="""A nooron_app_instance is an actual runnable app.
              It is the combination of two things: a nooron_app_wardrobe

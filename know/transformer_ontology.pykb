@@ -59,9 +59,7 @@ create_slot('RequiresProgram',pretty_name='Requires Program',
 create_class('transformer_class',
              direct_types=['nooron_app_class'],
              doc="""This is the superclass of all classes in the
-             pattern_language_ontology.  It might not be very useful...
-             YAGNI (you aren't going to need it) suggest that it be
-             removed.""")
+             transformer_ontology.""")
 
 create_class('FileExtension',
              direct_types=['transformer_class'],

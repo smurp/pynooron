@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="here"></h1>
+
+<dl tal:define="items python:get_kb_direct_parents(here)" 
+       tal:condition="items">
+  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
+  <dd>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>, 
+  </span>
+  </dd>
+</dl>
+
+<dl tal:define="items python:get_kb_direct_children(here)" 
+       tal:condition="items">
+  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_children)">link</strong>:
+  <dd>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>
+  </span>
+  </dd>
+</dl>
+
+
+<table border="1"
+       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+
+
+<table border="1"
+       tal:define="items python:get_class_instances('nooron_app_class')[0]" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_class_instances)">link</strong></caption>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
+
+<hr>
+$Id: nooron_app.html,v 1.1 2002/12/12 19:23:36 smurp Exp $
+</div>
+  </body>
+</html>
