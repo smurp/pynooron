@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.2 2002/07/22 19:33:43 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.3 2002/07/23 18:33:37 smurp Exp $'
 
 
 # GooseWorks support
@@ -112,8 +112,10 @@ class topicmap_handler:
         p.process(u)
         g.commitTransaction()
 
+        app = GWApp(g)
+        self.graphs[tm_name] = app
+        app.tm_uri = tm_uri
         
-        self.graphs[tm_name] = GWApp(g)
         if DEBUG:
             print self.graphs[tm_name]
 

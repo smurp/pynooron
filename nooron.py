@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.4 2002/07/22 19:33:42 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.5 2002/07/23 18:33:37 smurp Exp $'
 
 
 """
@@ -55,7 +55,7 @@ pipelineFactory = PipeLineFactory.PipeLineFactory()
 tmh = topicmap_handler.topicmap_handler('map',pipelineFactory)
 tmh.import_topicmap('jill','file:///download/knowledge/jill.xtm')
 
-#tmh.import_topicmap('weblog','file:///home/smurp/src/nooron/weblog.xtm')
+tmh.import_topicmap('weblog','file:///home/smurp/src/nooron/weblog.xtm')
 #tmh.import_topicmap('catalog','file:///home/smurp/src/nooron/catalog.xtm')
 #tmh.import_topicmap('opera','file:///download/knowledge/opera.xtm')
 #tmh.import_topicmap('nooron','file:///home/smurp/src/nooron/nooron.xtm')

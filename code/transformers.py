@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.2 2002/07/22 19:33:43 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.3 2002/07/23 18:33:37 smurp Exp $'
 
 
 from NooronRoot import NooronRoot
@@ -8,19 +8,6 @@ from NooronPageTemplate import NooronPageTemplate
 import types
 import string
 import medusa
-
-default_template = """
-<html><head><title>Boo</title></head>
-<body bgcolor="gray">
-<table border="1" bgcolor="white">
-<tr><td>
-This template is <a href="/code/transformers.py">transformers.topic_template</a>
-<div>
-  <pre tal:define="content options/content" tal:replace="python:content">???</pre>
-</div>
-</td></tr></table>
-</body></html>
-"""
 
 class producer:
     domain = None
@@ -92,7 +79,7 @@ class tgz(transformer):
 
 class templated_producer(producer):
     """Producers which generate their data through a PageTemplate."""
-    template_name = "primordial.html"
+    template_name = "primordial"
     def __init__(self,content,request=None):
         producer.__init__(self,content)
         tr = NooronRoot().template_root()
@@ -109,19 +96,37 @@ class templated_producer(producer):
             return ''
         else:
             self.written = 1
-            print type(self.template)
+            #print type(self.template)
             return self.template(content=str(self.more_content()))
 
 class topic_html_producer(templated_producer):
+    """Render a topic in a fashion specific to its class, or else generically.
+
+    It does this by attemping to find a template called
+      'instance_of_CLASSNAME_as_html'
+    and uses it or else it just uses 'topic_as_html'."""
     domain = ['GWApp.TMObject']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "topic_as_html"
 
+class tclass_html_producer(templated_producer):
+    """Render a generic class in a generic fashion.
+
+    Currently unused since no technique has been devised for gracefully
+    employing this template depending on whether the topic is a class.
+    """
+    domain = ['GWApp.TMObject']
+    extensions = ['html','htm']
+    def_mime_type = ['text/html']
+    template_name = "tclass_generic_as_html"
+
 class topicmap_html_producer(templated_producer):
+    """Render a topicmap itself."""
     domain = ['GWApp.GWApp']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
+    template_name = "topicmap_as_html"
 
 class pipeline:
     def mime_type(self):
@@ -141,7 +146,11 @@ class pipeline:
         while len(self.producers):
             p = self.producers.pop(0)
             d = p.more()
-            #print p.__class__.__name__,len(self.producers),d
+            if 0:
+                print """==================\n%s %s %s\n==================\n""" % \
+                      (str(len(d)),
+                       str(len(self.producers)),
+                       p.__class__.__name__)
             if d:
                 return d
             else:
@@ -158,8 +167,18 @@ class pipeline:
             ut = self.more()
             response.append(ut)
             cont = len(ut)
-        resp = string.join(response,"\n")
-        #request['Content-Length'] = len(resp)        
-        request.push(resp)
+        resp = string.join(response,"")
+        request['Content-Length'] = len(resp)
+
+        blocksize = 1024
+        leng = len(resp)
+        more = leng
+        s = 0
+        e = blocksize
+        while more:
+            request.push(resp[s:e])
+            s = s + blocksize
+            e = e + blocksize
+            more = s < leng
         request.done()
-        #request.flush()
+
