@@ -13,8 +13,8 @@ create_slot('Predecessors',
 
 create_slot('TaskDescription',
             pretty_name = 'Task Description',
-            own_slots=[[':SLOT-CARDINALITY',1],
-                       [':SLOT-VALUE-TYPE',':STRING']])
+            own_slots=[[':SLOT-COLLECTION-TYPE','list'],
+                       [':SLOT-VALUE-TYPE',':PARAGRAPH']])
 create_slot('Status',
             own_slots=[[':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE','TaskStatus']])
