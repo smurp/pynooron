@@ -1,24 +1,30 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
-  mclimit=8
-  size="7,3"
-  URL="<tal:dummy replace="this"/>"
-<span tal:condition="python:1" 
-      tal:define="all_patterns python:call_procedure(get_procedure('names_and_pretty_names'),
-                                                     arguments=(get_class_instances('pattern')[0],
-                                                               '\\n',this_kb))"
-      tal:omit-tag="">
-  <span tal:repeat="a_pattern all_patterns"
-        tal:omit-tag="">
+  mclimit=8    // run longer, do better
+  size="5,5"   // bounding box in inches
+  center=1
+  //  node[fontname="Courier";fontsize=10]
+
+  URL="<tal:dummy replace="server_absolute_url"/>"
+
+
+<tal:dummy 
+     condition="python:1" 
+     define="all_patterns python:call_procedure(get_procedure('names_and_pretty_names'),
+                                                arguments=(get_class_instances('pattern')[0],
+                                                           '\\n',this_kb))">
+  <tal:dummy tal:repeat="a_pattern all_patterns">
 	<tal:dummy replace="python:a_pattern[0]"/> 
 	  [label="<tal:dummy replace="python:a_pattern[1]"/>",
-           URL="<tal:dummy replace="python:a_pattern[0]"/>",
+           URL="<tal:dummy replace="python:request.object_request()+'/'+str(a_pattern[0])"/>",
            shape=plaintext];
-        <span tal:repeat="a_relative python:get_slot_values(a_pattern[0],'RelatedPatterns')[0]"
-              tal:omit-tag="">
+        <tal:dummy 
+          repeat="a_relative python:get_slot_values(a_pattern[0],'RelatedPatterns')[0]">
+          <tal:dummy condition="python: a_relative != ''">
           <hr tal:replace="python:a_pattern[0]"/> -> <hr tal:replace="python:a_relative"/>;
-        </span>
-  </span>
-</span>
+          </tal:dummy>
+        </tal:dummy>
+  </tal:dummy>
+</tal:dummy>
 </metal:block>
 </metal:block>
