@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.36 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.36 2003/04/24 11:07:36 smurp Exp $'
+__version__='$Revision: 1.37 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.37 2003/06/26 19:10:37 smurp Exp $'
 
 DEBUG = 0
 
@@ -68,6 +68,7 @@ class NooronRoot:
                  use_auth = None,
                  initargs = {},
                  template_path = ['templates'],
+                 just_serve = [],
                  knowledge_under = 'know',
                  site_front='site_front.html',
                  title = '',
@@ -150,6 +151,14 @@ class NooronRoot:
 
             #self.pipeline_factory = None #PipeLineFactory.PipeLineFactory()
             #statusable_handlers.append(self.pipeline_factory)
+
+            for fs_loc in just_serve:
+                #fs_obj = filesys.os_filesystem(fs_loc['fs_path'],)
+                fs_obj = filesys.os_filesystem(fs_loc)
+                fs_handler = default_handler.default_handler(fs_obj,)
+                hs.install_handler(fs_handler)
+                statusable_handlers.append(hs)
+
             
             if publishing_root:
                 self.fsroot = publishing_root
@@ -166,6 +175,10 @@ class NooronRoot:
             #                                        initial = initial_maps)
 
             statusable_handlers.append(kbh)
+
+
+
+
 
             lih = login_handler.login_handler(use_auth)
             self._authenticator = lih
