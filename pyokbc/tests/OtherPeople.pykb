@@ -1,0 +1,9 @@
+
+put_direct_parents(['PeopleSchema.pykb'])
+
+create_individual('JonathanSwift',
+                  direct_types=['AdultHuman'],
+                  own_slots=[['Wrote', "Gulliver's Travels"],
+                             ['BirthTime', '1667-11-30 GMT-6'],
+                            ],
+                  pretty_name='Jonathan Swift')

@@ -1,5 +1,5 @@
 
-put_direct_parents(['PeopleSchema.pykb'])
+put_direct_parents(['PeopleSchema.pykb','LiteratureOntology.pykb'])
 
 create_individual('ChristopherRobin',
                   direct_types=['Child'],
@@ -11,11 +11,29 @@ create_individual('ChristopherRobin',
 create_individual('AliceLidell',
                   direct_types=['Child'],
                   doc="You know, Alice!  With the restaraunt...",
-                  own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
-                             ['Age', 2],
-                             ['BirthTime', '1999-11-07 16:30 GMT-6'],
+                  own_slots=[['Eats', 'ThingsThatSayEatMe'],
                             ],
                   pretty_name='Alice in Wonderland')
+create_individual('AliceInWonderland',
+                  direct_types = ['Book'],
+                  own_slots=[['WrittenBy','LewisCarroll']],
+                  pretty_name='Alice in Wonderland')
+
+create_individual('LewisCarroll',
+                  direct_types=['Alias'],
+                  own_slots=[['PennameOf','CharlesLutwidgeDodgson'],
+                            ],
+                  pretty_name='Lewis Carroll')
+
+create_individual('CharlesLutwidgeDodgson',
+                  direct_types=['AdultHuman'],
+                  own_slots=[['BirthTime', '1832-01-27 GMT'],
+                             ['DeathTime', '1898-01-14 GMT'],
+                             ['Age','66'],
+                             ['Penname','LewisCarroll'],
+                            ],
+                  pretty_name='Charles Lutwidge Dodgson')
+
 create_individual('SamuelBeckett',
                   direct_types=['AdultHuman'],
                   own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],

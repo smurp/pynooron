@@ -1,5 +1,7 @@
 create_slot('Eats',
             own_slots=[[':DOMAIN','Food']])
+create_slot('Wrote',
+            own_slots=[[':DOMAIN','Document']])
 create_slot('Age',
             own_slots=[['SLOT-CARDINALITY',1]])            
 create_slot('Weight',
@@ -32,6 +34,9 @@ create_class('Toast',
              direct_superclasses=['Food'])
 create_class('Agent',
              direct_superclasses=['Thing'])
+create_class('Name')
+create_class('Alias',
+             direct_superclasses=['Name'])
 create_class('Mammal',
              direct_superclasses=['Animal'])
 create_class('Primate',

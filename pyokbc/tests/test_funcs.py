@@ -14,18 +14,21 @@ class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
+        mykb = open_kb("OtherPeople.pykb")
         mykb = open_kb("PeopleData.pykb")
         goto_kb(mykb)
+
+    def test_get_class_instances(self):
+        good = "[CharlesLutwidgeDodgson, SamuelBeckett]"
+        resp = list(get_class_instances('AdultHuman')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good,str(resp))
         
     def test_get_class_superclasses(self):
-        resp = get_class_superclasses('AdultHuman')
-        lst = list(resp[0])
-        lst = map(str,lst)
-        lst.sort()
-        supers = [lst,resp[1],resp[2]]
-        superstring = str(supers)
-        good = "[['Agent', 'Animal', 'Human', 'Mammal', 'Primate', 'Thing'], 1, 0]"
-        self.assertEquals(superstring,good)
+        resp = list(get_class_superclasses('AdultHuman')[0])
+        resp.sort(str_sort)
+        good = "[Agent, Animal, Human, Mammal, Primate, Thing]"
+        self.assertEquals(good,str(resp))
 
     def test_get_frame_sentences(self):
         good = \
@@ -61,23 +64,50 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_kb_direct_children(self):
+        schema = find_kb('PeopleSchema.pykb')[0]
+        good = "[OtherPeople.pykb, PeopleData.pykb]"
+        resp = list(get_kb_direct_children(schema))
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_kb_direct_parents(self):
+        good = "[LiteratureOntology.pykb, PRIMORDIAL_KB, PeopleSchema.pykb]"
+        resp = list(get_kb_direct_parents())
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
     def test_get_kb_frames_klop(self):
-        good = "[AliceLidell, ChristopherRobin, SamuelBeckett]"
+        good = "[AliceInWonderland, AliceLidell, Book," + \
+               " CharlesLutwidgeDodgson, ChristopherRobin," + \
+               " LewisCarroll, SamuelBeckett]" 
         resp = list(get_kb_frames(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_kb_individuals(self):
-        good = "[AliceLidell, ChristopherRobin, English, SamuelBeckett]"
+        good = "[AliceInWonderland, AliceLidell," +\
+               " CharlesLutwidgeDodgson, ChristopherRobin," + \
+               " English, LewisCarroll, SamuelBeckett]"
         resp = list(get_kb_individuals())
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
     def test_get_kb_individuals_klop(self):
-        good = "[AliceLidell, ChristopherRobin, SamuelBeckett]"
+        good = "[AliceInWonderland, AliceLidell," +\
+               " CharlesLutwidgeDodgson, ChristopherRobin," + \
+               " LewisCarroll, SamuelBeckett]"
         resp = list(get_kb_individuals(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_get_kb_parents_REUSE(self):
+        ontology = find_kb('PeopleSchema.pykb')[0]
+        children = get_kb_direct_children(ontology)
+        parent = []
+        for kb in children:
+            parent.append(get_kb_direct_parents(kb)[0])
+        self.assertEquals(parent[0],parent[1])
 
     def test_get_instance_types_all(self):
         good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
@@ -100,6 +130,12 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def skip_test_get_slot_facets(self):
+        good = ""
+        resp = list(get_slot_facets('SamuelBeckett','')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good,str(resp))
+
     def test_get_slot_value(self):
         good = """83"""
         resp = get_slot_value('SamuelBeckett','Age',
@@ -107,7 +143,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_slot_values_all(self):
-        good = """['Apple', 'Berry', 'Cookie', 'DairyProducts', 'Grains', 'Meats', 'Vegetables']"""
+        good = "['Apple', 'Berry', 'Cookie', 'DairyProducts', " + \
+               "'Grains', 'Meats', 'Vegetables']"
         resp = list(get_slot_values('SamuelBeckett','Eats',
                                     slot_type=Node._all)[0])
         resp.sort(str_sort)

@@ -1,0 +1,11 @@
+
+create_slot('WrittenBy',own_slots=[[':INVERSE','Wrote'],
+                                   [':DOMAIN','Literature']])
+create_slot('Wrote',own_slots=[[':INVERSE','WrittenBy'],
+                               [':DOMAIN','Agent']])
+
+create_slot('Penname',own_slots=[[':INVERSE','PennameOf'],
+                                 [':DOMAIN','Alias']])
+create_slot('PennameOf',own_slots=[[':INVERSE','Penname'],
+                                   [':DOMAIN','Agent']])
+

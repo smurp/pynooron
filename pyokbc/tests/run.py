@@ -1,4 +1,4 @@
-#! /usr/bin/env python2.1
+#!/usr/bin/env python2.1
 """Run all tests."""
 
 import os
