@@ -78,9 +78,19 @@
   </tr>
 </table>
 
+<table border="1"
+       tal:define="items here/getAllTopics" 
+       tal:condition="python: 0 and items">
+  <caption><strong>getAllTopics</strong></caption>
+  <tr tal:repeat="item items">
+    <td tal:content="item"></td>
+    <td tal:content="item/getBaseNames"></td>
+  </tr>
+</table>
+
 
 <hr>
-$Id: topicmap_as_html,v 1.4 2002/07/30 17:53:19 smurp Exp $
+$Id: topicmap_as_html,v 1.5 2002/08/07 20:19:59 smurp Exp $
 </div>
 </body>
 </html>

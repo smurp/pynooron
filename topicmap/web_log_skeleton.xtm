@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Id: web_log_skeleton.xtm,v 1.1 2002/08/07 20:19:07 smurp Exp $ -->
+
+<topicMap id="web_log_skeleton" 
+  xmlns="http://www.topicmaps.org/xtm/1.0/"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm"/>
+<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
+
+<topic id="web_log_skeleton_tm">
+  <instanceOf>
+    <topicRef 
+      xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#app_skeleton"/>
+  </instanceOf>
+  <subjectIdentity>
+    <subjectIndicatorRef xlink:href="#web_log_skeleton"/>
+  </subjectIdentity>
+  <occurrence>
+    <resourceData>
+      This is a skeleton for 'Web Log' apps in Nooron.  As all skeletons must, it makes 
+      reference to a schema and as all skeletons should, it includes some templates,
+      ('skins' if you prefer)  for the classes in the schema.  It also provides a 
+      template for the starting screen for visitors to instances of the app.  Of 
+      course, any and all of these things can be overridden (or augmented in some
+      way) by topicmaps which specify particular instances of apps of this kind. 
+      Such app_instance topicmaps merge in this skeleton as well as a topicmap
+      which happens to contain web_log data.
+    </resourceData>
+  </occurrence>
+  <occurrence>
+    <instanceOf>
+      <subjectIndicatorRef 
+        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_app_front"
+        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <resourceRef 
+      xlink:href="http://crusty:8081/templates/web_log_app_front"
+      xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  </occurrence>
+</topic>
+
+<topic id="web_log_entry">
+  <subjectIdentity>
+    <subjectIndicatorRef
+      xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+  </subjectIdentity>
+  <occurrence>
+    <instanceOf>
+      <topicRef 
+        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_instances"
+        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <resourceRef 
+      xlink:href="../templates/web_log_entry_as_html"/>
+  </occurrence>
+</topic>
+
+<topic id="web_log_category">
+  <subjectIdentity>
+    <topicRef 
+      xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+  </subjectIdentity>
+  <occurrence>
+    <instanceOf>
+      <topicRef 
+        xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#npt_for_instances"
+        xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <resourceRef 
+      xlink:href="../templates/web_log_category_as_html"/>
+  </occurrence>
+</topic>
+
+
+
+</topicMap>
+

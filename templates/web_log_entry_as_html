@@ -32,80 +32,34 @@
 </span>
 
 
-<table border="1"
-       tal:define="items python:here.getOccurrences(type='#url')" 
+<span  tal:define="items python:here.getOccurrences(typ='url')" 
        tal:condition="items">
-  <caption><strong>getOccurrences</strong></caption>
-  <tr tal:repeat="item items">
-    <td tal:content="structure python: item[0].getLink()"></td>
-    <td tal:content="python: item[1].getBaseNames()"></td>
-    <td 
-        tal:content="structure python: item[2].getSCR().getUris()"></td>
-  </tr>
-</table>
+  <span tal:repeat="item items">
+    <strong>url:</strong>
+    <a  href=""
+	tal:define="url python: item[2].getSCR().getUris()[0]"
+	tal:attributes="href url"
+	tal:content="url">click me</a>
+    <br/>
+  </span>
 
+</span>
 
-
-<table border="1"
-       tal:define="items here/getSCR" 
-       tal:condition="items">
-  <caption><strong>getSCR</strong></caption>
-  <tr>
-    <td tal:content="python:items.getUris()">
-    </td>
-  </tr>
-</table>
 
 
 <table border="0"
        tal:define="items here/getOccurrenceResources" 
        tal:condition="items">
   <tr tal:repeat="item items">
-
     <td tal:content="python:item.getData()">data</td>
   </tr>
 </table>
 
 
-<table border="1"
-       tal:define="items here/getSubclasses" 
-       tal:condition="items">
-  <caption><strong>getSubclasses</strong></caption>
-  <tr tal:repeat="item items">
-    <td tal:content="structure item/getLink">link</td>
-    <td tal:content="item/getBaseNames"></td>
-  </tr>
-</table>
 
-<table border="1"
-       tal:define="items here/getPlayers" 
-       tal:condition="items">
-  <caption><strong>getPlayers</strong></caption>
-  <tr tal:repeat="item items">
-    <td tal:content="structure item/getLink">link</td>
-    <td tal:content="item/getBaseNames"></td>
-  </tr>
-</table>
-
-<table border="1"
-       tal:define="items here/getInstances" 
-       tal:condition="items">
-  <caption><strong>getInstances</strong></caption>
-  <tr tal:repeat="item items">
-    <td tal:content="structure item/getLink">link</td>
-    <td tal:content="item/getBaseNames"></td>
-  </tr>
-</table>
-
-
-<div tal:define="test python:0" tal:condition="test">
-
-</div>
-
-?with_template=web_log_entry_as_html
 
 <hr>
-$Id: web_log_entry_as_html,v 1.1 2002/08/02 18:54:41 smurp Exp $
+$Id: web_log_entry_as_html,v 1.2 2002/08/07 20:19:59 smurp Exp $
 </div>
   </body>
 </html>

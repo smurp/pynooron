@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Revision: 1.1 $ -->
+
+<topicMap id="web_log_schema" 
+  xmlns="http://www.topicmaps.org/xtm/1.0/"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
+
+<topic id="web_log_schema_tm">
+  <instanceOf>
+    <topicRef xlink:href="#data_schema"/>
+  </instanceOf>
+  <subjectIdentity>
+    <subjectIndicatorRef xlink:href="#weblog_schema"/>
+  </subjectIdentity>
+  <occurrence>
+    <resourceData>
+      This is the schema for the data for a simple weblog with such 
+      features as: categories and urls (that's it!).
+    </resourceData>
+  </occurrence>
+</topic>
+
+  <topic id="web_log_url">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </scope>
+      <baseNameString>web log url</baseNameString></baseName>
+  </topic>
+
+  <topic id="web_log_entry">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </scope>
+      <baseNameString>web log entry</baseNameString>
+    </baseName>
+  </topic>
+
+  <topic id="web_log_category">
+    <instanceOf>
+      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </instanceOf>
+    <baseName>
+      <scope>
+        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </scope>
+      <baseNameString>web log category</baseNameString>
+    </baseName>
+  </topic>
+
+</topicMap>
+

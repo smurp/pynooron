@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: nooron_app_architecture.xtm,v 1.1 2002/08/07 20:19:06 smurp Exp $ -->
+
+<topicMap id="nooron_app_architecture"
+  xmlns="http://www.topicmaps.org/xtm/1.0/"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<mergeMap xlink:href="http://www.topicmaps.org/xtm/1.0/psi1.xtm"/>
+
+<topic id="nooron_app_architecture_tm">
+  <subjectIdentity>
+    <!-- shouldn't this really be a resourceRef instead? -->
+    <subjectIndicatorRef xlink:href="#nooron_app_architecture"/>
+  </subjectIdentity>
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_class"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      This topicmap details the relationships between the different 
+      rather abstract aspects of what constitutes an application. 
+      The purpose here is to factor an application (in Nooron terms) 
+      in such a way that a balance is struck between 
+      evolvability and efficiency, with as little compromise of the 
+      evolvability requirements as we can get away with.  The keywords 
+      in the statement of the problem are: data, knowledge, application,
+      schema, class hierarchy, instances, preferences, users, and 
+      servers or sites.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<topic id="data_schema">
+  <baseName>
+    <baseNameString>data schema</baseNameString>
+  </baseName>
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_class"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      This is the schema for the data, equivalent to a relational database 
+      schema or to a set of data structure declarations for a object 
+      oriented system.  This information depends on nothing, except possibly 
+      other information of the same kind, i.e. other data schema information 
+      existing elsewhere.
+    </resourceData>
+  </occurrence>  
+</topic>
+
+<topic id="data_instances">
+  <baseName>
+    <baseNameString>data instances</baseNameString>
+  </baseName>
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_class"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      This is the actual data, the instances or the database records 
+      used by the application.  Clearly this information itself 
+      depends on the data_schema and just as clearly can and ought 
+      to be able to exist independently of any application's use of it. 
+      Hence, it depends only on the data_schema.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<topic id="app_skeleton">
+  <baseName>
+    <baseNameString>app skeleton</baseNameString>
+  </baseName>
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_class"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      An app skeleton is not itself a runnable app.  It is a definition of 
+      the resources which when brought together with suitable data would 
+      be a runnable app.  An app skeleton must know about the data_schema 
+      (but not about any particular data_instances).  It must know about 
+      which presentation templates to use for the various classes specified 
+      in the data_schema. It must know about whatever programming resources
+      are required to make the app work.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<topic id="app_instance">
+  <baseName>
+    <baseNameString>app instance</baseNameString>
+  </baseName>
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_class"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      An app instance is an actual runnable app.  It is the combination 
+      of two things: an app skeleton and a set of data instances.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<topic id="topicmap_class">
+  <baseName>
+    <baseNameString>topic map</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      Instances of topicmap-class are themselves just topic maps.
+    </resourceData>
+  </occurrence>
+</topic>
+
+<!-- ASSOCIATION TYPES -->
+
+<topic id="topicmap_dependency">
+  <baseName>
+    <baseNameString>topicmap dependency</baseNameString>
+  </baseName>
+  <baseName>
+    <scope><topicRef xlink:href="#merging_map"/></scope>
+    <baseNameString>merges in</baseNameString>
+  </baseName>
+  <baseName>
+    <scope><topicRef xlink:href="#merged_map"/></scope>
+    <baseNameString>is merged in by</baseNameString>
+  </baseName>
+</topic>
+
+
+<!-- ASSOCIATION ROLE TYPES -->
+
+<topic id="merged_map">
+  <baseName>
+    <baseNameString>merged map</baseNameString>
+  </baseName>
+</topic>
+
+<topic id="merging_map">
+  <baseName>
+    <baseNameString>merging map</baseNameString>
+  </baseName>
+</topic>
+
+
+
+<!-- ASSOCIATIONS -->
+
+<association id="data_instance_schema_association">
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_dependency"/>
+  </instanceOf>
+  <member>
+    <roleSpec><topicRef xlink:href="#merging_map"/></roleSpec>
+    <topicRef xlink:href="#data_instances"/>
+  </member>
+  <member>
+    <roleSpec><topicRef xlink:href="#merged_map"/></roleSpec>
+    <topicRef xlink:href="#data_schema"/>
+  </member>
+</association>
+
+<association id="app_skeleton_data_schema_association">
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_dependency"/>
+  </instanceOf>
+  <member>
+    <roleSpec><topicRef xlink:href="#merging_map"/></roleSpec>
+    <topicRef xlink:href="#app_skeleton"/>
+  </member>
+  <member>
+    <roleSpec><topicRef xlink:href="#merged_map"/></roleSpec>
+    <topicRef xlink:href="#data_schema"/>
+  </member>
+</association>
+
+<association id="app_instance_skeleton_association">
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_dependency"/>
+  </instanceOf>
+  <member>
+    <roleSpec><topicRef xlink:href="#merging_map"/></roleSpec>
+    <topicRef xlink:href="#app_instance"/>
+  </member>
+  <member>
+    <roleSpec><topicRef xlink:href="#merged_map"/></roleSpec>
+    <topicRef xlink:href="#app_skeleton"/>
+  </member>
+</association>
+
+<association id="app_instance_data_association">
+  <instanceOf>
+    <topicRef xlink:href="#topicmap_dependency"/>
+  </instanceOf>
+  <member>
+    <roleSpec><topicRef xlink:href="#merging_map"/></roleSpec>
+    <topicRef xlink:href="#app_instance"/>
+  </member>
+  <member>
+    <roleSpec><topicRef xlink:href="#merged_map"/></roleSpec>
+    <topicRef xlink:href="#data_instances"/>
+  </member>
+</association>
+
+<!-- npt (Nooron Page Template) classes -->
+
+<topic id="npt_for_app_front">
+  <baseName>
+    <baseNameString>npt for app front</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      Apps should have a resource of this kind.  It ought to contain 
+      the url of an Nooron Page Template which is suitable for use 
+      as the 'front page' of a nooron app.  Ideally, this is a page 
+      which is capable of displaying useful entry points into the 
+      current app_instance.
+    </resourceData>
+  </occurrence>  
+</topic>
+
+<topic id="npt_for_instances">
+  <baseName>
+    <baseNameString>npt_for_instances</baseNameString>
+  </baseName>
+  <occurrence>
+    <resourceData>
+      App Skeletons should define occurrences of this type for each
+      class whose instances are supposed to be surfed.  The associated 
+      resourceRef should contain the url of a Nooron Page Template (NPT) 
+      which is appropriate for displaying instances of the class on which 
+      ntp_for_instances is an occurrence.
+    </resourceData>
+  </occurrence>  
+</topic>
+
+
+</topicMap>
