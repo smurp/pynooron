@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.6 2002/07/29 22:37:50 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.7 2002/07/30 17:53:18 smurp Exp $'
 
 
 # GooseWorks support
@@ -10,6 +10,7 @@ from GWApp import GWApp
 from NooronRoot import NooronRoot
 
 DEBUG = 1
+
 from medusa import counter
 import medusa
 
@@ -111,12 +112,12 @@ class topicmap_handler:
         
         if DEBUG: print self.graphs[tm_name]
 
-    def available_graphs(self):
+    def objectValues(self):
         graph_name = self.graphs.keys()
-        retval = "<h3>available graphs</h3>"
+        retarr = []
         for n in graph_name:
-            retval = retval + """<a href="%s/">%s</a><br>\n""" % (n,n)
-        return retval
+            retarr.append(n)
+        return retarr
 
 
     def available_queries_for_graph(self,tm_name):
@@ -204,9 +205,21 @@ class topicmap_handler:
         app = None
 
         path_list = path.split('/')
-        header = self.breadcrumbs(path_list) + "<hr>\n"        
+        if len(path_list) < 3 and path[-1] != '/':
+            loc = '/%s/' % (
+                path
+                )
+            request['Location'] = loc
+            print "FIXME: is it legal to forward to root-relative url?"
+            request.error (301) # moved permanently
+            return
+
+
         if path_list[-1] == '':
             del path_list[-1]
+
+        if len(path_list) == 1:
+            obj = self
 
         if len(path_list) > 1:
             tm_name = path_list[1]
@@ -215,7 +228,14 @@ class topicmap_handler:
         if len(path_list) > 2:
             topic_name = path_list[2]
             path = app.tm_uri
-            obj = app.getTopicWithID('%s#%s' % (path,topic_name))
+            topic_name = topic_name.replace('+',' ')
+            if len(topic_name) > 5 and topic_name[:6] == 'index=':
+                index = int(topic_name[6:])
+                print "fetching index ", index
+                obj = app.TMObject(index)
+            else:
+                print "fetching topic_name " + topic_name
+                obj = app.getTopicWithID('%s#%s' % (path,topic_name))
             
         if not obj:
             obj = app

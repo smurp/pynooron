@@ -1,0 +1,28 @@
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+<div tal:condition="python: hasattr(here,'objectValues')">
+<table border="1"
+       tal:define="items here/objectValues"
+       tal:condition="items">
+  <caption><strong>objectValues</strong></caption>
+  <tr tal:repeat="item items">
+    <td><a href="" tal:attributes="href python:item" tal:content="item">click me</a></td>
+  </tr>
+</table>
+</div>
+
+<br>
+Remember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
+
+<hr>
+$Id: directory_as_html,v 1.1 2002/07/30 17:53:18 smurp Exp $
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.6 2002/07/29 22:37:49 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.7 2002/07/30 17:53:18 smurp Exp $'
 
 
 """
@@ -41,6 +41,7 @@ import code_handler
 from NooronRoot import NooronRoot
 
 import http_request_mixin
+import TMObject_mixin
 
 lg = logger.file_logger (sys.stdout)
 

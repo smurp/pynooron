@@ -15,7 +15,24 @@
        tal:condition="items">
   <caption><strong>getSIRs</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item">666</td>
+    <td><a href=""
+           tal:define="url python:item.getUris()[0]"
+	   tal:attributes="href url"
+           tal:content="url">click me</a>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       tal:define="items here/getSCR" 
+       tal:condition="items">
+  <caption><strong>getSCRs</strong></caption>
+  <tr tal:repeat="item items">
+    <td><a href=""
+           tal:define="url python:item.getUris()[0]"
+	   tal:attributes="href url"
+           tal:content="url">click me</a>
+    </td>
   </tr>
 </table>
 
@@ -33,7 +50,7 @@
        tal:condition="items">
   <caption><strong>getOccurringTopics</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
@@ -55,7 +72,7 @@
        tal:condition="items">
   <caption><strong>getPlayedRoles</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
@@ -65,7 +82,7 @@
        tal:condition="items">
   <caption><strong>getClasses</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
@@ -75,7 +92,7 @@
        tal:condition="items">
   <caption><strong>getSubclasses</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
@@ -85,7 +102,7 @@
        tal:condition="items">
   <caption><strong>getPlayers</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
@@ -95,20 +112,18 @@
        tal:condition="items">
   <caption><strong>getInstances</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="item/getIndex">666</td>
+    <td tal:content="structure item/getLink">link</td>
     <td tal:content="item/getBaseNames"></td>
   </tr>
 </table>
 
-<br>
-Rember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
 
 <div tal:define="test python:0" tal:condition="test">
 
 </div>
 
 <hr>
-$Id: topic_as_html,v 1.4 2002/07/29 22:37:50 smurp Exp $
+$Id: topic_as_html,v 1.5 2002/07/30 17:53:18 smurp Exp $
 </div>
   </body>
 </html>

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.5 2002/07/29 22:37:50 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.6 2002/07/30 17:53:18 smurp Exp $'
 
 DEBUG = 0
 
@@ -157,7 +157,7 @@ class topicmap_html_producer(templated_producer):
     template_name = "topicmap_as_html"
 
 class directory_html_producer(templated_producer):
-    domain = ['DirectoryFacade.DirectoryFacade']
+    domain = ['DirectoryFacade.DirectoryFacade','topicmap_handler.topicmap_handler']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "directory_as_html"

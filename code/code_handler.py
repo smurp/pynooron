@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: code_handler.py,v 1.2 2002/07/29 22:37:50 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: code_handler.py,v 1.3 2002/07/30 17:53:18 smurp Exp $'
 
 
 """Serve up the /code/ directory as described at 
@@ -77,11 +77,7 @@ class code_handler(default_handler.default_handler):
 
         if self.filesystem.isdir(path):
             if path and path[-1] != '/':
-                request['Location'] = 'http://%s:8081/%s/' % (
-                    request.channel.server.server_name,
-                    path
-                    )
-                print "FIXME: forwarding not including port automatically"
+                request['Location'] = '/%s/' % (path)
                 request.error (301) # moved permanently
                 return
             obj = DirectoryFacade(path)
