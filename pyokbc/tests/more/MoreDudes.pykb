@@ -1,0 +1,8 @@
+# -*-mode: python -*-
+put_direct_parents(['PeopleSchema'])
+create_individual('BertoltBrecht',
+                  pretty_name='Bertolt Brecht',
+                  direct_types=['AdultHuman'],
+                  own_slots=[['BirthTime', '1898-02-10 GMT+1'],
+                             ['Wrote', """Mother Courage""","""The Caucasian Chalk Circle"""],
+                            ])
