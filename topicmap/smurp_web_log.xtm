@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: smurp_web_log.xtm,v 1.3 2002/08/12 22:48:34 smurp Exp $  -->  
+<!-- $Id: smurp_web_log.xtm,v 1.4 2002/08/14 20:47:42 smurp Exp $  -->  
 
 <topicMap id="smurp_web_log"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
+<mergeMap xlink:href="http://www.topicmaps.org/xtm/1.0/psi1.xtm"/>
 <mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
 <mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_skeleton.xtm"/>
 <mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/smurp_web_log_data.xtm"/>

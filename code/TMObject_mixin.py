@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: TMObject_mixin.py,v 1.5 2002/08/13 06:22:13 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: TMObject_mixin.py,v 1.6 2002/08/14 20:47:42 smurp Exp $'
 
 import GWApp
 from VeryEasy import VeryEasy
@@ -18,7 +18,8 @@ def getNooronPageTemplate(self):
 
 GWApp.TMObject.getNooronPageTemplate = getNooronPageTemplate
 
-def getLink(self,label='no label',use_all_basenames=0,index_link=1):
+def getLink(self,label='no label',use_all_basenames=0,index_link=0):
+    #FIXME getLink doesn't as agressively use name as it could
     basenames = self.getBaseNames()
     link = 'index=' + str(self.getIndex())
     if len(basenames):
@@ -26,10 +27,10 @@ def getLink(self,label='no label',use_all_basenames=0,index_link=1):
             label = str(basenames)
         else:
             label = basenames[0]
-        if basenames[0].find(' ') < 0 \
-           and not self.app.use_indices_in_links \
+        if not self.app.use_indices_in_links \
            and not index_link:
-            link = basenames[0]
+            # FIXME should really urlquote
+            link = basenames[0].replace(' ','+')
     return """<a href="%s">%s</a>""" % (link,label)
 GWApp.TMObject.getLink = getLink
 

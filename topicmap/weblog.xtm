@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<topicMap id="weblog" xmlns="http://www.topicmaps.org/xtm/1.0/"><!--  $Revision: 1.3 $
-     $Id: weblog.xtm,v 1.3 2002/08/02 18:47:18 smurp Exp $
-      astma2xtm.pl < weblog.atm | prettifyxtm.pl > weblog.xtm
- -->  <topic id="url">
+<topicMap id="weblog" xmlns="http://www.topicmaps.org/xtm/1.0/">
+<topic id="url">
     <instanceOf>
       <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/></instanceOf>
     <baseName>

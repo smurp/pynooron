@@ -65,7 +65,7 @@ class GWApp:
 		q = """FROM BASENAMESTRING LIKE '%%%s%%' DO
 			 TRAVERSE mAMa({'#role-basename'})
 			 TRAVERSE aAMm({'#role-topic'})
-		       DONE AS INDEXES""" % fragment	
+		       DONE AS INDEXES""" % fragment
 		res = graph.STMQLExec(q)
 		for i in res:
 			t = TMObject(i,self)	

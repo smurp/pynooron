@@ -11,7 +11,7 @@
     <subjectIndicatorRef xlink:href="#smurp_web_log"/>
   </subjectIdentity>
   <instanceOf>
-    <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#data_instances"/>
+    <subjectIndicatorRef xlink:href="nooron_app_architecture.xtm#data_instances"/>
   </instanceOf>
   <occurrence>
     <resourceData>
@@ -27,7 +27,7 @@
 
   <topic id="spoonerism">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_category"/>
     </instanceOf>
     <baseName>
       <baseNameString>spoonerism</baseNameString>
@@ -36,7 +36,7 @@
 
   <topic id="gear">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_category"/>
     </instanceOf>
     <baseName>
       <baseNameString>gear</baseNameString>
@@ -45,7 +45,7 @@
 
   <topic id="marvel">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_category"/>
     </instanceOf>
     <baseName>
       <baseNameString>marvel</baseNameString>
@@ -54,7 +54,7 @@
 
   <topic id="architecture">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_category"/>
     </instanceOf>
     <baseName>
       <baseNameString>architecture</baseNameString>
@@ -63,7 +63,7 @@
 
   <topic id="book">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_category"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_category"/>
     </instanceOf>
     <baseName>
       <baseNameString>book</baseNameString>
@@ -74,7 +74,7 @@
 
   <topic id="wle_1">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_entry"/>
     </instanceOf>
     <instanceOf>
       <topicRef xlink:href="#book" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -90,7 +90,7 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.amazon.com/exec/obidos/ASIN/1579550088" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
@@ -98,7 +98,7 @@
 
   <topic id="wle-2">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_entry"/>
     </instanceOf>
     <instanceOf>
       <topicRef xlink:href="#marvel" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -111,7 +111,7 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_url"/>
         <!--subjectIndicatorRef xlink:href="#web_log_url"/-->
       </instanceOf>
       <resourceRef xlink:href="http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -120,7 +120,7 @@
 
   <topic id="wle-3">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_entry"/>
     </instanceOf>
     <instanceOf>
       <topicRef xlink:href="#gear" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -133,7 +133,7 @@
     </occurrence>
     <occurrence>
       <instanceOf>
-        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.excaliburelectronics.com/foreverflashl.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
@@ -141,7 +141,7 @@
 
   <topic id="wle-4">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_entry"/>
     </instanceOf>
     <instanceOf>
       <topicRef xlink:href="#spoonerism" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -158,7 +158,7 @@
 
   <topic id="wle-5">
     <instanceOf>
-      <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_entry"/>
+      <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_entry"/>
     </instanceOf>
     <instanceOf>
       <topicRef xlink:href="#architecture" xmlns:xlink="http://www.w3.org/1999/xlink"/>
@@ -168,14 +168,14 @@
     </baseName>
     <occurrence>
       <instanceOf>
-        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_url"/>
         <!--topicRef xlink:href="#web_log_url" xmlns:xlink="http://www.w3.org/1999/xlink"-->
       </instanceOf>
       <resourceRef xlink:href="http://www.radio.cbc.ca/programs/ideas/libeskind/index.html" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>
     <occurrence>
       <instanceOf>
-        <subjectIndicatorRef xlink:href="file:///home/smurp/src/nooron/topicmap/web_log_schema.xtm#web_log_url"/>
+        <subjectIndicatorRef xlink:href="web_log_schema.xtm#web_log_url"/>
       </instanceOf>
       <resourceRef xlink:href="http://www.daniel-libeskind.com/" xmlns:xlink="http://www.w3.org/1999/xlink"/>
     </occurrence>

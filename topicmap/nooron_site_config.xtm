@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Id: nooron_site_config.xtm,v 1.1 2002/08/12 22:49:53 smurp Exp $  -->  
+<!-- $Id: nooron_site_config.xtm,v 1.2 2002/08/14 20:47:42 smurp Exp $  -->  
 
 <topicMap id="nooron_site_config"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -51,6 +51,19 @@
     </occurrence>
   </topic>
 
+
+  <topic id="smurp_web_log_mysql">
+    <baseName>
+      <baseNameString>smurp_web_log_mysql</baseNameString>
+    </baseName>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="#loadable_topicmap"/>
+    </instanceOf>
+    <occurrence>
+      <resourceData>type=MySQL,name=nooron,user=smurp,pass=trivialpw</resourceData>
+    </occurrence>
+  </topic>
+
   <topic id="jill_illegal">
     <baseName>
       <baseNameString>jill_illegal</baseNameString>
@@ -60,6 +73,31 @@
     </instanceOf>
     <occurrence>
       <resourceRef xlink:href="file:///download/knowledge/jill.xtm"/>
+    </occurrence>
+  </topic>
+
+
+  <topic id="cpan">
+    <baseName>
+      <baseNameString>cpan</baseNameString>
+    </baseName>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="#loadable_topicmap"/>
+    </instanceOf>
+    <occurrence>
+      <resourceRef xlink:href="http://www.topicmapping.com/maps/cpan/master.xtm"/>
+    </occurrence>
+  </topic>
+
+  <topic id="jill">
+    <baseName>
+      <baseNameString>jill</baseNameString>
+    </baseName>
+    <instanceOf>
+      <subjectIndicatorRef xlink:href="#loadable_topicmap"/>
+    </instanceOf>
+    <occurrence>
+      <resourceRef xlink:href="jill.xtm"/>
     </occurrence>
   </topic>
 

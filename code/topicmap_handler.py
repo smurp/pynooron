@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.12 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.13 2002/08/14 20:47:42 smurp Exp $'
 
 import string
 
@@ -20,10 +20,12 @@ from medusa.default_handler import unquote
 class ProcHandler:
     def __init__(self,graph):
         self.graph = graph
+        self.source_uris = []
         
     def preMergeMap(self,refUri,addedThemes):
         if DEBUG: print "now merging in %s" % refUri
         print "now merging in %s" % refUri
+        self.source_uris.append(refUri)
         
     def postMergeMap(self,e,refUri,addedThemes):
         if(e):
@@ -42,6 +44,7 @@ class ProcHandler:
                 print u
 
     def subjectEquivalence(self,sirs,scr):
+        #print "subjectEquivalence:",sirs,scr
         self.graph.subjectEquivalence(sirs,scr);
 
     def association(self,a):
@@ -49,6 +52,8 @@ class ProcHandler:
 
     def startRootElement(doh):
         pass
+        print "startRootElement:",doh.graph
+
 
     def endRootElement(doh):
         pass
@@ -97,9 +102,16 @@ class topicmap_handler:
             occs = tm.getOccurrences()
             if bn and occs:
                 try:
-                    url = str(occs[0][2].getSCR().getUris()[0])
-                    if DEBUG: print bn[0], url
-                    self.graphs[bn[0]] = url
+                    uris = occs[0][2].getSCR().getUris()
+                    spec = occs[0][2].getSCR().getData() or \
+                           uris and str(uris[0]) or ''
+                           
+
+                    print "the spec is:",spec
+                    print "SCR=",occs[0][2].getSCR().getData()
+                    print
+                    if DEBUG: print bn[0], spec
+                    self.graphs[bn[0]] = spec
                 except:
                     raise "","couldn't get uri for %s" % bn[0]
 
@@ -129,7 +141,7 @@ class topicmap_handler:
         g.startTransaction(GW.XRW)
         p.process(u)
         g.commitTransaction()
-        return g
+        return (g,ph.source_uris)
 
     def load_map(self,tm_name,tm_uri):
         if DEBUG: print tm_name,tm_uri
@@ -143,17 +155,19 @@ class topicmap_handler:
         print "spec = ",spec, spec_type
 
         if spec_type == "Mem":
-            g = self.parse_map(spec,tm_uri)
+            g,src_uris = self.parse_map(spec,tm_uri)
         else:
+            src_uris = []
             g = GW.Graph(spec)
             
         #app = GWApp(g)
         app = NooronApp.NooronApp(g)
+        app.set_src_uris(src_uris)
         if spec_type == 'Mem':
-            app.use_indices_in_links = 0
+            app.use_indices_in_links = 1
             app.tm_uri = tm_uri
         else:
-            app.use_indices_in_links = 1
+            app.use_indices_in_links = 0
             
         self.add_app(tm_name,app)
         
@@ -217,16 +231,16 @@ class topicmap_handler:
                 if DEBUG: print "fetching index ", index
                 obj = app.TMObject(index)
             else:
-                print "topic_name =",topic_name
-                many = app.getAllWhereBaseNameIs(topic_name)
-                if many:
-                    print "getAllWhereBaseNameIs worked!"
-                    obj = many[0]
-                else:
-                    print "getAllWhereBaseNameIs failed..."
-                    path = app.tm_uri
-                    obj = app.getTopicWithID('%s#%s' % \
-                                             (path,topic_name))
+                if DEBUG: print "topic_name =",topic_name
+                nameIs = app.getAllWhereBaseNameIs(topic_name)
+                nameContains = app.getAllWhereBaseNameContains(topic_name)
+                if DEBUG:
+                    print "nameIs ",len(nameIs),\
+                          " nameContains ",len(nameContains)
+                obj = nameIs and nameIs[0] or \
+                      nameContains and nameContains[0] or \
+                      app.getTopicWithAnchor(topic_name)
+
 
         if not obj:
             obj = app

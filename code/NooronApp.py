@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.2 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.3 2002/08/14 20:47:42 smurp Exp $'
 
 import GW
 from GWApp import GWApp
@@ -8,8 +8,29 @@ from GWApp import GWApp
 import NooronRoot
 
 class NooronApp(GWApp):
+
     def isNooronApp(self):
         return 0
+
+    src_uris = []
+
+    def links_use_index(self):
+        print "links_use_index should return 1 if type=Mem"
+        print dir(self.graph)
+        print
+        return 1
+    
+    def set_src_uris(self,src_uris):
+        self.src_uris = src_uris
+    
+    def getTopicWithAnchor(self,anchor):
+        for uri in self.src_uris:
+            a_name = "%s#%s" % (uri,anchor)
+            one = self.getTopicWithID(a_name)
+            if one:
+                return one
+        else:
+            return None
 
 # see http://www.noosphere.org/discuss/zwiki/VariousTemplateUseCases
     def publish(self,request,topic_obj):
@@ -19,7 +40,6 @@ class NooronApp(GWApp):
         if npt_name:
             request.effective_query_extend({'with_template':
                                             npt_name})
-
         NooronRoot.NooronRoot().publish(request,topic_obj)
 
     def get_template_for_topic(self,request,topic_obj):
@@ -40,3 +60,6 @@ class NooronApp(GWApp):
         if some:
             return str(some[0][2].getSCR().getUris()[0])
 
+    def delegate_for_app(self,request,topic_obj):
+        some = topic_object.getInstances('delegate_for_app')
+        

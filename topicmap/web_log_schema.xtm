@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
 
 <topicMap id="web_log_schema" 
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -10,10 +10,13 @@
 
 <topic id="web_log_schema_tm">
   <instanceOf>
-    <topicRef xlink:href="#data_schema"/>
+    <topicRef xlink:href="nooron_app_architecture.xtm#data_schema"/>
   </instanceOf>
+  <baseName>
+    <baseNameString>web log schema</baseNameString>
+  </baseName>
   <subjectIdentity>
-    <subjectIndicatorRef xlink:href="#weblog_schema"/>
+    <subjectIndicatorRef xlink:href="#web_log_schema"/>
   </subjectIdentity>
   <occurrence>
     <resourceData>
@@ -24,38 +27,37 @@
 </topic>
 
   <topic id="web_log_url">
-    <instanceOf>
-      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-    </instanceOf>
     <baseName>
-      <scope>
-        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-      </scope>
-      <baseNameString>web log url</baseNameString></baseName>
+      <baseNameString>web log url</baseNameString>
+    </baseName>
+    <occurrence>
+      <resourceData>
+	This is a link from a 'web log entry' to an item it discusses.
+      </resourceData>
+    </occurrence>
   </topic>
 
   <topic id="web_log_entry">
-    <instanceOf>
-      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-    </instanceOf>
     <baseName>
-      <scope>
-        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-      </scope>
       <baseNameString>web log entry</baseNameString>
     </baseName>
+    <occurrence>
+      <resourceData>
+        This is a familiar entry in a web log (or blog).
+      </resourceData>
+    </occurrence>
   </topic>
 
   <topic id="web_log_category">
-    <instanceOf>
-      <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-topic" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-    </instanceOf>
     <baseName>
-      <scope>
-        <topicRef xlink:href="http://www.topicmaps.org/xtm/1.0/#psi-universal-scope" xmlns:xlink="http://www.w3.org/1999/xlink"/>
-      </scope>
       <baseNameString>web log category</baseNameString>
     </baseName>
+    <occurrence>
+      <resourceData>
+        Subclasses of 'web log category' are themselves classes
+	which individual web log entries are instances of.
+      </resourceData>
+    </occurrence>
   </topic>
 
 </topicMap>
