@@ -109,49 +109,46 @@ def primordialINDIVIDUAL(name):
     primordials.append(o)
     return o
 
-Node._all                      = Symbol(':all')
-Node._own                      = Symbol(':own')
-Node._template                 = Symbol(':template')
-Node._slot_types               = (Node._all,Node._template,Node._own)
-    
-Node._taxonomic                = Symbol(':taxonomic')
-Node._direct                   = Symbol(':direct')
-Node._inference_levels         = (Node._taxonomic,Node._all,Node._direct)
-    
-Node._default_only             = Symbol(':default-only')
-Node._known_true               = Symbol(':known-true')
-Node._either                   = Symbol(':either')
-Node._value_selectors          = (Node._either,Node._default_only,Node._known_true)
-    
-Node._more                     = Symbol(':more')
-Node._number_of_values         = (Node._all,Node._more)
+##Node._all                      = Symbol(':all')
+##Node._own                      = Symbol(':own')
+##Node._template                 = Symbol(':template')
 
-
-#Node._kb                       = Symbol(':kb') # not included in _frame_types
-Node._frame_types              = (Node._class,Node._individual,Node._slot,Node._facet)
-#see after class KB
     
-Node._value                    = Symbol(':value')
-Node._frame                    = Symbol(':frame')
-Node._target_contexts          = (Node._frame,Node._slot,Node._facet,Node._class,Node._individual,Node._value)
+##Node._taxonomic                = Symbol(':taxonomic')
+##Node._direct                   = Symbol(':direct')
     
-Node._system_default           = Symbol(':system-default')
-Node._frames                   = Symbol(':frames')
-Node._selector_all             = (Node._all,Node._frames,Node._system_default)
-Node._default                  = Symbol(':default')
+##Node._default_only             = Symbol(':default-only')
+##Node._known_true               = Symbol(':known-true')
+##Node._either                   = Symbol(':either')
+    
+##Node._more                     = Symbol(':more')
 
-Node._filled                   = Symbol(':filled')
+###see after class KB
+    
+##Node._value                    = Symbol(':value')
+##Node._frame                    = Symbol(':frame')
+    
+##Node._system_default           = Symbol(':system-default')
+##Node._frames                   = Symbol(':frames')
+##Node._default                  = Symbol(':default')
+##Node._filled                   = Symbol(':filled')
 
-    # initargs
-Node._port                     = Symbol(':port')
-Node._host                     = Symbol(':host')
-Node._password                 = Symbol(':password')
-Node._username                 = Symbol(':username')
-Node._parent_kbs               = Symbol(':parent-kbs')
-
+##    # initargs
+##Node._port                     = Symbol(':port')
+##Node._host                     = Symbol(':host')
+##Node._password                 = Symbol(':password')
+##Node._username                 = Symbol(':username')
+##Node._parent_kbs               = Symbol(':parent-kbs')
 
 primordial = {}
 
+
+primordial['kwarg'] = (':all',':own',':template',':taxonomic',
+                       ':direct',':default-only',':known-true',
+                       ':either',':more',':value',':frame',
+                       ':system-default',':frames',':default',
+                       ':filled',':port',':host',':password',
+                       ':username',':parent-kbs')
 # standard facets
 primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
                        ":VALUE-TYPE",":MAXIMUM-CARDINALITY",
@@ -192,14 +189,17 @@ primordial['behavior_type'] = (':are-frames',':class-slot-types',
 Node._THING = primordialKLASS(":THING")
 Node._CLASS = primordialKLASS(":CLASS")
 
+Node.kwargs = {}
+
 def bootstrap(primordial = primordial):
-    types_in_order = ['facet','slot','class','individual',
+    types_in_order = ['kwarg','facet','slot','class','individual',
                       'behavior_type','behaviour_value']
-    types = (('facet',      primordialFACET),
-             ('slot',       primordialSLOT),
-             ('class',      primordialKLASS),
-             ('individual', primordialINDIVIDUAL),
-             ('behavior_type', Symbol),             
+    types = (('kwarg',          Symbol),
+             ('facet',          primordialFACET),
+             ('slot',           primordialSLOT),
+             ('class',          primordialKLASS),
+             ('individual',     primordialINDIVIDUAL),
+             ('behavior_type',  Symbol),
              ('behavior_value', Symbol),
              )
     for typ,construct in types:
@@ -208,19 +208,32 @@ def bootstrap(primordial = primordial):
             pyname = pyname.replace("-","_")
             pyname = pyname.replace(":","_")
             #print pyname,name
-            Node.__dict__[pyname] = construct(name)
-            if type == 'class':
-                Node.__dict__[pyname].__direct_types = [Node._CLASS]
-                Node.__dict__[pyname].__direct_superclasses = [Node._THING]
+            thang = construct(name)
+            Node.__dict__[pyname] = thang
+            if typ == 'kwarg':
+                public_name = pyname[0] == '_' and pyname[1:] or pyname
+                Node.kwargs[public_name.upper()] = thang
+            if typ == 'class':
+                #print "doing it to",pyname
+                Node.__dict__[pyname]._direct_types = [Node._CLASS]
+                Node.__dict__[pyname]._direct_superclasses = [Node._THING]
 
 bootstrap()
 
-Node._NUMBER._direct_superclasses.append(Node._INDIVIDUAL)
-Node._INTEGER._direct_superclasses.append(Node._NUMBER)
-Node._STRING._direct_superclasses.append(Node._INDIVIDUAL)
-Node._SYMBOL._direct_superclasses.append(Node._SEXPR)
-Node._LIST._direct_superclasses.append(Node._INDIVIDUAL)
+#Node._THING._direct_types = [Node._CLASS]
+# see CLASS_RECURSION comments
+Node._CLASS._direct_superclasses = [Node._THING]
 
+Node._NUMBER. _direct_superclasses.append(Node._INDIVIDUAL)
+Node._INTEGER._direct_superclasses.append(Node._NUMBER)
+Node._STRING. _direct_superclasses.append(Node._INDIVIDUAL)
+Node._SYMBOL. _direct_superclasses.append(Node._SEXPR)
+Node._LIST.   _direct_superclasses.append(Node._INDIVIDUAL)
+
+def class_dump(which):
+    for w in which:
+        print w,"_direct_types",w._direct_types
+#class_dump([Node._THING,Node._CLASS,Node._STRING])
 
 Node._behaviors = { # not in OKBC spec, but implied
     Node._are_frames:               (Node._class,
@@ -274,6 +287,16 @@ Node._equivalent_constraint_facets = {
     Node._SLOT_NUMERIC_MAXIMUM:     Node._NUMERIC_MAXIMUM,
     Node._SLOT_SOME_VALUES:         Node._SOME_VALUES,
     Node._SLOT_COLLECTION_TYPE:     Node._COLLECTION_TYPE }
+
+# not in OKBC spec
+Node._selector_all             = (Node._all,Node._frames,Node._system_default)
+Node._target_contexts          = (Node._frame,Node._slot,Node._facet,Node._class,Node._individual,Node._value)
+Node._frame_types              = (Node._class,Node._individual,Node._slot,Node._facet)
+Node._number_of_values         = (Node._all,Node._more)
+Node._value_selectors          = (Node._either,Node._default_only,Node._known_true)
+Node._slot_types               = (Node._all,Node._template,Node._own)
+Node._inference_levels         = (Node._taxonomic,Node._all,Node._direct)
+
 
 
 class KB(FRAME):    
@@ -355,13 +378,18 @@ class KB(FRAME):
             # a kb is being read in.
             raise GenericError()
 
-        kb.put_instance_types(frame,direct_types,
-                              kb_local_only_p = kb_local_only_p)
-
-        # FIXME should use mandatory put-class-superclasses
-        if direct_superclasses:
+        if frame_type == Node._class:
+            if not (Node._CLASS in direct_types) and \
+               not (':CLASS' in direct_types):
+                direct_types.append(Node._CLASS)
+            if not (Node._THING in direct_superclasses) and \
+               not (':THING' in direct_superclasses):
+                direct_superclasses.append(Node._THING)
             kb.put_class_superclasses(frame,direct_superclasses,
                                       kb_local_only_p = klop)
+
+        kb.put_instance_types(frame,direct_types,
+                              kb_local_only_p = kb_local_only_p)
 
         for slot_spec in own_slots:
             slot = slot_spec[0]
@@ -832,7 +860,8 @@ class KB(FRAME):
                         slot_type = Node._own,
                         number_of_values = Node._all,
                         value_selector = Node._either,
-                        kb_local_only_p = 0):
+                        kb_local_only_p = 0,
+                        checked_kbs=[],checked_classes=[]):
         """Returns the list-of-values of slot within frame.
         If the :collection-type of the slot is
         :list, and only :direct own slots have been asserted,
@@ -853,26 +882,43 @@ class KB(FRAME):
         if not slot_found_p or not frame_found_p:
             #raise SlotNotFound,(frame,slot,slot_type,kb)
             return ([],0,0)
-        #(list_of_values,exact_p,more_status) = ([],0,0)
-        
+
         kb_gsvi = kb.get_slot_values_internal
         (list_of_values,
          exact_p,
-         more_status) = kb_gsvi(found_frame,
-                                found_slot,
-                                inference_level=inference_level,
-                                slot_type = slot_type,
-                                number_of_values = number_of_values,
-                                value_selector = value_selector,
-                                kb_local_only_p = kb_local_only_p)
+         more_status) = kb_gsvi(found_frame, found_slot,
+                                inference_level, slot_type,
+                                number_of_values, value_selector,
+                                kb_local_only_p)
+
+        if not kb_local_only_p:
+            for kaybee in kb.get_kb_direct_parents():
+                if kaybee in checked_kbs:
+                    continue
+                vals = kaybee.get_slot_values(found_frame, found_slot,
+                                              inference_level, slot_type,
+                                              number_of_values, value_selector,
+                                              kb_local_only_p,
+                                              checked_kbs,checked_classes)[0]
+                for v in vals:
+                    if not (v in list_of_values):
+                        list_of_values.append(v)
+
         if inference_level in [Node._taxonomic,Node._all] and \
            slot_type != Node._own:
             my_types = kb.get_instance_types(found_frame,
                                              inference_level=il)[0]
             for klass in my_types:
+                if klass in checked_classes:
+                    break
+                else:
+                    pass
+                    #checked_classes.append(klass) #CLASS_RECURSION
                 for val in kb.get_slot_values(klass,found_slot,
                                               inference_level=inference_level,
-                                              slot_type=Node._template)[0]:
+                                              slot_type=Node._template,
+                                              checked_kbs = checked_kbs,
+                                              checked_classes = checked_classes)[0]:
                     if not (val in list_of_values):
                         list_of_values.append(val)
 

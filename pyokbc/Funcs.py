@@ -385,6 +385,21 @@ def slot_p(thing,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()
     return kb.slot_p(thing,kb_local_only_p)
 
+def subclass_of_p(subclass,superclass,kb=None,
+                  inference_level=Node._taxonomic,
+                  kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.subclass_of_p(subclass,superclass,
+                            inference_level,kb_local_only_p)
+
+def superclass_of_p(superclass,subclass,kb=None,
+                    inference_level=Node._taxonomic):
+    if not kb: kb = current_kb()    
+    return kb.subclass_of_p(superclass,subclass,
+                            inference_level,kb_local_only_p)
+
+
+
 ##########################################
 #   Methods outside of the OKBC spec
 ##########################################

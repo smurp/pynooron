@@ -13,9 +13,8 @@ create_slot('Speaks',
             own_slots=[[':DOMAIN','Language']])
 create_slot('Species',
             doc="""Maybe Species should be a class and SpeciesSlot a slot?""")
-create_class(':THING')
-create_class('Food',
-             direct_superclasses=[':THING'])
+#create_class(':THING')
+create_class('Food')
 create_class('Grains',
              direct_superclasses=['Food'])
 create_class('DairyProducts',
@@ -32,8 +31,7 @@ create_class('Apple',
              direct_superclasses=['Food'])
 create_class('Toast',
              direct_superclasses=['Food'])
-create_class('Agent',
-             direct_superclasses=[':THING'])
+create_class('Agent')
 create_class('Name')
 create_class('Alias',
              direct_superclasses=['Name'])
@@ -52,7 +50,6 @@ create_class('Child',
              direct_superclasses=['Human'])
 create_class('AdultHuman',
              direct_superclasses=['Human'])
-create_class('Language',
-             direct_superclasses=[':THING'])
+create_class('Language')
 create_individual('English',
                   direct_types=['Language'])

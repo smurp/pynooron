@@ -38,6 +38,7 @@ create_individual('SamuelBeckett',
                   direct_types=['AdultHuman'],
                   own_slots=[['Eats', 'Apple', 'Berry', 'Cookie'],
                              ['Age', 83],
+                             ['Wrote','WaitingForGodot'],
                              ['BirthTime', '1906-04-13 GMT'],
                             ],
                   pretty_name='Samuel Beckett')
