@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.9 2002/11/08 21:35:13 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.10 2002/11/11 22:47:18 smurp Exp $'
 
 import os
 import sys
@@ -227,6 +227,11 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = get_slot_value('AliceLidell',Node._DOCUMENTATION,
                               slot_type=Node._own)[0]
         self.assertEquals(good, str(resp))
+
+    def test_stayup(self):
+        first = len(get_class_instances('Human')[0])
+        second = len(get_class_instances('Human')[0])        
+        self.assertEquals(first,second)
 
 
 if __name__ == "__main__":

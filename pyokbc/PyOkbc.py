@@ -1,6 +1,5 @@
-
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.13 2002/11/08 21:28:10 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.14 2002/11/11 22:47:18 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -534,8 +533,17 @@ class KB(FRAME):
     def get_class_instances(kb,klass,
                             inference_level=Node._taxonomic,
                             number_of_values=Node._all,
-                            kb_local_only_p=1,
-                            checked_kbs=[]):
+                            kb_local_only_p=0):
+        return kb.get_class_instances_recurse(klass,
+                                              inference_level,
+                                              number_of_values,
+                                              kb_local_only_p,[])
+    
+    def get_class_instances_recurse(kb,klass,
+                                    inference_level=Node._taxonomic,
+                                    number_of_values=Node._all,
+                                    kb_local_only_p=1,
+                                    checked_kbs=[]):
         (klass,class_found_p) = kb.coerce_to_class(klass)
         checked_kbs.append(kb)
         rets = kb.get_class_instances_internal(klass,
@@ -547,11 +555,11 @@ class KB(FRAME):
             for parent in kb.get_kb_direct_parents():
                 if not (parent in checked_kbs):
                     checked_kbs.append(parent)
-                    rets = parent.get_class_instances(klass,
-                                                      inference_level,
-                                                      number_of_values,
-                                                      kb_local_only_p,
-                                                      checked_kbs)
+                    rets = parent.get_class_instances_recurse(klass,
+                                                              inference_level,
+                                                              number_of_values,
+                                                              kb_local_only_p,
+                                                              checked_kbs)
                     for inst in rets[0]:
                         if not inst in list_of_instances:
                             list_of_instances.append(inst)
@@ -560,31 +568,47 @@ class KB(FRAME):
     def get_class_subclasses(kb,klass,
                              inference_level = Node._taxonomic,
                              number_of_values = Node._all,
-                             kb_local_only_p = 0,
-                             checked_kbs=[]):
+                             kb_local_only_p = 0):
+        trayce((kb,klass))
         (klass,class_found_p) = kb.coerce_to_class(klass)
-        checked_kbs.append(kb)
-        rets = kb.get_class_subclasses_internal(klass,
+        #checked_kbs.append(kb)
+        if inference_level != Node._direct:
+            warn('get_class_subclasses ignores inference_level > direct')
+        subs = kb.get_class_subclasses_internal(klass,
                                                 inference_level,
                                                 number_of_values,
                                                 kb_local_only_p=1)
-        warn('get_class_subclasses ignoring kb_local_only_p')
-        #if not kb_local_only_p:
-        for parent in kb.get_kb_direct_parents():
-            if not (parent in checked_kbs):
-                checked_kbs.append(parent)
+        if not kb_local_only_p:
+            for parent in kb.get_kb_parents():
                 rets = parent.get_class_subclasses(klass,
                                                    inference_level,
                                                    number_of_values,
-                                                   kb_local_only_p,
-                                                   checked_kbs)
-        return rets
+                                                   kb_local_only_p)
+                trayce((parent,rets),format="parent=%s, rets=%s",indent=" ")
+                for sub in rets:
+                    if not (sub in subs):
+                        subs.append(sub)
+        return subs
 
+##    def get_class_superclasses(kb,klass,
+##                               inference_level = Node._taxonomic,
+##                               number_of_values = Node._all,
+##                               kb_local_only_p = 0):
+##        superclasses=[]
+##        return kb.get_class_superclasses_extend(klass,
+##                                                inference_level,
+##                                                number_of_values,
+##                                                kb_local_only_p,
+##                                                superclasses)
+    
     def get_class_superclasses(kb,klass,
-                               inference_level = Node._taxonomic,
-                               number_of_values = Node._all,
-                               kb_local_only_p = 0,
-                               superclasses = []):
+                                      inference_level = Node._taxonomic,
+                                      number_of_values = Node._all,
+                                      kb_local_only_p = 0,
+                                      superclasses = []):
+        if Node._INDIVIDUAL in superclasses:
+            print klass, "sub of INDIVIDUAL",superclasses,"doh"
+            #raise "youch","woof"
         (klass,class_found_p) = kb.coerce_to_class(klass)
         (supers,exact_p,more_status) =\
                kb.get_class_superclasses_internal(klass,
@@ -595,6 +619,7 @@ class KB(FRAME):
         return (supers,exact_p,more_status)
         for super in supers:
             if not (super in superclasses):
+                #if Node._INDIVIDUAL == super: print klass, "sub of INDIVIDUAL",superclasses
                 superclasses.append(super)
                 more_supers = kb.get_class_superclasses(super,
                                                         inference_level,
@@ -603,7 +628,9 @@ class KB(FRAME):
                 #print "more_supers",super,more_supers
                 for more_super in more_supers:
                     if not (more_super in superclasses):
+
                         superclasses.append(more_super)
+        #if Node._INDIVIDUAL in superclasses: print klass, "sub of INDIVIDUAL",superclasses
         return (superclasses,exact_p,more_status)
 
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
@@ -624,10 +651,11 @@ class KB(FRAME):
         return (None,None)
         
     def get_frame_name_internal(kb,frame,kb_local_only_p=0):
-        return frame._name
-        #if isinstance(kb,KB):
-        #    return frame._name
-        #return frame.get_frame_name(kb_local_only_p=kb_local_only_p)
+        #frame = kb.get_frame_in_kb(frame)[0]
+        if frame != None:
+            return str(frame)
+            return frame._name
+        return None
     get_frame_name = get_frame_name_internal
 
     def get_frame_pretty_name_internal(kb,frame,kb_local_only_p=0):
@@ -799,8 +827,7 @@ class KB(FRAME):
                                    number_of_values = Node._all,
                                    kb_local_only_p = 0,
                                    checked_kbs = [],indent=""):
-        warn("get_instance_types ignores kb_local_only_p",20)
-        trayce([kb,frame,checked_kbs])
+        #trayce([kb,frame,checked_kbs])
         if not kb.frame_p(frame):
             (frame, frame_found_p) = kb.get_frame_in_kb(frame)
             if not frame_found_p:
@@ -828,6 +855,7 @@ class KB(FRAME):
             for dclass in direct_types:
                 if not (dclass in taxonomic_types):
                     #print "     appending direct_type",dclass
+                        
                     taxonomic_types.append(dclass)
                     supers = kb.get_class_superclasses(dclass,
                                                        inference_level=\
@@ -835,11 +863,19 @@ class KB(FRAME):
                     for super in supers:
                         if not (super in taxonomic_types):
                             #print "       appending super",super
+#                            if str(super) == ':INDIVIDUAL':
+#                                print dclass,"has super",super,"in",kb
+                    
                             taxonomic_types.append(super)
         for typ in direct_types:
             if not (typ in taxonomic_types):
                 #print "     appending direct type",typ        
                 taxonomic_types.append(typ)
+
+        if Node._INDIVIDUAL in taxonomic_types:
+            trayce((frame),format="%s is instance of INDIVIDUAL",
+                   indent="  ")
+
         return (taxonomic_types,1,0)
 
 
@@ -1289,11 +1325,18 @@ class TupleKb(KB,Constrainable):
                                       number_of_values = Node._all,
                                       kb_local_only_p = 0):
         subclasses = []
+        #trayce((kb,klass))
         #print kb._name,kb._typed_cache
-        for a_class in kb._typed_cache[Node._class]:
-            if kb.subclass_of_p(a_class,klass,inference_level,
-                                kb_local_only_p):
-                subclasses.append(a_class)
+        klass = kb.get_frame_in_kb(str(klass))[0]
+        if klass != None:
+
+            for a_class in kb._typed_cache[Node._class]:
+                trayce((klass,a_class),format="does %s == %s ?",indent=" ")
+                if str(a_class) == 'gear':trayce([kb,klass,a_class],indent="YOW ")
+                if kb.subclass_of_p(a_class,klass,inference_level,
+                                    kb_local_only_p):
+                    subclasses.append(a_class)
+        trayce([subclasses],indent="    ")
         return (subclasses,1,0)
     
     def get_class_superclasses_internal(kb,klass,
@@ -1556,6 +1599,7 @@ class TupleKb(KB,Constrainable):
     def superclass_of_p(kb,superclass,subclass,
                         inference_level=Node._taxonomic):
         supers = kb.get_class_superclasses(subclass,inference_level)
+
         return superclass in supers[0]
 
 class AbstractPersistentKb(TupleKb):

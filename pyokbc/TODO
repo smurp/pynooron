@@ -2,11 +2,8 @@
 TODO for PyOKBC
 
 * PyOkbc must support operations minimally required by Nooron:
-** why doesn't web_log_entry have slots or values for npt_for_self?
-is get_frame_slots bugged?
-is get_slot_values bugged?
-** fix recursion error when Node._THING._direct_types = [Node._CLASS]
-important so that taxonomic roots are available for hanging skins on
+** PERFORMANCE
+** get_class_subclasses should work a little bit
 
 ** enforce DOMAIN constraints on slot values 
 ** enforce slot-based constraints first
@@ -17,9 +14,8 @@ important so that taxonomic roots are available for hanging skins on
 *** /know/SomeKB/ surfs the kb as usual
 
 * features not absolutely required by Nooron
-** get_slot_values_in_detail
 ** meaningful implementation of default values
-*** value_selector sensitivity in get_slot_values
+** value_selector sensitivity in get_slot_values
 
 ** cache intermediate results (types, slots, instances, etc.) on frames
 ** make a SentenceKB
@@ -34,4 +30,4 @@ coerce slot values appropriately (so they are frames too)
 ** clean up Node._*_all and make them into a dict keyed by _*
 ** improve Getting Started section of INSTALL
 
-$Id: TODO,v 1.7 2002/11/08 10:52:11 smurp Exp $
+$Id: TODO,v 1.8 2002/11/11 22:47:18 smurp Exp $
