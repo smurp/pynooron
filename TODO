@@ -1,6 +1,10 @@
 
 TODO for Nooron
 
+* correctness
+* performance
+* completeness
+
 BUGS
 ** wrong garment options on site_front_as_html
 ** orange and green!
@@ -32,6 +36,7 @@ Solutions:
   .pykb 
   2) put all the frame info *into* the garments as leading comments
     (ala Zope's on-disk representation of dtml, python-script, etc. )
+  3) put a .tell file beside each normal content fiel (e.g. each npt)
 
 * kb interchange
 ** make /know/some_kb surfable, /know/some_kb.pykb downloadable

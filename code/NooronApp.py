@@ -1,13 +1,13 @@
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.16 2002/11/26 21:52:40 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.17 2002/12/04 18:08:11 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
 
 from pyokbc import *
 import NooronRoot
-
+from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer
 #from AccessControl import allow_module
 #allow_module('pyobkc')
 
@@ -19,11 +19,6 @@ class AbstractApp:
     def __init__(app,kb):
         app._kb = kb
         goto_kb(kb)
-
-    def publish(app,request):
-        """Ultimately does a nooron_root.publish(request,sumut)."""
-        
-        nooron_root.publish(request,object)
 
     def get_npt_from_url(app,request):
         query = request.split_query()
@@ -54,7 +49,10 @@ class NooronApp(AbstractApp):
 class GenericFrame(AbstractApp):
     # see http://www.noosphere.org/discuss/zwiki/VariousTemplateUseCases
     default_npt_name = "frame_as_html"
-    def publish(app,request,frame_name,npt_name):
+    app = {}
+    def publish(app,request,frame_name,npt_name,extensions=[]):
+        print "we ARE getting to here"
+        
         if frame_name == None:
             frame = app._kb
         else:
@@ -63,23 +61,60 @@ class GenericFrame(AbstractApp):
                                     or (None,None)
             if not frame:
                 frame = app._kb
-        #if not frame_found_p:
-        #    NooronApp(app._kb).publish(request)
-        #    print "frame",frame_name,"not found in NooronApp.py"
-        #    return
-        #print "frame =",frame
+
         if npt_name == None:
-            npt_name = app.get_npt_from_url(request) \
-                       or app.get_npt_for_subclasses(request,frame) \
-                       or app.get_npt_for_instances(request,frame) \
-                       or app.get_npt_for_self(request,frame) \
-                       or app.get_npt_hardwired(request,frame) \
-                       or app.default_npt_name
-        print "=====================\n",\
+            npt_name = app.choose_an_npt(request,frame)
+
+        print "\n=====================\n",\
               "publish() npt_name:",npt_name,\
               "for frame:",frame
-        request.effective_query_extend({'with_template': npt_name})
-        nooron_root.publish(request,frame)
+
+        cp = CachingPipeliningProducer()
+        print "request.uri",request.uri
+        cp.set_canonical_request(request.uri)
+        dotsplit = npt_name.split('.')
+        prev_ext = dotsplit[-1]
+        for this_ext in extensions:
+            print this_ext
+            pipesection = app.get_pipe_section(from_ext=prev_ext,
+                                               to_ext=this_ext)
+            prev_ext = this_ext
+            cp.append_pipe(pipesection)
+        request['Content-Type'] = cp.mimetype()
+        cmds = cp.source_and_commands()[1]
+        resp = cmds or 'no commands'
+        request.push(resp)
+        request.done()
+
+    def get_pipe_section(app,
+                         from_ext=None,from_type=None,
+                         to_ext=None,to_type=None):
+        """Find a frame for a NooronTransformer which goes from
+        the from_ situation to the to_ situations.  There are two
+        well-know-name forms that this implementation relies on
+        (though sufficient information exists on the frames for
+        the well-knownedness to merely be for efficiency).
+        There are frames like 'FOO_extension' FOO=ps
+        There are frames like 'transform_FOO_2_BAR' FOO=ps, BAR=pdf
+        They are, respectively the source of mimetypes and commands.
+        """
+        extension_frame = '%s_extension' % to_ext
+        mimetype=get_slot_value(extension_frame,'MimeType')[0]
+        transformer_frame = 'transform_%s_2_%s' % (from_ext,to_ext)
+        command=get_slot_value(transformer_frame,'Command')[0]
+        return PipeSection(command=command,
+                           extension=to_ext,
+                           mimetype=mimetype)        
+        
+
+    def choose_an_npt(app,request,frame):
+        return app.get_npt_from_url(request) \
+               or app.get_npt_for_subclasses(request,frame) \
+               or app.get_npt_for_instances(request,frame) \
+               or app.get_npt_for_self(request,frame) \
+               or app.get_npt_hardwired(request,frame) \
+               or app.default_npt_name
+        
 
     def get_npt_hardwired(app,request,frame):
         kb = app._kb

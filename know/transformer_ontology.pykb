@@ -1,0 +1,104 @@
+
+# Transformer contributes to the nooron_app_architecture, but how does
+# it relate to nooron_app_wardrobes?
+#put_direct_parents(['nooron_app_architecture'])
+#put_instance_types(current_kb(),['nooron_app_ontology'])
+
+
+create_slot('AcceptsType',pretty_name='Accepts Type',
+            own_slots=[[':DOMAIN','NooronTransformer'],
+                       [':SLOT-VALUE-TYPE',':CLASS']],
+            #[':SLOT-VALUE-TYPE','(union MimeType :CLASS)']],            
+            doc="""This is the type of the input which the transformer
+            is capable of transforming, such as :KB, :FRAME,
+            nooron_app, pattern_language_app, application/postscript,
+            etc.""")
+
+create_slot('EmitsType',pretty_name='Emits Type',
+            own_slots=[[':DOMAIN','NooronTransformer']],
+            doc="""This is the type of the output which the transformer
+            is capable of generating, such as :KB, :FRAME,
+            nooron_app, pattern_language_app, application/postscript,
+            etc.""")
+
+create_slot('AcceptsExtensions',pretty_name='Accepts Extensions',
+            own_slots=[[':DOMAIN','NooronTransformer']],
+            doc="""This is the list of file extensions (including
+            the preceding dots[?]) which this .""")
+
+create_slot('EmitsExtensions',pretty_name='Emits Extensions',
+            own_slots=[[':DOMAIN','NooronTransformer']],
+            doc="""This is the list of file extensions (including
+            the preceding dots[?]) which this .""")
+
+create_slot('LiteralExternalCommand',pretty_name='Literal External Command',
+            own_slots=[[':DOMAIN','ExternalCommand']],
+            doc="""This is the actual command string which
+            can be used to perform the transformation..""")
+
+create_slot('ProgramsRequired',pretty_name='Programs Required',
+            own_slots=[[':DOMAIN','ExternalCommand']],
+            doc="""This is a list of the programs which must
+            exist for this transformer to be able to work.""")
+
+create_class('transformer_class',
+             direct_types=['nooron_app_class'],
+             doc="""This is the superclass of all classes in the
+             pattern_language_ontology.  It might not be very useful...
+             YAGNI (you aren't going to need it) suggest that it be
+             removed.""")
+
+create_class('Acceptor',
+             direct_types=['transformer_class'],
+             template_slots=[['AcceptsType'],['AcceptsExtensions']],
+	     doc="""Subclasses of transformer are any kind
+             of thing which transforms something from one
+             representation to another.  Garments, Okbc PROCEDUREs
+             and external commands are all examples..""")
+
+create_class('Emitter',
+             direct_types=['transformer_class'],
+             template_slots=[['EmitsType'],['EmitsExtensions']],
+	     doc="""Subclasses of transformer are any kind
+             of thing which transforms something from one
+             representation to another.  Garments, Okbc PROCEDUREs
+             and external commands are all examples..""")
+
+create_class('NooronTransformer',
+             direct_types=['transformer_class'],
+             template_slots=[],
+	     doc="""Subclasses of transformer are any kind
+             of thing which transforms something from one
+             representation to another.  Garments, Okbc PROCEDUREs
+             and external commands are all examples..""")
+
+create_class('Garment',
+             doc="""Garments are weird because they are presumed
+             to be laid over actual NPTs which are, through some
+             magic, appearing as frames.  Because of this there
+             is no need to explicitly name the npt file which
+             an instance of this class refers to.  It is being
+             directly extended, because it is an existing frame
+             with the same name.  THIS IS TRICKERY AND SHOULD BE FIXED.""",
+             direct_types=['transformer_class'],
+             direct_superclasses=['NooronTransformer'],
+             template_slots=[['AcceptsType'],
+                             ['EmitsType'],])
+
+create_class('ExternalCommand',
+             direct_types=['transformer_class'],
+             direct_superclasses=['NooronTransformer'],
+             template_slots=[['AcceptsType'],
+                             ['EmitsType'],
+                             ['ProgramsRequired'],
+                             ['LiteralExternalCommand'],],
+             doc="""ExternalCommands are wrappers for unix pipeline
+             commands which accept standard input and emit standard
+             output.""")
+
+create_class('SinkCommand',
+             direct_types=['transformer_class'],
+             direct_superclasses=['ExternalCommand'],
+             doc="""SinkCommands are wrappers for unix programs
+             which consume standard input but produce no output.""")
+

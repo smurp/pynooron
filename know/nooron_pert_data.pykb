@@ -6,35 +6,55 @@ create_individual('Nooron_0_2_1',
   pretty_name="Nooron 0.2.1",
   direct_types=['Task'],
   own_slots=[['Predecessors',],
+             ['Status','complete'],
              ['TaskDescription',
               """This is a dummy START job marking the state
               which was current when nooron_pert was started."""],
              ['EstimatedHours',0]])
 
+create_individual('FleshOutPrimordialSlots',direct_types=['Task'],
+  pretty_name='Flesh Out Primordial Slots',
+  own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['TaskDescription',
+              """Attach appropriate constraint slots on the slots
+              in the PRIMORDIAL_KB."""],
+             ['EstimatedHours',2]])
 
 create_individual('FormGeneration',direct_types=['Task'],
-  own_slots=[['Predecessors','Nooron_0_2_1'],
+  pretty_name='Form Generation',
+  own_slots=[['Predecessors','FleshOutPrimordialSlots'],
+             ['TaskDescription',
+              """Create very simple forms automatically by
+              using widgets based on slot type."""],
+             ['EstimatedHours',5]])
+
+create_individual('OkbcConstraints',direct_types=['Task'],
+  own_slots=[['Predecessors','FleshOutPrimordialSlots'],
              ['TaskDescription',
               """Create very simple forms automatically by
               using widgets based on slot type."""],
              ['EstimatedHours',5]])
 
 create_individual('FormActions',direct_types=['Task'],
+  pretty_name='Form Actions',                  
   own_slots=[['Predecessors',
-              'FormGeneration','AuthorizationStubbedIn'],
+              'FormGeneration','AuthorizationStubbedIn','OkbcConstraints'],
              ['TaskDescription',
               """Write create_individual and create_class
               npts which are limited by authorization
               stubs."""],
              ['EstimatedHours',2]])
 
-create_individual('CriteriaAndEvaluationsOntology',direct_types=['Task'],
+create_individual('CriteriaAndEvaluationsOntology',
+  pretty_name = 'Criteria and Evaluations Ontology',
+  direct_types=['Task'],
   own_slots=[['Predecessors','Nooron_0_2_1'],
              ['TaskDescription',
               """Create initial ontology Criteria and Evaluations."""],
              ['EstimatedHours',24]])
 
 create_individual('CriteriaAndEvaluations',direct_types=['Task'],
+  pretty_name='Criteria and Evaluations',
   own_slots=[['Predecessors',
               'FormActions',
               'CriteriaAndEvaluationsOntology'],
@@ -98,7 +118,7 @@ create_individual('NooronAppRegistry',
 create_individual('RemotelyInheritNooronApps',
   pretty_name="Remotely Inherit Nooron Apps",
   direct_types=['Task'],
-  own_slots=[['Predecessors','PlacesAsKBs','DownloadableKBFiles'],
+  own_slots=[['Predecessors','SubdirsAsKBs','DownloadableKBFiles','TellKb'],
              ['TaskDescription',
               """Make it possible for someone to create a
               nooron_app_instance which points to a nooron_app_wardrobe
@@ -106,8 +126,8 @@ create_individual('RemotelyInheritNooronApps',
               all work."""],
              ['EstimatedHours',8]])
 
-create_individual('PlacesAsKBs',
-  pretty_name="Places as KBs",
+create_individual('SubdirsAsKBs',
+  pretty_name="Subdirs as KBs",
   direct_types=['Task'],
   own_slots=[['Predecessors','Nooron_0_2_1'],
              ['TaskDescription',
@@ -128,7 +148,7 @@ create_individual('EncodingPipelines',
              ['EstimatedHours',6]])
 
 create_individual('CachedOutput',
-  pretty_name="CachedOutput",
+  pretty_name="Cached Output",
   direct_types=['Task'],
   own_slots=[['Predecessors','EncodingPipelines'],
              ['TaskDescription',
@@ -159,8 +179,7 @@ create_individual('CentralAppRegistry',
   own_slots=[['Predecessors',
               'ThroughTheWebEditing',
               'NooronAppRegistry',
-              'RemotelyInheritNooronApps',
-              'TellKb'],
+              'RemotelyInheritNooronApps'],
              ['TaskDescription',
               """Create a Central Registry of Nooron Apps where the
               apps themselves exist remotely."""],

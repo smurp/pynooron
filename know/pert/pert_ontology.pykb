@@ -11,11 +11,13 @@ create_slot('Predecessors',
 create_slot('TaskDescription',
             own_slots=[[':SLOT-CARDINALITY',1],
                        [':SLOT-VALUE-TYPE',':STRING']])
+create_slot('Status',
+            own_slots=[[':SLOT-CARDINALITY',1],
+                       [':SLOT-VALUE-TYPE','TaskStatus']])
 
 create_slot('References',
             doc="""URLs to specifications or supporting material.""",
             own_slots=[[':SLOT-VALUE-TYPE',':STRING']])
-
 
 create_class('pert_class',
              direct_types=['nooron_app_class'])
@@ -25,9 +27,16 @@ create_class('Task',
              template_slots=[['Predecessors'],
                              ['TaskDescription'],
                              ['EstimatedHours'],
+                             ['Status'],
                              ['References']])
+
+create_class('TaskStatus',
+             direct_types=['pert_class'])             
 
 create_class('pert_app',
              direct_superclasses=['nooron_app_instance'],
              doc="""A PERT app contains Tasks for a particular
              Project.""")
+
+create_individual('complete',direct_types=['TaskStatus'])
+create_individual('future',direct_types=['TaskStatus'])

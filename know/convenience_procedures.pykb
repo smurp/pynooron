@@ -16,6 +16,7 @@ register_procedure('sort_frames',
 del sort_frames
 
 
+####################################################################
 
 def npts_for_self_and_instances(here):
     npt_for_self = get_slot_values(here,'npt_for_self',
@@ -33,3 +34,36 @@ def npts_for_self_and_instances(here):
 register_procedure('npts_for_self_and_instances',
                    procedure=create_procedure(body=npts_for_self_and_instances))
 del npts_for_self_and_instances
+
+
+####################################################################
+def names_and_pretty_names(frame_list,split=None,kb=None):
+    """Return a list of frame_name, (maybe split) pretty_name pairs.
+    If split is not None, then use its value to split the pretty_names in
+    half on a space."""
+    retval=[]
+    if not kb: kb = current_kb()
+    for fn in frame_list:
+        pn = get_frame_pretty_name(fn,kb=kb)
+        if pn == None: pn = get_frame_name(fn,kb=kb)
+        if split:
+            if pn.find(' ') != -1:
+                pnl = list(pn)
+                order = []
+                for i in range(len(pn)/2,0,-1):
+                    order.append(i)
+                    order.append(-1*i)
+                for i in order:
+                    if pnl[i] == ' ':
+                        break_point = i
+                        break
+                pnl[break_point]=split
+                pn = string.join(pnl,'')
+        retval.append((fn,pn))
+    return retval
+register_procedure('names_and_pretty_names',
+                   procedure=create_procedure(body=names_and_pretty_names))
+del names_and_pretty_names
+
+
+

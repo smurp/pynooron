@@ -69,9 +69,16 @@ class PyKb(AbstractFileKb):
         goto_kb(self)
 
         try:
-            exec(string.join(raw_kb,""))
+            whole = string.join(raw_kb,"")
+            stanzas = whole.split('\n\n')
+            stanza = whole
+            #for stanza in stanzas:
+            #print stanza
+            exec(stanza)
         except exceptions.SyntaxError,e:
-            raise GenericError,str(e)+ " of "+str(filename)
+            #raise GenericError,str(e)+ " of "+str(filename)
+            #print stanza
+            raise GenericError,str(e)+ " in "+str(filename)
         goto_kb(prev_kb)
 
     def print_frame(kb,frame,

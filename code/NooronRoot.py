@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.15 2002/11/26 00:03:07 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.16 2002/12/04 18:08:11 smurp Exp $'
 
 DEBUG = 0
 
@@ -159,8 +159,11 @@ class NooronRoot:
         path = request.split_uri()[0]
         return path == '' or path == '/'
 
-    def publish(self,request,object):
-        pl = self.pipeline_factory.build_pipeline(request,object=object)
+    def publish(self,request,object,npt_name='',extensions=[]):
+        pl = self.pipeline_factory.build_pipeline(request,
+                                                  object,
+                                                  npt_name,
+                                                  extensions)
         pl.publish()
 
     def handle_request(self,request):

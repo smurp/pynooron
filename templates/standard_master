@@ -13,14 +13,18 @@
   <tbody>
     <tr>
       <td bgcolor="white"><a href="http://www.noosphere.org/discuss/zwiki/Nooron">Nooron<a/></td>
-      <td><span tal:content="structure container/main_menu">main menu</span><br/>
-          <span tal:content="structure container/breadcrumbs">breadcrumbs</span>
+      <td><span 
+            tal:omit-tag=""
+            tal:content="structure container/main_menu">main menu</span><br/>
+          <span 
+            tal:omit-tag=""
+            tal:content="structure container/breadcrumbs">breadcrumbs</span>
       </td>
     </tr>
 
     <tr>
       <td bgcolor="green" valign="top">
-         <div metal:define-slot="other_skins">
+         <div metal:define-slot="other_skins" tal:omit-tag="">
 	<em>available garments:</em><br/>
            <tal:dummy
                 define="global npts_proc
@@ -29,14 +33,14 @@
            <div tal:define="all_skins 
                     python:call_procedure(npts_proc,
                                           arguments=[here]);
-                    baseurl python:request.split_uri()[0]"
+                    baseurl python:request.split_uri()[0].replace('__'+template_title+'/','')"
 	        tal:condition="all_skins"
      	        tal:repeat="skin all_skins"
                 tal:omit-tag="">
              <span tal:omit-tag=""
                    tal:define="current_skin_p python:template_title == str(skin)">
 	     <a tal:condition="python: not current_skin_p"
-                tal:attributes="href python:baseurl+'?with_template='+skin" 
+                tal:attributes="href python:baseurl+'__'+skin" 
                 tal:content="skin"></a>
              <span tal:omit-tag=""
                    tal:condition="current_skin_p"
@@ -88,6 +92,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.15 2002/11/26 00:03:07 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.16 2002/12/04 18:08:13 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

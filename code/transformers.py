@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.12 2002/11/27 07:53:10 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.13 2002/12/04 18:08:12 smurp Exp $'
 
-DEBUG = 0
+DEBUG = 1
 
 import NooronRoot
 
@@ -20,7 +20,7 @@ class producer:
     
     def __init__(self,content,request=None):
         self.content = content
-        self.written = 0
+        self.done = 0
         self.request = request
 
 class typed_producer(producer):
@@ -34,7 +34,6 @@ class typed_producer(producer):
                 return self.content.mime_type()
             except:
                 return 'text/plain'
-    
 
 class typed_file_producer(typed_producer,medusa.producers.file_producer):
     def_mime_type = ['text/plain']
@@ -42,6 +41,95 @@ class typed_file_producer(typed_producer,medusa.producers.file_producer):
         producer.__init__(self,content,request)
         medusa.producers.file_producer.__init__(self,content)
 
+class external_command_producer(typed_producer):
+    """Get the mimetype from knowledge, the command (or cached file)
+    from content.  Maybe external_command_producers can detect if
+    their predecessors are external_command_producers and use unix pipes
+    in place of more to funnel data into themselves."""
+    os_pipes = 1
+    def __init__(self,command,request=None,mimetype=None,extension=None):
+        producer.__init__(self,command,request)
+        self.mimetype = mimetype
+        self.extension = extension
+    def more(self):
+        if self.done:
+            return ''
+        else:
+            def makeNonBlocking(fd):
+                fl = fcntl.fcntl(fd, FCNTL.F_GETFL)
+                try:
+                    fcntl.fcntl(fd, FCNTL.F_SETFL, fl | FCNTL.O_NDELAY)
+                except AttributeError:
+                    fcntl.fcntl(fd, FCNTL.F_SETFL, fl | FCNTL.FNDELAY)
+
+            self.done = 1
+            proc = popen2.Popen3(command,1)
+            proc.tochild.write(input)
+            proc.tochild.flush()
+            proc.tochild.close()
+            outfile = proc.fromchild
+            outfd    = outfile.fileno()
+            errfile  = proc.childerr
+            errfd    = errfile.fileno()
+            makeNonBlocking(outfd)
+            makeNonBlocking(errfd)
+            outdata = errdata = ''
+            outeof = erreof = 0
+            # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52296
+            
+            # 5 seconds grace period
+            max_time_to_live = float(self.timeout + 5)
+
+            if int(self.timeout) == 0:
+                # set a one minute maxTTL if no timeout requested
+                max_time_to_live = 60 
+            #print "max_time_to_live",max_time_to_live,"\n"
+            start_time = time.time()
+            while 1:
+                ready = select.select([outfd,errfd],[],[],1)
+
+                if outfd in ready[0]:
+                    outchunk = outfile.read()
+                    if outchunk == '': outeof = 1
+                    outdata = outdata + outchunk
+                if errfd in ready[0]:
+                    errchunk = errfile.read()
+                    if errchunk == '': erreof = 1
+                    errdata = errdata + errchunk
+                if outeof and erreof: break
+                if max_time_to_live + start_time < time.time():
+                    break
+                time.sleep(0.1)
+
+            exit_code = proc.poll()
+
+            if exit_code == -1:
+                pid = proc.pid
+                os.kill(pid,signal.SIGKILL)
+                print self.content,'killed_child',str(pid)
+            elif exit_code > 0:
+                print self.content,'exit_code',str(exit_code)
+
+            return outdata
+
+class cached_external_command_producer(external_command_producer,
+                                       medusa.producers.file_producer):
+    def __init__(self,command,request=None,mimetype=None,extension=None,
+                 md5val=None,cacheloc=None):
+        self.cachedfile = None
+        if cacheloc != None and extension != None and md5val != None:
+            filename = os.path.join(cacheloc,md5val+extension)
+            self.cachedfile = filename
+            command = command + ' | tee ' + filename
+        external_command_producer.__init__(self,command,request,
+                                           mimetype,extension)
+        
+    def more(self):
+        if self.done:
+            return ''
+        elif os.isfile(cachedfile):
+            pass
+            
 
 class transformer(producer):
     """A transformer is a producer which processes a stream of character data.
@@ -57,10 +145,10 @@ class txt(producer):
     extensions = ['txt']
     def_mime_type = ['text/plain']
     def more(self):
-        if self.written:
+        if self.done:
             return ''
         else:
-            self.written = 1
+            self.done = 1
             return str(self.more_content())
 
 class tar(transformer):
@@ -105,11 +193,11 @@ class templated_producer(typed_producer):
         self.template = template
 
     def more(self):
-        if self.written:
+        if self.done:
             return ''
         else:
-            self.written = 1
-            #print type(self.template)
+            self.done = 1
+            print type(self.template)
             return self.template(content=str(self.more_content()))
 
 class arbitrary_producer(templated_producer):
@@ -144,15 +232,16 @@ class site_front_html_producer(templated_producer):
 
 
 class pipeline:
+    def __init__(self,producers,request):
+        self.producers = producers
+        self.request = request
+
     def mime_type(self):
         try:
             return self.producers[-1].mime_type()
         except:
             return 'text/html'            
 
-    def __init__(self,producers,request):
-        self.producers = producers
-        self.request = request
     def show_pipes(self):
         retval = "pipes = "
         for x in self.producers:
@@ -201,3 +290,15 @@ class pipeline:
             more = s < leng
         request.done()
 
+
+"""
+IN                      OUT   TYPE     WHAT
+=============================================
+nooron_app              .dbk  garment  nooron_app_as_docbook
+pattern_language_app    .dbk  garment  pattern_language_as_docbook, ...
+pattern_language_app    .dot  garment  pattern_language_as_dot, ...
+application/x-graphviz  .ps   command  dot -Tps
+application/x-graphviz  .jpg  command  dot -Tjpeg
+.dbk                    .ps   command  docbook2ps
+.dbk                    .pdf  command  docbook2pdf
+"""

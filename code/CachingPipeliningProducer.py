@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
 __version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: CachedPipelineProducer.py,v 1.1 2002/12/03 10:18:13 smurp Exp $'
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.1 2002/12/04 18:08:11 smurp Exp $'
 
 import string
 import md5
@@ -13,12 +13,26 @@ class CachingPipeliningProducer:
     def __init__(piper,canonical_request = None):
         piper._cachedir = None
         piper._canonical_request = canonical_request
-        #Piper.__init__(piper,garment,extensions)
-        #garment_ext = piper._garment.split('.')[-1]
-        #cached_garmie_out = piper.MD5 + '.' + garment_ext
         piper._pipeline = []
+
         piper._done = 0
         piper._file = None
+    out_buffer_size = 1<<16
+    def more(self):
+        """Execute the whole pipeline. See composite_producer &
+        file_producer"""
+        if self._done:
+            return ''
+        else:
+            data = self._file.read(self.out_buffer_size)
+            if not data:
+                self._file.close()
+                del self._file
+                self._done = 1
+                return ''
+            else:
+                return data
+            
     def set_canonical_request(piper,canonical_request):
         piper._canonical_request = canonical_request
         ck = piper.cachekey()
@@ -37,10 +51,10 @@ class CachingPipeliningProducer:
     def append_pipe(piper,pipe):
         piper._pipeline.append(pipe)
     def mimetype(piper):
-        mt = None
+        mt = 'text/plain'
         sections = copy.copy(piper._pipeline)
         #sections.reverse()
-        while not mt:
+        while sections and not mt:
             section = sections.pop()
             mt = section.mimetype()
         return mt
@@ -71,21 +85,6 @@ class CachingPipeliningProducer:
             commands = None
         return (source,commands)
 
-    out_buffer_size = 1<<16
-    def more(self):
-        """Execute the whole pipeline. See composite_producer &
-        file_producer"""
-        if self._done:
-            return ''
-        else:
-            data = self._file.read(self.out_buffer_size)
-            if not data:
-                self._file.close()
-                del self._file
-                self._done = 1
-                return ''
-            else:
-                return data
         
 class PipeSection:
     """A PipeSection is an encapsulated shell command which can be
@@ -150,7 +149,10 @@ if __name__ == '__main__':
                                mimetype = 'application/pdf'))
 
     cp.set_cachedir('/tmp/nooron_cache')
-    cp.set_canonical_request('rumbletumble')
+    cp.set_canonical_request(
+        "/know/somekb/someframe__dets.dot.ps.pdf\n" +\
+        "kbdatestamp=1038939824\n" +\
+        "nptdatestamp=1038932134\n")
     print cp.mimetype()
     print cp.source_and_commands()
 

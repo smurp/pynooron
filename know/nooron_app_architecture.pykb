@@ -1,5 +1,8 @@
 
-put_direct_parents(['convenience_procedures'])
+put_direct_parents(['convenience_procedures',
+                    #'transformer_ontology',
+                    'common_transformers'
+                    ])
 put_frame_pretty_name(current_kb(),"Nooron App Architecture")
 put_slot_values(current_kb(),':DOCUMENTATION',
                 ["""This knowledgebase is the very heart of the Nooron

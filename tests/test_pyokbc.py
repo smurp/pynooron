@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.5 2002/11/26 21:52:41 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.6 2002/12/04 18:08:13 smurp Exp $'
 
 import os
 import sys
@@ -41,7 +41,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_get_frame_slots_all_nooron_faq(self):
+    def skip_test_get_frame_slots_all_nooron_faq(self):
         nooron_faq = find_kb('nooron_faq')
         good = "[':DOCUMENTATION', 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots(nooron_faq,
@@ -68,17 +68,16 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_instance_types_docbook2ps(self):
+        good = "[:INDIVIDUAL, gear, web_log_entry]"
+        resp = list(get_instance_types('docbook2ps')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
     def test_get_instance_types_gear(self):
         good = "[:CLASS, :THING, web_log_category]"
         resp = list(get_instance_types('gear',
                                        inference_level=Node._all)[0])
-        resp.sort(str_sort)
-        self.assertEquals(good, str(resp))
-
-    def test_get_instance_types_wle_0003(self):
-        good = "[:INDIVIDUAL, gear, web_log_entry]"
-        resp = list(get_instance_types('wle_0003',
-                                       inference_level=Node._direct)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
@@ -89,10 +88,18 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_instance_types_wle_0003(self):
+        good = "[:INDIVIDUAL, gear, web_log_entry]"
+        resp = list(get_instance_types('wle_0003',
+                                       inference_level=Node._direct)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
     def test_get_kb_parents(self):
         good = "[PRIMORDIAL_KB, convenience_procedures," + \
                " nooron_app_architecture," +\
-               " smurp_web_log_data, web_log_ontology," +\
+               " smurp_web_log_data, transformer_ontology," + \
+               " web_log_ontology," +\
                " web_log_wardrobe]"
         resp = current_kb().get_kb_parents()
         resp.sort(str_sort)
@@ -110,6 +117,12 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_slot_values_docbook2ps_EmitsType(self):
+        good = "application:ps"
+        resp = list(get_slot_values('docbook2ps','EmitsType',
+                                    slot_type=Node._all)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
 
     def skip_test_get_slot_values_gear(self):
         good = "['class_and_instances_as_html'," +\
@@ -120,8 +133,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-
-    def test_get_slot_values_kb_documentation(self):
+    def skip_test_get_slot_values_kb_documentation(self):
         good = ""
         resp = list(get_slot_values(current_kb(),':DOCUMENTATION',
                                     slot_type=Node._all)[0])
@@ -141,7 +153,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_get_slot_values_in_detail_web_log_category(self):
+    def skip_test_get_slot_values_in_detail_web_log_category(self):
         good = "[['class_and_instances_as_html', 0, 0]," +\
                " ['class_and_subclasses_as_html', 0, 0]," +\
                " ['frame_as_html', 0, 0]," +\

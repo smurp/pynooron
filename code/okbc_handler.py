@@ -1,5 +1,5 @@
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.9 2002/11/27 07:53:10 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.10 2002/12/04 18:08:12 smurp Exp $'
 
 
 from pyokbc import *
@@ -51,23 +51,22 @@ class okbc_handler:
         npt_name = None
 
         path_list = path.split('/')
-        if len(path_list) < 3 and path[-1] != '/':
-            loc = '/%s/' % (
-                path
-                )
-            request['Location'] = loc
-            #print "FIXME: is it legal to forward to root-relative url?"
-            request.error (301) # moved permanently
-            return
+        #if len(path_list) < 3 and path[-1] != '/':
+        #    loc = '/%s/' % (
+        #        path
+        #        )
+        #    request['Location'] = loc
+        #    request.error (301) # moved permanently
+        #    return
 
         if path_list[-1] == '':
             del path_list[-1]
 
         if len(path_list) == 1:
             kb = meta_kb()
-            app = NooronApp.MetaKB(kb)
-            app.publish(request)
-            return
+            #app = NooronApp.MetaKB(kb)
+            #app.publish(request)
+            #return
 
         for elem in [self.from_root]:
             print "checking",elem
@@ -77,11 +76,15 @@ class okbc_handler:
 
         latest_kb = meta_kb()
         for elem in path_list:
-            print "seeking",elem
+
             frag = string.split(elem,wedge)
             if len(frag) == 2:
                 elem = frag[0]
-                npt_name = frag[1]
+                pipe = string.split(frag[1],'.')
+                npt_name = pipe.pop(0) + '.' + pipe[0]
+                pipe[0] = npt_name
+                print "pipe",pipe
+            print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            
             (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
             if frame != None:
                 if kb_p(frame):
@@ -90,9 +93,9 @@ class okbc_handler:
                 else:
                     print elem,"is a frame"
             else:
-                print elem,"was not found in",lastest_kb
+                print elem,"was not found in",latest_kb
 
         print "kb",latest_kb,"frame",elem
         app = NooronApp.GenericFrame(latest_kb)
-        app.publish(request,elem,npt_name)
+        app.publish(request,elem,npt_name,extensions=pipe)
 

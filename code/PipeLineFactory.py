@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.10 2002/11/27 07:53:10 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.11 2002/12/04 18:08:11 smurp Exp $'
 
-DEBUG = 0
+DEBUG = 1
 
 import inspect_module
 import transformers
@@ -115,13 +115,15 @@ class PipeLineFactory:
                request.split_uri()[0]
 
         
-    def build_pipeline(self,request,object):
+    def build_pipeline(self,request,object,npt_name,extens):
         #print "the object is ",object
         #if not object:
         #    object = self.resolve_object(request)
-        extens = self.extension_list(request)
-        if not extens:
-            extens.append('html')
+        
+        if extens == None:
+            extens = self.extension_list(request)
+        #if not extens:
+        #    extens.append('html')
             ### FIXME we should really ask the object and the user about
             ###       defaults and preferences
         transs = self.transformers_from_extensions(extens,object,request)
