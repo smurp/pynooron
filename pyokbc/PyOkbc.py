@@ -1,5 +1,5 @@
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.16 2002/11/16 11:58:36 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.17 2002/11/18 23:43:59 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -357,7 +357,7 @@ class KB(FRAME):
         
         parent_kbs = initargs.get(Node._parent_kbs,[])
         if PRIMORDIAL_KB: parent_kbs.append(PRIMORDIAL_KB) #FIXME not always!
-        self._parent_kbs = parent_kbs # FIXME
+        self._parent_kbs = parent_kbs 
     
     def kb_p(kb):
         return 1
@@ -691,7 +691,7 @@ class KB(FRAME):
                 kaybee_pn = kaybee.get_frame_pretty_name(frame,
                                                          kb_local_only_p=1)
                 if kaybee_pn != None:
-                    return kb_pn
+                    return kaybee_pn
         return pretty_name
 
     def get_frame_sentences(kb, frame,
@@ -1310,6 +1310,13 @@ Node._kb._frame_type = Node._class
 KB._frame_type = Node._kb
 Node._cache_types              = Node._frame_types + (Node._kb,)
 
+class NullMetaKb(KB):
+    """An empty meta_kb to work with NullConnection."""
+    def _add_frame_to_cache(null_meta_kb,frame):
+        pass
+    def get_kbs(null_meta_kb):
+        return []
+    
 class TupleKb(KB,Constrainable):
     """A simple in-RAM kb which has no saving or reading ability.
     
@@ -1344,6 +1351,8 @@ class TupleKb(KB,Constrainable):
         return isinstance(thing,KLASS)
 
     def coerce_to_frame_internal(kb,frame):
+        if str(kb) == str(frame):
+            return kb
         return kb._cache.get(frame)
 
     def frame_in_kb_p_internal(kb,thing,
@@ -1493,12 +1502,21 @@ class TupleKb(KB,Constrainable):
                                           kb_local_only_p = 0,
                                           checked_kbs=[],checked_classes=[]):
         #trayce((kb,frame,slot,type(slot),slot_type))
+        orig_frame = frame
         (list_of_specs,exact_p,more_status,default_p) = ([],1,0,0)
         frame = kb.coerce_to_frame_internal(str(frame))
         if not frame:
+            #print "bailing on",orig_frame,"in",kb
             return [[],1,0,1]
         #print "gsvidi(",frame,")",type(frame)
         slot_key = str(slot)
+        
+        #print "gsvidi",frame,frame.__class__.__bases__,slot
+        #if 'KB' in frame.__class__.__bases__:
+        #    print "get_slot_values_in_detail_internal",frame
+        #print str(frame)
+        #if str(frame) == 'smurp_web_log.pykb':
+        #    print "get_slot_values_in_detail_internal",frame
         if slot_type in [Node._own,Node._all]:
             if frame._own_slots.has_key(slot_key):
                 for v in frame._own_slots[slot_key].values():
@@ -1509,7 +1527,7 @@ class TupleKb(KB,Constrainable):
                     list_of_specs.append([v,1,0])
         return (list_of_specs,exact_p,more_status,default_p)
 
-    def get_slot_values_internal(kb,frame,slot,
+    def OLD_get_slot_values_internal(kb,frame,slot,
                                  inference_level = Node._taxonomic,
                                  slot_type = Node._own,
                                  number_of_values = Node._all,
@@ -1529,7 +1547,7 @@ class TupleKb(KB,Constrainable):
         return (list_of_values,exact_p,more_status)
 
 
-    def OLD_get_slot_values_internal(kb,frame,slot,
+    def OOOLD_get_slot_values_internal(kb,frame,slot,
                                  inference_level = Node._taxonomic,
                                  slot_type = Node._own,
                                  number_of_values = Node._all,
@@ -1623,8 +1641,8 @@ class TupleKb(KB,Constrainable):
             if len(orig_values) <> len(values):
                 print "We got shortened."
 
-        if 'snargle' in values:
-            print "put_slot_values(",kb,frame,slot,values,")"            
+        #if 'snargle' in values:
+        #    print "put_slot_values(",kb,frame,slot,values,")"            
         if slot_type == Node._own:
             if frame._own_slots.has_key(slot_key):
                 frame._own_slots[slot_key].set_values(values)
@@ -1668,6 +1686,44 @@ class AbstractPersistentKb(TupleKb):
             get_kb_individuals(kb):
             kb.print_frame(frame,stream=1)
 
+class PrimordialKb(TupleKb):
+    """Implements synthetic :DOCUMENTATION slot values which are URLs
+    pointing at the OKBC Spec."""
+    def __init__(self,name='',connection=None):
+        null_connection = NullConnection()
+        TupleKb.__init__(self,name,connection=null_connection)
+
+    def get_frame_slots_internal(kb,frame,
+                                 inference_level = Node._taxonomic,
+                                 slot_type = Node._all,
+                                 kb_local_only_p = 0):
+        apkb_gfsi = AbstractPersistentKb.get_frame_slots_internal
+        (list_of_slots,exact_p) = apkb_gfsi(kb,frame,inference_level,
+                                            slot_type,kb_local_only_p)
+        if not (':DOCUMENTATION' in list_of_slots):
+            list_of_slots.append(':DOCUMENTATION')
+        return (list_of_slots,exact_p)
+            
+    def get_slot_values_in_detail_internal(kb,frame,slot,
+                                          inference_level = Node._taxonomic,
+                                          slot_type = Node._own,
+                                          number_of_values = Node._all,
+                                          value_selector = Node._either,
+                                          kb_local_only_p = 0,
+                                          checked_kbs=[],checked_classes=[]):
+        if kb.coerce_to_frame_internal(str(frame)):
+            if str(slot) == ':DOCUMENTATION':
+                # list-of-specs,exact-p,more-status,default-p
+                return ([[get_doc_for(frame),1,0]],1,0,0)
+        apkb_gsvidi = AbstractPersistentKb.get_slot_values_in_detail_internal
+        return apkb_gsvidi(kb,frame,slot,
+                           inference_level,slot_type,
+                           number_of_values,
+                           value_selector,
+                           kb_local_only_p,
+                           checked_kbs,checked_classes)
+
+    
 class AbstractFileKb(AbstractPersistentKb):
     def _save_to_storage(kb,filename,error_p = 1):
         print "saving to",filename
@@ -1681,8 +1737,10 @@ class AbstractFileKb(AbstractPersistentKb):
         outfile.close()
 
 
-class Connection:
+class Connection: #abstract
     def __init__(connection,initargs=None):
+        # This code never gets called (because Connection is abstract)
+        # but in subclasses it should do something like the following:
         connection._meta_kb = META_KB('DefaultMetaKb',
                                       connection = connection)
         from PyKb import PyKb
@@ -1726,7 +1784,12 @@ class Connection:
 ##    def close_connection
 ##    def establish_connection
 
-
+class NullConnection(Connection):
+    def __init__(connection,initargs=None):
+        connection._meta_kb = None # so NullMetaKb can grab it!
+        connection._meta_kb = NullMetaKb('NullMetaKb',
+                                         connection=connection)
+        connection._default_kb_type = None
 
 class UNIT_SLOT:
     """UNIT_SLOT is the structure which holds the facets and the values
@@ -1788,13 +1851,14 @@ def dump_frame(frame,kb=None):
 
 
 def get_doc_for(thing):
-    text = ''
+    link_text = "docs for "+str(thing)
+    nom = str(thing)
     if type(thing) == type(get_doc_for):
         nom = thing.__name__
-        nom = string.replace(nom,'_','-')
-        return """<a target="okbcdocs" href="%s">%s</a>""" % \
-               (OKBC_SPEC_BASE_URL + nom,thing.__name__)
-    return thing.__name__ or str(thing)
+        link_text = thing.__name__
+    nom = string.replace(nom,'_','-')
+    return """<a target="okbcdocs" href="%s">%s</a>""" % \
+           (OKBC_SPEC_BASE_URL + nom,link_text)
     
 
 ##########################################
@@ -1807,7 +1871,8 @@ from Funcs import *
 #    PrimorialKB
 ##########################################
 
-Node._primordial_kb = AbstractPersistentKb('PRIMORDIAL_KB')
+#Node._primordial_kb = AbstractPersistentKb('PRIMORDIAL_KB')
+Node._primordial_kb = PrimordialKb('PRIMORDIAL_KB')
 goto_kb(Node._primordial_kb)
 PRIMORDIAL_KB = Node._primordial_kb
 

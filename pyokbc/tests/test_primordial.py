@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: test_primordial.py,v 1.2 2002/11/08 21:35:13 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: test_primordial.py,v 1.3 2002/11/18 23:44:00 smurp Exp $'
 
 import os
 import sys
@@ -43,11 +43,27 @@ class PrimordialTestCase(unittest.TestCase):
 
 
     def test_get_frame_slots_of_THING(self):
-        good = "[]"
+        good = "[':DOCUMENTATION']"
         resp = list(get_frame_slots(':THING')[0])
         resp.sort(str_sort)
         self.assertEquals(good,str(resp))
 
+    def test_get_slot_value_of_THING_DOCUMENTATION(self):
+        good = "[':DOCUMENTATION']"
+        resp = get_slot_value(':THING',':DOCUMENTATION')[0]
+        self.assertNotEquals(-1,resp.find('http'))
+
+    def test_get_kb_direct_children_PRIMORDIAL_KB(self):
+        good = "[]"
+        primal = find_kb('PRIMORDIAL_KB')
+        resp = get_kb_direct_children(kb=primal)
+        self.assertEquals(good,str(resp))
+
+    def test_get_kb_direct_parents_PRIMORDIAL_KB(self):
+        good = "[]"
+        primal = find_kb('PRIMORDIAL_KB')
+        resp = get_kb_direct_parents(kb=primal)
+        self.assertEquals(good,str(resp))
 
 if __name__ == "__main__":
     unittest.main()
