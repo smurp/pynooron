@@ -16,7 +16,9 @@ def var_name_for_emit(frame):
 
 def emit_value(val):
     if type(val) == type(''):
-        return '"""%s"""' % val
+        if string.find(val,"'") + string.find(val,"\n") > -2:
+            return '"""%s"""' % val
+        return "'%s'" % val
     elif EMIT_STRINGS_NOT_VARS and isinstance(val,FRAME):
         return "'"+str(val)+"'"
     else:
@@ -25,9 +27,6 @@ def emit_value(val):
 def to_slot_spec(frame,slot,slot_type):
     slot_value_spec = ''
     #if slot_type == Node._template:
-    #dump_frame(frame)
-        #print "slot_values:",frame.get_slot_values(slot,slot_type=slot_type)[0]
-    slot_value_spec = ''
     for slot_value in frame.get_slot_values(slot,slot_type=slot_type)[0]:
         if type(slot_value) in (type(()),type([])) \
            and slot_value[0] == Node._default:
@@ -50,26 +49,29 @@ def to_slot_spec(frame,slot,slot_type):
     #    die("we get here")
     return "[" + emit_value(slot) + ", " + slot_value_spec + "]"
 
-class OkbcPythonKb(TupleKb):
+class OkbcPythonKb(AbstractFileKb):
     def __init__(self,filename):
         self._name = filename
-        TupleKb.__init__(self)
+        TupleKb.__init__(self,filename)
         prev_kb = current_kb()
         goto_kb(self)
         execfile(filename)
         goto_kb(prev_kb)
 
-
-    def save_kb(kb,error_p = 1):
-        for frame in \
-            get_kb_facets(kb) + \
-            get_kb_slots(kb) + \
-            get_kb_classes(kb) + \
-            get_kb_individuals(kb):
-            print kb.emit_frame(frame)
-
-
-    def emit_frame(kb,frame):
+    def print_frame(kb,frame,
+                    slots = Node._filled,
+                    facets = Node._filled,
+                    stream = 1,
+                    inference_level = Node._taxonomic,
+                    number_of_values = Node._all,
+                    value_selector = Node._either,
+                    kb_local_only_p = 0):
+        (frame,frame_found_p) = kb.get_frame_in_kb(frame)
+        if not frame_found_p:
+            out =  "frame '"+str(frame)+"' not found"
+            print out
+            raise 'bogusError'
+            return out
         lines = []
         frame_name = frame.get_frame_name()
         var_name = var_name_for_emit(frame)
@@ -89,7 +91,9 @@ class OkbcPythonKb(TupleKb):
 
         line = "direct_types=["
         got_one = 0
-        for klass in frame.get_instance_types(inference_level=Node._direct)[0]:
+        #for klass in frame.get_instance_types(inference_level=Node._direct)[0]:
+        for klass in kb.get_instance_types(frame,
+                                           inference_level=Node._direct)[0]:
             line = line + var_name_for_emit(klass) + ","
             got_one = 1
         if got_one: lines.append(line[:-1]+"]")
@@ -125,5 +129,10 @@ class OkbcPythonKb(TupleKb):
         if pretty_name != None: lines.append(line+emit_value(pretty_name))
 
         comma_and_indent = ",\n"+indent_str
-        return string.join(lines,comma_and_indent) + ")\n"
+        out =  string.join(lines,comma_and_indent) + ")\n"
+        if stream:
+            print out
+            return None
+        else:
+            return out
 
