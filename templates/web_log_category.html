@@ -9,7 +9,7 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+<p tal:content="python:get_slot_value(here,':DOCUMENTATION')[0]"></p>
 
 <span  tal:define="items python:get_instance_types(here,inference_level=DIRECT)[0]" 
        tal:condition="items">
@@ -24,28 +24,6 @@
 </span>
 
 
-
-<span  tal:define="items python:call_procedure(get_procedure('sort_frames'),
-                       arguments=[get_class_instances('web_log_entry')[0]])" 
-       tal:condition="items">
-  <!-- better would be some sort of slot value e.g. plural_for_instances-->
-  <tal:dummy replace="items/reverse"/>
-  <ul>
-  <span tal:repeat="item items">
-    <li	><a href="booger"
-        	   tal:define="url python:get_frame_name(item)"
-		   tal:attributes="href url"
-           	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></li>
-	
-  </span>
-  </ul>
-</span>
-
-
-
-
-
-<div tal:define="test python:0" tal:condition="test">
 <span  tal:define="items python:get_class_instances(here)[0]" 
        tal:condition="items">
   <!-- better would be some sort of slot value e.g. plural_for_instances-->
@@ -61,10 +39,17 @@
 </span>
 
 
+
+
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+
 </div>
 
 <hr>
-$Id: web_log_app_as_html,v 1.2 2002/11/26 00:03:07 smurp Exp $
+$Id: web_log_category.html,v 1.1 2002/12/05 16:42:37 smurp Exp $
 </div>
   </body>
 </html>

@@ -42,7 +42,7 @@ class FileSystemConnection(Connection):
         rets.sort()
         return rets
 
-    def _obtain_raw_file(connection,filename,place):
+    def _lines_and_stats(connection,filename,place):
         if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
             place = connection._default_place
@@ -56,4 +56,11 @@ class FileSystemConnection(Connection):
             f.close()
         except:
             raise KbNotFound,(filename,fname)
-        return lines
+        st = os.stat(fname)
+        stats = {'UID':st[4],
+                 'GID':st[5],
+                 'SIZE':st[6],
+                 'ATIME':st[7],
+                 'MTIME':st[8],
+                 'CTIME':st[9]}
+        return (lines,stats)

@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.3 2002/12/04 18:08:12 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.4 2002/12/05 16:42:35 smurp Exp $'
 
 import string
 
@@ -52,13 +52,16 @@ class FileSystemKb(AbstractFileKb):
             if mime_type:
                 mime_type = mime_type.replace('/','__')
                 direct_types.append(mime_type)
-            file_contents = conn._obtain_raw_file(thing,
-                                                  place=str(kb))
+            (file_contents,stats) = conn._lines_and_stats(thing,
+                                                          place=str(kb))
+            own_slots = [['file_contents',file_contents]]
+            for (key,val) in stats.items():
+                own_slots.append([key,val])
+            
             frame = kb.create_frame(thing,Node._individual,
                                     direct_types=direct_types,
-                                    own_slots=[['file_contents',
-                                                file_contents]])
-
+                                    own_slots=own_slots)
+            
             return (frame,1)
 
         for (ext,mime_type) in pyokbc_mimetypes.items():

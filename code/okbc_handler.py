@@ -1,5 +1,5 @@
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.11 2002/12/05 12:51:44 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.12 2002/12/05 16:42:35 smurp Exp $'
 
 
 from pyokbc import *
@@ -77,13 +77,14 @@ class okbc_handler:
         print "path_list",path_list
 
         latest_kb = meta_kb()
+        pipe = []
         for elem in path_list:
             frag = string.split(elem,wedge)
             if len(frag) == 2:
                 elem = frag[0]
                 pipe = string.split(frag[1],'.')
                 npt_name = pipe.pop(0) + '.' + pipe[0]
-                pipe[0] = npt_name
+                #pipe[0] = npt_name
                 print "pipe",pipe
             object_request = object_request + '/' + elem
             print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            

@@ -59,7 +59,7 @@ class PyKb(AbstractFileKb):
         if not (len(filename) > len(ext) and \
            filename[-1 * len(ext):] == ext):
             filename = filename + '.' + ext
-        raw_kb = connection._obtain_raw_file(filename,place)
+        (raw_kb,stats) = connection._lines_and_stats(filename,place)
         AbstractFileKb.__init__(self,name,connection=connection)
         #if place == '': # FIXME this should be passed in!
             #place = os.getcwd() + '/know/'
@@ -67,6 +67,9 @@ class PyKb(AbstractFileKb):
         #fname = place+filename # FIXME should os.pathjoin be used?
         prev_kb = current_kb()
         goto_kb(self)
+        for (key,val) in stats.items():
+            #print "putting",key,val
+            put_slot_value(self,str(key),val)
 
         try:
             whole = string.join(raw_kb,"")

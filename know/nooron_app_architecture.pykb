@@ -107,16 +107,16 @@ create_class('nooron_app_class',
 # maybe there should be a kb like: nooron_app_core_wardrobe for...
 create_class(':THING',
              template_slots=[['npt_for_self',
-                              'frame_details_as_html',
-                              'frame_as_html']])
+                              'frame_details.html',
+                              'frame.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
-                              'class_and_instances_as_html',
-                              'class_and_subclasses_as_html']])
+                              'class_and_instances.html',
+                              'class_and_subclasses.html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
-                              'classes_in_kb_as_dot',
-#                              'class_hierarchy_as_dot',
-                              'kb_ancestry_as_dot',
-                              'kb_as_html'
+                              'classes_in_kb.dot',
+                              'class_hierarchy.dot',
+                              'kb_ancestry.dot',
+                              'kb.html'
                               ]])

@@ -1,11 +1,11 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: TemplateManager.py,v 1.7 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.8 2002/12/05 16:42:35 smurp Exp $'
 
 DEBUG = 0
 
 import string
-
+import os
 import NooronRoot
 from NooronPageTemplate import NooronPageTemplate
 
@@ -31,7 +31,7 @@ class TemplateManager:
     def __str__(self):
         return "TemplateManager_"+str(self.__dict__)
         
-    def obtain_template_src(self,template_name):
+    def obtain_template_src_and_stats(self,template_name):
         #NooronRoot = NooronRoot.NooronRoot
         template_uri = template_name
 
@@ -50,7 +50,15 @@ class TemplateManager:
         file = open(fname,'r')
         out = string.join(file.readlines(),"")
         file.close()
-        return out
+        
+        st = os.stat(fname)
+        stats = {'UID':st[4],
+                 'GID':st[5],
+                 'SIZE':st[6],
+                 'ATIME':st[7],
+                 'MTIME':st[8],
+                 'CTIME':st[9]}
+        return (out,stats)
 
     def obtain(self,template_name,request=None,obj=None):
         #print "obtaining obj=",obj,"request =",request,"template_name = ",template_name
@@ -64,9 +72,11 @@ class TemplateManager:
         #print "template_name =",template_name
         self.setObject(template_name,template)
                 
-        src = self.obtain_template_src(template_name)
+        (src,stats) = self.obtain_template_src_and_stats(template_name)
 
         template.write(src)
+        template._stats = stats
+        
         return template
         
     

@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.3 2002/12/05 12:51:43 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.4 2002/12/05 16:42:35 smurp Exp $'
 
 import string
 import md5
@@ -66,6 +66,7 @@ class CachingPipeliningProducer:
         #sections.reverse()
         while sections and not mt:
             section = sections.pop()
+            print "========>>",section
             mt = section.mimetype()
         return mt or 'text/plain'
     def source_and_commands(piper):

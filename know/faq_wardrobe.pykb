@@ -11,4 +11,4 @@ create_class('faq',
              template_slots=[['slot_display_order','Q','A']])
 
 create_class('faq_app',
-             template_slots=[['npt_for_self','faqs_as_html']])
+             template_slots=[['npt_for_self','faqs.html']])

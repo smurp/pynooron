@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.17 2002/12/05 12:51:44 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.18 2002/12/05 16:42:35 smurp Exp $'
 
 DEBUG = 0
 
@@ -69,12 +69,12 @@ class NooronRoot:
         prim_kb = find_kb('PRIMORDIAL_KB')
 
         put_slot_values(':KB','npt_for_instances',
-                        ['kb_as_html'],
+                        ['kb.html'],
                         kb=prim_kb,
                         slot_type=Node._template)
 
         put_slot_values(':THING','npt_for_self',
-                        ['frame_details_as_html','frame_as_html'],
+                        ['frame_details.html','frame.html'],
                         kb=prim_kb,
                         slot_type=Node._template)
 

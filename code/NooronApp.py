@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.19 2002/12/05 12:51:44 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.20 2002/12/05 16:42:35 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -64,33 +64,33 @@ class GenericFrame(AbstractApp):
 
         if npt_name == None:
             npt_name = app.choose_an_npt(request,frame)
+            
+        #print "\n=====================\n",\
+        #      "publish() npt_name:",npt_name,\
+        #      "for frame:",frame
 
-        print "\n=====================\n",\
-              "publish() npt_name:",npt_name,\
-              "for frame:",frame
-
-        
-        app.calc_canonical_request(request,frame,npt_name)
-        canonical_request = request.canonical_request()
-        print "canonical_request =",canonical_request
-
-        cp = CachingPipeliningProducer()
-        cp.set_canonical_request(canonical_request)
-        cp.set_cachedir('/tmp/nooron_cache')
-
-        dotsplit = npt_name.split('.')
-        prev_ext = dotsplit[-1]
-        extensions.pop(0) # only required so long as okbc_handler prepends npt
+        print "npt_name",npt_name
 
         template = nooron_root.template_root().obtain(npt_name,
                                                       request=request,
                                                       obj=frame)
-        template.title = 'booger'
-        #template_output = template(content=frame)
-        #template_prod = medusa.producers.scanning_producer(template_output)
+        template.title = npt_name
         tp = template_producer(template,frame)
+
+        dotsplit = npt_name.split('.')
+        prev_ext = dotsplit[-1]
         spigot = app.get_pipe_section_for_spigot(prev_ext,
                                                  producer = tp)
+
+        app.calc_canonical_request(request,frame,npt_name,template)
+        canonical_request = request.canonical_request()
+        print "canonical_request",canonical_request
+        
+        cp = CachingPipeliningProducer()
+        cp.set_canonical_request(canonical_request)
+        cp.set_cachedir('/tmp/nooron_cache')
+        
+
         if spigot:
             cp.append_pipe(spigot)
         for this_ext in extensions:
@@ -98,11 +98,13 @@ class GenericFrame(AbstractApp):
                                                to_ext=this_ext)
             prev_ext = this_ext
             cp.append_pipe(pipesection)
+
         request['Content-Type'] = cp.mimetype()
+        print         request['Content-Type'] 
 
         cmds = cp.source_and_commands()[1]
         (src_prod,cmds) = cp.source_and_commands()
-        print "==========\n",src_prod,cmds,"\n=========="
+        #print "==========\n",src_prod,cmds,"\n=========="
         if src_prod:
             (fout,fin)=popen2.popen2(cmds,1<<16)
             fin.write(src_prod.more())
@@ -121,7 +123,7 @@ class GenericFrame(AbstractApp):
         #request.push(prod)
         request.done()
 
-    def calc_canonical_request(app,request,frame,npt_name):
+    def calc_canonical_request(app,request,frame,npt_name,template):
         """The canonical request is meant to unambiguously identify the
         state of the system in such a way that the CR will only differ if
         something has happened to either the knowledge, the logic, or
@@ -134,7 +136,10 @@ class GenericFrame(AbstractApp):
           some indication of involved user preferences """
         app.calc_base_request(request,frame,npt_name)
         # FIXME must add change_times for parent_kbs and templates
-        request.set_canonical_request(request.base_request())        
+        request.set_canonical_request("%s\nkb_mtime=%s\ngarment_mtime=%s\n"%(
+            request.base_request(),
+            str(app._kb.get_kb_parents_maximum_mtime()),
+            str(template._stats['MTIME'])))
 
     def calc_base_request(app,request,frame,npt_name):
         """
@@ -191,13 +196,13 @@ class GenericFrame(AbstractApp):
     def get_npt_hardwired(app,request,frame):
         kb = app._kb
         if kb == frame:
-            return 'kb_as_html'
+            return 'kb.html'
         else:
-            return 'frame_as_html'
+            return 'frame.html'
 
     def get_npt_for_subclasses(app,request,frame):
         kb = app._kb
-        print "kb is",kb
+        #print "kb is",kb
         if not kb.class_p(frame):
             return None
         (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_subclasses',

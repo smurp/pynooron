@@ -21,6 +21,13 @@ create_individual('transform_ps_2_pdf',
                              ['RequiresProgram','ps2pdf'],
                              ['LiteralExternalCommand','ps2pdf - -']])
 
+create_individual('transform_ps_2_jpg',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','jpg_extension'],
+                             ['RequiresProgram','gs'],
+                             ['LiteralExternalCommand',
+                              'gs -sDEVICE=jpeg -q -sOutputFile=- -']])
+
 ##########################################################
 
 create_individual('dot_extension',

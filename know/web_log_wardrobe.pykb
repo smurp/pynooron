@@ -3,15 +3,15 @@ put_direct_parents(['web_log_ontology'])
 put_instance_types(current_kb(),['nooron_app_wardrobe'])
 
 create_class('web_log_entry',
-             template_slots=[['npt_for_instances','web_log_entry_as_html']],
+             template_slots=[['npt_for_instances','web_log_entry.html']],
 )
 
 create_class('web_log_category',
-             template_slots=[['npt_for_instances','web_log_category_as_html']],
-             own_slots = [['npt_for_self','web_log_category_self_as_html']],
+             template_slots=[['npt_for_instances','web_log_category.html']],
+             own_slots = [['npt_for_self','web_log_category_self.html']],
              )
 
 create_class('web_log_app',
-             template_slots=[['npt_for_self','web_log_app_as_html']],
+             template_slots=[['npt_for_self','web_log_app.html']],
              )
 

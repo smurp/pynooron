@@ -1,5 +1,5 @@
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.22 2002/12/04 18:08:12 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.23 2002/12/05 16:42:35 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -197,7 +197,8 @@ primordial['slot'] = (":DOCUMENTATION",
                       ":SLOT-MINIMUM-CARDINALITY",":SLOT-SAME-VALUES",
                       ":SLOT-NOT-SAME-VALUES",":SLOT-SUBSET-OF-VALUES",
                       ":SLOT-NUMERIC-MINIMUM",":SLOT-NUMERIC-MAXIMUM",
-                      ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE")
+                      ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE",
+                      "UID","GID","SIZE","ATIME","MTIME","CTIME")
 
 primordial['class'] = (":INDIVIDUAL",
                        ":SLOT",":FACET",":KB",
@@ -1057,6 +1058,12 @@ class KB(FRAME,Programmable):
             kb._cached_kb_parents = kb.get_kb_parents_recurse([])
         return kb._cached_kb_parents
 
+    def get_kb_parents_maximum_mtime(kb): # FIXME not in OKBC spec
+        times = []
+        for kay_bee in kb.get_kb_parents() + [kb]:
+            times.append(get_slot_value(kay_bee,'MTIME',kb=kay_bee)[0])
+        return max(times)
+    
     def get_kb_parents_recurse(kb,checked_kbs=[]):
         for parent in kb.get_kb_direct_parents():
             if not (parent in checked_kbs):

@@ -12,4 +12,4 @@ create_class('Task',
 
 create_class('pert_app',
              template_slots=[['npt_for_self',
-                              'pert_activity_on_node_as_dot']])
+                              'aon.dot']])
