@@ -1,5 +1,5 @@
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.16 2002/12/16 16:44:40 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.17 2003/04/14 22:43:55 smurp Exp $'
 
 
 from pyokbc import *
@@ -12,7 +12,7 @@ from medusa import counter
 import medusa
 from medusa.default_handler import unquote
 
-wedge = '__'
+#wedge = '__'
     
 class okbc_handler:
     def __init__(self,from_root,connection=None):
@@ -82,7 +82,7 @@ class okbc_handler:
         pipe = []
         for elem in path_list:
             #print "checking elem",elem
-            frag = string.split(elem,wedge)
+            frag = string.split(elem,wedge_string)
             if len(frag) == 2:
                 elem = frag[0]
                 pipe = string.split(frag[1],'.')

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.34 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.34 2003/04/13 22:24:17 smurp Exp $'
+__version__='$Revision: 1.35 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.35 2003/04/14 22:43:55 smurp Exp $'
 
 
 from pyokbc import *
@@ -50,6 +50,21 @@ class GenericFrame(AbstractApp):
                                          kb=app._kb, frame=frame)
             #print "args and kwargs",op.get_args_and_kwargs()
             operation_result = op.call(nooron_root.security_engine())
+            print "operation_result",operation_result
+            redir_to = op.get_redirect()
+            if redir_to:
+                request['Location'] = redir_to
+                request.error(302)
+                return
+            if operation_result:
+                res_type = type(operation_result)
+                if not (res_type in [type([]),type(())]) and \
+                       frame_in_kb_p(operation_result):
+                    request['Location'] = operation_result
+                    request.error(302)
+                    return
+                    
+                    
             if type(operation_result) == type(""):
                 print npt_name,operation_result
             npt_name = 'show_form.html'
@@ -133,7 +148,8 @@ class GenericFrame(AbstractApp):
         or encoding extensions (such as .ps, .pdf, .gz) are included.
         THING__GARMENT  eg /know/nooron_faq/faq__details.html
         """
-        request.set_base_request(request.object_request() + '__' + npt_name)
+        request.set_base_request(request.object_request() + wedge_string\
+                                 + npt_name)
 
     def get_pipe_section(app,
                          from_ext=None,from_type=None,

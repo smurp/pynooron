@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.12 2003/04/13 23:02:37 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.13 2003/04/14 22:43:55 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -56,6 +56,11 @@ def detail_preprocessor(form,kb,arg):
             slot_specs = []
             for slot in the_val:
                 the_val = form.get(current_key+delim+slot)
+                if type(the_val) != type([]):
+                    if the_val == None:
+                        the_val = []
+                    else:
+                        the_val = [the_val]
                 rng = range(len(the_val))
                 rng.reverse()
                 for i in rng:
@@ -182,6 +187,10 @@ replace them with creation attempts in appropriate _data kbs.
         return convert_query_to_okbc_args_and_kwargs(op._func,
                                                      op._request.form(),
                                                      write_to_kb)
+
+    def get_redirect(op):
+        return op._request.form().get('OnSuccessRedirectTo',[None])[0]
+    
     def call(op):
         if SAFETY:
             return 'OkbcOperations are not permitted because SAFETY is ON'
