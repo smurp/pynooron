@@ -1,12 +1,71 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.7 2003/01/07 18:35:23 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.8 2003/02/07 22:54:08 smurp Exp $'
 
 import string
 import md5
 import os
 import copy
+import stat
+
+import popen2
+import time
+import fcntl, FCNTL
+import select
+import signal
+
+def execute_pipeline(input,command):
+    """Return the output of a shell pipeline as a string."""
+    def makeNonBlocking(fd):
+        fl = fcntl.fcntl(fd, FCNTL.F_GETFL)
+        try:
+            fcntl.fcntl(fd, FCNTL.F_SETFL, fl | FCNTL.O_NDELAY)
+        except AttributeError:
+            fcntl.fcntl(fd, FCNTL.F_SETFL, fl | FCNTL.FNDELAY)
+
+    timeout = 15
+    proc = popen2.Popen3(command,1)
+    # fromchild, tochild, childerr
+    proc.tochild.write(input)
+    proc.tochild.flush()
+    proc.tochild.close()
+    outfile  = proc.fromchild
+    outfd    = outfile.fileno()
+    errfile  = proc.childerr
+    errfd    = errfile.fileno()
+    makeNonBlocking(outfd)
+    makeNonBlocking(errfd)
+    outdata = errdata = ''
+    outeof = erreof = 0
+    # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52296
+    max_time_to_live = float(timeout) # 5 seconds grace period
+    if int(timeout) == 0:
+        max_time_to_live = 60 
+    start_time = time.time()
+
+    while 1:
+        ready = select.select([outfd,errfd],[],[],1)
+        if outfd in ready[0]:
+            outchunk = outfile.read()
+            if outchunk == '': outeof = 1
+            outdata = outdata + outchunk
+        if errfd in ready[0]:
+            errchunk = errfile.read()
+            if errchunk == '': erreof = 1
+            errdata = errdata + errchunk
+        if outeof and erreof: break
+        if max_time_to_live + start_time < time.time():
+            break
+        time.sleep(0.1)
+    exit_code = proc.poll()
+    if exit_code == -1:
+        pid = proc.pid
+        os.kill(pid,signal.SIGKILL)
+    elif exit_code > 0:
+        print "exit code",exit_code
+
+    return outdata
 
 
 class CachingPipeliningProducer:
@@ -17,25 +76,59 @@ class CachingPipeliningProducer:
         piper._cachekey = None
         piper._done = 0
         piper._file = None
+        piper._data = None
+        piper._content_length = None
+        piper._cmds = None
     def __str__(piper):
         return string.join(map(str,piper._pipeline),'\n')
     
     out_buffer_size = 1<<16
-    def more(self):
+
+    def prime(piper):
+        """Prime the pipe by associating a data source with _file."""
+        (src_prod,cmds,fullpath,cached) = piper.producer_and_commands()
+        if fullpath and cached:
+            f = open(fullpath,'r')
+            lines = f.readlines()
+            fout = string.join(lines,'')            
+            f.close()
+            freshness = "from-cache"
+        elif src_prod:
+            fout = execute_pipeline(src_prod.more(),cmds)
+            freshness = "freshly-generated"
+        elif cmds:
+            fout = execute_pipeline('',cmds)
+            freshness = "from-precursor"
+        else:
+            raise "ThisShouldNotHappen",fullpath
+
+        piper._content_length = len(fout)
+        piper._data = fout
+        #print "fout type=%s, len=%i"%(type(fout),len(fout)),fullpath
+        
+        return freshness
+
+    def more(piper):
         """Execute the whole pipeline. See composite_producer &
         file_producer"""
-        if self._done:
+        #print "CacingPipeliningProducer.more()"
+        if piper._done:
             return ''
         else:
-            data = self._file.read(self.out_buffer_size)
-            if not data:
-                self._file.close()
-                del self._file
-                self._done = 1
-                return ''
-            else:
-                return data
-            
+            piper._done = 1
+            return piper._data
+##            data =  piper._file.read(piper.out_buffer_size)
+##            if not data:
+##                piper._file.close()
+##                del piper._file
+##                piper._done = 1
+##                return ''
+##            else:
+##                return data
+
+
+    def content_length(piper):
+        return piper._content_length or None            
     def set_canonical_request(piper,canonical_request):
         piper._canonical_request = canonical_request
         ck = piper.cachekey()
@@ -78,32 +171,36 @@ class CachingPipeliningProducer:
         a Medusa-style producer which is intended to be called to
         feed its output down the commands pipeline."""
         sections = copy.copy(piper._pipeline)
-        source_p = 0
         source = None
+        fullpath = None
         cmds = []
-        while sections and not source_p:
+        flip = 0
+        if flip: sections.reverse()
+        pos = 0
+        final_fullpath = None
+        num_sections = len(sections)
+        while sections:
             section = sections.pop()
-            (prod,cmd) = section.producer_and_command()
-            if cmd:
+            (prod,cmd,fullpath,cached) \
+                    = section.producer_command_fullpath_and_cached()
+            if cmd :
                 cmds.append(cmd)
-            if prod:
+            if prod and not cached:
                 source = prod
+            if pos == 0 and fullpath:
+                final_fullpath = fullpath                
+                if cached:
+                    return [None,None,fullpath,cached]
+            if pos == num_sections and fullpath:
+                pass
+            pos = pos + 1
         if cmds:
-            cmds.reverse()
+            if not flip: cmds.reverse()
             commands = string.join(cmds,' | ')
         else:
             commands = None
-
-        return [source,commands]
-
-    def more(piper):
-        if not piper.__dict__.get('_p_and_c'):
-           piper._p_and_c = piper.producer_and_commands()
-        (source,commands) = piper._p_and_c
-        # drain the source into the 
-        if source:
-           data = source.more()
-           #if data:
+        piper._cmds = cmds
+        return [source,commands,final_fullpath,None]
 
 class PipeSection:
     """A PipeSection is an encapsulated shell command which can be
@@ -142,32 +239,32 @@ class PipeSection:
 
     def do_caching(pipesection):
         return pipesection._cachedir and os.path.isdir(pipesection._cachedir)
-    
-    def producer_and_command(pipesection):
-        """Returns (producer,command) where producer is only included
+
+    def producer_command_fullpath_and_cached(pipesection):
+        """Returns (producer,command,fullpath) where producer is only included
         if a cached result is not available.  Command is either a command
         which transforms stdin to stdout or a command which starts a
         pipeline by catting to stdout the contents of a cached file
         if it exists.  The pipeline command will tee off a cached copy
         if cachedir is not None.  The intention is that the command
         returned by this method be combined with others in a complete
-        shell pipeline."""
+        shell pipeline.  Fullpath is not None if the file already exists."""
         if pipesection.do_caching():
             fullpath = pipesection.full_path()
             if fullpath:
                 if os.path.isfile(fullpath):
-                    return (None,"cat %s" % fullpath)
+                    return (None,"cat %s" % fullpath,fullpath,1)
                 else:
                     return (pipesection._producer,
                             "%s | tee %s" % (pipesection._command or 'cat',
-                                             fullpath))
-        return (pipesection._producer,pipesection._command)
-
-
+                                             fullpath),fullpath,None)
+        return (pipesection._producer,pipesection._command,None,None)
+        
+        
 
 if __name__ == '__main__':
    
-    cp = CachingPipeliningProducer()
+    cp = CachingPipeliningProducer(canonical_request='path,date1,date2')
     cp.append_pipe(PipeSection(producer=None,
                                extension='dot',
                                mimetype ='application/x-graphviz'))
@@ -186,7 +283,7 @@ if __name__ == '__main__':
         "kbdatestamp=1038939824\n" +\
         "nptdatestamp=1038932134\n")
     print cp.mimetype()
-    print cp.source_and_commands()
+    print cp.producer_and_commands()
 
 
 """

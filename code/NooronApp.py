@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.28 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.28 2003/01/24 12:27:35 smurp Exp $'
+__version__='$Revision: 1.29 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.29 2003/02/07 22:54:08 smurp Exp $'
 
 
 from pyokbc import *
@@ -9,7 +9,7 @@ from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer
 #from AccessControl import allow_module
 #allow_module('pyobkc')
 import medusa.producers
-import popen2
+#import popen2
 from OkbcOperation import OkbcOperation
 
 class AbstractApp:
@@ -84,29 +84,16 @@ class GenericFrame(AbstractApp):
             prev_ext = this_ext
             cp.append_pipe(pipesection)
 
-        request['Content-Type'] = cp.mimetype()
-        #print         request['Content-Type'] 
+        request['Content-Type'] = cp.mimetype()        
+        request['Content-Freshness'] = cp.prime()
+        final_producer = cp
 
-        #cmds = cp.source_and_commands()[1]
-        (src_prod,cmds) = cp.producer_and_commands()
-        #print "==========\n",src_prod,cmds,"\n=========="
-        if src_prod:
-            (fout,fin)=popen2.popen2(cmds,1<<16)
-            fin.write(src_prod.more())
-            fin.flush()
-            fin.close()
-            #src_prod.close()
-            final_producer = medusa.producers.file_producer(fout)
-        else:
-            final_producer = \
-                   medusa.producers.file_producer(os.popen(cmds,'r'))
+        if hasattr(final_producer,'content_length'):
+            cl =  final_producer.content_length()
+            if cl != None:
+                request['Content-Length'] = cl
 
-        #print "base_request",request.base_request()
-        request.push(final_producer)        
-        #request.push(dummy_producer())
-
-        #prod = medusa.producers.file_producer(os.popen(cmds,'r'))
-        #request.push(prod)
+        request.push(final_producer.more())
         request.done()
 
     def calc_canonical_request(app,request,frame,npt_name,template):
@@ -283,5 +270,3 @@ class template_producer:
             return self._template(content=self._content)
         else:
             return ''
-
-        
