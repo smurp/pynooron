@@ -3,6 +3,7 @@ TODO (to get v0.2 released)
   - figure out how to display a NooronApp instance
     - app_front_object
     - app_front_template
+    - app_instance.npt_for_me
 
   - figure out how to display the nooron_site_config (is it a NooronApp?)
   - create topicmap_as_svg

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: nooron_app_architecture.xtm,v 1.3 2002/08/15 18:17:42 smurp Exp $ -->
+<!-- $Id: nooron_app_architecture.xtm,v 1.4 2002/09/27 19:01:23 smurp Exp $ -->
 
 <topicMap id="nooron_app_architecture"
   xmlns="http://www.topicmaps.org/xtm/1.0/"
@@ -33,7 +33,7 @@
     <instanceOf>
       <subjectIndicatorRef xlink:href="#cvs_id"/>
     </instanceOf>
-    <resourceData>$Id: nooron_app_architecture.xtm,v 1.3 2002/08/15 18:17:42 smurp Exp $</resourceData>
+    <resourceData>$Id: nooron_app_architecture.xtm,v 1.4 2002/09/27 19:01:23 smurp Exp $</resourceData>
   </occurrence>
 </topic>
 
@@ -275,7 +275,7 @@
 
 <topic id="npt_for_self">
   <baseName>
-    <baseNameString>npt_for_me</baseNameString>
+    <baseNameString>npt for self</baseNameString>
   </baseName>
   <occurrence>
     <resourceData>
