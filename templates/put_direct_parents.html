@@ -21,6 +21,7 @@
     <tal:block repeat="parent parents">
       <tal:block define="slot_name string:parent_kbs;
                          slot_pretty_name string: a parent;
+		         field_name slot_name;
                          slot_value parent">
         <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
       </tal:block>
@@ -35,7 +36,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: put_direct_parents.html,v 1.1 2003/03/03 20:38:10 smurp Exp $
+$Id: put_direct_parents.html,v 1.2 2003/03/28 09:47:06 smurp Exp $
 </div>
 
   </body>
