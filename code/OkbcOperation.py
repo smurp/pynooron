@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.7 2003/03/28 07:31:46 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.8 2003/03/28 07:37:38 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -199,7 +199,8 @@ class AuthorizedOkbcOperation(OkbcOperation):
             return denied
         
 class IPListSecurityEngine:
-    """IPListSecurityEngine allows or denies listed IPs or denies everybody.
+    """IPListSecurityEngine allows or denies listed IPs or allows everybody
+    by default.
 
     usage:
       # allow only listed IPs deny everybody else
@@ -210,6 +211,8 @@ class IPListSecurityEngine:
       
       # deny everybody, tell them why
       IPListSecurityEngine(deny=1,message="On hiatus!")
+
+    see tests/test_security.py
     """
     def __init__(self,allow=[],deny=[],
                  message='Not authorized to perform that operation.',
@@ -238,4 +241,4 @@ class IPListSecurityEngine:
         if self._chain:
             return self._chain.denied_p(op)
         
-        return None  # allow ALL otherwise
+        return self._message  # deny ALL by default
