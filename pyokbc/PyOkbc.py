@@ -10,17 +10,18 @@ import string
 import copy
 import os
 
+from  OkbcConditions import *
 
 ##########################################
 #    Classes
 ##########################################    
+# 
+# Oh, order is *so* important below!  Bootstrapping madness!
+# If you have any idea how to do a better job of this, please
+# tell smurp@emergence.com
+#
 
-from  OkbcConditions import *
-
-class Node:
-    pass # so Symbol can subclass it
-
-class Symbol(Node):
+class Symbol:
     __allow_access_to_unprotected_subobjects__ = 1 # for ZPT security    
     def __init__(self,name):
         self._name = name
@@ -35,130 +36,15 @@ class Symbol(Node):
         return "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"+self.name
 
 class Node(Symbol):
-    _all                      = Symbol(':all')
-    _own                      = Symbol(':own')
-    _template                 = Symbol(':template')
-    _slot_types               = (_all,_template,_own)
-    
-    _taxonomic                = Symbol(':taxonomic')
-    _direct                   = Symbol(':direct')
-    _inference_levels         = (_taxonomic,_all,_direct)
-    
-    _default_only             = Symbol(':default-only')
-    _known_true               = Symbol(':known-true')
-    _either                   = Symbol(':either')
-    _value_selectors          = (_either,_default_only,_known_true)
-    
-    _more                     = Symbol(':more')
-    _number_of_values         = (_all,_more)
-    
-    _class                    = Symbol(':class')
-    _individual               = Symbol(':individual')
-    _slot                     = Symbol(':slot')
-    _facet                    = Symbol(':facet')
-    _kb                       = Symbol(':kb') # not included in _frame_types
-    _frame_types              = (_class,_individual,_slot,_facet)
-    _cache_types              = _frame_types + (_kb,)
-    
-    _value                    = Symbol(':value')
-    _frame                    = Symbol(':frame')
-    _target_contexts          = (_frame,_slot,_facet,_class,_individual,_value)
-    
-    _system_default           = Symbol(':system-default')
-    _frames                   = Symbol(':frames')
-    _selector_all             = (_all,_frames,_system_default)
-    _default                  = Symbol(':default')
-
-    _filled                   = Symbol(':filled')
-
-    # initargs
-    _port                     = Symbol(':port')
-    _host                     = Symbol(':host')
-    _password                 = Symbol(':password')
-    _username                 = Symbol(':username')
-    _parent_kbs               = Symbol(':parent-kbs')
-
-    # facets (redefined later using create_facet)
-    _VALUE_TYPE               = Symbol(':VALUE-TYPE')
-    _INVERSE                  = Symbol(':INVERSE')
-    _CARDINALITY              = Symbol(':CARDINALITY')
-    _MAXIMUM_CARDINALITY      = Symbol(':MAXIMUM-CARDINALITY')
-    _MINIMUM_CARDINALITY      = Symbol(':MINIMUM-CARDINALITY')
-    _SAME_VALUES              = Symbol(':SAME-VALUES')
-    _NOT_SAME_VALUES          = Symbol(':NOT-SAME-VALUES')
-    _SUBSET_OF_VALUES         = Symbol(':SUBSET-OF-VALUES')
-    _NUMERIC_MINIMUM          = Symbol(':NUMERIC-MINIMUM')
-    _NUMERIC_MAXIMUM          = Symbol(':NUMERIC-MAXIMUM')
-    _SOME_VALUES              = Symbol(':SOME-VALUES')
-    _COLLECTION_TYPE          = Symbol(':COLLECTION-TYPE')
-    _DOCUMENTATION_IN_FRAME   = Symbol(':DOCUMENTATION-IN-FRAME')
-    
-
-
-    # behavior values
-    _never                    = Symbol(':never')
-    _immediate                = Symbol(':immediate')
-    _user_defined_facets      = Symbol(':user-defined-facets')
-    _facets_reported          = Symbol(':facets-reported')    
-    _read_only                = Symbol(':read-only')
-    _monotonic                = Symbol(':monotonic')
-    _deferred                 = Symbol(':deferred')
-    _background               = Symbol(':background')
-    _override                 = Symbol(':override')
-    _when_consistent          = Symbol(':when-consistent')
-    _none                     = Symbol(':none')
-    _list                     = Symbol(':list')
-    
-    # behaviors
-    _are_frames               = Symbol(':are-frames')
-    _are_frames_all           = (_class,_individual,_slot,_facet)
-    _class_slot_types         = Symbol(':class-slot-types')
-    _class_slot_types_all     = (_template, _own)
-    _collection_types         = Symbol(':collection-types')
-    _compliance               = Symbol(':compliance')
-    _compliance_all             = (_facets_reported,
-                                   _user_defined_facets,
-                                   _read_only,
-                                   _monotonic)
-    _constraints_checked      = Symbol(':constraints-checked')
-    _constraints_checked_all  = (_VALUE_TYPE,
-                                 _INVERSE,
-                                 _CARDINALITY,
-                                 _MAXIMUM_CARDINALITY,
-                                 _MINIMUM_CARDINALITY,
-                                 _SAME_VALUES,
-                                 _NOT_SAME_VALUES,
-                                 _SUBSET_OF_VALUES,
-                                 _NUMERIC_MINIMUM,
-                                 _NUMERIC_MAXIMUM,
-                                 _SOME_VALUES,
-                                 _COLLECTION_TYPE,
-                                 _DOCUMENTATION_IN_FRAME)
-    _constraint_checking_time = Symbol(':constraint-time-checking')
-    _constraint_checking_time_all = (_immediate,_deferred,_background,_never)
-    _constraint_report_time   = Symbol(':constraint-report-time')
-    _constraint_report_time_all = (_immediate,_deferred)
-    _defaults                 = Symbol(':defaults')
-    _defaults_all             = (_override,
-                                 _when_consistent,
-                                 _none)
-
-    _behaviours_all           = (_are_frames,
-                                 _class_slot_types,
-                                 _collection_types,
-                                 _compliance,
-                                 _constraints_checked,
-                                 _constraint_checking_time,
-                                 _constraint_report_time,
-                                 _defaults)
+    pass
 
 class FRAME(Node):
     __allow_access_to_unprotected_subobjects__ = 1
     def __init__(self,frame_name,kb=None,frame_type=None):
         self._name = frame_name
-        self._frame_type = frame_type
-        if not frame_type :
-            warn('FRAME.__init__ has no frame_type for '+frame_name)
+        #self._frame_type = frame_type
+        #if not frame_type :
+        #    warn('FRAME.__init__ has no frame_type for '+frame_name)
         self._kb = kb
         self._direct_types = []
         self._frame_in_cache_p = 0
@@ -177,6 +63,7 @@ class FRAME(Node):
     def __repr__(self):
         return str(self)
 
+
 class KLASS(FRAME): pass
 
 class INDIVIDUAL(FRAME): pass
@@ -185,46 +72,204 @@ class SLOT(FRAME): pass
 
 class FACET(FRAME): pass
 
-class Connection:
-    def __init__(connection,initargs=None):
-        connection._meta_kb = META_KB('DefaultMetaKb',
-                                      connection = connection)
-        from PyKb import PyKb
-        connection._default_kb_type = PyKb
+Node._class = KLASS(':class')
+Node._class._frame_type = Node._class
+KLASS._frame_type = Node._class
 
-    def create_kb(connection,
-                  kb_type=None,
-                  kb_locator=None,
-                  initargs={}):
-        if not kb_type:
-            kb_type = connection._default_kb_type
-        my_meta_kb = connection._meta_kb
-        
-        kb = kb_type(kb_locator,initargs=initargs,
-                     meta=my_meta_kb)
-        my_meta_kb._add_frame_to_cache(kb)
-        return kb
+Node._facet = FACET(':facet')
+Node._facet._frame_type = Node._class
+FACET._frame_type = Node._facet
 
-    def meta_kb(connection):
-        return connection._meta_kb
+Node._slot = FACET(':slot')
+Node._slot._frame_type = Node._class
+SLOT._frame_type = Node._slot
 
-    def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
-        if not kb_type:
-            kb_type = connection._default_kb_type
-        my_meta_kb = kb=connection._meta_kb
-        (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
-        if not kb:
-            kb = kb_type(kb_locator,connection=connection)
-            my_meta_kb._add_frame_to_cache(kb)
-        return kb
+Node._individual = FACET(':individual')
+Node._individual._frame_type = Node._class
+INDIVIDUAL._frame_type = Node._individual
 
-    def openable_kbs(connection, kb_type = None, place = None):
-        warn("openable_kbs is a noop",20)
-        return []
+Node._kb = FACET(':kb')
+Node._kb._frame_type = Node._class
+
+
+primordials = []
+def primordialFACET(name):
+    o = FACET(name,)
+    primordials.append(o)
+    return o
+def primordialSLOT(name):
+    o = SLOT(name)
+    primordials.append(o)
+    return o
+def primordialKLASS(name):
+    o = KLASS(name)
+    primordials.append(o)
+    return o
+def primordialINDIVIDUAL(name):
+    o = INDIVIDUAL(name)
+    primordials.append(o)
+    return o
+
+Node._all                      = Symbol(':all')
+Node._own                      = Symbol(':own')
+Node._template                 = Symbol(':template')
+Node._slot_types               = (Node._all,Node._template,Node._own)
     
-##    def all_connections
-##    def close_connection
-##    def establish_connection
+Node._taxonomic                = Symbol(':taxonomic')
+Node._direct                   = Symbol(':direct')
+Node._inference_levels         = (Node._taxonomic,Node._all,Node._direct)
+    
+Node._default_only             = Symbol(':default-only')
+Node._known_true               = Symbol(':known-true')
+Node._either                   = Symbol(':either')
+Node._value_selectors          = (Node._either,Node._default_only,Node._known_true)
+    
+Node._more                     = Symbol(':more')
+Node._number_of_values         = (Node._all,Node._more)
+
+
+#Node._kb                       = Symbol(':kb') # not included in _frame_types
+Node._frame_types              = (Node._class,Node._individual,Node._slot,Node._facet)
+Node._cache_types              = Node._frame_types + (Node._kb,)
+    
+Node._value                    = Symbol(':value')
+Node._frame                    = Symbol(':frame')
+Node._target_contexts          = (Node._frame,Node._slot,Node._facet,Node._class,Node._individual,Node._value)
+    
+Node._system_default           = Symbol(':system-default')
+Node._frames                   = Symbol(':frames')
+Node._selector_all             = (Node._all,Node._frames,Node._system_default)
+Node._default                  = Symbol(':default')
+
+Node._filled                   = Symbol(':filled')
+
+    # initargs
+Node._port                     = Symbol(':port')
+Node._host                     = Symbol(':host')
+Node._password                 = Symbol(':password')
+Node._username                 = Symbol(':username')
+Node._parent_kbs               = Symbol(':parent-kbs')
+
+# standard slots
+#Node._DOCUMENTATION            = primordialSLOT(":DOCUMENTATION")
+
+primordial = {}
+
+# standard facets
+primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
+                       ":VALUE-TYPE",":MAXIMUM-CARDINALITY",
+                       ":MINIMUM-CARDINALITY",":SAME-VALUES",
+                       ":NOT-SAME-VALUES",":SUBSET-OF-VALUES",
+                       ":NUMERIC-MINIMUM",":NUMERIC-MAXIMUM",
+                       ":SAME-VALUES", ":SOME-VALUES",
+                       ":COLLECTION-TYPE",
+                       ":DOCUMENTATION-IN-FRAME")
+
+# Slots on slot frames okbc2.html#3169
+primordial['slot'] = (":DOCUMENTATION",
+                      ":DOMAIN",":SLOT-VALUE-TYPE",":SLOT-INVERSE",
+                      ":SLOT-CARDINALITY",":SLOT-MAXIMUM-CARDINALITY",
+                      ":SLOT-MINIMUM-CARDINALITY",":SLOT-SAME-VALUES",
+                      ":SLOT-NOT-SAME-VALUES",":SLOT-SUBSET-OF-VALUES",
+                      ":SLOT-NUMERIC-MINIMUM",":SLOT-NUMERIC-MAXIMUM",
+                      ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE")
+
+primordial['class'] = (":INDIVIDUAL",
+                       ":NUMBER",":INTEGER",":STRING",
+                       ":SEXPR",":SYMBOL",":LIST")
+
+primordial['individual'] = ()
+
+Node._THING = primordialKLASS(":THING")
+Node._CLASS = primordialKLASS(":CLASS")
+
+def bootstrap(primordial = primordial):
+    types_in_order = ['facet','slot','class','individual']    
+    types = (('facet',      primordialFACET),
+             ('slot',       primordialSLOT),
+             ('class',      primordialKLASS),
+             ('individual', primordialINDIVIDUAL))
+    for typ,construct in types:
+        for name in primordial[typ]:
+            pyname = name
+            pyname = pyname.replace("-","_")
+            pyname = pyname.replace(":","_")
+            #print pyname,name
+            Node.__dict__[pyname] = construct(name)
+            if type == 'class':
+                Node.__dict__[pyname].__direct_types = [Node._CLASS]
+                Node.__dict__[pyname].__direct_superclasses = [Node._THING]
+
+bootstrap()
+
+Node._NUMBER._direct_superclasses.append(Node._INDIVIDUAL)
+Node._INTEGER._direct_superclasses.append(Node._NUMBER)
+Node._STRING._direct_superclasses.append(Node._INDIVIDUAL)
+Node._SYMBOL._direct_superclasses.append(Node._SEXPR)
+Node._LIST._direct_superclasses.append(Node._INDIVIDUAL)
+
+    
+
+
+    # behavior values
+Node._never                    = Symbol(':never')
+Node._immediate                = Symbol(':immediate')
+Node._user_defined_facets      = Symbol(':user-defined-facets')
+Node._facets_reported          = Symbol(':facets-reported')    
+Node._read_only                = Symbol(':read-only')
+Node._monotonic                = Symbol(':monotonic')
+Node._deferred                 = Symbol(':deferred')
+Node._background               = Symbol(':background')
+Node._override                 = Symbol(':override')
+Node._when_consistent          = Symbol(':when-consistent')
+Node._none                     = Symbol(':none')
+Node._list                     = Symbol(':list')
+    
+    # behaviors
+Node._are_frames               = Symbol(':are-frames')
+Node._are_frames_all           = (Node._class,Node._individual,Node._slot,Node._facet)
+Node._class_slot_types         = Symbol(':class-slot-types')
+Node._class_slot_types_all     = (Node._template, Node._own)
+Node._collection_types         = Symbol(':collection-types')
+Node._compliance               = Symbol(':compliance')
+Node._compliance_all             = (Node._facets_reported,
+                               Node._user_defined_facets,
+                               Node._read_only,
+                               Node._monotonic)
+Node._constraints_checked      = Symbol(':constraints-checked')
+Node._constraints_checked_all  = (Node._VALUE_TYPE,
+                                  Node._INVERSE,
+                                  Node._CARDINALITY,
+                                  Node._MAXIMUM_CARDINALITY,
+                                  Node._MINIMUM_CARDINALITY,
+                                  Node._SAME_VALUES,
+                                  Node._NOT_SAME_VALUES,
+                                  Node._SUBSET_OF_VALUES,
+                                  Node._NUMERIC_MINIMUM,
+                                  Node._NUMERIC_MAXIMUM,
+                                  Node._SOME_VALUES,
+                                  Node._COLLECTION_TYPE,
+                                  Node._DOCUMENTATION_IN_FRAME)
+Node._constraint_checking_time = Symbol(':constraint-time-checking')
+Node._constraint_checking_time_all = (Node._immediate,Node._deferred,Node._background,Node._never)
+Node._constraint_report_time   = Symbol(':constraint-report-time')
+Node._constraint_report_time_all = (Node._immediate,Node._deferred)
+Node._defaults                 = Symbol(':defaults')
+Node._defaults_all             = (Node._override,
+                                  Node._when_consistent,
+                                  Node._none)
+
+Node._behaviours_all           = (Node._are_frames,
+                                  Node._class_slot_types,
+                                  Node._collection_types,
+                                  Node._compliance,
+                                  Node._constraints_checked,
+                                  Node._constraint_checking_time,
+                                  Node._constraint_report_time,
+                                  Node._defaults)
+
+
+
 
 
 class KB(FRAME):    
@@ -232,6 +277,7 @@ class KB(FRAME):
     The exceptions are the mandatory ones.  All of them are implemented in
     TupleKB.  That leaves all optional methods, which should be implemented
     here.  Oh I am sure this is all screwed up!"""
+    _frame_type = Node._kb    
     __allow_access_to_unprotected_subobjects__ = 1
     def __init__(self,name,initargs = {},connection=None):
         if connection:
@@ -341,7 +387,7 @@ class KB(FRAME):
 
         if doc: frame._doc = doc
         if doc:
-            kb.put_slot_value(frame,Node._DOCUMENTATION_IN_FRAME,
+            kb.put_slot_value(frame,Node._DOCUMENTATION,
                               doc,slot_type=Node._template,
                               kb_local_only_p=kb_local_only_p)
         if pretty_name != None: frame._pretty_name = pretty_name
@@ -505,9 +551,9 @@ class KB(FRAME):
                                     inference_level=Node._direct)[0]:
                 tel(["subclass-of",frame_name,klass])                
 
-        for slot in get_frame_slots(frame,slot_type=Node._own)[0]:
+        for slot in kb.get_frame_slots(frame,slot_type=Node._own)[0]:
             some = 0
-            for val in get_slot_values(frame,slot,slot_type=Node._own)[0]:
+            for val in kb.get_slot_values(frame,slot,slot_type=Node._own)[0]:
                 some = 1
                 if type(val) == type(''):
                     val = '"' + val + '"'
@@ -515,14 +561,15 @@ class KB(FRAME):
             if not some:
                 tel(["slot-of",slot,frame_name])
 
-        for slot in get_frame_slots(frame,slot_type=Node._template,
-                                    inference_level=Node._direct)[0]:
+        for slot in kb.get_frame_slots(frame,slot_type=Node._template,
+                                       inference_level=Node._direct)[0]:
             some = 0
-            for val in get_slot_values(frame,slot,Node._template):
+            print "slot =",slot,slot.__class__,slot.__class__.__bases__
+            for val in kb.get_slot_values(frame,slot,Node._template)[0]:
                 some = 1
                 tel(["template-slot-value",slot,frame,val])
             if not some:
-                tel(['template-slot-or',slot,frame_name])
+                tel(['template-slot-of',slot,frame_name])
 
         warn("get-frame-sentences skips prettyname, facets")
         pretty_name = kb.get_frame_pretty_name(frame)
@@ -631,15 +678,19 @@ class KB(FRAME):
             #raise SlotNotFound,(frame,slot,slot_type,kb)
             return ([],0,0)
 
-        (list_of_values,
-         exact_p,
-         more_status) = kb.get_slot_values_internal(found_frame,
-                                                    found_slot,
-                                                    inference_level,
-                                                    slot_type,
-                                                    number_of_values,
-                                                    value_selector,
-                                                    kb_local_only_p)
+        try:
+            (list_of_values,
+             exact_p,
+             more_status) = kb.get_slot_values_internal(found_frame,
+                                                        found_slot,
+                                                        inference_level,
+                                                        slot_type,
+                                                        number_of_values,
+                                                        value_selector,
+                                                        kb_local_only_p)
+        except:
+            print "kb =",kb
+            raise
         if inference_level in [Node._taxonomic,Node._all] and \
            slot_type != Node._own:
             for klass in kb.get_instance_types(frame,
@@ -893,6 +944,8 @@ class TupleKb(KB):
         signal constraint violation conditions (see Section 3.8).
         Returns no values. """
         if type(value) == type([]): raise CardinalityViolation,str(value)
+        (frame,frame_found_p) = kb.get_frame_in_kb(frame)
+        (slot,slot_found_p) = kb.get_frame_in_kb(slot)
         if slot_type == Node._own:
             if frame._own_slots.has_key(slot):
                 frame._own_slots[slot].set_value(value)
@@ -959,14 +1012,47 @@ class AbstractFileKb(AbstractPersistentKb):
         outfile.close()
 
 
-##class BOGUS_META_KB(TupleKb):
-##    def __init__(kb,kb_name,
-##                 connection=None):
-##        # kb_name        the name of the new kb
-##        # connection     the connection for which this is the meta_kb
-##        meth = TupleKb.__init__
-##        meth(kb,kb_name)
-##        kb._connection = connection
+class Connection:
+    def __init__(connection,initargs=None):
+        connection._meta_kb = META_KB('DefaultMetaKb',
+                                      connection = connection)
+        from PyKb import PyKb
+        connection._default_kb_type = PyKb
+
+    def create_kb(connection,
+                  kb_type=None,
+                  kb_locator=None,
+                  initargs={}):
+        if not kb_type:
+            kb_type = connection._default_kb_type
+        my_meta_kb = connection._meta_kb
+        
+        kb = kb_type(kb_locator,initargs=initargs,
+                     meta=my_meta_kb)
+        my_meta_kb._add_frame_to_cache(kb)
+        return kb
+
+    def meta_kb(connection):
+        return connection._meta_kb
+
+    def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
+        if not kb_type:
+            kb_type = connection._default_kb_type
+        my_meta_kb = kb=connection._meta_kb
+        (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
+        if not kb:
+            kb = kb_type(kb_locator,connection=connection)
+            my_meta_kb._add_frame_to_cache(kb)
+        return kb
+
+    def openable_kbs(connection, kb_type = None, place = None):
+        warn("openable_kbs is a noop",20)
+        return []
+    
+##    def all_connections
+##    def close_connection
+##    def establish_connection
+
 
 
 class UNIT_SLOT:
@@ -1056,81 +1142,6 @@ Node._primordial_kb = AbstractPersistentKb('PRIMORDIAL_KB')
 goto_kb(Node._primordial_kb)
 PRIMORDIAL_KB = Node._primordial_kb
 
-    # Standard Classes
-Node._THING = create_class(":THING",
-             direct_types=[':CLASS'],
-             doc=""":THING is the root of the class hierarchy for a KB, meaning
-             that :THING is the superclass of every class in every KB.""")
-Node._CLASS = create_class(":CLASS",
-             direct_types=[':CLASS'],
-             doc=""":CLASS is the class of all classes. That is, every entity
-             that is a class is an instance of :CLASS.""")
-Node._INDIVIDUAL = create_class(":INDIVIDUAL",
-             direct_types=[':CLASS'],
-             doc=""":INDIVIDUAL is the class of all entities that are not
-             classes. That is, every entity that is not a class is an
-             instance of :INDIVIDUAL.""")
-Node._NUMBER = create_class(":NUMBER",
-             direct_types=[':CLASS'],
-             direct_superclasses=[':INDIVIDUAL'],
-             doc=""":NUMBER is the class of all numbers.
-             OKBC makes no guarantees about the precision of numbers.
-             If precision is an issue for an application, then the
-             application is responsible for maintaining and validating
-             the format of numerical values of slots and facets.
-             :NUMBER is a subclass of :INDIVIDUAL.""")
-Node._INTEGER = create_class(":INTEGER",
-             direct_types=[':CLASS'],
-             direct_superclasses=[':NUMBER'],
-             doc=""":INTEGER is the class of all integers and is a
-             subclass of :NUMBER. As with numbers in general, OKBC makes
-             no guarantees about the precision of integers.""")
-Node._STRING = create_class(":STRING",
-             direct_types=[':CLASS'],
-             direct_superclasses=[':INDIVIDUAL'],
-             doc=""":STRING is the class of all text strings.
-             :STRING is a subclass of :INDIVIDUAL. """)
-Node._SEXPR = create_class(":SEXPR",
-             direct_types=[':CLASS'],
-             doc=""":SEXP is not documented in OKBC v2.03""")
-Node._SYMBOL = create_class(":SYMBOL",
-             direct_types=[':CLASS'],
-             direct_superclasses=[':SEXPR'],       
-             doc=""":SYMBOL is the class of all symbols.
-             :SYMBOL is a subclass of :SEXPR.""")
-Node._LIST =  create_class(":LIST",
-             direct_types=[':CLASS'],
-             direct_superclasses=[':INDIVIDUAL'],
-             doc=""":LIST is the class of all lists. 
-             :LIST is a subclass of :INDIVIDUAL. """)
-
-    # standard facets
-Node._VALUE_TYPE =  create_facet(":VALUE-TYPE")
-Node._INVERSE = create_facet(":INVERSE")
-Node._CARDINALITY =  create_facet(":CARDINALITY")
-Node._VALUE_TYPE =  create_facet(":VALUE-TYPE")
-Node._MAXIMUM_CARDINALITY =  create_facet(":MAXIMUM-CARDINALITY")
-Node._MINIMUM_CARDINALITY =  create_facet(":MINIMUM-CARDINALITY")
-Node._SAME_VALUES = create_facet(":SAME-VALUES")
-Node._NOT_SAME_VALUES = create_facet(":NOT-SAME-VALUES")
-Node._SUBSET_OF_VALUES = create_facet(":SUBSET-OF-VALUES")
-Node._NUMERIC_MINIMUM = create_facet(":NUMERIC-MINIMUM")
-Node._NUMERIC_MAXIMUM = create_facet(":SAME-VALUES")
-Node._SOME_VALUES = create_facet(":SOME-VALUES")
-Node._COLLECTION_TYPE = create_facet(":COLLECTION-TYPE")
-Node._DOCUMENTATION_IN_FRAME = create_facet(":DOCUMENTATION-IN-FRAME")
-
-    # Slots on slot frames okbc2.html#3169
-Node._DOMAIN = create_slot(":DOMAIN")
-Node._SLOT_VALUE_TYPE = create_slot(":SLOT-VALUE-TYPE")
-Node._SLOT_INVERSE = create_slot(":SLOT-INVERSE")
-Node._SLOT_CARDINALITY = create_slot(":SLOT-CARDINALITY")
-Node._SLOT_MAXIMUM_CARDINALITY = create_slot(":SLOT-MAXIMUM-CARDINALITY")
-Node._SLOT_MINIMUM_CARDINALITY = create_slot(":SLOT-MINIMUM-CARDINALITY")
-Node._SLOT_SAME_VALUES = create_slot(":SLOT-SAME-VALUES")
-Node._SLOT_NOT_SAME_VALUES = create_slot(":SLOT-NOT-SAME-VALUES")
-Node._SLOT_SUBSET_OF_VALUES = create_slot(":SLOT-SUBSET-OF-VALUES")
-Node._SLOT_NUMERIC_MINIMUM = create_slot(":SLOT-NUMERIC-MINIMUM")
-Node._SLOT_NUMERIC_MAXIMUM = create_slot(":SLOT-NUMERIC-MAXIMUM")
-Node._SLOT_SOME_VALUES = create_slot(":SLOT-SOME-VALUES")
-Node._SLOT_COLLECTION_TYPE = create_slot(":SLOT-COLLECTION-TYPE")
+for f in primordials:
+    Node._primordial_kb._add_frame_to_cache(f)
+    

@@ -1,0 +1,13 @@
+
+TODO
+
+
+* PyOkbc must support operations minimally required by Nooron:
+** get_class_superclasses [to support get_slot_values]
+** 
+** default values  [so there can be default values for assocated NPTs]
+** value inheritance, from class to individual (template_slots)
+*** coerce_to_handle [how the hell does a handle work]
+
+* move get_class_superclasses to KB or TupleKb
+* clean up Node._*_all and make them into a dict keyed by _*
