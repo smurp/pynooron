@@ -19,11 +19,15 @@ create_individual('transform_ps_2_pdf',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','pdf_extension'],
                              ['RequiresProgram','ps2pdf'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
                              ['LiteralExternalCommand','ps2pdf - -']])
 create_individual('transform_ps_2_jpg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','jpg_extension'],
                              ['RequiresProgram','gs'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
                              ['LiteralExternalCommand',
                               'gs -sDEVICE=jpeg -q -sOutputFile=- -']])
 
@@ -51,16 +55,22 @@ create_individual('transform_dot_2_ps',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','ps_extension'],
                              ['RequiresProgram','dot'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
                              ['LiteralExternalCommand','dot -Tps']])
 create_individual('transform_dot_2_jpg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','jpg_extension'],
                              ['RequiresProgram','dot'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
                              ['LiteralExternalCommand','dot -Tjpeg']])
 create_individual('transform_dot_2_svg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','svg_extension'],
                              ['RequiresProgram','dot'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
                              ['LiteralExternalCommand','dot -Tsvg']])
 
 ##########################################################
@@ -90,6 +100,15 @@ create_individual('svg_extension',
 
 ##########################################################
 
+create_individual('dvi_extension',
+                  direct_types=['FileExtension'],                  
+                  own_slots=[['MimeType','application/x-dvi'],
+                             ['LiteralExtension','.dvi'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_dvi']])
+
+##########################################################
+
 create_individual('pdf_extension',
                   direct_types=['FileExtension'],
                   own_slots=[['MimeType','application/pdf'],
@@ -97,11 +116,27 @@ create_individual('pdf_extension',
                              ['ApplicableTransformers',
                               'transform_pdf_2_ps']])
 
+create_individual('txt_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/plain'],
+                             ['LiteralExtension','.txt'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_txt']])
+
+create_individual('rtf_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/rtf'],
+                             ['LiteralExtension','.rtf'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_rtf']])
+
+
+
 ##########################################################
 
-create_individual('lpr_extension',
-                  direct_types=['FileExtension'],
-                  own_slots=[['MimeType','text/plain'],])
+#create_individual('lpr_extension',
+#                  direct_types=['FileExtension'],
+#                  own_slots=[['MimeType','text/plain'],])
 
 ##########################################################
 
@@ -110,11 +145,54 @@ create_individual('dbk_extension',
                   own_slots=[['MimeType','text/plain'],
                              ['LiteralExtension','.dbk'],
                              ['ApplicableTransformers',
-                              'transform_dbk_2_ps']])
+                              'transform_dbk_2_ps',
+                              'transform_dbk_2_pdf',
+                              'transform_dbk_2_rtf',
+                              'transform_dbk_2_txt',
+                              ]])
 
-# the problem with docbook2ps is that it doesnt accept stdin?
-#create_individual('transform_dbk_2_ps',
-#                  direct_types=['NooronTransformer','ExternalCommand'],
-#                  own_slots=[['EmitsExtension','ps_extension'],
-#                             ['RequiresProgram','docbook2ps'],
-#                             ['LiteralExternalCommand','docbook2ps']])
+create_individual('transform_dbk_2_ps',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','ps_extension'],
+                             ['RequiresProgram','docbook2ps'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2ps --output %(cache_dir)s %(precursor)s']])
+create_individual('transform_dbk_2_pdf',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','pdf_extension'],
+                             ['RequiresProgram','docbook2pdf'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2pdf --output %(cache_dir)s %(precursor)s'
+                              ]])
+create_individual('transform_dbk_2_rtf',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','rtf_extension'],
+                             ['RequiresProgram','docbook2rtf'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2rtf --output %(cache_dir)s %(precursor)s'
+                              ]])
+create_individual('transform_dbk_2_dvi',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','dvi_extension'],
+                             ['RequiresProgram','docbook2dvi'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2dvi --output %(cache_dir)s %(precursor)s'
+                              ]])
+create_individual('transform_dbk_2_txt',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','txt_extension'],
+                             ['RequiresProgram','docbook2txt'],
+                             ['ReadsFrom','file'],
+                             ['WritesTo','file'],
+                             ['LiteralExternalCommand',
+                              'docbook2txt --output %(cache_dir)s %(precursor)s'
+                              ]])
+
