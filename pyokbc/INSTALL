@@ -23,6 +23,11 @@ To install PyOKBC:
 
     Take a look at the stuff in tests/*
 
+    Writing an OKBC Application - A Case Study
+        http://WWW-KSL-SVC.stanford.edu:5915/doc/papers/ksl-98-15/ksl-98-15-lisp-java-horizontal.html
 
-$Id: INSTALL,v 1.2 2002/10/22 18:39:57 smurp Exp $
+    OKBC Specification
+        http://www.ai.sri.com/~okbc/spec.html
+
+$Id: INSTALL,v 1.3 2002/10/22 20:59:37 smurp Exp $
 
