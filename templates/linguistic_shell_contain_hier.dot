@@ -1,19 +1,13 @@
-digraph shell_demo {
+<tal:block 
+     define="me here;
+             honai  python:get_procedure('hierarchy_of_nooron_app_instances');
+             branch python:call_procedure(honai,arguments=[here])">
 
-  subgraph cluster_outer {
-     zz [label="outer shell",shape=plaintext];
-     edge [style=invis];
-     zz ->  x;
-     x -> y ;
-     edge [style=solid];
-     x -> f;
+digraph empty_wrapper {
+  
+  <metal:block metal:use-macro="container/dotfile_master/macros/example"/>
 
-    subgraph cluster_middle { m -> n -> o;
-                              m -> b;
-      subgraph cluster_inner { a -> b -> c;}
-      subgraph cluster_inner2 { d -> e -> f;}
-    }
-  }
 }
-// $Id: linguistic_shell_contain_hier.dot,v 1.1 2003/03/26 23:17:14 smurp Exp $
+</tal:block>
+// $Id: linguistic_shell_contain_hier.dot,v 1.2 2003/04/13 22:26:55 smurp Exp $
 

@@ -15,3 +15,134 @@ the body of the digraph goes here
 </metal:block>
 }
 </metal:block>
+
+
+<metal:block metal:define-macro="branch_as_subgraphs">
+<tal:block define="isdeep python:same_type(branch,[])">
+  <tal:block condition="python:not isdeep">
+    <tal:block define="me branch">
+
+subgraph <tal:dummy replace="string:cluster_$me"/> {
+  <tal:dummy replace="string:label_$me"/> 
+    [label="<tal:dummy replace="me"/>",
+      shape=plaintext];
+}
+
+    </tal:block>
+  </tal:block>
+
+  <tal:block condition="isdeep">
+     <tal:block define="me python:branch[0]">
+
+subgraph <tal:dummy replace="string:cluster_$me"/> {
+  edge [style=invis];
+  <tal:dummy replace="string:label_$me"/> 
+    [label="<tal:dummy replace="me"/>",
+      shape=plaintext];
+
+    more_here;
+
+    edge [style=solid];
+
+    <tal:dummy metal:use-macro="branch_as_subgraphs"/>
+}
+
+    </tal:block>
+  </tal:block>
+
+</tal:block>
+</metal:block>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<metal:block metal:define-macro="branch_as_subgraphZZZZZZ">
+<tal:block define="isdeep python:same_type(branch,[])">
+  <tal:block condition="python:not isdeep">
+    <tal:block define="me branch">
+
+subgraph <tal:dummy replace="string:cluster_$me"/> {
+<tal:dummy replace="string:label_$me"/> 
+    [label="<tal:dummy replace="me"/>",
+     shape=plaintext];
+}
+
+    </tal:block>
+  </tal:block>
+
+  <tal:block condition="isdeep">
+     <tal:block define="me python:branch[0]">
+
+subgraph <tal:dummy replace="string:cluster_$me"/> {
+<tal:dummy replace="string:label_$me"/> 
+    [label="<tal:dummy replace="me"/>",
+     shape=plaintext];
+
+  <tal:block repeat="me python:branch[1:]">
+    <metal:block metal:use-macro="container/dotfile_master/macros/branch_as_subgraphs"/>
+  </tal:block>
+}
+
+    </tal:block>
+  </tal:block>
+
+</tal:block>
+</metal:block>
+
+
+
+
+
+
+<tal:block metal:define-macro="example">
+  subgraph cluster_outer {
+     zz [label="outer shell",shape=plaintext];
+     edge [style=invis];
+     zz ->  x;
+     x -> y ;
+     edge [style=solid];
+     x -> f;
+
+    subgraph cluster_middle { m -> n -> o;
+                              m -> b;
+      subgraph cluster_inner { a -> b -> c;}
+      subgraph cluster_inner2 { d -> e -> f;}
+    }
+  }
+</tal:block>

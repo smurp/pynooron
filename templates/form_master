@@ -93,17 +93,14 @@ msct exists:my_slot_collection_type;
 
 
   <tal:block condition="python:slot_value_type == ':STRING'"
-             define="text_value python:slot_values and str(slot_values[0]) or '';
-                     len_text_value python:len(text_value)">
+             define="valyous  python:multiple and slot_values+[''] or ['','','']">
 
-   <tal:block repeat="dummy python:multiple and [1,2,3] or [1]">
-
+   <tal:block repeat="a_value valyous">
      <input type="text"
-         stal:condition="python:len_text_value <= textarea_threshold"
          name="" value="" size=""         
          tal:attributes="name field_name;
                          size python:slot_value_type == ':STRING' and 31 or 10;
-                         value text_value"/>
+                         value a_value"/>
     </tal:block>
 
   </tal:block>
@@ -113,17 +110,15 @@ msct exists:my_slot_collection_type;
 
 
   <tal:block condition="python:slot_value_type == ':PARAGRAPH'"
-             define="text_value python:slot_values and str(slot_values[0]) or '';
-                     len_text_value python:len(text_value)">
+             define="valyous  python:multiple and slot_values+[''] or ['']">
 
-   <tal:block repeat="dummy python:multiple and [1,2] or [1]">
+   <tal:block repeat="a_value valyous">
      <textarea
           name=""
           cols="60"
           rows="5"
-          stal:condition="python:len_text_value > textarea_threshold"
           tal:attributes="name field_name"
-          tal:content="text_value"></textarea>
+          tal:content="a_value"></textarea>
 
     </tal:block>
 
@@ -151,11 +146,11 @@ msct exists:my_slot_collection_type;
                                                         ':PARAGRAPH',
                                                         ])">
     <tal:dummy 
-      define="options python:get_class_instances(slot_value_type)[0];
+      define="options python:map(str,get_class_instances(slot_value_type)[0]);
               size python:len(options) > select_size and select_size
                                    or len(options)">
 
-
+    <tal:dummy replace="structure python:options.sort()"/>
 
     <tal:dummy 
         replace="structure string:<select name=&quot;$field_name&quot; $multiple size=&quot;$size&quot;>"/>
@@ -171,10 +166,9 @@ msct exists:my_slot_collection_type;
     <tal:dummy replace="structure string:</select>"/>
 
 <tal_dummy replace="string:multiple=$multiple size=$size select_size=$select_size slot_collection_type=$slot_collection_type"/>
-<hr/>
 
-    <br/>
-    --<tal:dummy replace="slot_values"/>--
+
+
     </tal:dummy>
   </tal:block>
 
@@ -190,4 +184,4 @@ msct exists:my_slot_collection_type;
 
 
 
-$Id: form_master,v 1.10 2003/04/05 18:51:24 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.11 2003/04/13 22:26:55 smurp Exp $ <a href="/templates/form_master">Show Source</a>

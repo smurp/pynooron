@@ -1,75 +1,86 @@
 
-<metal:block metal:define-macro="prepare_ONLYONE">
-  <tal:dummy define="global ONLYONE python:{'PRIMORDIAL_KB':0,
-                                           'nooron_app_architecture':0}"/>
-</metal:block>
-
-
-<metal:block metal:define-macro="testes">
-TEST IS A SUCCESS FROM DOCBOOK
-</metal:block>
-
 <metal:block metal:define-macro="title_element">
+  <title tal:content="me"></title>
+</metal:block>
+
+
+<metal:block metal:define-macro="test_element">
   <title tal:content="python: get_frame_pretty_name(me) or get_frame_name(me)"></title>
 </metal:block>
 
-<metal:block metal:define-macro="kb_as_nested_sections">
-<tal:dummy define="sections python:get_kb_direct_parents(me)">
-<section id="" tal:attributes="id python:get_frame_name(me)">
-  <tal:dummy metal:use-macro="container/docbook_master/macros/title_element"/>
-  <para>intentionally laughed frank</para>
 
-  <tal:block repeat="me sections">
+=============================================================================
 
-    <tal:block   define="doit python:ONLYONE.get(str(me),1)">
-      <para tal:content="string:$me is not in $ONLYONE"></para>
-      <tal:block condition="doit">
-        <tal:dummy define="ignore_me python:ONLYONE.update({str(me):0});
-                           global ONLYONE ONLYONE"/>
-      <para tal:content="string:$me is NOW in $ONLYONE"></para>
-        <para>
-           This is where the contents of this section will go.
-        </para>
-        
-        <tal:block repeat="me python:get_kb_direct_parents(kb=me)">
-           <metal:block metal:use-macro="container/docbook_master/macros/kb_as_nested_sections"/>
-           <tal:dummy replace="ONLYONE"/>
-        </tal:block>
+<metal:block metal:define-macro="branch_as_sections">
+<tal:block define="isdeep python:same_type(branch,[])">
+  <tal:block condition="python:not isdeep">
+    <tal:block define="me branch">
 
-      </tal:block>
+<section id="" tal:attributes="id me">
+  <tal:block metal:use-macro="container/docbook_master/macros/title_element"/>
+  <para tal:content="python:get_slot_value(me,':DOCUMENTATION',kb=me)"></para>
+</section>
 
     </tal:block>
-
   </tal:block>
 
+  <tal:block condition="isdeep">
+     <tal:block define="me python:branch[0]">
 
+<section id="" tal:attributes="id me">
+  <XXtal:block XXmetal:XXuse-macro="container/docbook_master/macros/title_element"/>
+  <title tal:content="me"></title>
+  <para tal:content="python:get_slot_value(me,':DOCUMENTATION',kb=me)"></para>
+  <tal:block repeat="me python:branch[1:]">
+    <metal:block metal:use-macro="container/docbook_master/macros/branch_as_sections"/>
+  </tal:block>
 </section>
-</tal:dummy>
+
+    </tal:block>
+  </tal:block>
+
+</tal:block>
 </metal:block>
 
 
 
+=============================================================================
 
+<metal:block metal:define-macro="branch_as_chapters">
+<tal:block define="isdeep python:same_type(branch,[])">
+  <tal:block condition="python:not isdeep">
+    <tal:block define="me branch">
+<chapter id="" tal:attributes="id me">
+  <tal:block metal:use-macro="container/docbook_master/macros/title_element"/>
+  <para tal:content="python:get_slot_value(me,':DOCUMENTATION',kb=me)"></para>
+</chapter>
+    </tal:block>
+  </tal:block>
 
-<metal:block metal:define-macro="parents_as_chapters">
-<tal:block repeat="me python:get_kb_direct_parents(kb=me)">
-  <tal:block   define="doit python:ONLYONE.get(str(me),1)">
-     <tal:block condition="doit">
-
-        <tal:dummy define="ignore_me python:ONLYONE.update({str(me):0});
-                           global ONLYONE ONLYONE"/>
+  <tal:block condition="isdeep">
+     <tal:block define="me python:branch[0]">
 
 <chapter id="" tal:attributes="id me">
   <tal:block metal:use-macro="container/docbook_master/macros/title_element"/>
-  <para>a paragraph befitting a chapter</para>
-  <metal:block metal:use-macro="container/docbook_master/macros/kb_as_nested_sections"/>
+  <para tal:content="python:get_slot_value(me,':DOCUMENTATION',kb=me)"></para>
+  <tal:block repeat="me python:branch[1:]">
+    <metal:block metal:use-macro="container/docbook_master/macros/branch_as_sections"/>
+  </tal:block>
 </chapter>
 
     </tal:block>
   </tal:block>
+
+
 </tal:block>
 </metal:block>
 
+
+
+
+
+
+=============================================================================
 
 
 
@@ -114,5 +125,5 @@ TEST IS A SUCCESS FROM DOCBOOK
 
 
 <metal:block metal:define-macro="CVS_ID">
-$Id: docbook_master,v 1.1 2003/04/05 18:51:24 smurp Exp $
+$Id: docbook_master,v 1.2 2003/04/13 22:26:55 smurp Exp $
 </metal:block>
