@@ -7,35 +7,6 @@
   <body>
 
 
-<div metal:fill-slot="priority_options">
-<form method="GET"
-   action=""
-   tal:attributes="action python:request.object_request()+
-                              '/pattern__create_individual.html'">
- <input type="submit" value="Create New Pattern"/>
-</form>
-
-
-
-
-<form method="GET"
-   action=""
-   tal:attributes="action python:request.object_request()+
-                              '__save_kb'">
-<tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
-  <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
-                     kb_to_save python:gmnadk(here)">
-      <input type="hidden" name="kb" value="" 
-             tal:attributes="value kb_to_save">
-  </tal:block>
-</tal:block>
-<input type="submit" value="Save All Patterns"/>
-</form>
-
-</div>
-
-
-
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
@@ -63,7 +34,7 @@
 
 
 <hr>
-$Id: pattern_language_intents.html,v 1.8 2003/04/02 12:53:36 smurp Exp $
+$Id: pattern_language_intents.html,v 1.9 2003/06/27 12:08:49 smurp Exp $
 </div>
   </body>
 </html>
