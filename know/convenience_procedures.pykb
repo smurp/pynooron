@@ -101,6 +101,41 @@ del names_and_pretty_names
 
 
 ####################################################################
+def parent_kb_tree_skipping(kb=None,skip=[]):
+    """Return a tree of kbs avoiding duplicates and skipping those indicated.
+
+    What is returned is a tree of kbs in the form of nested lists.
+    example = [kb,
+               [kb_a,
+                [kb_a1,kb_a2]],
+               kb_b,
+               [kb_c,
+                [kb_c1,
+                 [kb_c2,
+                  [kb_c2A,kb_c2B]],
+                 kb_c3]]]
+    """
+
+    if not kb: kb = current_kb()
+    skippers.extend(skip)
+    def recorse(kb,skippers):
+        tree = [kb]
+        parents = get_kb_direct_parents(kb=kb)
+        for parent in parents:
+            if not (parent in skippers):
+                skippers.append(parent)
+                tree.append(recurse(parent,skippers))
+        if len(tree) == 1:
+            return 
+        return tree
+    return recorse(kb,skippers)
+register_procedure('parent_kb_tree_skipping',
+                   procedure=create_procedure(body=parent_kb_tree_skipping))
+del parent_kb_tree_skipping
+
+
+
+####################################################################
 
 def npts_by_parentage(direct_types,transformations):
     """

@@ -12,14 +12,21 @@ create_slot('web_log_text',
                        [':SLOT-VALUE-TYPE',':STRING']],
             doc="""This slot contains the remarks by the blogger.""",
             pretty_name = "text")
+
+create_class('web_log_app_class',
+             direct_superclasses=['nooron_app_class'],
+             template_slots=[['web_log_text'],
+                             ['web_log_url']],
+	     doc="""Instances of web_log_entry are the posts in a blog.""")
+
 create_class('web_log_entry',
-             direct_types=['nooron_app_class'],
+             direct_types=['web_log_app_class'],
              template_slots=[['web_log_text'],
                              ['web_log_url']],
 	     doc="""Instances of web_log_entry are the posts in a blog.""",
              pretty_name="web log entry")
 create_class('web_log_category',
-             direct_types=['nooron_app_class'],
+             direct_types=['web_log_app_class'],
              doc="""Subclasses of 'web log category' are themselves classes 
 		which individual web log entries are instances of.""",
              pretty_name="web log category")

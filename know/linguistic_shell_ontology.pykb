@@ -1,8 +1,8 @@
 # -*- mode: python -*-
-put_direct_parents(['nooron_app_architecture'])
+put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
 create_class('linguistic_shell',
              pretty_name='Linguistic Shell',
-             direct_superclasses=['nooron_app_instance'],
+             direct_superclasses=['pattern_language_app'],# nooron_app_instance
              doc="""A Linguistic Shell is a Collection of Pattern Languages.""")

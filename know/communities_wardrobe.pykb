@@ -14,5 +14,5 @@ create_class('Community',
                               'PatternsEmployed',
                               ]])
 
-#create_class('communities_app',
-#             template_slots=[['npt_for_self','faqs.html']])
+create_class('communities_app',
+             template_slots=[['npt_for_self','communities_list.html']])
