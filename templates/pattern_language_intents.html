@@ -23,14 +23,20 @@
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></dt>
-    <dd tal:content="python:get_slot_value(item,'Intent')[0]">
+    <dd tal:content="python:get_slot_values(item,'Intent')[0][0]">
     </dd>
 	
   </span>
 </dl>
 
+<a href="" 
+   tal:attributes="href python:request.object_request()+
+                              'pattern__create_individual.html';
+                  "/>Create New Pattern</a>
+
+
 <hr>
-$Id: pattern_language_intents.html,v 1.3 2003/02/07 23:41:10 smurp Exp $
+$Id: pattern_language_intents.html,v 1.4 2003/03/28 11:01:29 smurp Exp $
 </div>
   </body>
 </html>

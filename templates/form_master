@@ -56,49 +56,14 @@ auto_widget expects the following arguments:
                                                    ':SLOT-VALUE-TYPE')[0]
                                  or ':STRING'">
 
-  <tr>
-    <td valign="top">
-       <strong tal:content="slot_pretty_name">slot_pretty_name</strong>
-       <br/>
-       <em tal:content="slot_value_type"></em>
-    </td>
-    <td>
+
+  <tal:dummy 
+       define="bob string:is my uncle;
 
 
-  <tal:block condition="python:slot_value_type == ':STRING'"
-             define="text_value python:slot_values and str(slot_values[0]) or '';
-                     len_text_value python:len(text_value)">
-
-     <textarea
-          name=""
-          cols="60"
-          rows="5"
-          tal:condition="python:len_text_value > textarea_threshold"
-          tal:attributes="name field_name"
-          tal:content="text_value"></textarea>
 
 
-     <input type="text"
-         tal:condition="python:len_text_value <= textarea_threshold"
-         name="" value="" size=""         
-         tal:attributes="name field_name;
-                         size python:slot_value_type == ':STRING' and 31 or 10;
-                         value text_value"/>
-  </tal:block>
-
-
-  <tal:block condition="python:slot_value_type == ':INTEGER'">
-  <input type="text" 
-         name="" value="" size="10"
-         tal:attributes="name field_name;
-                         value python:slot_values and slot_values[0] or ''"/>
-  </tal:block>
-
-  <tal:block condition="python:slot_value_type != None and
-                               not (slot_value_type in [':INTEGER',
-                                                        ':STRING'])">
-    <tal:dummy 
-      define="msct exists:my_slot_collection_type;
+msct exists:my_slot_collection_type;
               slot_cardinality python:get_slot_value(slot_name,
                                                      ':SLOT-CARDINALITY')[0];
               slot_collection_type python:(msct and my_slot_collection_type) 
@@ -108,14 +73,91 @@ auto_widget expects the following arguments:
                                    slot_cardinality > 1 and 5
                                  or slot_collection_type != None and 5
                                  or 1;
-              options python:get_class_instances(slot_value_type)[0];
+
               multiple python:(slot_cardinality != None and 
                                slot_cardinality > 1 and 'multiple') or 
                               (slot_collection_type and 'multiple') or '';
+
+
+
+">
+ 
+
+
+  <tr>
+    <td valign="top">
+       <strong tal:content="slot_pretty_name">slot_pretty_name</strong>
+       <br/>
+       <em tal:content="slot_value_type"></em>&nbsp;<em tal:condition="multiple">(s)</em>
+    </td>
+    <td>
+
+
+  <tal:block condition="python:slot_value_type == ':STRING'"
+             define="text_value python:slot_values and str(slot_values[0]) or '';
+                     len_text_value python:len(text_value)">
+
+   <tal:block repeat="dummy python:multiple and [1,2,3] or [1]">
+
+     <input type="text"
+         stal:condition="python:len_text_value <= textarea_threshold"
+         name="" value="" size=""         
+         tal:attributes="name field_name;
+                         size python:slot_value_type == ':STRING' and 31 or 10;
+                         value text_value"/>
+    </tal:block>
+
+  </tal:block>
+
+
+
+
+
+  <tal:block condition="python:slot_value_type == ':PARAGRAPH'"
+             define="text_value python:slot_values and str(slot_values[0]) or '';
+                     len_text_value python:len(text_value)">
+
+   <tal:block repeat="dummy python:multiple and [1,2,3] or [1]">
+     <textarea
+          name=""
+          cols="60"
+          rows="5"
+          stal:condition="python:len_text_value > textarea_threshold"
+          tal:attributes="name field_name"
+          tal:content="text_value"></textarea>
+
+    </tal:block>
+
+  </tal:block>
+
+
+
+
+
+
+  <tal:block condition="python:slot_value_type == ':INTEGER'">
+  <input type="text" 
+         name="" value="" size="10"
+         tal:attributes="name field_name;
+                         value python:slot_values and slot_values[0] or ''"/>
+  </tal:block>
+
+
+
+
+
+  <tal:block condition="python:slot_value_type != None and
+                               not (slot_value_type in [':INTEGER',
+                                                        ':STRING',
+                                                        ':PARAGRAPH',
+                                                        ])">
+    <tal:dummy 
+      define="options python:get_class_instances(slot_value_type)[0];
               size python:len(options) > select_size and select_size
                                    or len(options)">
 
-    <tal:dummy replace="string:multiple=$multiple size=$size select_size=$select_size slot_collection_type=$slot_collection_type"/>
+
+
     <tal:dummy 
         replace="structure string:<select name=&quot;$field_name&quot; $multiple size=&quot;$size&quot;>"/>
 
@@ -128,6 +170,10 @@ auto_widget expects the following arguments:
       </tal:block>
 
     <tal:dummy replace="structure string:</select>"/>
+
+<tal_dummy replace="string:multiple=$multiple size=$size select_size=$select_size slot_collection_type=$slot_collection_type"/>
+<hr/>
+
     <br/>
     --<tal:dummy replace="slot_values"/>--
     </tal:dummy>
@@ -136,6 +182,8 @@ auto_widget expects the following arguments:
 
     </td>
   </tr>
+
+  </tal:dummy>
 </tal:block>
 
 </metal:block>
@@ -143,9 +191,4 @@ auto_widget expects the following arguments:
 
 
 
-
-
-
-
-
-$Id: form_master,v 1.7 2003/03/26 23:17:14 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.8 2003/03/28 11:01:29 smurp Exp $ <a href="/templates/form_master">Show Source</a>

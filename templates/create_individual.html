@@ -24,10 +24,8 @@
 </tal:block>
 
 <input type="hidden" name="direct_types" value=""
-  tal:attributes="value here"
->
+  tal:attributes="value here">
 <table border="1">
-
 
   <tal:block define="slot_name string:name;
                      field_name slot_name;
@@ -74,7 +72,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.7 2003/03/08 13:11:57 smurp Exp $
+$Id: create_individual.html,v 1.8 2003/03/28 11:01:29 smurp Exp $
 </div>
 
   </body>
