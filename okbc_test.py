@@ -13,6 +13,8 @@ which this should break.
 ** value inheritance, from class to individual (template_slots)
 *** coerce_to_handle [how the hell does a handle work]
 
+* move get_class_superclasses to KB or TupleKb
+
 """
 
 from PyOkbc import *
@@ -34,9 +36,12 @@ if 1:
     #for f in get_kb_frames(kb_local_only_p=1):
     #    print f
     #save_kb_as('/tmp/booger.pyokbc')
-    print get_slot_values('Shawn','Eats')
+    #print get_slot_values('Shawn','Eats')
     shawn = get_frame_in_kb('Shawn')
     print_frame('Shawn')
+    Shawn = get_frame_in_kb('Shawn')[0]
+    print dump_frame(Shawn)
+    print Shawn._own_slots    
     #dump_kb(mykb)
     #(AdultHuman,w) = get_frame_in_kb('AdultHuman')
     #print "====\n", AdultHuman

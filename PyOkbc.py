@@ -10,8 +10,6 @@ PRIMORDIAL_KB = ()
 import exceptions
 import copy
 
-
-
 ##########################################
 #    Classes
 ##########################################    
@@ -173,9 +171,6 @@ class FRAME(Node):
         self._template_slots = {}
         self._doc = None
 
-    def get_frame_pretty_name(frame,kb_local_only_p=0):
-        return frame._pretty_name
-
     def __str__(self):
         #return "<"+self._name+">"
         return self._name
@@ -188,21 +183,6 @@ class FRAME(Node):
 
     def get_frame_name(frame,kb_local_only_p=0):
         return frame._name
-
-    def get_frame_slots(self,
-                        kb=None,
-                        inference_level = Node._taxonomic,
-                        slot_type = Node._all):
-        retarray = []
-        slot_name = ''
-        if slot_type in [Node._all,Node._own]:
-            for slot_name in self._own_slots.keys():
-                retarray.append(slot_name)
-        if slot_type in [Node._all,Node._template]:
-            for slot_name in self._template_slots.keys():
-                retarray.append(slot_name)
-        return retarray
-
 
     def put_slot_value(self,slot, value,
                        kb=None,
@@ -254,8 +234,8 @@ class KLASS(FRAME):
         return Node._class
     def _type_code(klass):
         return "C"
-    def class_p(klass):
-        return 1
+#    def class_p(klass):
+#        return 1
 
     def add_class_superclass(klass,new_superclass,
                              kb=None,
@@ -263,30 +243,14 @@ class KLASS(FRAME):
         if new_superclass not in klass._direct_superclasses:
             klass._direct_superclasses.append(new_superclass)
     
-    def get_class_superclasses(klass,
-                               kb = None,
-                               inference_level = Node._taxonomic,
-                               number_of_values = Node._all,
-                               kb_local_only_p = 0):
-        if inference_level == Node._direct:
-            return (copy.copy(klass._direct_superclasses),1,0)
-        supers = []
-        klass.get_superclasses_recurse(supers)
-        return (supers,1,0)
-
-    def get_superclasses_recurse(klass,supers):
-        for super in klass._direct_superclasses:
-            if not (super in supers):
-                supers.append(super)
-                super.get_superclasses_recurse(supers)
     
 class INDIVIDUAL(FRAME):
     def get_frame_type(self):
         return Node._individual
     def _type_code(self):
         return "I"
-    def individual_p(self):
-        return 1
+#    def individual_p(self):
+#        return 1
         
 class SLOT(FRAME):
     def get_frame_type(self):
@@ -361,9 +325,7 @@ class KB(Node):
         return 1
 
     def class_p(kb,thing,kb_local_only_p = 0):
-        if isinstance(thing,KLASS):
-            return 1
-        return 0
+        return isinstance(thing,KLASS)
 
     def coerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
         klop = kb_local_only_p
@@ -373,7 +335,7 @@ class KB(Node):
                                                          kb_local_only_p=klop)
         if found_class:
             return (found_class,class_found_p)
-        print thing,"being coerced to class in", kb
+        #warn(str( thing)+" being coerced to class in "+str(kb))
         found_class = kb.create_frame_internal(thing,Node._class)
         class_found_p = found_class
         if not class_found_p and error_p:
@@ -483,26 +445,6 @@ class KB(Node):
     def facet_p(kb,thing,kb_local_only_p=0):
         return isinstance(thing,FACET)
 
-    def get_instance_types_internal(kb,frame,
-                                    inference_level = Node._taxonomic,
-                                    number_of_values = Node._all,
-                                    kb_local_only_p = 0):
-        warn("get_instance_types ignores kb_local_only_p",20)
-        if inference_level in [Node._taxonomic,Node._all]:
-            taxonomic_types = []
-            for dclass in frame._direct_types:
-                if not (dclass in taxonomic_types):
-                    taxonomic_types.append(dclass)
-                    supers = dclass.get_class_superclasses(inference_level=\
-                                                           Node._taxonomic)[0]
-                    for super in supers:
-                        if not (super in taxonomic_types):
-                            taxonomic_types.append(super)
-            return (taxonomic_types,1,0)
-        else:
-            return (copy.copy(frame._direct_types),1,0)
-    get_instance_types = get_instance_types_internal
-
     _behaviour_values = {Node._are_frames : [Node._class,
                                              Node._individual,
                                              Node._slot,
@@ -517,6 +459,16 @@ class KB(Node):
     def get_behaviour_values_internal(kb,behavior):
         return kb._behavior_values.get(behavior,[])
     get_behaviour_values = get_behaviour_values_internal
+
+    def get_class_superclasses(kb,klass,
+                               inference_level = Node._taxonomic,
+                               number_of_values = Node._all,
+                               kb_local_only_p = 0):
+        (klass,class_found_p) = kb.coerce_to_class(klass)
+        return kb.get_class_superclasses_internal(klass,
+                                         inference_level=inference_level,
+                                         number_of_values=number_of_values,
+                                         kb_local_only_p=kb_local_only_p)
 
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
                         checked_kbs=None): # FIXME shouldn't add arg!
@@ -542,14 +494,57 @@ class KB(Node):
     get_frame_name = get_frame_name_internal
 
     def get_frame_pretty_name_internal(kb,frame,kb_local_only_p=0):
-        if isinstance(kb,META_KB):
-            return frame._pretty_name
-        return frame.get_frame_pretty_name(kb_local_only_p=kb_local_only_p)
+        #if isinstance(kb,META_KB):
+        #    return frame._pretty_name
+        return frame._pretty_name
     get_frame_pretty_name = get_frame_pretty_name_internal
+
+    def get_frame_slots(kb,frame,
+                        inference_level = Node._taxonomic,
+                        slot_type = Node._all,
+                        kb_local_only_p = 0):
+        klop = kb_local_only_p
+        il = inference_level
+        (list_of_slots,
+         exact_p) = kb.get_frame_slots_internal(frame,inference_level,
+                                                slot_type,klop)
+        if inference_level in [Node._all,Node._taxonomic] and \
+           slot_type in [Node._template,Node._all]:
+            for klass in kb.get_instance_types(frame, inference_level = il,
+                                               number_of_values = Node._all,
+                                               kb_local_only_p = klop)[0]:
+                for slot in  kb.get_frame_slots(klass,
+                                                inference_level = il,
+                                                slot_type=Node._template,
+                                                kb_local_only_p=klop)[0]:
+                    if not (slot in list_of_slots):
+                        list_of_slots.append(slot)
+        return (list_of_slots,exact_p)
 
     def get_frame_type_internal(kb,thing,kb_local_only_p=0):
         return thing.get_frame_type()
     get_frame_type = get_frame_type_internal
+
+    def get_instance_types_internal(kb,frame,
+                                    inference_level = Node._taxonomic,
+                                    number_of_values = Node._all,
+                                    kb_local_only_p = 0):
+        warn("get_instance_types ignores kb_local_only_p",20)
+        if inference_level in [Node._taxonomic,Node._all]:
+            taxonomic_types = []
+            for dclass in frame._direct_types:
+                if not (dclass in taxonomic_types):
+                    taxonomic_types.append(dclass)
+                    supers = kb.get_class_superclasses(dclass,
+                                                       inference_level=\
+                                                       Node._taxonomic)[0]
+                    for super in supers:
+                        if not (super in taxonomic_types):
+                            taxonomic_types.append(super)
+            return (taxonomic_types,1,0)
+        else:
+            return (copy.copy(frame._direct_types),1,0)
+    get_instance_types = get_instance_types_internal
 
     def get_kb_behaviours_internal(kb):
         return kb._behavior_values.keys()
@@ -580,22 +575,40 @@ class KB(Node):
         Return Value(s): list-of-values exact-p more-status 
         Flags: E O R """
         klop = kb_local_only_p
-        (frame,
+        il =  inference_level
+        (found_frame,
          frame_found_p) = kb.get_frame_in_kb(frame,
                                              kb_local_only_p=klop)
-        (slot,
+        (found_slot,
          slot_found_p) = kb.get_frame_in_kb(slot,
                                             kb_local_only_p=klop)
+        if not slot_found_p or not frame_found_p:
+            warn(str(frame)+" missing "+str(slot))
+            raise
         (list_of_values,
          exact_p,
-         more_status) = kb.get_slot_values_internal(frame,slot,
+         more_status) = kb.get_slot_values_internal(found_frame,
+                                                    found_slot,
                                                     inference_level,
                                                     slot_type,
                                                     number_of_values,
                                                     value_selector,
                                                     kb_local_only_p)
-        
+        if inference_level in [Node._taxonomic,Node._all]:
+            for klass in kb.get_instance_types(frame,
+                                               inference_level=il)[0]:
+                #print "===>",klass,klass._template_slots
+                for val in kb.get_slot_values(klass,slot,
+                                              inference_level=inference_level,
+                                              slot_type=Node._template)[0]:
+                    #print "  =>",val
+                    if not (val in list_of_values):
+                        list_of_values.append(val)
+
         return (list_of_values,exact_p,more_status)
+
+    def individual_p(kb,thing,kb_local_only_p = 0):
+        return isinstance(thing,INDIVIDUAL)
 
     def put_direct_parents(kb,parent_kbs):
         for parent in parent_kbs:
@@ -646,7 +659,24 @@ class TupleKb(KB):
             pass
 
     def class_p(kb,thing,kb_local_only_p = 0):
-        return isinstance(thing,INDIVIDUAL)
+        return isinstance(thing,KLASS)
+
+    def get_class_superclasses_internal(kb,klass,
+                                        inference_level = Node._taxonomic,
+                                        number_of_values = Node._all,
+                                        kb_local_only_p = 0):
+        if inference_level == Node._direct:
+            print "_internal",klass
+            return (copy.copy(klass._direct_superclasses),1,0)
+        supers = []
+        kb.get_class_superclasses_recurse(klass,supers)
+        return (supers,1,0)
+
+    def get_class_superclasses_recurse(kb,klass,supers):
+        for super in klass._direct_superclasses:
+            if not (super in supers):
+                supers.append(super)
+                kb.get_class_superclasses_recurse(super,supers)
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         found_frame = kb._cache.get(str(thing))
@@ -656,6 +686,20 @@ class TupleKb(KB):
         else:
             return (None,None)
 
+    def get_frame_slots_internal(kb,frame,
+                                 inference_level = Node._taxonomic,
+                                 slot_type = Node._all,
+                                 kb_local_only_p = 0):
+        retarray = []
+        slot_name = ''
+        if slot_type in [Node._all,Node._own]:
+            for slot_name in frame._own_slots.keys():
+                retarray.append(slot_name)
+        if slot_type in [Node._all,Node._template]:
+            for slot_name in frame._template_slots.keys():
+                retarray.append(slot_name)
+        return (retarray,1)
+
     def get_frame_type(kb,thing,kb_local_only_p=0):
         if thing:
             if isinstance(thing,KB):
@@ -664,16 +708,6 @@ class TupleKb(KB):
                 return thing.get_frame_type()
         else:
             return 0
-
-    def get_class_superclasses(kb,klass,
-                               inference_level = Node._taxonomic,
-                               number_of_values = Node._all,
-                               kb_local_only_p = 0):
-        (klass,class_found_p) = kb.coerce_to_class(klass)
-        return kb.get_class_superclasses(klass,
-                                         inference_level=inference_level,
-                                         number_of_values=number_of_values,
-                                         kb_local_only_p=kb_local_only_p)
     
     def get_kb_classes_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
@@ -691,7 +725,7 @@ class TupleKb(KB):
     def get_kb_individuals_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
         return kb.get_kb_frames_by_type(Node._individual,
-                                     kb_local_only_p = kb_local_only_p)
+                                    kb_local_only_p = kb_local_only_p)
 
     def get_kb_slots_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
@@ -717,12 +751,13 @@ class TupleKb(KB):
                                  kb_local_only_p = 0):
         list_of_values = []
         exact_p = 0
+        slot_key = str(slot)
         if slot_type in [Node._own,Node._all]:
-            if frame._own_slots.has_key(slot):
-                list_of_values.extend(frame._own_slots[slot].values())
+            if frame._own_slots.has_key(slot_key):
+                list_of_values.extend(frame._own_slots[slot_key].values())
         if slot_type in [Node._template,Node._all]:
-            if frame._template_slots.has_key(slot):
-                list_of_values.extend(frame._template_slots[slot].values())
+            if frame._template_slots.has_key(slot_key):
+                list_of_values.extend(frame._template_slots[slot_key].values())
         return (list_of_values,exact_p,Node._all)
 
     def put_class_superclasses(kb,klass,new_superclasses,
@@ -823,9 +858,10 @@ def dump_frame(frame,kb=None):
     kb = current_kb()
     (frame,frame_found_p) = kb.get_frame_in_kb(frame)
     if not frame:
-        return
-    print "["+str(frame)+"]"
-    print frame.get_frame_name(),"("+str(get_frame_type(frame))+")"
+        print frame,"not found"
+        return 
+
+    print get_frame_name(frame),"("+str(get_frame_type(frame))+")"
     for klass in get_instance_types(frame,kb=kb,
                                     inference_level=Node._all)[0]:
         print "  Class:", klass
@@ -833,11 +869,12 @@ def dump_frame(frame,kb=None):
         for super in get_class_superclasses(frame, kb=kb,
                                             inference_level=Node._all)[0]:
             print "  Superclass:", super
-    for slot in frame.get_frame_slots():
+    for slot in get_frame_slots(frame)[0]:
         print "  Slot:", slot
         print "     values: "+\
-              str(frame.get_slot_values(slot,
-                                        slot_type=Node._all)[0])
+              str(get_slot_values(frame,slot,
+                                  inference_level = Node._all,
+                                  slot_type=Node._all)[0])
     #print "own_slots:",frame._own_slots        
     #print "template_slots:",frame._template_slots
 
@@ -1016,8 +1053,8 @@ def get_frame_slots(frame, kb=None, inference_level=Node._taxonomic,
     value of slot-type."""
     # p58
     if not kb: kb = current_kb()
-    return frame.get_frame_slots(kb,inference_level,slot_type,
-                                 kb_local_only_p)
+    return kb.get_frame_slots(frame,inference_level,slot_type,
+                              kb_local_only_p)
 
 def get_frame_type(thing, kb=None, inference_level=Node._taxonomic,
                    kb_local_only_p = 0):

@@ -25,9 +25,9 @@ def emit_value(val):
         return str(val)
     
 def to_slot_spec(frame,slot,slot_type):
+    #print "to_slot_spec(",frame,slot,slot_type,")"
     slot_value_spec = ''
-    #if slot_type == Node._template:
-    for slot_value in frame.get_slot_values(slot,slot_type=slot_type)[0]:
+    for slot_value in get_slot_values(frame,slot,slot_type=slot_type)[0]:
         if type(slot_value) in (type(()),type([])) \
            and slot_value[0] == Node._default:
             slot_value_prefix = "(Node._default, "
@@ -101,6 +101,8 @@ class OkbcPythonKb(AbstractFileKb):
         line = "direct_superclasses=["
         got_one = 0
         if kb.class_p(frame):
+            print frame,"is class_p"
+            
             for klass in kb.get_class_superclasses(frame,
                                                    inference_level=Node._direct)[0]:
                 line = line + var_name_for_emit(klass) + ","
@@ -110,7 +112,7 @@ class OkbcPythonKb(AbstractFileKb):
         line = "own_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
-        for slot in frame.get_frame_slots(slot_type=Node._own):
+        for slot in get_frame_slots(frame,slot_type=Node._own)[0]:
             line = line + to_slot_spec(frame,slot,Node._own) \
                    + ",\n" + local_indent_str
             got_one = 1
@@ -119,7 +121,8 @@ class OkbcPythonKb(AbstractFileKb):
         line = "template_slots=["
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
-        for slot in frame.get_frame_slots(slot_type=Node._template):
+        for slot in get_frame_slots(frame,slot_type=Node._template,
+                                    inference_level=Node._direct)[0]:
             line = line + to_slot_spec(frame,slot,Node._template) \
                    + ",\n" + local_indent_str
             got_one = 1
