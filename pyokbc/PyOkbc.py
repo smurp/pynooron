@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.43 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.43 2003/04/14 18:24:36 smurp Exp $'
+__version__='$Revision: 1.44 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.44 2003/04/29 15:27:33 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -2187,9 +2187,9 @@ class PrimordialKb(TupleKb):
                                  inference_level = Node._taxonomic,
                                  slot_type = Node._all,
                                  kb_local_only_p = 0):
-        apkb_gfsi = AbstractPersistentKb.get_frame_slots_internal
-        (list_of_slots,exact_p) = apkb_gfsi(kb,frame,inference_level,
-                                            slot_type,kb_local_only_p)
+        tkb_gfsi = TupleKb.get_frame_slots_internal
+        (list_of_slots,exact_p) = tkb_gfsi(kb,frame,inference_level,
+                                           slot_type,kb_local_only_p)
         if not (':DOCUMENTATION' in list_of_slots):
             list_of_slots.append(':DOCUMENTATION')
         return (list_of_slots,exact_p)
@@ -2207,13 +2207,13 @@ class PrimordialKb(TupleKb):
                 #FIXME more generally skip things which are not in OKBC Spec
                 # list-of-specs,exact-p,more-status,default-p
                 return ([[get_doc_for(frame),1,0]],1,0,0)
-        apkb_gsvidi = AbstractPersistentKb.get_slot_values_in_detail_internal
-        return apkb_gsvidi(kb,frame,slot,
-                           inference_level,slot_type,
-                           number_of_values,
-                           value_selector,
-                           kb_local_only_p,
-                           checked_kbs,checked_classes)
+        tkb_gsvidi = TupleKb.get_slot_values_in_detail_internal
+        return tkb_gsvidi(kb,frame,slot,
+                          inference_level,slot_type,
+                          number_of_values,
+                          value_selector,
+                          kb_local_only_p,
+                          checked_kbs,checked_classes)
 
 class AbstractPersistentKb(TupleKb):
     """PersistentKb implements save_kb and save_kb_as and has slots on
