@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.7 2002/10/18 07:21:02 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.8 2002/10/21 23:52:53 smurp Exp $'
 
-DEBUG = 1
+DEBUG = 0
 
 import inspect_module
 import transformers

@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.9 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.10 2002/10/21 23:52:53 smurp Exp $'
 
-DEBUG = 1
+DEBUG = 0
 
 """
 NooronRoot is the root object of a nooron instance.
