@@ -139,9 +139,10 @@ create_class(':THING',
                               'frame_details.html',
                               ],
                              ['actions_for_self',                              
-                              'change_pretty_name.html',
-                              'put_frame_details.html',
-                              'delete_frame.html']])
+                              #'change_pretty_name.html',
+                              #'put_frame_details.html',
+                              #'delete_frame.html'
+                              ]])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
                               'class_and_instances.html',
@@ -149,7 +150,8 @@ create_class(':CLASS',
                               ],
                              ['actions_for_instances',
                               'create_individual.html',
-                              'delete_frame.html']])
+                              #'delete_frame.html'
+                              ]])
 
 create_class(':KB',
              template_slots=[['npt_for_self',
