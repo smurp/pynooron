@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: test_security.py,v 1.1 2003/03/28 07:31:23 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: test_security.py,v 1.2 2003/03/28 07:36:34 smurp Exp $'
 
 import os
 import sys
@@ -40,8 +40,8 @@ class IPSecurityTest(unittest.TestCase):
 
     def test_allow_everybody_by_default(self):
         sec_eng = IPListSecurityEngine()        
-        self.failIf(sec_eng.denied_p(bad_guy),
-                    'failing to allow everybody by default')
+        self.failUnless(sec_eng.denied_p(bad_guy),
+                        'failing to deny everybody by default')
 
     def test_allow_only_listed(self):
         sec_eng = IPListSecurityEngine(allow=['1.1.1.1'],deny=1)
@@ -65,6 +65,7 @@ class IPSecurityTest(unittest.TestCase):
 
     def test_neutral_caught_in_chain(self):
         sec_eng = IPListSecurityEngine(deny=['9.9.9.9'],
+                                       allow=['1.1.1.1'],
                                        chain=chained_engine())
 
         self.assertEquals(sec_eng.denied_p(neutral_guy),
