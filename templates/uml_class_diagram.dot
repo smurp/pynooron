@@ -1,0 +1,122 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+// $Id: uml_class_diagram.dot,v 1.1 2003/07/04 19:48:44 smurp Exp $
+//  size="7.5,10"
+//  rotate=90
+ ratio=compress
+
+
+<tal:block
+   define="abs_kb_url
+             python:server_absolute_url + request.object_request() + '/';
+           app_classes
+             python:call_procedure(get_procedure('names_and_pretty_names'),
+                                   arguments=(get_class_instances('nooron_app_class')[0],
+                                              '\\n',this_kb));
+           app_class_names
+             python:[str(cname[0]) for cname in app_classes]">
+  URL="<tal:dummy replace="abs_kb_url"/>"
+  label="<tal:dummy 
+            replace="python:'UML Class Diagram for '+
+                            (get_frame_pretty_name(this_kb) 
+                             or get_frame_name(this_kb))"/>"
+  <tal:dummy
+     repeat="app_class app_classes">
+
+   <tal:block define="atts python:[]">
+
+
+    <tal:block
+        repeat="slot python:get_slot_values(app_class[0],
+                                            'slot_display_order')[0]
+                            or get_frame_slots(app_class[0])[0]">
+
+
+      <tal:dummy
+         define="this_svt 
+                      python:get_slot_value(slot,
+                                            ':SLOT-VALUE-TYPE')[0];
+                 attr_name 
+                     python:'%s : %s' % 
+                            (str(slot).replace(':',''),
+                             this_svt);
+                 needs_anchor
+                     python:this_svt in app_class_names;
+                 port_anchor
+                     python:needs_anchor and ' <%s>'%(str(slot)) 
+                            or '';
+                 not_bookkeeping
+                     python:not instance_of_p(slot,'BookKeepingSlot')[0];
+                 bogus
+                     python:not_bookkeeping and 
+                            atts.append(attr_name+port_anchor+'\l|')"
+         condition="not_bookkeeping">
+
+      // <hr tal:replace="python:str(slot) + ' is not BOOKKEEPING'">
+
+         <tal:dummy
+            define="this_svt 
+                      python:get_slot_value(slot,
+                                            ':SLOT-VALUE-TYPE')[0]"
+            condition="needs_anchor"
+            replace="structure 
+                     python:'%s:%s -> %s:top_port [arrowhead=odot];'
+                            %(app_class[0],str(slot),this_svt)"/>
+
+
+      </tal:dummy>
+    </tal:block>
+
+    <tal:dummy replace="python:app_class[0]"/> 
+      <tal:block
+         define="record_label
+                   python:call_procedure(
+                            get_procedure('make_uml_record_label_for_dot'),
+                            arguments=(str(app_class[0]),atts,this_kb));
+                 atts python:[]">
+        [shape=record,
+         fontsize=9,
+         URL="<tal:dummy replace="python:abs_kb_url+str(app_class[0])"/>",
+         label="<tal:dummy 
+                   replace="structure record_label"/>"
+        ];
+      </tal:block>
+
+      </tal:block>
+
+    </tal:dummy>
+
+
+    // DRAW EDGES FROM CLASSES TO THEIR SUPERCLASSES ***start***
+    <tal:block
+       repeat="app_class app_classes">
+      <tal:dummy
+         define="my_supers 
+                   python:get_class_superclasses(app_class[0])[0]">
+         <tal:block 
+              condition="my_supers"
+              repeat="a_super my_supers">
+           <tal:dummy
+              define="super_name python:get_frame_name(a_super)"
+              condition="python:super_name in app_class_names"
+              replace="structure 
+                         python:'%s -> %s [arrowhead=inv,headport=w,tailport=e];' % 
+                                (app_class[0],super_name)">
+           </tal:dummy>
+         </tal:block>
+      </tal:dummy>
+    </tal:block>
+    // DRAW EDGES FROM CLASSES TO THEIR SUPERCLASSES ***end***
+
+
+
+    // DRAW EDGES FROM SLOTS TO THEIR VALUE TYPES ***start***
+    <tal:block
+       repeat="app_class app_classes">
+    </tal:block>
+    // DRAW EDGES FROM SLOTS TO THEIR VALUE TYPES ***end***
+
+
+</tal:block>
+</metal:block>
+</metal:block>
