@@ -38,6 +38,7 @@
     <tr>
       <td bgcolor="#CCFFFF" valign="top">
          <metal:block define-slot="priority_options">
+           <tal:dummy replace="structure container/auto_create_links"/>
          </metal:block>
          <div metal:define-slot="available_garments" tal:omit-tag="">
            <tal:dummy replace="structure container/available_garments"/>
@@ -87,6 +88,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.32 2003/05/02 03:35:42 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.33 2003/06/25 15:52:04 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

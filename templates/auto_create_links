@@ -1,0 +1,27 @@
+<!-- auth_status -->
+<tal:dummy 
+     condition="python:AUTHENTICATED_USER != AnonymousUser">
+
+
+<tal:dummy
+     define="app_classes python:get_class_instances('nooron_app_class')[0]"
+     condition="app_classes">
+  <tal:block
+       repeat="app_class app_classes">
+    <tal:dummy
+         condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
+
+<form method="GET"
+      action=""
+      tal:attributes="action python:request.object_request()+
+                             '/%s__create_individual.html' % app_class">
+ <input type="submit" tal:attributes="value python:'new '+str(app_class)"/>
+</form>
+
+
+    </tal:dummy>
+  </tal:block>
+</tal:dummy>
+ 
+</tal:dummy>
+

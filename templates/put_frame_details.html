@@ -30,6 +30,7 @@
   <input type="hidden" name="frame" value="" tal:attributes="value here">
 
   <tal:block define="slot_name        string::name;
+                     slot_help        string:;
                      field_name       python:'details'+field_path_delim+slot_name;
                      slot_pretty_name string:Frame Name;
                      slot_value       python:details[':name']">
@@ -39,6 +40,7 @@
          tal:attributes="name string:details$field_path_delim">
 
   <tal:block define="slot_name        string::pretty-name;
+                     slot_help        string:;
                      field_name       python:'details'+field_path_delim+slot_name;
                      slot_pretty_name string:Pretty Name;
                      slot_value       python:details[':pretty-name']">
@@ -48,6 +50,7 @@
          tal:attributes="name string:details$field_path_delim">
 
   <tal:block define="slot_pretty_name string:Frame Type;
+                     slot_help        string:;
                      slot_value       python:details[':frame-type']">
     <tal:block metal:use-macro="container/form_master/macros/text_display_widget"/>
   </tal:block>
@@ -55,6 +58,7 @@
 
   <tal:block 
        define="slot_name               string::types;
+               slot_help               string:;
                field_name              python:'details'+field_path_delim+slot_name;
                slot_pretty_name        string:Types (Classes);
                my_slot_value_type      string::CLASS;
@@ -68,6 +72,7 @@
   <tal:block condition="python:class_p(here)">
     <tal:block 
          define="slot_name               string::superclasses;
+ 		 slot_help               string:;
                  field_name              python:'details'+field_path_delim+slot_name;
                  slot_pretty_name        string:Superclasses;
                  my_slot_value_type      string::CLASS;
@@ -89,17 +94,22 @@
     <tal:block repeat="zlot python:call_procedure(
                                    get_procedure('names_and_pretty_names'),
                                    arguments=(slots,None,this_kb))">
+
       <tal:block define="slot_name        python:zlot[0];
+                         slot_help        string:;
                          slot_pretty_name python:zlot[1];
                          field_name       python:'details'+field_path_delim+':own-slots'+field_path_delim+slot_name;
                          slot_values      python:get_slot_values(here,zlot[0])[0]">
 
-        <input type="hidden" name="" value=""
-           tal:attributes="value slot_name;
-                           name  python:'details'+field_path_delim+':own-slots'+field_path_delim">
-        <tal:block 
-             metal:use-macro="container/form_master/macros/auto_widget">
-        </tal:block>
+        <tal:dummy
+             condition="python:not instance_of_p(slot_name,'BookKeepingSlot')[0]">
+          <input type="hidden" name="" value=""
+             tal:attributes="value slot_name;
+                             name  python:'details'+field_path_delim+':own-slots'+field_path_delim">
+          <tal:block 
+               metal:use-macro="container/form_master/macros/auto_widget">
+          </tal:block>
+        </tal:dummy>
       </tal:block>
     </tal:block>
   </tal:block>
@@ -122,6 +132,7 @@
                                    get_procedure('names_and_pretty_names'),
                                    arguments=(slots,None,this_kb))">
       <tal:block define="slot_name        python:zlot[0];
+                         slot_help        string:;
                          slot_pretty_name python:zlot[1];
                          field_name       python:'details'+field_path_delim+det_key+field_path_delim+slot_name;
                          slot_values      python:get_slot_values(here,zlot[0])[0]">
@@ -153,7 +164,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: put_frame_details.html,v 1.6 2003/04/14 22:54:53 smurp Exp $
+$Id: put_frame_details.html,v 1.7 2003/06/25 15:52:04 smurp Exp $
 </div>
 
   </body>

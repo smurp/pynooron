@@ -55,17 +55,22 @@ or failing that, a short random string will be used.;
     <tal:block repeat="zlot python:call_procedure(
                                    get_procedure('names_and_pretty_names'),
                                    arguments=(slots,None,this_kb))">
+
+
       <tal:block define="slot_name        python:zlot[0];
-		         field_name       slot_name;
+	                 field_name       slot_name;
                          slot_help string:;
                          slot_pretty_name python:zlot[1];
-		         slot_values      python:[]">
-
-        <input type="hidden" name="own_slots" value=""
-           tal:attributes="value slot_name">
-        <tal:block 
-             metal:use-macro="container/form_master/macros/auto_widget">
-        </tal:block>
+	                 slot_values      python:[]">
+        <tal:dummy
+           condition="python:not instance_of_p(slot_name,'BookKeepingSlot')[0]">
+          <input 
+             type="hidden" name="own_slots" value=""
+             tal:attributes="value slot_name">
+          <tal:block 
+               metal:use-macro="container/form_master/macros/auto_widget">
+          </tal:block>
+        </tal:dummy>
       </tal:block>
     </tal:block>
   </tal:block>
@@ -78,7 +83,7 @@ or failing that, a short random string will be used.;
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: create_individual.html,v 1.10 2003/06/20 19:40:10 smurp Exp $
+$Id: create_individual.html,v 1.11 2003/06/25 15:52:04 smurp Exp $
 </div>
 
   </body>

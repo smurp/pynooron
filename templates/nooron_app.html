@@ -13,10 +13,29 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
+<span tal:define="items python:get_kb_direct_parents(here)" 
+       tal:condition="items">
+This knowledgebase merges together these others:
+  <ul>
+  <tal:dummy repeat="item items">
+    <li tal:condition="python:not 'PRIMORDIAL_KB' == str(item)">
+    <em><a href="link"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>
+    </li>
+  </tal:dummy>
+  </ul>
+</span>
+
+
 <tal:dummy
     define="app_classes python:get_class_instances('nooron_app_class')[0]"
     condition="app_classes">
-<tal:dummy repeat="app_class app_classes">
+<tal:block 
+     repeat="app_class app_classes">
+<tal:dummy
+     condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
 <table border="1">
   <caption>
     <strong>
@@ -35,7 +54,21 @@
 </table>
 <br/><br/>
 </tal:dummy>
+</tal:block>
 </tal:dummy>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -45,18 +78,7 @@
 <div tal:define="test python:0" tal:condition="test">
 
 
-<dl tal:define="items python:get_kb_direct_parents(here)" 
-       tal:condition="items">
-  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
-  <dd>
-  <span tal:repeat="item items">
-    <em><a href="link"
-        	   tal:define="url python:get_frame_name(item)"
-		   tal:attributes="href python:'../'+url"
-           	   tal:content="url">click me</a></em>, 
-  </span>
-  </dd>
-</dl>
+
 
 <dl tal:define="items python:get_kb_direct_children(here)" 
        tal:condition="items">
@@ -70,6 +92,8 @@
   </span>
   </dd>
 </dl>
+
+
 
 
 
@@ -90,8 +114,17 @@
 
 </div>
 
+
+
+
+
+
+
+
+
+
 <hr>
-$Id: nooron_app.html,v 1.6 2003/06/19 22:38:30 smurp Exp $
+$Id: nooron_app.html,v 1.7 2003/06/25 15:52:04 smurp Exp $
 </div>
   </body>
 </html>
