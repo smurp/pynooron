@@ -32,6 +32,7 @@ class Symbol:
             return 'unknown'
     def __repr__(self):
         return str(self)
+        return "<"+str(self)+">"
     def __doc__(self):
         return "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"+self.name
 
@@ -60,8 +61,8 @@ class FRAME(Node):
         #return "<"+self._name+">"
         return self._name
 
-    def __repr__(self):
-        return str(self)
+    #def __repr__(self):
+    #    return str(self)
 
 
 class KLASS(FRAME): pass
@@ -388,9 +389,12 @@ class KB(FRAME):
         if doc: frame._doc = doc
         if doc:
             kb.put_slot_value(frame,Node._DOCUMENTATION,
-                              doc,slot_type=Node._template,
-                              kb_local_only_p=kb_local_only_p)
+                              doc,slot_type=Node._own,
+                              kb_local_only_p=1)
+            #print kb
+            #print "and it is there:",kb.get_slot_value(frame,Node._DOCUMENTATION)
         if pretty_name != None: frame._pretty_name = pretty_name
+        
 
         
         return frame
@@ -604,7 +608,7 @@ class KB(FRAME):
         for slot in kb.get_frame_slots(frame,slot_type=Node._template,
                                        inference_level=Node._direct)[0]:
             some = 0
-            print "slot =",slot,slot.__class__,slot.__class__.__bases__
+            #print "slot =",slot,slot.__class__,slot.__class__.__bases__
             for val in kb.get_slot_values(frame,slot,Node._template)[0]:
                 some = 1
                 tel(["template-slot-value",slot,frame,val])
@@ -679,23 +683,100 @@ class KB(FRAME):
                        checked_kbs=[]):
         classes = kb.get_kb_classes_internal(selector,kb_local_only_p)
         if kb_local_only_p: return classes
-        checked_kbs = []
+
         for parent in kb.get_kb_direct_parents():
             if not (parent in checked_kbs):
                 checked_kbs.append(parent)
                 for klass in parent.get_kb_classes(selector,
-                                                   kb_local_only_p,
+                                                   0,
                                                    checked_kbs):
                     if not (klass in classes):
                         classes.append(klass)
         return classes
 
-    def get_kb_frames(kb,kb_local_only_p=0):
-        frames = kb.get_kb_frames_internal(0)
-        if not kb_local_only_p:
-            for parent in kb.get_kb_direct_parents():
-                frames.extend(parent.get_kb_frames(1))
+    def get_kb_frames(kb, kb_local_only_p = 0,
+                      checked_kbs = []):
+        # NOTE this is different from other get_kb_TYPE methods, no selector
+        frames = kb.get_kb_frames_internal(1)
+        if kb_local_only_p: return frames
+
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                for frame in parent.get_kb_frames(0,
+                                                  checked_kbs):
+                    if not (frame in frames):
+                        frames.append(frame)
         return frames
+
+    def get_kb_facets(kb,selector=Node._system_default,
+                           kb_local_only_p = 0,
+                           checked_kbs = []):
+        facets = kb.get_kb_facets_internal(selector,1)
+        if kb_local_only_p: return facets
+
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                for facet in parent.get_kb_facets(selector,
+                                                  0,
+                                                  checked_kbs):
+                    if not (facet in facets):
+                        facets.append(facet)
+        return facets
+
+    def get_kb_individuals(kb,selector=Node._system_default,
+                           kb_local_only_p = 0,
+                           checked_kbs = []):
+        individuals = kb.get_kb_individuals_internal(selector,1)
+        if kb_local_only_p: return individuals
+
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                for individual in parent.get_kb_individuals(selector,
+                                                            0,
+                                                            checked_kbs):
+                    if not (individual in individuals):
+                        individuals.append(individual)
+        return individuals
+
+    def get_kb_slots(kb,selector=Node._system_default,
+                           kb_local_only_p = 0,
+                           checked_kbs = []):
+        slots = kb.get_kb_slots_internal(selector,1)
+        if kb_local_only_p: return slots
+
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                for slot in parent.get_kb_slots(selector,
+                                                  0,
+                                                  checked_kbs):
+                    if not (slot in slots):
+                        slots.append(slot)
+        return slots
+
+    def get_slot_value(kb,frame,slot,
+                       inference_level = Node._taxonomic,
+                       slot_type = Node._own,
+                       value_selector = Node._either,
+                       kb_local_only_p = 0):
+        number_of_values = 1
+        r = kb.get_slot_values(frame,slot,
+                               inference_level,slot_type,
+                               number_of_values,value_selector,
+                               kb_local_only_p)
+        #print "r",r
+        (list_of_values,exact_p,more_status) = r
+        if len(list_of_values) > 1 or more_status:
+            #print slot,frame,list_of_values,len(list_of_values),more_status
+            raise CardinalityViolation,\
+                  "slot '%s' on frame '%s' has > 1 value" % (slot,frame)
+        value = None
+        if list_of_values:
+            value = list_of_values[0]
+        return (value,exact_p)
 
     def get_slot_values(kb,frame,slot,
                         inference_level = Node._taxonomic,
@@ -711,20 +792,20 @@ class KB(FRAME):
         values. If the specified slot has no values, () is returned.
         Return Value(s): list-of-values exact-p more-status 
         Flags: E O R """
+        #print "get_slot_value(",kb,frame,slot,")"
         klop = kb_local_only_p
         il =  inference_level
         (found_frame,
          frame_found_p) = kb.get_frame_in_kb(frame,
-                                             kb_local_only_p=klop)
+                                             kb_local_only_p=0)
         (found_slot,
          slot_found_p) = kb.get_frame_in_kb(slot,
-                                            kb_local_only_p=klop)
+                                            kb_local_only_p=0)
         if not slot_found_p or not frame_found_p:
             #raise SlotNotFound,(frame,slot,slot_type,kb)
             return ([],0,0)
-
-        (list_of_values,exact_p,more_status) = ([],0,0)
-
+        #(list_of_values,exact_p,more_status) = ([],0,0)
+        
         kb_gsvi = kb.get_slot_values_internal
         (list_of_values,
          exact_p,
@@ -735,7 +816,6 @@ class KB(FRAME):
                                 number_of_values = number_of_values,
                                 value_selector = value_selector,
                                 kb_local_only_p = kb_local_only_p)
-
         if inference_level in [Node._taxonomic,Node._all] and \
            slot_type != Node._own:
             my_types = kb.get_instance_types(found_frame,
@@ -908,27 +988,23 @@ class TupleKb(KB):
     
     def get_kb_classes_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
-        return kb.get_kb_frames_by_type(Node._class,
-                                     kb_local_only_p = kb_local_only_p)
+        return kb.get_kb_frames_by_type(Node._class, kb_local_only_p)
 
     def get_kb_facets_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
-        return kb.get_kb_frames_by_type(Node._facet,
-                                     kb_local_only_p = kb_local_only_p)
+        return kb.get_kb_frames_by_type(Node._facet, kb_local_only_p)
 
-    def get_kb_frames_internal(kb,kb_local_only_p=None):
+    def get_kb_frames_internal(kb,selector=Node._system_default,
+                               kb_local_only_p=None):
         return copy.copy(kb._cache.values())
 
     def get_kb_individuals_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):
-        return kb.get_kb_frames_by_type(Node._individual,
-                                    kb_local_only_p = kb_local_only_p)
+        return kb.get_kb_frames_by_type(Node._individual,kb_local_only_p)
 
     def get_kb_slots_internal(kb,selector=Node._system_default,
-                                kb_local_only_p = 0):
-        return kb.get_kb_frames_by_type(Node._slot,
-                                     kb_local_only_p = kb_local_only_p)
-    get_kb_slots = get_kb_slots_internal
+                              kb_local_only_p = 0):
+        return kb.get_kb_frames_by_type(Node._slot,kb_local_only_p)
 
     def get_kb_frames_by_type(kb, frame_type,
                               selector = Node._system_default,
@@ -949,13 +1025,16 @@ class TupleKb(KB):
         list_of_values = []
         exact_p = 0
         slot_key = str(slot)
+        #slot_key = slot
+        #for k in frame._own_slots.keys(): print "  key",k,type(k)
+            
         if slot_type in [Node._own,Node._all]:
             if frame._own_slots.has_key(slot_key):
                 list_of_values.extend(frame._own_slots[slot_key].values())
         if slot_type in [Node._template,Node._all]:
             if frame._template_slots.has_key(slot_key):
                 list_of_values.extend(frame._template_slots[slot_key].values())
-        return (list_of_values,exact_p,Node._all)
+        return (list_of_values,exact_p,0)
 
     def put_class_superclasses(kb,klass,new_superclasses,
                                kb_local_only_p = 0):
@@ -984,36 +1063,36 @@ class TupleKb(KB):
         if type(value) == type([]): raise CardinalityViolation,str(value)
         (frame,frame_found_p) = kb.get_frame_in_kb(frame)
         (slot,slot_found_p) = kb.get_frame_in_kb(slot)
+        slot_key = str(slot)
         if slot_type == Node._own:
-            if frame._own_slots.has_key(slot):
-                frame._own_slots[slot].set_value(value)
+            #print "got to here",frame,slot,slot_type
+            if frame._own_slots.has_key(slot_key):
+                frame._own_slots[slot_key].set_value(value)
             else:
-                frame._own_slots[slot] = UNIT_SLOT(slot,value)
+                frame._own_slots[slot_key] = UNIT_SLOT(slot,value)
         elif slot_type == Node._template:
-            if frame._template_slots.has_key(slot):
-                frame._template_slots[slot].set_value(value)
+            if frame._template_slots.has_key(slot_key):
+                frame._template_slots[slot_key].set_value(value)
             else:
-                frame._template_slots[slot] = UNIT_SLOT(slot,value)
+                frame._template_slots[slot_key] = UNIT_SLOT(slot,value)
+        
 
     def put_slot_values(kb,frame,slot, values,
                         slot_type=Node._own,
                         value_selector = Node._known_true,
                         kb_local_only_p = 0):
-        """Sets the values of slot in frame to be a singleton set
-        consisting of a single element: value.  This operation may
-        signal constraint violation conditions (see Section 3.8).
-        Returns no values. """
         if type(values) != type([]): raise CardinalityViolation(values)
+        slot_key = str(slot)
         if slot_type == Node._own:
-            if frame._own_slots.has_key(slot):
-                frame._own_slots[slot].set_values(values)
+            if frame._own_slots.has_key(slot_key):
+                frame._own_slots[slot_key].set_values(values)
             else:
-                frame._own_slots[slot] = UNIT_SLOT(slot,values)
+                frame._own_slots[slot_key] = UNIT_SLOT(slot,values)
         elif slot_type == Node._template:
-            if frame._template_slots.has_key(slot):
-                frame._template_slots[slot].set_values(values)
+            if frame._template_slots.has_key(slot_key):
+                frame._template_slots[slot_key].set_values(values)
             else:
-                frame._template_slots[slot] = UNIT_SLOT(slot,values)
+                frame._template_slots[slot_key] = UNIT_SLOT(slot,values)
 
     def subclass_of_p(kb,subclass,superclass,
                       inference_level=Node._taxonomic,
@@ -1103,11 +1182,8 @@ class Connection:
 
 
 class UNIT_SLOT:
-    """UNIT_SLOT is the structure on a frame which holds the values
-    and facets for a particular named slot.  That is in contrast
-    with SlotUnit which is the python class which represents the 
-    FRAME of type SLOT which exists in the KB."""
-
+    """UNIT_SLOT is the structure which holds the values for a slot
+    on a particular frame."""
     def __init__(self,slot_unit,values=[],facets=[]):
         self._slot_unit = slot_unit
         if type(values) != type([]): values = [values]        

@@ -84,6 +84,7 @@ def create_individual(name,
     if not kb: kb = current_kb()
     return kb.create_frame_internal(name,Node._individual,
                                     direct_types = direct_types,
+                                    doc = doc,
                                     own_slots = own_slots,
                                     own_facets = own_facets,
                                     handle = handle,
@@ -154,9 +155,7 @@ def get_class_superclasses(klass, kb=None, inference_level=Node._taxonomic,
                                      kb_local_only_p=kb_local_only_p)
 
 def get_frame_in_kb(thing,kb=None,error_p=1,kb_local_only_p=0):
-    """Returns a frame by name.
-    Returns: (frame frame_in_kb_p)"""
-    # p58
+    # FIXME
     if not kb: kb = current_kb()
     if not kb.frame_in_kb_p(thing,kb_local_only_p):
         return (0,0)
@@ -191,21 +190,13 @@ def get_frame_slots(frame, kb=None, inference_level=Node._taxonomic,
 def get_frame_type(thing, kb=None, inference_level=Node._taxonomic,
                    kb_local_only_p = 0):
     if not kb: kb = current_kb()
-    return kb.get_frame_type(thing,kb_local_only_p=kb_local_only_p)
-    if thing:
-        if isinstance(thing,KB):
-            return Node._kb  # FIXME
-        elif isinstance(thing,FRAME):
-            return kb.get_frame_type(kb_local_only_p=kb_local_only_p)
-    else:
-        return 0
+    return kb.get_frame_type(thing,kb_local_only_p)
 
 def get_instance_types(frame, kb=None, inference_level=Node._taxonomic,
                        number_of_values = Node._all, kb_local_only_p = 0):
     if not kb: kb = current_kb()
-    return kb.get_instance_types(frame,inference_level=inference_level,
-                                 number_of_values=number_of_values,
-                                 kb_local_only_p=kb_local_only_p)
+    return kb.get_instance_types(frame, inference_level,
+                                 number_of_values, kb_local_only_p)
 
 def get_kb_classes(kb=None,
                    selector = Node._system_default,
@@ -221,8 +212,7 @@ def get_kb_facets(kb=None,
                   selector = Node._system_default,
                   kb_local_only_p=None):
     if not kb: kb = current_kb()
-    return kb.get_kb_facets_internal(selector = selector,
-                                     kb_local_only_p = kb_local_only_p)
+    return kb.get_kb_facets_internal(selector, kb_local_only_p)
 
 def get_kb_frames(kb=None,kb_local_only_p=None):
     if not kb: kb = current_kb()
@@ -232,14 +222,26 @@ def get_kb_individuals(kb=None,
                        selector = Node._system_default,
                        kb_local_only_p=None):
     if not kb: kb = current_kb()
-    return kb.get_kb_individuals_internal(selector = selector,
-                                          kb_local_only_p = kb_local_only_p)
+    return kb.get_kb_individuals(selector,kb_local_only_p)
 
 def get_kb_slots(kb=None,
                  selector = Node._system_default,
                  kb_local_only_p=None):
     if not kb: kb = current_kb()
     return kb.get_kb_slots_internal(selector,kb_local_only_p)
+
+def get_slot_value(frame,slot,
+                   kb=None,
+                   inference_level = Node._taxonomic,
+                   slot_type = Node._own,
+                   value_selector = Node._either,
+                   kb_local_only_p = 0):
+    if not kb: kb = current_kb()
+    return kb.get_slot_value(frame,slot,
+                             inference_level,
+                             slot_type,
+                             value_selector,
+                             kb_local_only_p)
 
 def get_slot_values(frame,slot,
                     kb=None,

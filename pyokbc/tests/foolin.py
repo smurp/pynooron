@@ -26,6 +26,8 @@ if 0:
 if 1:
     mykb = open_kb("PeopleData.pykb")
     goto_kb(mykb)
+
+if 0:
     print_frame('SamuelBeckett')
     print get_class_superclasses('AdultHuman')
     print_frame('Human')
@@ -35,3 +37,11 @@ if 1:
     print "SamuelBeckett Eats",get_slot_values('SamuelBeckett','Eats',
                                                slot_type=Node._all)[0]
     print "instance types of Beckett:",get_instance_types('SamuelBeckett')
+
+if 1:
+    #beck = get_frame_in_kb('SamuelBeckett')[0]
+    #print beck._own_slots
+    alice = get_frame_in_kb('AliceLidell')[0]
+    #print alice._own_slots
+    print get_slot_value('AliceLidell',Node._DOCUMENTATION,
+                         slot_type=Node._all)[0]

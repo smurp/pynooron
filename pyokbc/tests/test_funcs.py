@@ -61,6 +61,24 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
+    def test_get_kb_frames_klop(self):
+        good = "[AliceLidell, ChristopherRobin, SamuelBeckett]"
+        resp = list(get_kb_frames(kb_local_only_p=1))
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_kb_individuals(self):
+        good = "[AliceLidell, ChristopherRobin, English, SamuelBeckett]"
+        resp = list(get_kb_individuals())
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_kb_individuals_klop(self):
+        good = "[AliceLidell, ChristopherRobin, SamuelBeckett]"
+        resp = list(get_kb_individuals(kb_local_only_p=1))
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
     def test_get_instance_types_all(self):
         good = '[AdultHuman, Agent, Animal, Human, Mammal, Primate, Thing]'
         resp = list(get_instance_types('SamuelBeckett',
@@ -80,6 +98,12 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_instance_types('SamuelBeckett',
                                        inference_level=Node._taxonomic)[0])
         resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_get_slot_value(self):
+        good = """83"""
+        resp = get_slot_value('SamuelBeckett','Age',
+                              slot_type=Node._own)[0]
         self.assertEquals(good, str(resp))
 
     def test_get_slot_values_all(self):
@@ -116,11 +140,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def skip_test_documentation(self):
-        good = doc="You know, Mark Twain! Right?"
-        resp = list(get_slot_values('SamuelBeckett',Node._DOCUMENTATION,
-                                    slot_type=Node._own)[0])
-        resp.sort(str_sort)
+    def test_documentation(self):
+        good = doc="You know, Alice!  With the restaraunt..."
+        resp = get_slot_value('AliceLidell',Node._DOCUMENTATION,
+                              slot_type=Node._own)[0]
         self.assertEquals(good, str(resp))
 
 
