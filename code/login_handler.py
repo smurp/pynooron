@@ -4,6 +4,7 @@ import re
 import string
 import base64
 from medusa import default_handler
+import traceback
 
 AUTHORIZATION = re.compile (
         #               scheme  challenge
@@ -65,6 +66,25 @@ class login_handler:
         return cookie_dict
         
     def authenticate(self,request):
+        if request.command == 'POST' and 0:
+            print "====================================================="
+            print "dir(request)",dir(request)
+            print "request    ",request.request            
+            print "header     ",request.header
+            print "request_number     ",request.request_number
+            print "channel    ",dir(request.channel)
+            #print "content    ",request.channel.makefile().readlines()
+            print "version    ",request.version
+            for i in dir(request.channel):
+                try:
+                    doc = getattr(request.channel,i).__doc__
+                    print i, doc
+                    print "-----------------------------------------"
+                except:
+                    pass
+
+            print "====================================================="
+            
         dude = AnonymousUser
         auth_info = self.get_auth_info_from_cookie(request)
         #print "authenticate: auth_info =",auth_info
@@ -80,6 +100,8 @@ class login_handler:
         return dude
 
     def set_auth_cookies(self,request,auth_info):
+        if request.command == 'PUT':
+            print "dir(request)",dir(request)
         if len(auth_info) == 2:
             request['Set-Cookie'] = ['%s=%s' % (self.the_user_id_name,
                                                 auth_info[0]),
@@ -121,6 +143,8 @@ class login_handler:
             the_user_pw = form.get('the_user_pw')
             if the_user_id and the_user_pw :
                 auth_info = [the_user_id[0],the_user_pw[0]]
+        else:
+            pass
         return auth_info        
 
     def handle_login(self,request):
@@ -194,6 +218,7 @@ Whoami
         request['Content-Length'] = len(content)
         request['Content-Type'] = 'text/html'
 
+
         if request.command == 'GET':
             request.push (content)
         request.done()
@@ -228,20 +253,31 @@ class friendly_favors_authenticator:
         self._group_key_map = group_key_map
         self._cache = {}
         self._fqdn = fqdn
+        try:
+            raise "hell"
+        except:
+            #traceback.print_stack()
+            pass
+            #print "OK, at least we init", fqdn,group_key_map
+
+        
 
     def _do_auth(self,auth_info):
         dude = AnonymousUser
-        standard = {}        
+        standard = {}
+        #print "about to loop through groups"
         for group in self._group_key_map.items():
             try:
+                #print "got to here",auth_info[0]
                 resp = self._server.ff.startUserSession(auth_info[0],
                                        auth_info[1],  #passwd
                                        group[0],      #favors group
                                        self._fqdn,
                                        group[1])      #group key
-                print "logging in userid:%s, group:%s, resp=",(auth_info[0],
-                                                    group[0],
-                                                    str(resp))
+                #print "logging in userid:%s, group:%s, resp=",(auth_info[0],
+                #                                    group[0],
+                #                                    str(resp))
+                
                 #if resp['group_status'] != 'Active':
                 #    raise 'FriendlyFavorsGroupInactive',\
                 #          "username:%s group:%s status:%s" % (auth_info[0],
@@ -263,8 +299,10 @@ class friendly_favors_authenticator:
         return dude
         
     def authenticate(self,auth_info):
+        #print "and then we authenticate"
         dude = AnonymousUser
         credentials = str(auth_info)
+        #traceback.print_stack()
         #print "ff.authenticate: credentials =",credentials
         if len(auth_info) == 2:
             if self._cache.has_key(credentials):
@@ -279,12 +317,14 @@ class friendly_favors_authenticator:
             self._cache[credentials] = dude
         return dude
 
-class bogus_favors_authenticator(friendly_favors_authenticator):
+class permissive_favors_authenticator(friendly_favors_authenticator):
+    """Permit any combination of userid and password and identify
+    everybody as J. Random Luser.  Great in situations where favors.org
+    is inaccessible (you're offline, it's offline) or where real
+    authentication is not required."""
     def _do_auth(self,auth_info):
         dude = AnonymousUser
-        if len(auth_info) > 1 \
-               and auth_info[0] == 'jrl' \
-               and auth_info[1] == 'badpw':
+        if len(auth_info) > 1 :
             dude =  AuthenticatedUser(auth_info[0],
                                       {'FullName':'J. Random Luser',
                                        'FirstName':'James',
