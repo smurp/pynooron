@@ -1,5 +1,0 @@
-# -*-mode: python -*-
-put_direct_parents(['web_log_wardrobe','smurp_web_log_data'])
-put_instance_types(current_kb(),['web_log_app'])
-put_frame_pretty_name(current_kb(),"""smurp's blog""")
-put_slot_values(current_kb(),':DOCUMENTATION',['This is an example web log.'])
