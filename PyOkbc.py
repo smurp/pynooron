@@ -594,7 +594,8 @@ class KB(Node):
                                                     number_of_values,
                                                     value_selector,
                                                     kb_local_only_p)
-        if inference_level in [Node._taxonomic,Node._all]:
+        if inference_level in [Node._taxonomic,Node._all] and \
+           slot_type != Node._own:
             for klass in kb.get_instance_types(frame,
                                                inference_level=il)[0]:
                 #print "===>",klass,klass._template_slots
