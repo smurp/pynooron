@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+
+      <h3>What is Spangler?</h3>
+      <strong>Spangler</strong> is a graphics algorithm that displays number sequences
+      (for example 2,6,5,4,3) in a fashion that can be described in english as
+      "Draw 3 groups of 4 groups of 5 groups of figures with 6 vertices where the lines
+      travel a distance of 2 vertices."
+            <hr NOSHADE SIZE="3" WIDTH="590" ALIGN="LEFT">
+      <h3>Is there software?</h3>
+      <dl>
+
+        <dt><a href="Applet">The Spangler Applet</a>
+        <dd>A simple Java applet that lets you navigate around the <b>Spangler Set</b>
+          (ha ha) using just arrow keys.
+
+        <dt><a href="Form">Form Interface</a>
+        <dd>The same Java applet but with an HTML form interface.
+
+        <dt>The Spangler CGI
+        <dd>This factory for .gif, .eps and .ai files will soon be available.
+          (Exists, but not polished enough to deploy.)
+
+        <dt>The Spangler Animator
+        <dd>Creates .gif animations.
+          (Exists, but not polished enough to deploy.)
+
+        <dt>The Spangler App
+        <dd>A Java application that does all of the above.
+          (Expected: don't hold your breath)
+      </dl>
+
+      <hr NOSHADE SIZE="3" WIDTH="590" ALIGN="LEFT">
+      <h3>Is there an archive of nifty spangles?</h3>
+      <a href="SpangleSpecArchive.html">Here</a> is a Spangle archive.
+      Please submit your own really amazing favorites via email to
+      <a href="mailto:shawn.murphy@smurp.com">shawn.murphy@smurp.com</a>.
+      If you want to specify which digit to color, just put it in
+      parentheses:
+       <pre>
+         1 3 5 2 (9)
+       </pre>
+      <hr NOSHADE SIZE="3" WIDTH="590" ALIGN="LEFT">
+
+      <h3>Spangler Examples</h3>
+      <table BORDER>
+        <th>description</th><th>spangle spec</th><th>image</th>
+        <tr>
+          <td>Triangle</td> <td><tt>1 3</tt></td> <td><img WIDTH="30" HEIGHT="30" src="img/1_3.gif" alt=""></td>
+
+        </tr>
+        <tr>
+          <td>Square</td> <td><tt>1 4</tt></td> <td> <img WIDTH="30" HEIGHT="30" src="img/1_4.gif" alt=""></td>
+        </tr>
+        <tr>
+          <td>Pentacle</td> <td><tt>2 5</tt></td> <td> <img WIDTH="30" HEIGHT="30" src="img/2_5.gif" alt=""></td>
+
+        </tr>
+        <tr>
+          <td>Star of David</td> <td><tt>2 6</tt></td> <td> <img WIDTH="30" HEIGHT="30" src="img/2_6.gif" alt=""></td>
+        </tr>
+        <tr>
+          <td>Sierpinski's<br>Triangle</td> <td><tt>1 3 3</tt></td> <td>
+
+            <img WIDTH="60" HEIGHT="60" src="img/1_3_3.gif" alt="">
+          </td>
+        </tr>
+        <tr>
+          <td>Sierpinski's<br>Triangle</td> <td><tt>1 3 3 3</tt></td> <td>
+            <img WIDTH="60" HEIGHT="60" src="img/1_3_3_3.gif" alt="">
+
+          </td>
+        </tr>
+        <tr>
+          <td>Sierpinski's<br>Triangle</td> <td><tt>1 3 3 3 3</tt></td> <td>
+            <img WIDTH="60" HEIGHT="60" src="img/1_3_3_3_3.gif" alt="">
+          </td>
+
+        </tr>
+        <tr>
+          <td>Logo of <br>Emergence by Design</td>
+          <td><tt>1 3 5 2 9</tt></td> <td> <img WIDTH="200" HEIGHT="200" src="img/1_3_5_2_9.gif" alt=""></td>
+        </tr>
+      </table>
+
+      <br>
+
+
+</div>
+
+<hr>
+$Id: spangler_intro.html,v 1.1 2003/04/22 16:33:58 smurp Exp $
+</div>
+  </body>
+</html>
