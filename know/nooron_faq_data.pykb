@@ -1,7 +1,7 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.9 2002/11/27 19:46:21 smurp Exp $')
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.10 2002/12/17 09:05:49 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -310,33 +310,3 @@ create_individual('U01400',direct_types=['faq'],
     <a href="http://dev.zope.org/Wikis/DevSite/Projects/ZPT/RenderErrorHandlingStrategies">ZPT Error Handling Strategies</a>
     """]])
 
-create_individual('U01500',direct_types=['faq'],
-                  own_slots=[
-    ['Q',"""What is foreseeably going to change in a backwardly
-    incompatible way?"""],
-    ['A',"""Surfing to /know/somekb.pykb will soon return the
-    raw .pykb file, while <code>/know/somekb</code> will be surfable
-    in the conventional way.  This is needed to support syndication
-    of knowledge and to be in compliance with the coming URLsHaveMeaning
-    pattern where tacking a sensible sequence of extensions onto the
-    end of a Nooron URL will 'do the right thing'.  For example
-    <code>/know/somekb.xtm</code> will return a topicmap version of
-    the knowledge-base and <code>/know/somekb.dot.jpg</code>
-    will return a GraphViz dotfile graph of somekb which has been
-    rendered as a JPEG.  Likewise, frames will be subject to this
-    kind of treatment too,
-    so <code>/know/somekb/someframe-article.dbk.rtf.gz</code> will return
-    a docbook 'article' rendering of someframe converted to rtf and then
-    gzipped.
-    """]])
-
-
-create_individual('U00210',direct_types=['faq'],
-                  own_slots=[
-    ['Q',"""What are the links at the top of the page?"""],
-    ['A',"""The very top line is the main menu of the site, showing
-    links to the (TOP) or front page, a Medusa status display
-    (where Medusa is the underlying http server library used by Nooron),
-    and links to lists of all the templates (garments) and all the
-    Python software which implements Nooron itself.
-    """]])
