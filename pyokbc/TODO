@@ -1,13 +1,15 @@
 
 TODO
 
-
 * PyOkbc must support operations minimally required by Nooron:
-** get_class_superclasses [to support get_slot_values]
-** 
-** default values  [so there can be default values for assocated NPTs]
-** value inheritance, from class to individual (template_slots)
-*** coerce_to_handle [how the hell does a handle work]
+** get :DOCUMENTATION working properly
+** enforce DOMAIN constraints on slot values 
+coerce slot values appropriately (so they are frames too)
+** coerce_to_handle [how the hell does a handle work]
 
-* move get_class_superclasses to KB or TupleKb
-* clean up Node._*_all and make them into a dict keyed by _*
+* cleanup
+** move get_class_superclasses to KB or TupleKb
+** clean up Node._*_all and make them into a dict keyed by _*
+** improve Getting Started section of INSTALL
+
+$Id: TODO,v 1.2 2002/10/22 18:39:57 smurp Exp $

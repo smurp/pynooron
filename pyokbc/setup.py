@@ -9,6 +9,6 @@ setup(
     author_email = "smurp@emergence.com",
     url = "http://www.noosphere.org/software/pyokbc",
 
-    packages = ['pyokbc'],
+    packages = ['pyokbc','pyokbc.tests'],
     package_dir = {'pyokbc':'.'},
     )

@@ -5,6 +5,7 @@ To install PyOKBC:
 
     Efforts have been made to keep the code 1.5.2 clean, but there were
     a few failures to use string.* instead of the built-in string methods.
+    When OKBC enumerations start being supported then
 
  1) Untar the puppy.
 
@@ -23,5 +24,5 @@ To install PyOKBC:
     Take a look at the stuff in tests/*
 
 
-$Id: INSTALL,v 1.1 2002/10/22 11:23:09 smurp Exp $
+$Id: INSTALL,v 1.2 2002/10/22 18:39:57 smurp Exp $
 

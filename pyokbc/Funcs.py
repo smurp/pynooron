@@ -265,6 +265,12 @@ def individual_p(thing,kb=None,kb_local_only_p=0):
     if not kb: kb = current_kb()
     return kb.individual_p(thing,kb_local_only_p)
 
+def instance_of_p(thing,klass,kb=None,                  
+                  inference_level=Node._taxonomic,
+                  kb_local_only_p=0):
+    if not kb: kb = current_kb()
+    return kb.instance_of_p(thing,klass,inference_level,kb_local_only_p)
+
 def kb_p(thing):
     return isinstance(thing,KB)
 
