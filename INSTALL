@@ -11,42 +11,20 @@ To install Nooron:
     Hints in this direction are given at:
       http://www.zopelabs.com/cookbook/998065931
 
- 1) Install the Goose-Works Toolkit (GWTK) (maybe post 0.5 required)
-      http://www.goose-works.org
-    Gooseworks can use MySQL (and Postgresql too, I think), but Nooron
-    requires neither.  Gooseworks does require expat.
-
-      In Makefile change:
-          /usr/include/python1.5 to /usr/include/python2.1 
-      make all
-      make python
-      cp lib/GW* /usr/lib/python2.1/site-packages/
-      
-
- 2) Install Medusa 0.5.2 (or later, presumably, if more come along)
+ 1) Install Medusa 0.5.2 (or later, presumably, if more come along)
       http://oedipus.sourceforge.net/medusa/
 
- 3) Install Zope 2.5 or later (presumably).
+ 2) Install Zope 2.5 or later (presumably).
       http://zope.org/Products/
 
- 4) Untar nooron-x.x.x.tgz somewhere you want to run it from.
+ 3) Untar nooron-x.x.x.tgz somewhere you want to run it from.
 
-    The python modules which constitute Nooron are intentionally
-    not installed within site-packages as conventional modules are.
-    The reason is that one of the near-term goals is for Nooron
-    to actually expose its own python code to modification by
-    users at runtime.  Yes, this sounds a little odd.  The idea is
-    basically to replace the whole release-use-modify cycle with 
-    the modify-use-rate-filter cycle.
-
- 5) Edit nooron.py 
+ 4) Edit nooron.py 
 
     Things you might need or want to do:
-       - indicate the topicmaps you want to publish
        - adjust for your python 2.1 location
        - adjust for your Zope installation location
        - adjust for your IP and port
 
- 6) Start it with ./nooron.py from the nooron-x.x.x directory.
-
+ 5) Start it with ./nooron.py from the nooron-x.x.x directory.
 

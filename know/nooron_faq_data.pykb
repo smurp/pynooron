@@ -20,7 +20,7 @@ create_individual('U00100',direct_types=['faq'],
 
 create_individual('U00200',direct_types=['faq'],
                   own_slots=[
-    ['Q',"""I don't give a hoot about a this global brain stuff.
+    ['Q',"""I don't give a hoot about all this global brain stuff.
     I just need a ..."""],
     ['A',"""OK, OK, lets skip the big picture for the moment.
     How about if we just look at the handy stuff that Nooron does
