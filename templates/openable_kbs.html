@@ -18,7 +18,7 @@
 
 
 <div metal:fill-slot="main">
-<h1 tal:content="here"></h1>
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
 <dl tal:define="docs python:get_slot_value(here,':DOCUMENTATION')[0] or ''"
     tal:condition="docs">
@@ -66,7 +66,7 @@
 </div>
 
 <hr>
-$Id: openable_kbs.html,v 1.4 2003/04/22 17:32:58 smurp Exp $
+$Id: openable_kbs.html,v 1.5 2003/04/22 17:49:37 smurp Exp $
 </div>
   </body>
 </html>
