@@ -7,23 +7,30 @@ To install Nooron:
     Note that Zope is not ultimately required in its
     entirety.  It is just that a separate distribution of 
     the Zope Page Template technology has not yet been created 
-    which includes all the required goodies from Zope that it
-    requires.  Hints in this direction are given at:
+    which includes all the goodies from Zope that it requires.  
+    Hints in this direction are given at:
       http://www.zopelabs.com/cookbook/998065931
 
  1) Install the Goose-Works Toolkit (GWTK) (maybe post 0.5 required)
+      http://www.goose-works.org
+    Gooseworks can use MySQL (and Postgresql too, I think), but Nooron
+    requires neither.
 
- 2) Install Zope 2.5 or later (presumably).
+ 2) Install Medusa 0.5.2 (or later, presumably, if more come along)
+      http://oedipus.sourceforge.net/medusa/
 
- 3) Untar nooron-x.x.x.tgz somewhere you want to run it from.
+ 3) Install Zope 2.5 or later (presumably).
+      http://zope.org/Products/
+
+ 4) Untar nooron-x.x.x.tgz somewhere you want to run it from.
 
     The python modules which constitute Nooron are intentionally
     not installed within site-packages as conventional modules are.
-    The reason is that one of the nearterm goals is for Nooron
+    The reason is that one of the near-term goals is for Nooron
     to actually expose its own python code to modification by
     users at runtime.  Yes, this sounds a little odd.
 
- 4) Edit nooron.py 
+ 5) Edit nooron.py 
 
     Things you might need or want to do:
        - indicate the topicmaps you want to publish
@@ -31,4 +38,4 @@ To install Nooron:
        - adjust for your Zope installation location
        - adjust for your IP and port
 
- 5) Start it with ./nooron.py
+ 6) Start it with ./nooron.py

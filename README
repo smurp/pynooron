@@ -2,12 +2,10 @@
 Welcome to Nooron
 =================
 
-Home:
-  http://www.noosphere.org/software/nooron
-  http://www.nooron.org/
+Learn a bit about the project:
+  http://www.noosphere.org/discuss/zwiki/Nooron
+  http://www.noosphere.org/background
 
-To understand the scope of the project please see:
-  http://www.noosphere.org
 
 This version depends on:
   Medusa 0.5.2 (or later, presumably, if more come along)
@@ -28,7 +26,8 @@ thanks to Jan Algermissen for access to his ongoing work.
 For now the Nooron license is GPL2.0, if you have wise words on
 why this is an error, please tell me.
 
+
 Shawn Murphy <smurp@emergence.com>
 
-$Revision: 1.7 $
+$Revision: 1.8 $
 
