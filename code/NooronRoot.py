@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.30 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.30 2003/04/15 19:19:50 smurp Exp $'
+__version__='$Revision: 1.31 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.31 2003/04/16 18:36:07 smurp Exp $'
 
 DEBUG = 0
 
@@ -179,7 +179,6 @@ class NooronRoot:
 
     def make_fname(self,frag):
         #if DEBUG: print "make_fname",frag
-        print "make_fname",frag
         if type(frag) == type([]):
             frag = os.path.join(frag[0],frag[1])
         pth = os.path.join(self.fsroot,frag)
