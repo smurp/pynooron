@@ -53,15 +53,17 @@
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></dt>
-    <dd tal:content="python:get_slot_values(item,'Intent')[0][0]">
-    </dd>
+    <tal:dummy define="intent python:get_slot_values(item,'Intent')[0]">
+    <dd tal:content="python:intent and intent[0] or ''"></dd>
+    </tal:dummy>
+
 	
   </span>
 </dl>
 
 
 <hr>
-$Id: pattern_language_intents.html,v 1.7 2003/04/01 16:04:16 smurp Exp $
+$Id: pattern_language_intents.html,v 1.8 2003/04/02 12:53:36 smurp Exp $
 </div>
   </body>
 </html>
