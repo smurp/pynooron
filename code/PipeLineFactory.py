@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.4 2002/08/02 23:44:41 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.5 2002/08/07 20:23:41 smurp Exp $'
 
 DEBUG = 0
 
@@ -24,23 +24,6 @@ class PipeLineFactory:
                 return trans
         return None
 
-    def transformer_from_uri(self,object,request,uri):
-        """Return a transformer with a template given by uri."""
-        if uri:
-            if uri[0:7] == 'http://':
-                raise "NotYetImplemented",\
-                      "loading of arbitrary templates by uri"
-            if uri[0] == '/':
-                raise "NotYetImplemented",\
-                      "loading of templates by full path"
-            if uri[0] == '..':
-                raise "NotYetImplemented",\
-                      "loading of templates by relative path"
-            return transformers.arbitrary_producer(object,request,uri)
-        else:
-            return None
-        
-        
     def status(self):
         return medusa.producers.simple_producer("<li>" +
                                                 status_handler.html_repr(self)+
@@ -74,8 +57,7 @@ class PipeLineFactory:
             return []
 
     def transformers_from_extensions(self,extensions,object,request):
-        #[path,params,query,fragment] = request.split_uri()
-        query = request.split_query()
+        effquery = request.effective_query()
         try:
             klass = object.__class__
         except:
@@ -97,9 +79,9 @@ class PipeLineFactory:
                     trans.append(next)
                 else:
                     # treat the first producer differently
-                    if DEBUG: print "query =",query
+                    if DEBUG: print "effquery =",effquery
                     
-                    if query.get('with_template'):
+                    if effquery.get('with_template'):
                         producer = transformers.arbitrary_producer
 
                     elif klass:
@@ -132,10 +114,10 @@ class PipeLineFactory:
         return "This is the default text, and the path was: %s" % request.split_uri()[0]
 
         
-    def build_pipeline(self,request,object=None):
+    def build_pipeline(self,request,object):
         #print "the object is ",object
-        if not object:
-            object = self.resolve_object(request)
+        #if not object:
+        #    object = self.resolve_object(request)
         extens = self.extension_list(request)
         if not extens:
             extens.append('html')

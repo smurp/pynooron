@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.7 2002/08/02 18:47:18 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.8 2002/08/07 20:23:41 smurp Exp $'
 
 DEBUG = 0
 
@@ -120,9 +120,8 @@ class arbitrary_producer(templated_producer):
     def_mime_type = ['text/html']
     template_name = ''
     def __init__(self,content,request=None,uri=None):
-        query = request.split_query()
-        print "query = ",query
-        self.template_name = query.get('with_template')
+        effquery = request.effective_query()
+        self.template_name = effquery.get('with_template')
         templated_producer.__init__(self,content,request)
         
 
@@ -154,7 +153,9 @@ class tclass_html_producer(templated_producer):
 
 class topicmap_html_producer(templated_producer):
     """Render a topicmap itself."""
-    domain = ['GWApp.GWApp']
+    domain = ['NooronApp.NooronApp'
+              ,'GWApp.GWApp' # deprecated
+              ]
     extensions = ['html','htm']
     def_mime_type = ['text/html']
     template_name = "topicmap_as_html"

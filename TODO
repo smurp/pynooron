@@ -1,7 +1,15 @@
 
-TODO (to get v0.1 released)
-  - script to tarball the puppy
-  
+
+
+TODO (to get v0.2 released)
+  - solve problem with topic merging:
+    Why don't 
+
+  - add 'type' sensitivity to GWApp:
+        def getOccurringTopics(self,scopes = [], type = None):
+        def getOccurrenceResources(self,scopes = [], type = None):
+        def getOccurrences(self,scopes = [], type = None):
+        def getPlayedRoles(self,scopes = [], type = None):
 
 The 'Roadmap' aspects of this have been superceded by:
   http://www.noosphere.org/discuss/zwiki/NooronRoadmap

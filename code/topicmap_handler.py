@@ -1,19 +1,21 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.10 2002/08/04 21:15:29 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.11 2002/08/07 20:23:41 smurp Exp $'
 
+import string
 
 # GooseWorks support
 import GW
 from GWApp import GWApp
 
 import NooronRoot
+import NooronApp
 
 DEBUG = 0
 
 from medusa import counter
 import medusa
-
+from medusa.default_handler import unquote
 
 class ProcHandler:
     def __init__(self,graph):
@@ -21,6 +23,7 @@ class ProcHandler:
         
     def preMergeMap(self,refUri,addedThemes):
         if DEBUG: print "now merging in %s" % refUri
+        print "now merging in %s" % refUri
         
     def postMergeMap(self,e,refUri,addedThemes):
         if(e):
@@ -94,7 +97,6 @@ class topicmap_handler:
     def add_app(self,tm_name,gwapp):
         self.graphs[tm_name] = gwapp
 
-
     def parse_map(self,spec,tm_uri):
         u = GW.Uri(tm_uri)
         p = GW.Proc()
@@ -122,7 +124,8 @@ class topicmap_handler:
         else:
             g = GW.Graph(spec)
             
-        app = GWApp(g)
+        #app = GWApp(g)
+        app = NooronApp.NooronApp(g)
         if spec_type == 'Mem':
             app.use_indices_in_links = 0
             app.tm_uri = tm_uri
@@ -138,7 +141,6 @@ class topicmap_handler:
             retarr.append(n)
         return retarr
 
-
     def get_map(self,tm_name):
         app = self.graphs[tm_name]
         if type(app) == type(''):
@@ -152,8 +154,10 @@ class topicmap_handler:
         while path and path[0] == '/':
             path = path[1:]
 
-        if '%' in path:
+        if '%' in path or '+' in path:
+            path = string.replace(path,'+',' ')
             path = unquote (path)
+            print path
 
         obj = None
         app = None
@@ -190,6 +194,7 @@ class topicmap_handler:
                 if DEBUG: print "fetching index ", index
                 obj = app.TMObject(index)
             else:
+                print "topic_name =",topic_name
                 many = app.getAllWhereBaseNameIs(topic_name)
                 if many:
                     obj = many[0]
@@ -197,9 +202,9 @@ class topicmap_handler:
                     path = app.tm_uri
                     obj = app.getTopicWithID('%s#%s' % \
                                              (path,topic_name))
-            
+
         if not obj:
             obj = app
-
-        NooronRoot.NooronRoot().publish(request,obj)
-        
+            NooronRoot.NooronRoot().publish(request,obj)
+        else:
+            app.publish(request,obj)

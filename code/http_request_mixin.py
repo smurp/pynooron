@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.2 2002/08/02 18:47:18 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.3 2002/08/07 20:23:41 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -47,6 +47,28 @@ def split_query(self):
         self._split_query = self.chop_up_query(query)
     return self._split_query
 http_request.split_query = split_query
+
+
+def effective_query(self):
+    if (not hasattr(self,'_effective_query')):
+        self._effective_query_init()
+    return self._effective_query.copy()
+http_request.effective_query = effective_query
+
+def _effective_query_init(self):
+    query_copy = self.split_query().copy()
+    print "query_copy =",query_copy
+    self._effective_query = query_copy
+    
+http_request._effective_query_init = _effective_query_init    
+
+def effective_query_extend(self,incoming):
+    if type(incoming) != type({}):
+        raise 'ValueError','effective_query_extend expects a dict'
+    if not hasattr(self,'_effective_query'):
+        self._effective_query_init()
+    self._effective_query.update(incoming)
+http_request.effective_query_extend = effective_query_extend
 
 
 def breadcrumbs(self):

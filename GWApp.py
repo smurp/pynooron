@@ -222,6 +222,17 @@ class GWApp:
 
 		return result
 
+	def getAllTopics(self):
+		graph = self.graph
+		result = []
+		q = """FROM ALL DO
+		       DONE AS INDEXES"""
+		res = graph.STMQLExec(q)
+		for i in res:
+			t = TMObject(i,self)	
+			result.append(t)
+
+		return result
 
 """
 
@@ -299,8 +310,11 @@ class TMObject:
 			occs.append(r.getSCR())
 		return occs
 	
-	def getOccurrences(self,scopes = [], type = None):
+	def getOccurrences(self,scopes = [], typ = None):
 		# this will be a tuples like (anode,type,occ-player)
+		if typ != None:
+			if type(typ) != type([]):
+				typ = [typ]
 		occs = []
 		q = """FROM {%d} DO 
                          TRAVERSE mAMa({'#role-topic'})
@@ -319,8 +333,10 @@ class TMObject:
 			classes = assoc_object.getClasses()
 			if(len(classes) > 0):
 				class_object = classes[0]
+				class_basenames = class_object.getBaseNames()
 			else:
 				class_object = None
+				class_basenames = []
 			
 			q2 = """FROM {%d} DO 
                                   TRAVERSE aAMm({'#role-occurrence'}) 
@@ -328,10 +344,22 @@ class TMObject:
 			result2 = self.app.graph.STMQLExec(q2)
 			assert(len(result2) == 1)   # occ must be there
 
-			occ_object = TMObject(result2[0],self.app)			 
+			occ_object = TMObject(result2[0],self.app)
+			
+			if typ:
+				good_type = 0
+				for a_type in typ:
+					if a_type in class_basenames:
+						good_type = 1
+						#print "about to append",class_basenames
+						break # ignore other basenames
+				if not good_type:
+					#print "about to skip",class_basenames
+					continue # skip occs.append
+			occs.append((assoc_object,
+				     class_object,
+				     occ_object))
 
-
-			occs.append((assoc_object,class_object,occ_object))
 		return occs
 
 

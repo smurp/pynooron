@@ -1,6 +1,8 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.5 2002/08/02 23:44:41 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.6 2002/08/07 20:23:41 smurp Exp $'
+
+DEBUG = 0
 
 """
 NooronRoot is the root object of a nooron instance.
@@ -84,9 +86,16 @@ class NooronRoot:
             
 
     def make_fname(self,frag):
+        if DEBUG: print "make_fname",frag
         if type(frag) == type([]):
             frag = os.path.join(frag[0],frag[1])
-        return os.path.join(self.fsroot,frag)
+        pth = os.path.join(self.fsroot,frag)
+        normpath = os.path.normpath(pth)
+        if DEBUG: print "normpath =",normpath
+        if normpath.find(self.fsroot) != 0:
+            raise "Illegal path requested",\
+                  "%s not in %s" % (normpath,self.fsroot)
+        return normpath
 
     def template_root(self):
         return self._template_root

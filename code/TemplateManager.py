@@ -1,12 +1,18 @@
 
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.5 2002/08/07 20:23:41 smurp Exp $'
+
+DEBUG = 0
+
 import string
 
 import NooronRoot
 from NooronPageTemplate import NooronPageTemplate
 
+import urlparse
+import urllib
 
 class TemplateManager:
-    """Each nested template directory gets one of these acquisition supporters."""
 
     aq_parent = None
     latest = {}
@@ -27,7 +33,20 @@ class TemplateManager:
         
     def obtain_template_src(self,template_name):
         #NooronRoot = NooronRoot.NooronRoot
-        fname = NooronRoot.NooronRoot().make_fname([self.path,template_name])
+        template_uri = template_name
+
+        #url_tup = urlparse.urlparse(template_name,'file')
+        if template_name.find('http:') == 0 or \
+           template_name.find('https:') == 0 or \
+           template_name.find('ftp:') == 0:
+            if DEBUG: print "start retrieving",template_uri
+            (fname,headers) = urllib.urlretrieve(template_uri)
+            if DEBUG: print "end   retrieving"
+        else:
+            if template_name.find('file:') == 0:
+                template_name = template_name[7:]
+            fname = NooronRoot.NooronRoot().make_fname([self.path,
+                                                        template_name])
         file = open(fname,'r')
         out = string.join(file.readlines(),"")
         file.close()
@@ -43,7 +62,9 @@ class TemplateManager:
                                       obj=obj,
                                       container=self)
         self.setObject(template_name,template)
+                
         src = self.obtain_template_src(template_name)
+
         template.write(src)
         return template
         
