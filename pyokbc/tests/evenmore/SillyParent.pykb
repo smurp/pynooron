@@ -1,0 +1,4 @@
+# -*-mode: python -*-
+create_individual('GeorgeBushSr',
+                  pretty_name='George Bush Sr',
+                  direct_types=['AdultHuman'])
