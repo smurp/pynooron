@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: test_PyKb.py,v 1.6 2003/04/01 19:17:31 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: test_PyKb.py,v 1.7 2003/04/13 23:18:55 smurp Exp $'
 
 import os
 import sys
@@ -79,6 +79,8 @@ class PyKbStuff(unittest.TestCase):
 
 
     def test_ModificationTime(self):
+        current = current_kb()
+        goto_kb('MergeKB')
         MTIME = get_slot_value(current_kb(),'MTIME')
         ModTime = get_slot_value(current_kb(),'ModificationTime')
         self.assertEquals(MTIME,ModTime)
@@ -107,6 +109,13 @@ class PyKbStuff(unittest.TestCase):
         pushpair(self,pair)
         create_facet('Validity')
         pushpair(self,pair)
+
+        goto_kb(current)
+
+    def test_ModificationTime(self):
+        MTIME = get_slot_value(current_kb(),'MTIME')
+        ModTime = get_slot_value(current_kb(),'ModificationTime')
+        self.assertEquals(MTIME,ModTime)
         
         
 if __name__ == "__main__":

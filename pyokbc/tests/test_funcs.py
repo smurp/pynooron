@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.17 2003/03/26 16:18:55 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.18 2003/04/13 23:18:55 smurp Exp $'
 
 import os
 import sys
@@ -50,11 +50,12 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_get_frame_details(self):
         resp = get_frame_details('SamuelBeckett')[0]
         str_resp = str(resp)
-        print resp
+        #print resp
         len_str_resp = len(str(resp))
-        self.assertEquals(662,len_str_resp)
+        self.assertEquals(691,len_str_resp)
         num_keys = len(resp.keys())
-        self.assertEquals(8,num_keys)
+        #print resp.keys()
+        self.assertEquals(9,num_keys)
 
     def test_get_frame_sentences(self):
         good = \
@@ -110,7 +111,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 87
+        good = 91
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
