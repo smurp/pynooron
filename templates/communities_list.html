@@ -29,7 +29,7 @@
        tal:condition="items">
   <table border="1">
   <tr tal:repeat="item items">
-     <tal:dummy define="det python:get_frame_details(item)[0]">
+     <sillytal:dummy define="det python:get_frame_details(item,kb=here)[0]">
        <td><a href="link"
               tal:define="url python:get_frame_name(item)"
 	      tal:attributes="href url"
@@ -37,11 +37,12 @@
        </td>
        
        <tal:dummy repeat="a_slot slots">
-         <td tal:content="a_slot">
-
+         <td>
+           <p tal:repeat="para python:get_slot_values(item,a_slot)[0]"
+              tal:content="para"></p>
          </td>
        </tal:dummy>
-     </tal:dummy>
+     </sillytal:dummy>
   </tr>
   </table>
 </span>
@@ -54,7 +55,7 @@
 
 
 <hr>
-$Id: communities_list.html,v 1.1 2003/04/05 18:51:24 smurp Exp $
+$Id: communities_list.html,v 1.2 2003/04/30 23:24:58 nooron Exp $
 </div>
   </body>
 </html>
