@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.40 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.40 2003/04/13 22:33:07 smurp Exp $'
+__version__='$Revision: 1.41 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.41 2003/04/13 23:20:58 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1009,37 +1009,37 @@ class KB(FRAME,Programmable):
         details = {}
         inexact_p = 0
         # :handle get-frame-handle
-        details[':name'] = kb.get_frame_name_internal(frame)
-        details[':pretty-name'] = kb.get_frame_pretty_name_internal(frame)
+        details[':name'] = kb.get_frame_name_internal(found_frame)
+        details[':pretty-name'] = kb.get_frame_pretty_name_internal(found_frame)
         # FIXME get_frame_details ignoring :handle, :frame-type and :primitive_p
-        details[':frame-type'] = kb.get_frame_type(frame)
+        details[':frame-type'] = kb.get_frame_type(found_frame)
         #details[':primitive-p'] = kb.primitive_p_internal(frame)
         details[':superclasses'],exact_p,ignore_more =\
-                        kb.get_class_superclasses_internal(frame,
+                        kb.get_class_superclasses_internal(found_frame,
                                                            inference_level)
         if not exact_p: inexact_p = 1
         details[':subclasses'],exact_p,ignore_more = \
-                        kb.get_class_subclasses_internal(frame,
+                        kb.get_class_subclasses_internal(found_frame,
                                                          inference_level,
                                                          number_of_values)
         if not exact_p: inexact_p = 1
         details[':types'],exact_p,ignore_more = \
-                        kb.get_instance_types_internal(frame,
+                        kb.get_instance_types_internal(found_frame,
                                                        inference_level,
                                                        number_of_values,
                                                        kb_local_only_p)
-        own_slots,exact_p = kb.get_frame_slots_internal(frame,
+        own_slots,exact_p = kb.get_frame_slots_internal(found_frame,
                                                         inference_level,
                                                         Node._own,
                                                         kb_local_only_p)
         if not exact_p: inexact_p = 1
-        template_slots,exact_p = kb.get_frame_slots_internal(frame,
+        template_slots,exact_p = kb.get_frame_slots_internal(found_frame,
                                                              inference_level,
                                                              Node._template,
                                                              kb_local_only_p)
         if not exact_p: inexact_p = 1
         details[':own-slots'],exact_p = \
-               get_slot_specification(frame,
+               get_slot_specification(found_frame,
                                       own_slots,
                                       Node._own,
                                       kb,inference_level,
@@ -1047,7 +1047,7 @@ class KB(FRAME,Programmable):
                                       kb_local_only_p)
         if not exact_p: inexact_p = 1
         details[':template-slots'],exact_p = \
-               get_slot_specification(frame,
+               get_slot_specification(found_frame,
                                       template_slots,
                                       Node._template,
                                       kb,inference_level,
@@ -1059,7 +1059,7 @@ class KB(FRAME,Programmable):
         #details[':template-facets']
         if not exact_p: inexact_p = 1
         details[':sentences'],exact_p,ignore_status = \
-                        kb.get_frame_sentences_internal(frame,
+                        kb.get_frame_sentences_internal(found_frame,
                                                         number_of_values,
                                                         kb_local_only_p = kb_local_only_p)
 
