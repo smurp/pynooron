@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.26 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.26 2003/01/07 18:39:15 smurp Exp $'
+__version__='$Revision: 1.27 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.27 2003/01/24 12:26:41 smurp Exp $'
 
 
 """
@@ -20,6 +20,8 @@ sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python/Products')
 
 sys.path.append('code')
 from NooronRoot import NooronRoot
+
+import string
 
 cwd = os.getcwd()
 
@@ -42,8 +44,8 @@ __main__.__builtins__.nooron_root = \
 try:
     import pwd
     try:
-        try:    UID = string.atoi(UID)
-        except: pass
+        #try:    UID = string.atoi(UID)
+        #except: pass
         gid = None
         if type(UID) == type(""):
             uid = pwd.getpwnam(UID)[2]

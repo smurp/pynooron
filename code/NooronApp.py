@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.27 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.27 2003/01/20 14:51:40 smurp Exp $'
+__version__='$Revision: 1.28 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.28 2003/01/24 12:27:35 smurp Exp $'
 
 
 from pyokbc import *
@@ -170,7 +170,7 @@ class GenericFrame(AbstractApp):
                            mimetype=mimetype)
 
     def choose_an_npt(app,request,frame):
-        if 0: # the debugging version
+        if 1: # the debugging version
             meths = [app.get_preferred_npt_by_parentage,
                      app.get_npt_for_self,
                      app.get_npt_hardwired]
@@ -205,7 +205,7 @@ class GenericFrame(AbstractApp):
         kb = app._kb
         direct_types = list(kb.get_instance_types(frame,
                                              inference_level=Node._direct)[0])
-        print frame,'has direct_types',direct_types
+        #print frame,'has direct_types',direct_types
         the_proc = get_procedure('npts_by_parentage')
         if not the_proc: return None
         train = call_procedure(the_proc,arguments=[direct_types,None])

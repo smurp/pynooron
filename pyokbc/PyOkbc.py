@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.31 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.31 2002/12/17 08:22:47 smurp Exp $'
+__version__='$Revision: 1.32 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.32 2003/01/24 12:28:20 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"

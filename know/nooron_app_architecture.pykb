@@ -120,12 +120,14 @@ create_class('nooron_app_class',
 # maybe there should be a kb like: nooron_app_core_wardrobe for...
 create_class(':THING',
              template_slots=[['npt_for_self',
-                              'frame_details.html',
-                              'frame.html']])
+                              'frame.html',
+                              'frame_details.html'
+                              ]])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
                               'class_and_instances.html',
-                              'class_and_subclasses.html'],
+                              #'class_and_subclasses.html'
+                              ],
                              ['actions_for_instances',
                               'create_individual.html']])
 create_class(':KB',

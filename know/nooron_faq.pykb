@@ -4,6 +4,4 @@ put_direct_parents(['faq_wardrobe',
 put_instance_types(current_kb(),['faq_app'])
 put_frame_pretty_name(current_kb(),"Nooron FAQ")
 put_slot_values(current_kb(),':DOCUMENTATION',
-                ["""Let us use the conceit of an FAQ to convey
-                some of the basics of how to get started with
-                Nooron."""])
+                ["""An FAQ about Nooron, what it is and how to use it."""])
