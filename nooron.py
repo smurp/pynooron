@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.9 2002/08/02 23:44:41 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.10 2002/08/02 23:53:40 smurp Exp $'
 
 
 """
@@ -25,7 +25,7 @@ maps = {'weblog':'file://%s/weblog.xtm' % cwd,
         #'whatever',"type=MySQL,name=dbname,user=yourname,pass=yourpw",
         'smurp':'file://%s/smurp_as_agent.xtm' % cwd}
 
-NooronRoot(publishing_root = '/home/smurp/src/nooron',
+NooronRoot(publishing_root = cwd,
            #server_name = '192.168.1.11',
            server_name = '',
            server_port = 8081,
