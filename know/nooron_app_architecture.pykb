@@ -138,7 +138,7 @@ create_class(':THING',
                               'frame.html',
                               'frame_details.html',
                               ],
-                             ['actions_for_self',                              
+                             ['actions_for_self',
                               #'change_pretty_name.html',
                               'put_frame_details.html',
                               ]])
@@ -190,3 +190,225 @@ create_class(':HREF',
              
 
 
+# Following is the ontology for Criteria through to Worldviews
+
+## Criterion and its slots
+
+create_slot('SlotCriterionRange',
+            own_slots=[[':DOMAIN','Criterion'],[':SLOT-CARDINALITY',1]],
+            doc="""This is the slot on criterion which specifies the range
+            of evaluations with respect to the criterion.  The values on this
+            slot may be of the following forms: 1) a :CLASS which specifies
+            the possible values e.g. :INTEGER or :STRING
+            2) the CriterionRange which specifies the possible values.
+            A SlotCriterionRange of :STRING means that the Criterion is
+            in effect a fill-in-the-blank question.  A SlotCriterionRange
+            of, for example, :INTEGER means that the Criterion is asking
+            for an integer to be supplied.  A SlotCriterionRange of
+            
+            """)
+
+create_slot('SlotCriterionDomain',
+            own_slots=[[':DOMAIN','Criterion'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This is the slot on criterion which specifies the domain
+            of the criterion, in other words the classes of things which
+            the criterion may be applied to.  If the value of this slot is
+            empty, then the criterion may be applied to anything.  Further
+            analysis is required to determine how the distinction
+            could/should be recorded between
+            criteria-used-to-evaluate-candidates versus
+            criteria-used-to-evaluate-versions.  Another issue is this
+            whole matter of whether the SlotCriterionDomain should be
+            recorded at all, or whether this is a matter which can be left
+            to self-organize by noting how criteria are used.
+            """)
+
+create_slot('SlotCriterionQuestion',
+            own_slots=[[':DOMAIN','Criterion'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This is the slot on criterion which has as its value
+            the question which is asked of people when evaluating something
+            with respect to the criterion.""")
+
+create_class('Criterion',
+             own_slots=[['SlotCriterionRange'],['SlotCriterionQuestion'],
+                        ['SlotCriterionDomain']],
+             template_slots=[['slot_display_order',
+                              'SlotCriterionRange',
+                              'SlotCriterionQuestion',
+                              'SlotCriterionDomain']],
+             doc="""A Criterion is a dimension along which opinions may
+             be expressed.  Those opinions are called Evaluations and
+             may be supplied by either people or software agents.""")
+
+## CriterionRange and its slots
+create_class('CriterionRange',
+             doc="""A CriterionRange is a class whose instances are
+             the values an evaluation might have.  """)
+
+## Evaluation and its slots
+
+create_slot('WRTCriterion',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-VALUE-TYPE','Criterion'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation contains the criterion
+            which the evaluation was performed with respect to.""")
+
+create_slot('SubjectOfEvaluation',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-VALUE-TYPE',':THING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation contains the thing being
+            evaluated.  Notice that a simple frame name is just a
+            degenerate form of a URL.""")
+
+create_slot('ActualEvaluation',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation contains the specific
+            value which is the Evaluator's response to the question
+            contained in the criterion.""")
+
+create_slot('EvaluationContext',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-VALUE-TYPE',':KB'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation indicates the context
+            in which the evaluation was performed, for example,
+            in relation to other members of the same class in
+            some KB, or in relation to other versions of the same
+            thing.  Maybe there should really be two slots, one for
+            the URL which defines the context and the other a value
+            which is either CANDIDATE or VERSION.""")
+
+
+create_slot('Evaluator',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-VALUE-TYPE',':Agent'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation indicates the person
+            or software agent who performed the evaluation.""")
+
+
+create_slot('HasVisibility',
+            own_slots=[[':DOMAIN','Evaluation'],
+                       [':SLOT-VALUE-TYPE','EvaluationVisibility'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on Evaluation indicates who can
+            see the evaluation: only the Agent, or some broader
+            set of Agents.  EvaluationVisibility is hence a class
+            of such visibility specifications.""")
+
+
+
+create_class('Evaluation',
+             own_slots=[['SubjectOfEvaluation'],['WRTCriterion'],
+                        ['ActualEvaluation'],
+                        ['EvaluationContext'],['Evaluator'],
+                        ['HasVisibility'],['EvaluationTimestamp']],
+             template_slots=[['slot_display_order',
+                              'SubjectOfEvaluation',
+                              'Evaluator',
+                              'WRTCriterion',
+                              'ActualEvaluation',
+                              #'EvaluationContext',
+                              #'EvaluationTimeStamp',
+                              #'HasVisibility'
+                              ]
+                             ],
+             doc="""An evaluation is some Evaluator's answer to a
+             question about some thing in some context.  Where
+               ActualEvaluation is the answer.
+               WRTCriterion is the question.
+               SubjectOfEValuation is the thing being evaluated.
+               Evaluator is the agent who answered the question.
+               EvaluationContext is the context of the evaluation.
+               EvaluationVisibility indicates who can see it.
+               EvaluationTimestamp is when the evaluation happened.""")
+
+## CriterionApplication and its slots
+create_slot('WhoToHeed',
+            own_slots=[[':SLOT-COLLECTION-TYPE','list']],
+            doc="""This slot on CriterionApplication indicates whose
+            evaluations to consider.  Hence its list of values
+            contains either individual evaluators or classes of same.
+            The :SLOT-COLLECTION-TYPE is list because some
+            AggregationFunctions may consider the order to confer
+            precedence.""")
+
+create_slot('ConsiderCriterion',
+            own_slots=[[':DOMAIN','CriterionApplication'],
+                       [':SLOT-VALUE-TYPE','Criterion'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This slot on CriterionApplication indicates
+            which criterion is being considered.""")
+
+create_class('AggregationProcedure',
+              direct_superclasses=[':PROCEDURE'],
+              doc="""AggregationProcedures are OKBC Procedures which
+              summarize the evaluations which are being heeded.""")
+
+create_slot('AggregateUsing',
+            own_slots=[[':DOMAIN','CriterionApplication'],
+                       [':SLOT-VALUE-TYPE','AggregationProcedure'],
+                       [':SLOT-CARDINALITY',1]],   
+            doc="""This slot on CriterionApplication indicates
+            which OKBC procedure to use to summarize the evaluations
+            being heeded.""")
+
+create_class('CriterionApplication',
+             own_slots=[['ConsiderCriterion'],
+                        ['WhoToHeed'],
+                        ['AggregateUsing']],
+             template_slots=[['slot_display_order',
+                              'ConsiderCriterion',
+                              'WhoToHeed',
+                              'AggregateUsing']],
+             doc="""A CriterionApplication specifies all that a WorldView
+             needs to know about each Criterion it considers.
+               """)
+
+## WorldView and its slots
+create_class('WorldView',
+             own_slots=[[':DOMAIN','CriterionApplication']],
+             doc="""A WorldView is a list of CriterionApplication
+             instances.  In other words, it is a list of which criteria
+             to consider in which order and whose evaluations to
+             heed with respect to each.""")
+
+
+## some standard AggregationProcedures
+### typical ones: average, sum, max, min, stddeviation, mean, mode, median
+### weird one:    random,  shortest, longest
+
+## some general Criteria (should be moved soon)
+### ClarityOfExpression, Quality, Interest, Accuracy, Brevity, Humourousness
+
+#create_class('ClarityOfExpressionRange',
+#             direct_types=['CriterionRange'],
+#             own_slots=[['Ordered','']])
+                  
+create_individual('ClarityOfExpression',
+                  own_slots=[['SlotCriterionQuestion','How clearly is this expressed?'],
+                             ['SlotCriterionDomain',':THING'],
+                             ['SlotCriterionRange','ClarityOfExpressionRange']],
+                  direct_types=['Criterion'])
+
+
+create_individual('Critique',direct_types=['Criterion'],
+                  own_slots=[['SlotCriterionQuestion','What is the problem with this?'],
+                             ['SlotCriterionDomain',':THING'],
+                             ['SlotCriterionRange',':STRING']])
+                  
+create_individual('HasVisibility_Critique_ShawnFrancisMurphy',
+                  direct_types=['Evaluation'],
+                  own_slots=[['SubjectOfEvaluation','HasVisibility'],
+                             ['ActualEvaluation',
+                              """The problem with HasVisibility is that
+                              it is a concept which ought to have broader
+                              applicability than just Evaluations."""],
+                             ['WRTCriterion','Critique'],
+                             ['Evaluator','ShawnFrancisMurphy']])
