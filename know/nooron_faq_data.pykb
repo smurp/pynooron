@@ -259,7 +259,9 @@ create_individual('U01400',direct_types=['faq'],
                   own_slots=[
     ['Q',"""Where is some documentation for Zope Page Templates (the
     basis of Nooron Page Templates)?"""],
-    ['A',""]])
+    ['A',"""
+    http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage
+    http://dev.zope.org/Wikis/DevSite/Projects/ZPT/RenderErrorHandlingStrategies"""]])
 
 create_individual('U01500',direct_types=['faq'],
                   own_slots=[

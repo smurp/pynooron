@@ -3,6 +3,7 @@ TODO for Nooron
 
 for v0.2.0 release
 
+* links into /template
 * fix surfability of /templates and /code
 * cleanliness
 ** remove junk from http log output
@@ -15,6 +16,7 @@ for v0.2.0 release
 * figure out how to display a NooronApp instance
 
 after v0.2
+* why doesnt nooron_pattern_language.get_instance_types return :KB?
 * come up with better terminology for distinguishing Nooron Apps (equivalent
 to Zope products) from nooron_app_instances (which are the *uses* of those
 products)

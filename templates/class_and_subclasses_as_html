@@ -9,8 +9,6 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-
-
 <span  tal:define="items python:get_instance_types(here,inference_level=DIRECT)[0]" 
        tal:condition="items">
   <strong>classes:</strong>
@@ -22,10 +20,14 @@
   </span>
   <br/>
 </span>
-<i><p tal:content="structure python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></p></i>
-<span  tal:define="items python:get_class_instances(here)[0]" 
+
+<p tal:content="structure python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></p>
+
+
+
+<span  tal:define="items python:get_class_subclasses(here)[0]" 
        tal:condition="items">
-  <strong>instances:</strong>
+  <strong>subclasses:</strong>
   <ul>
   <span tal:repeat="item items">
     <li	><a href="booger"
@@ -43,7 +45,7 @@
 </div>
 
 <hr>
-$Id: class_and_instances_as_html,v 1.4 2002/11/24 17:46:11 smurp Exp $
+$Id: class_and_subclasses_as_html,v 1.1 2002/11/24 17:46:11 smurp Exp $
 </div>
   </body>
 </html>

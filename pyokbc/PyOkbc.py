@@ -1,5 +1,5 @@
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.19 2002/11/22 21:37:03 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.20 2002/11/24 17:46:11 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1658,6 +1658,12 @@ class TupleKb(KB,Constrainable):
                         slot_type=Node._own,
                         value_selector = Node._known_true,
                         kb_local_only_p = 0):
+        (frame,
+         frame_found_p) = kb.get_frame_in_kb(frame,
+                                             kb_local_only_p=0)
+        if not frame:
+            return 
+
         if type(values) != type([]): raise CardinalityViolation(values)
         slot_key = str(slot)
 

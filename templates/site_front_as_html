@@ -13,7 +13,7 @@ Starting points:
 <ul>
 <li>What is this thing?</li>
 <li><a href="/know/nooron_pattern_language.pykb">The Nooron Pattern Language</a></li>
-<li>The <a href="/know/nooron_app_architecture.pykb">Nooron Architecture</a></li>
+<li>The <a href="/know/nooron_app_architecture.pykb/?with_template=kb_as_html">Nooron App Architecture</a></li>
 <li><a href="/know/smurp_web_log.pykb">Smurp's Web Log</a></li>
 <li>Nooron FAQ (<a href="/know/nooron_faq.pykb">local</a>) 
 (<a href="http://www.nooron.org/know/nooron_faq.pykb">central</a>)</li>
@@ -26,7 +26,7 @@ In case it wasn't obvious, all of the above are
     <a href="know">/know</a></li>
 </ul>
 <hr>
-$Id: site_front_as_html,v 1.3 2002/11/22 21:37:04 smurp Exp $
+$Id: site_front_as_html,v 1.4 2002/11/24 17:46:11 smurp Exp $
 </div>
 </body>
 </html>

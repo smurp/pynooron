@@ -1,0 +1,40 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+  size="8,10"
+<span tal:condition="python:1" 
+      tal:define="all_classes python: get_kb_classes()"
+      tal:omit-tag="">
+
+//  <tal:dummy replace="all_classes"/>
+    <span tal:repeat="first all_classes"
+          tal:omit-tag="">
+      <span tal:omit-tag=""
+            tal:repeat="second python:get_class_superclasses(first,
+           	                                           inference_level=ALL)[0]">
+        <hr tal:replace="python:str(first).replace(':','')"/>
+        -> <hr tal:replace="python:str(second).replace(':','')"/>;
+      </span>
+
+      <span tal:omit-tag=""
+            tal:repeat="second python:get_class_subclasses(first,
+           	                                           inference_level=ALL)[0]">
+        <tal:dummy replace="python:str(second).replace(':','')"/>
+        -> <tal:dummy replace="python:str(first).replace(':','')"/> ;
+      </span>
+
+<tal:dummy condition="nothing">
+      <span tal:omit-tag=""
+            tal:repeat="second python:get_instance_types(first,
+           	                                         inference_level=DIRECT)[0]">
+        <tal:dummy replace="python:str(second).replace(':','')"/>
+        -> <tal:dummy replace="python:str(first).replace(':','')"/> [style=dashed];
+
+      </span>
+</tal:dummy>
+
+    </span>
+
+</span>
+</metal:block>
+</metal:block>
+

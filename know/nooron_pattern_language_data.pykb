@@ -327,7 +327,10 @@ create_individual('TextConsideredHarmful', pretty_name='Text Considered Harmful'
                              express themselves in knowledge rather than
                              text, they make it easier for machines
                              (without AI) to process their utterences
-                             usefully."""],
+                             usefully.  In turn, this means computers
+                             can do a much better job of promoting
+                             reuse and performing rich presentation
+                             of the information."""],
                              ['Motivation',],
                              ['Applicability',],
                              ['Method',],

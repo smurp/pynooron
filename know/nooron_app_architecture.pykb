@@ -106,13 +106,14 @@ create_class(':THING',
              template_slots=[['npt_for_self',
                               'frame_details_as_html',
                               'frame_as_html']])
-#create_class(':CLASS',
-#             template_slots=[['npt_for_self',
-#                              'class_and_instances_as_html',
-#                              'class_and_subclasses_as_html']])
+create_class(':CLASS',
+             template_slots=[['npt_for_instances',
+                              'class_and_instances_as_html',
+                              'class_and_subclasses_as_html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
-#                              'class_in_kb_as_dot',
+                              'classes_in_kb_as_dot',
 #                              'class_hierarchy_as_dot',
+                              'kb_ancestry_as_dot',
                               'kb_as_html'
                               ]])

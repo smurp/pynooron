@@ -21,15 +21,18 @@
     <tr>
       <td bgcolor="green" valign="top">
          <div metal:define-slot="other_skins">
-	available skins:<br/>
-           <div tal:define="skins python:get_slot_values(here,'npt_for_self',
-	 	  			      slot_type=ALL)[0] 
-                                         or ['frame_details_as_html',
-                                             'frame_as_html',
-					     'kb_ancestry_as_dot'];
-                            baseurl python:request.split_uri()[0]"
-	        tal:condition="skins"
-     	        tal:repeat="skin skins"
+	<em>available garments:</em><br/>
+
+           <tal:dummy
+                define="global npts_proc
+                        python:get_procedure('npts_for_self_and_instances')"
+                condition="nocall:npts_proc">
+           <div tal:define="all_skins 
+                    python:call_procedure(npts_proc,
+                                          arguments=[here]);
+                    baseurl python:request.split_uri()[0]"
+	        tal:condition="all_skins"
+     	        tal:repeat="skin all_skins"
                 tal:omit-tag="">
              <span tal:omit-tag=""
                    tal:define="current_skin_p python:template_title == str(skin)">
@@ -40,13 +43,12 @@
                    tal:condition="current_skin_p"
                    tal:content="skin"></span>
              </span>
-             <br/>
+             &nbsp; <br/>
            </div>
+
+           </tal:dummy>
          </div>
- 	 <hr/>
-         <div metal:define-slot="available_actions">
-           available actions:<br/><em>eventually</em>
-         </div>
+	<hr/>
       </td>
       <td bgcolor="white" >
 
@@ -54,7 +56,9 @@
            The main content of the pages goes here.
          </div>
 
-<table border=1>
+
+<table border=1 
+       tal:condition="here">
 <tr bgcolor="yellow">
 <th tal:condition="lay_reader">lay docs</th>
 <th tal:condition="wired_reader">wired docs</th>
@@ -70,6 +74,7 @@
 </tr>
 </table>
 
+<a href="" tal:attributes="href python:'/templates/'+template_title">Show Source</a>
       </td>
     </tr>
 
@@ -84,6 +89,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.13 2002/11/22 21:37:04 smurp Exp $
+$Id: standard_master,v 1.14 2002/11/24 17:46:12 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

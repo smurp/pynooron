@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.14 2002/11/22 21:37:02 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.15 2002/11/24 17:46:10 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -99,9 +99,11 @@ class GenericFrame(AbstractApp):
 
     def get_npt_for_instances(app,request,frame):
         kb = app._kb
-        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_instances',
-                                                 number_of_values=1,
-                                                 slot_type=Node._all)
+        vals = []
+        if kb.class_p(frame):
+            (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_instances',
+                                                     number_of_values=1,
+                                                     slot_type=Node._all)
         return vals and vals[0] 
 
     def get_npt_for_self(app,request,frame):

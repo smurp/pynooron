@@ -40,8 +40,8 @@ The complete set of universally available templates is:
                         get_frame_name(here)"></h1>
 
 <dl tal:define="slots python:get_slot_values(here,'slot_display_order',
-                                             slot_type=OWN)[0] 
-or get_frame_slots(here,slot_type=ALL)[0]"
+                                             slot_type=ALL)[0] 
+                             or get_frame_slots(here,slot_type=ALL)[0]"
     tal:condition="slots">
   <span tal:repeat="slot slots"
         tal:omit-tag="">
@@ -74,7 +74,7 @@ or get_frame_slots(here,slot_type=ALL)[0]"
 </div>
 
 <hr>
-$Id: frame_as_html,v 1.6 2002/11/22 21:37:03 smurp Exp $
+$Id: frame_as_html,v 1.7 2002/11/24 17:46:11 smurp Exp $
 </div>
   </body>
 </html>

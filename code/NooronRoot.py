@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.13 2002/11/18 23:45:13 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.14 2002/11/24 17:46:10 smurp Exp $'
 
 DEBUG = 0
 
@@ -25,6 +25,28 @@ import PipeLineFactory
 from pyokbc import *
 import os
 
+
+def npts_for_self_and_instances(here):
+    npt_for_self = get_slot_values(here,'npt_for_self',
+                                   slot_type=Node._all)[0] or \
+                                   ['frame_details_as_html',
+                                    'frame_as_html',
+                                    'kb_ancestry_as_dot'];
+
+    if class_p(here):
+        npt_for_instances = get_slot_values(here,'npt_for_instances',
+                                            slot_type=Node._template)[0]
+    else:
+        npt_for_instances = []
+    return npt_for_self + npt_for_instances
+
+def sort_frames(these):
+    str_sort=lambda a,b: cmp(str(a),str(b))
+    these.sort(str_sort)
+    return these
+
+
+
 class NooronRoot:
     fsroot = None
     http_server = None
@@ -42,8 +64,31 @@ class NooronRoot:
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
         self._connection = local_connection()
-        put_direct_parents(['nooron_app_architecture.pykb'],
-                           kb=self._connection.meta_kb())
+        #put_direct_parents(['nooron_app_architecture.pykb'],
+        #                   kb=self._connection.meta_kb())
+        prim_kb = find_kb('PRIMORDIAL_KB')
+
+        put_slot_values(':KB','npt_for_instances',
+                        ['kb_as_html'],
+                        kb=prim_kb,
+                        slot_type=Node._template)
+
+        put_slot_values(':THING','npt_for_self',
+                        ['frame_details_as_html','frame_as_html'],
+                        kb=prim_kb,
+                        slot_type=Node._template)
+
+        register_procedure('npts_for_self_and_instances',
+                           kb=prim_kb,
+                           procedure=\
+                           create_procedure(body=\
+                                            npts_for_self_and_instances))
+
+        register_procedure('sort_frames',
+                           kb=prim_kb,
+                           procedure=create_procedure(body=sort_frames))
+
+
         #print "local_connection =",local_connection()
         #print "current_kb =",current_kb()        
         #print "openable_kbs =",openable_kbs(connection=local_connection())
