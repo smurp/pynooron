@@ -8,7 +8,7 @@ import string
 
 def _make_allowed_fname(allowed_place,kb_locator):
     #if DEBUG: print "make_fname",frag
-    print "_make_allowed_fname",allowed_place,kb_locator
+    #print "_make_allowed_fname",allowed_place,kb_locator
     fullpath = os.path.join(allowed_place,kb_locator)
     normpath = os.path.normpath(fullpath)
     #if DEBUG: print "normpath =",normpath
@@ -65,7 +65,7 @@ class FileSystemConnection(Connection):
 
     def _lines_and_stats(connection,filename,place):
         path = connection._path
-        print "_lines_and_stats place =",place,filename
+        #print "_lines_and_stats place =",place,filename
         if place != '':
             path = [place]
         for a_place in path:
