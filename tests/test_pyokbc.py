@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.16 2003/04/14 16:11:54 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.17 2003/04/14 18:24:56 smurp Exp $'
 
 import os
 import sys
@@ -76,9 +76,9 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_get_frame_details(self):
         resp = get_frame_details('wle_0003')[0]
         self.assertEquals(type(resp),type({}))
-        good = '[:THING, :INDIVIDUAL, web_log_entry, gear]'
+        good = '[:INDIVIDUAL, :THING, gear, web_log_entry]'
         array = resp[':types']
-        array.sort()
+        array.sort(str_sort)
         self.assertEquals(str(array),good)
 
     def test_get_frame_slots_all_gear(self):
