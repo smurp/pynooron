@@ -6,7 +6,8 @@ import sys
 import unittest
 from test_funcs import *
 from test_primordial import *
-#from test_fs_connection import *
+from test_PyKb import *
+from test_fs_connection import *
 
 if __name__ == "__main__":
     unittest.main()
