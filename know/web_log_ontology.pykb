@@ -31,7 +31,6 @@ create_class('web_log_category',
 
 create_class('web_log_app',
              direct_superclasses=['nooron_app_instance'],
-#             template_slots=[['npt_for_self','WEB_LOG_APP_in_ONTO_as_html']],
              doc="""Instances of web_log_app are themselves kbs which
              are publishable nooron app_instances which happen to be
              web logs.""")
