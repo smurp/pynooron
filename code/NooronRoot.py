@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.14 2002/11/24 17:46:10 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.15 2002/11/26 00:03:07 smurp Exp $'
 
 DEBUG = 0
 
@@ -169,3 +169,5 @@ class NooronRoot:
     def objectValues(self):
         return []
 
+    def __str__(self):
+        return "Nooron Site Root"

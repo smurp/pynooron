@@ -25,9 +25,11 @@
 
 
 
-<span  tal:define="items python:get_class_instances('web_log_entry')[0]" 
+<span  tal:define="items python:call_procedure(get_procedure('sort_frames'),
+                       arguments=[get_class_instances('web_log_entry')[0]])" 
        tal:condition="items">
   <!-- better would be some sort of slot value e.g. plural_for_instances-->
+  <tal:dummy replace="items/reverse"/>
   <ul>
   <span tal:repeat="item items">
     <li	><a href="booger"
@@ -62,7 +64,7 @@
 </div>
 
 <hr>
-$Id: web_log_app_as_html,v 1.1 2002/11/14 10:21:39 smurp Exp $
+$Id: web_log_app_as_html,v 1.2 2002/11/26 00:03:07 smurp Exp $
 </div>
   </body>
 </html>

@@ -21,7 +21,7 @@ create_class('pattern_language_app',
              template_slots=[['npt_for_self',
                               'pattern_language_as_dot',
                               'pattern_language_as_docbook',
-                              'pattern_language_intents_as_html',
-                              'pattern_language_compact_as_html']],
+                              'pattern_language_compact_as_html',
+                              'pattern_language_intents_as_html']],
              )
 

@@ -9,15 +9,10 @@ Learn a bit about the project:
 This version depends on:
   Medusa 0.5.2 (or later, presumably, if more come along)
     http://oedipus.sourceforge.net/medusa/
-  Zope Page Templates
-    http://www.zope.org/
-
-This distribution of Nooron contains GWApp.py which is a 
-slight modification of Goose-Works' GWSAM.py.  It is likely that
-GWApp.py will soon be included in GWTK (Goose-Works).  GWApp.py
-has only been tested with an unreleased version of GWTK later than
-0.5 (the latest on the gooseworks site as of Aug 4th, 2002.  Many
-thanks to Jan Algermissen for access to his ongoing work.
+  Zope Page Templates included in Zope (tested with 2.5.1)
+    http://www.zope.org/Products/Zope/2.5.1
+  PyOKBC, but it is included in this Nooron distribution
+    htt://www.noosphere.org/software/pyokbc/
 
 For now the Nooron license is GPL2.0, if you have wise words on
 why this is an error, please tell me.
@@ -25,5 +20,5 @@ why this is an error, please tell me.
 
 Shawn Murphy <smurp@emergence.com>
 
-$Id: README,v 1.10 2002/11/01 23:47:17 smurp Exp $
+$Id: README,v 1.11 2002/11/26 00:03:06 smurp Exp $
 

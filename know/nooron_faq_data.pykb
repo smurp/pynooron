@@ -3,7 +3,6 @@ put_direct_parents(['faq_ontology.pykb'])
 put_instance_types(current_kb(),['nooron_app_data'])
 
 
-
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
     ['Q',"What is Nooron?"],
@@ -36,7 +35,7 @@ create_individual('U00200',direct_types=['faq'],
     <li>It is possible to merge knowledge bases, for example: your
     personal schedule with your workmates personal schedules (once
     scheduling is ontologized, that is)</li>
-    <li>in short, Nooron v0.2.x is a system for publishing
+    <li>in short, Nooron 0.2.x is a system for publishing
     arbitrary knowledge through diverse multimedia XML templates
     ['garments' in Nooron parlance]</li>
     </ul>"""]])
@@ -48,11 +47,13 @@ create_individual('U00205',direct_types=['faq'],
     for the whole conceptual tour, but you asked for a concrete answer.
     <ul>
     <li>A pervasive collaborative filtering system (based on
-    user-contributable criteria and evaluations) will provide the
+    user-contributable
+    <a href="/know/nooron_pattern_language.pykb/CriteriaAndEvaluations">criteria and evaluations</a>)
+    will provide the
     advantages of both peer review and evolutionary pressure on all
     contents of Nooron: knowledge, logic and presentation.  Criteria
     and evaluations are a simple model which encompasses a broad range
-    of meatspace facilities, including: opinion polling, voting,
+    of meatspace phenomena, including: opinion polling, voting,
     petitioning, recommending, peer review and application of selection
     pressure.</li>
     <li>It will always be possible for the user to specify whose
@@ -65,11 +66,14 @@ create_individual('U00205',direct_types=['faq'],
     Nooron Apps won't have to worry about creating add and edit
     screens, just new ontologies.  Of course, they will also be able to
     create custom add and edit screens if the needs of the app are so
-    specific.  Likewise, it might be that all they will have to do
-    is create a custom widget for some slot and let it be automatically
+    specific.  Likewise, it might be that all they will prefer to merely
+    create a custom widget for some slot and let it be automatically
     used by the form generation facilities, and inherited by subclasses.
     </li>
-    <li>Nooron will be both 'Fully Automatic' and 'Fully Adjustable'
+    <li>Nooron will be both 
+    <a href="/know/nooron_pattern_language.pykb/FullyAutomatic">Fully Automatic</a>)
+    and
+    <a href="/know/nooron_pattern_language.pykb/FullyAdjustable">Fully Adjustable</a>)    
     because it will, throughout, be sensitive to settings which
     will be guided by worldviews or specific criteria if not explicitly
     overridden by user preferences.</li>
@@ -98,10 +102,12 @@ create_individual('U00205',direct_types=['faq'],
     <li>Access to 'legacy data' will be provided via PyOKBC backends
     for: generic PostgreSQL databases, PyOKBC-specific PostgreSQL,
     generic MySQL databases, remote knowledge-bases, generic python object
-    systems (ala clos-kb in okbc-lisp) 
+    systems (ala clos-kb in okbc-lisp) and any other PyOKBC (or OKBC)
+    backends the community creates.
     </li>
-    <li>Nooron Apps for 'Project Management', 'Scenario Planning',
-    'Bug Tracking'</li>
+    <li>There will definitely be Nooron Apps for 'Project Management',
+    'Scenario Planning' and 'Bug Tracking' because Nooron development
+    will itself require them.</li>
     </ul>
     
     """]])
@@ -112,12 +118,26 @@ create_individual('U00210',direct_types=['faq'],
     ['Q',"""Nooron is still very alpha, though, isn't it?"""],
     ['A',"""Oh, so alpha!"""]])
 
-create_individual('U00200',direct_types=['faq'],
+create_individual('U00211',direct_types=['faq'],
                   own_slots=[
-    ['Q',"""That was your chance to tell us what's left to do. Yes?"""],
-    ['A',"""Right. Right.
+    ['Q',"""What are some immediate next steps?"""],
+    ['A',"""The things which will be done to Nooron ASAP
+    are:
     <ul>
-    <li></li>
+    <li>Performance improvements in the underlying PyOKBC.</li>
+    <li>a web-based knowledge editing interface, initially just
+    for surfers from a single IP address or users with some
+    particular userid.</li>
+    <li>KBs to be surfable from <code>/know/kb_name/</code> and downloadable
+    from <code>/know/kb_name.pykb</code></li>
+    <li>Rejigger Nooron Apps so that everything which constitutes the
+    core of an App (ontology, wardrobe and garments) will exist in one
+    folder.</li>
+    <li>Implement
+    <a href="/know/nooron_pattern_language.pykb/URLsHaveMeaning">URLsHaveMeaning</a>
+    so that server-side generation of 'dot' graphs
+    as JPEGs and docbook as PDF becomes possible.
+    </li>
     </ul>"""]])
 
 create_individual('U00300',direct_types=['faq'],
@@ -173,7 +193,8 @@ create_individual('U00600',direct_types=['faq'],
     ['Q',"What is a frame?"],
     ['A',"""The term 'frame' comes from the Knowledge Representation
     tradition in the AI community.  The term was coined by Minsky and
-    means a data structure which has slots on it and which exists
+    means a data structure, capable of representing nearly anything,
+    which has slots on it and which exists
     inside a knowledgebase.  If you are going to use Nooron at this
     stage in its development you will need to understand the
     <a href="http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#SECTION00300000000000000000">OKBC Knowledge Model.</a>
@@ -184,18 +205,32 @@ create_individual('U00700',direct_types=['faq'],
     ['Q',"What is an ontology?"],
     ['A',"""An ontology is a set of formal definitions of concepts and
      things in some domain.  These <em>machine-understandable</em>
-     can range in scope from narrow to universal.   The
+     artifacts can range in scope from narrow to universal.   The
      Yahoo and Open Directory project's hierarchies are often mentioned
      as examples of ontologies, but are more properly called taxonomies
      because they are mostly just hierarchic classifications rather
      than having enough structural sophistication to provide a basis
      for inferences about their contents.  There are several efforts
-     to create universal ontologies, e.g. http://suo.ieee.org/ and
-     http://www.opencyc.org/"""]])
+     to create universal ontologies, e.g.
+     <a href="http://suo.ieee.org/">http://suo.ieee.org/</a
+     and the not-to-be-confused-with-opensource
+     <a href="http://www.opencyc.org/">http://www.opencyc.org/</a>
+     """]])
+
 create_individual('U00800',direct_types=['faq'],
                   own_slots=[
     ['Q',"What are the top menu links?"],
-    ['A',""" """]])
+    ['A',"""<dl>
+            <dt>(TOP)<dd>take you to the top (or front) of the site
+            <dt>status<dd>the Medusa status screen
+                (Medusa is the python web-server library which Nooron uses)
+            <dt>know<dd>/know a listing of all the knowledgebases on
+            known of by Nooron
+            <dt>templates<dd>a list of all the templates/garments/NooronPageTemplates
+            in this Nooron
+            <dt>code<dd>all the Python source code for Nooron
+            </dl>"""]])
+            
 create_individual('U00900',direct_types=['faq'],
                   own_slots=[
     ['Q',"What are .pykb files?"],
@@ -212,10 +247,17 @@ create_individual('U00900',direct_types=['faq'],
     for some time and provide an acceptable format for knowledge
     'syndication'.
     """]])
+
 create_individual('U01000',direct_types=['faq'],
                   own_slots=[
-    ['Q',""" """],
-    ['A',""" """]])
+    ['Q',"""Will a command line version of Nooron be available?"""],
+    ['A',"""A command line interface to Nooron might prove handy,
+    but for most purposes simply fetching an appropriately constructed
+    url from a running Nooron instance will be equivalent to most
+    anything one might want a command line for.  This is thanks to
+    the interaction of the two patterns
+    <a href="/know/nooron_pattern_language.pykb/REST">REST</a> and
+    <a href="/know/nooron_pattern_language.pykb/URLsHaveMeaning">URLsHaveMeaning</a>"""]])
 
 create_individual('U01100',direct_types=['faq'],
                   own_slots=[
@@ -230,8 +272,11 @@ put_frame_pretty_name(current_kb(),"SOMENAME Pattern Language")
     Put your data in another file called <code>SOMENAME_pattern_language_data.pykb</code>
     with contents like:
     <pre>
-
+put_direct_parents(['pattern_language_ontology.pykb'])
+put_instance_types(current_kb(),['nooron_app_data'])
     </pre>
+    followed by <code>create_individual</code> calls that look like
+    those in <code>/know/nooron_pattern_language_data.pykb</code>
     """]])
 
 create_individual('U01200',direct_types=['faq'],
@@ -253,15 +298,17 @@ create_individual('U01300',direct_types=['faq'],
     <code>code/NooronPageTemplate.py</code>.  The SAFETY setting
     controls whether a restricted execution environment is used
     to execute the code within NooronPageTemplates (NPTs).  There
-    probably exist a few holes in the restriction.  Please report
-    them if you find any."""]])
+    probably exist a few holes in the Nooron application of the
+    ZPT restrictions.  Please report them if you find any."""]])
+    
 create_individual('U01400',direct_types=['faq'],
                   own_slots=[
     ['Q',"""Where is some documentation for Zope Page Templates (the
     basis of Nooron Page Templates)?"""],
-    ['A',"""
-    http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage
-    http://dev.zope.org/Wikis/DevSite/Projects/ZPT/RenderErrorHandlingStrategies"""]])
+    ['A',"""    
+    <a href="http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage">FrontPage of ZPT</a>
+    <a href="http://dev.zope.org/Wikis/DevSite/Projects/ZPT/RenderErrorHandlingStrategies">ZPT Error Handling Strategies</a>
+    """]])
 
 create_individual('U01500',direct_types=['faq'],
                   own_slots=[
@@ -283,18 +330,6 @@ create_individual('U01500',direct_types=['faq'],
     gzipped.
     """]])
 
-create_individual('U01000',direct_types=['faq'],
-                  own_slots=[
-    ['Q',"""Will a command line version of Nooron be available?"""],
-    ['A',"""A command line interface to Nooron might prove to be required,
-    but for most purposes simply fetching an appropriately constructed
-    url from a running Nooron instances will be equivalent to most
-    anything one might want a command line for.  This is thanks to
-    the interaction of the two patterns
-    <a href="/know/nooron_pattern_language.pykb/REST">REST</a> and
-    <a href="/know/nooron_pattern_language.pykb/URLsHaveMeaning">URLsHaveMeaning</a>"""]])
-
-    
 
 create_individual('U00210',direct_types=['faq'],
                   own_slots=[
@@ -305,3 +340,4 @@ create_individual('U00210',direct_types=['faq'],
     and links to lists of all the templates (garments) and all the
     Python software which implements Nooron itself.
     """]])
+

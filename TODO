@@ -3,20 +3,21 @@ TODO for Nooron
 
 for v0.2.0 release
 
-* links into /template
-* fix surfability of /templates and /code
 * cleanliness
+** wrong garment options on site_front_as_html
+** orange and green!
 ** remove junk from http log output
-* implement Marsh's suggestions:
-** complete minimal FAQ
-** 
-* test for surfability of /know and everything from site_front_as_html
 * skins for kbs
 ** ensure that kb_as_html is default template for kbs
 * figure out how to display a NooronApp instance
 
 after v0.2
+* implement IntermediateReferent (or SubjectIndicators?)
+Instances of IntermediateReferent are frames which
+can be bibliographic references, URL's and their titles, 
+or SubjectIndictators ala TopicMaps.
 * why doesnt nooron_pattern_language.get_instance_types return :KB?
+* improve NPT error reporting
 * come up with better terminology for distinguishing Nooron Apps (equivalent
 to Zope products) from nooron_app_instances (which are the *uses* of those
 products)

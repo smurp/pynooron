@@ -7,7 +7,7 @@ create_class('web_log_entry',
 )
 
 create_class('web_log_category',
-             template_slots=[['npt_for_self','web_log_category_as_html']],
+             template_slots=[['npt_for_instances','web_log_category_as_html']],
              own_slots = [['npt_for_self','web_log_category_self_as_html']],
              )
 

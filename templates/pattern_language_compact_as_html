@@ -25,7 +25,7 @@
 <div tal:define="test python:0" tal:condition="test">
 <span  tal:define="sort_frames python:get_procedure('sort_frames');
                    patterns python:call_procedure(sort_frames,
-				arguments=([get_class_instances(here)[0]]))"
+				arguments=get_class_instances(here)[0])"
        tal:condition="items">
   <!-- better would be some sort of slot value e.g. plural_for_instances-->
   <ul>
@@ -44,7 +44,7 @@
 </div>
 
 <hr>
-$Id: pattern_language_compact_as_html,v 1.1 2002/11/22 21:37:04 smurp Exp $
+$Id: pattern_language_compact_as_html,v 1.2 2002/11/26 00:03:07 smurp Exp $
 </div>
   </body>
 </html>

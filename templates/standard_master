@@ -22,7 +22,6 @@
       <td bgcolor="green" valign="top">
          <div metal:define-slot="other_skins">
 	<em>available garments:</em><br/>
-
            <tal:dummy
                 define="global npts_proc
                         python:get_procedure('npts_for_self_and_instances')"
@@ -78,7 +77,7 @@
       </td>
     </tr>
 
-    <span tal:condition="python:1" tal:omit-tag="">
+    <span tal:condition="python:0" tal:omit-tag="">
     <tr>
       <td bgcolor="blue">name space</td>
       <td bgcolor="lightgreen"
@@ -89,6 +88,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.14 2002/11/24 17:46:12 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.15 2002/11/26 00:03:07 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
