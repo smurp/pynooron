@@ -1,15 +1,29 @@
 
 
+
+<metal:block metal:define-macro="text_display_widget">
+<tr>
+  <td><strong tal:content="slot_pretty_name">slot_pretty_name</strong></td>
+  <td>
+  <tal:block condition="exists:slot_value" replace="slot_value">
+  </tal:block>
+  <tal:block condition="not:exists:slot_value">&nbsp;</tal:block>
+  </td>
+</tr>
+</metal:block>
+
+
+
 <metal:block metal:define-macro="text_widget">
 <tr>
-  <td><strong tal:content="slot_pretty_name">slot_name</strong></td>
+  <td><strong tal:content="slot_pretty_name">slot_pretty_name</strong></td>
   <td>
   <tal:block condition="exists:slot_value">
     <input 
        type="text" 
        name="" 
        value=""
-       tal:attributes="name slot_name;
+       tal:attributes="name field_name;
                        value slot_value" 
        size="31"/>
   </tal:block>
@@ -17,7 +31,7 @@
     <input 
        type="text" 
        name="" 
-       tal:attributes="name slot_name" 
+       tal:attributes="name field_name" 
        size="31"/>
   </tal:block>
 
@@ -31,8 +45,9 @@
 
 auto_widget expects the following arguments:
   slot_name
+  field_name
   slot_pretty_name
-  slot_values (optional)
+  slot_values
 
 <metal:block metal:define-macro="auto_widget">
 
@@ -43,7 +58,7 @@ auto_widget expects the following arguments:
 
   <tr>
     <td valign="top">
-       <strong tal:content="slot_pretty_name">slot_name</strong>
+       <strong tal:content="slot_pretty_name">slot_pretty_name</strong>
        <br/>
        <em tal:content="slot_value_type"></em>
     </td>
@@ -55,16 +70,18 @@ auto_widget expects the following arguments:
                      len_text_value python:len(text_value)">
 
      <textarea
+          name=""
           cols="60"
           rows="5"
           tal:condition="python:len_text_value > textarea_threshold"
+          tal:attributes="name field_name"
           tal:content="text_value"></textarea>
 
 
      <input type="text"
          tal:condition="python:len_text_value <= textarea_threshold"
          name="" value="" size=""         
-         tal:attributes="name slot_name;
+         tal:attributes="name field_name;
                          size python:slot_value_type == ':STRING' and 31 or 10;
                          value text_value"/>
   </tal:block>
@@ -73,7 +90,7 @@ auto_widget expects the following arguments:
   <tal:block condition="python:slot_value_type == ':INTEGER'">
   <input type="text" 
          name="" value="" size="10"
-         tal:attributes="name slot_name;
+         tal:attributes="name field_name;
                          value python:slot_values and slot_values[0] or ''"/>
   </tal:block>
 
@@ -98,7 +115,7 @@ auto_widget expects the following arguments:
 
 
     <tal:dummy 
-        replace="structure string:<select name=&quot;$slot_name&quot; $multiple size=&quot;$size&quot;>"/>
+        replace="structure string:<select name=&quot;$field_name&quot; $multiple size=&quot;$size&quot;>"/>
 
       <tal:block 
          repeat="opt options">
@@ -134,4 +151,4 @@ auto_widget expects the following arguments:
 
 
 
-$Id: form_master,v 1.5 2003/03/07 14:11:29 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.6 2003/03/08 13:07:11 smurp Exp $ <a href="/templates/form_master">Show Source</a>
