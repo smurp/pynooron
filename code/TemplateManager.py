@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: TemplateManager.py,v 1.9 2002/12/12 14:00:19 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.10 2003/04/22 06:53:24 smurp Exp $'
 
 DEBUG = 0
 
@@ -42,6 +42,18 @@ from NooronPageTemplate import NooronPageTemplate
 import urlparse
 import urllib
 
+def _make_allowed_fname(allowed_place,kb_locator):
+    #if DEBUG: print "make_fname",frag
+    #print "_make_allowed_fname",allowed_place,kb_locator
+    fullpath = os.path.join(allowed_place,kb_locator)
+    normpath = os.path.normpath(fullpath)
+    #if DEBUG: print "normpath =",normpath
+    if normpath.find(allowed_place) != 0:
+        raise "Illegal path requested",\
+              "%s not in %s" % (normpath,allowed_place)
+    return normpath
+
+
 class TemplateManager:
 
     aq_parent = None
@@ -67,23 +79,27 @@ class TemplateManager:
 
 
         #url_tup = urlparse.urlparse(template_name,'file')
-        if SAFETY:
-            fname = nooron_root.make_fname([self.path, template_name])
-        else:
-            if template_name.find('http:') == 0 or \
-               template_name.find('https:') == 0 or \
-               template_name.find('ftp:') == 0:
-                if DEBUG: print "start retrieving",template_uri
-                (fname,headers) = urllib.urlretrieve(template_uri)
-                if DEBUG: print "end   retrieving"
+        for a_place in self.path:
+            if SAFETY:
+                fname = _make_allowed_fname(a_place, template_name)
             else:
-                if template_name.find('file://') == 0:
-                    template_name = template_name[7:]
-                fname = nooron_root.make_fname([self.path, template_name])
-
-        file = open(fname,'r')
-        out = string.join(file.readlines(),"")
-        file.close()
+                if template_name.find('http:') == 0 or \
+                       template_name.find('https:') == 0 or \
+                       template_name.find('ftp:') == 0:
+                    if DEBUG: print "start retrieving",template_uri
+                    (fname,headers) = urllib.urlretrieve(template_uri)
+                    if DEBUG: print "end   retrieving"
+                else:
+                    if template_name.find('file://') == 0:
+                        template_name = template_name[7:]
+                        fname = _make_allowed_fname(a_place, template_name)
+            try:
+                file = open(fname,'r')
+                out = string.join(file.readlines(),"")
+                file.close()
+                break
+            except:
+                continue
         
         st = os.stat(fname)
         stats = {'UID':st[4],

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.31 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.31 2003/04/16 18:36:07 smurp Exp $'
+__version__='$Revision: 1.32 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.32 2003/04/22 06:53:24 smurp Exp $'
 
 DEBUG = 0
 
@@ -65,6 +65,7 @@ class NooronRoot:
                  server_port=None,
                  log_to=None,
                  use_auth = 0, initargs = {},
+                 template_path = ['templates'],
                  site_front='site_front.html',
                  title = '',
                  security_engine=None,
@@ -74,6 +75,7 @@ class NooronRoot:
         self._site_front = site_front
         self._security_engine = security_engine
         self._cache_dir = cache_dir
+        self._template_path = template_path
         # set up
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
@@ -127,7 +129,7 @@ class NooronRoot:
 
             if len(title): self.title = title
 
-            self._template_root = TemplateManager(self,'templates')
+            self._template_root = TemplateManager(self,self._template_path)
             statusable_handlers = []
 
             if server_ip != None and server_port and log_to:
