@@ -9,6 +9,8 @@ create_slot('BirthTime',
             pretty_name='Birth Time')
 create_slot('Speaks',
             own_slots=[[':DOMAIN','Language']])
+create_slot('Species',
+            doc="""Maybe Species should be a class and SpeciesSlot a slot?""")
 create_class('Thing')
 create_class('Food',
              direct_superclasses=['Thing'])
@@ -30,10 +32,16 @@ create_class('Toast',
              direct_superclasses=['Food'])
 create_class('Agent',
              direct_superclasses=['Thing'])
+create_class('Mammal',
+             direct_superclasses=['Animal'])
+create_class('Primate',
+             direct_superclasses=['Mammal'],
+             template_slots=[['Eats', 'Vegetables', 'Meats']])
 create_class('Human',
-             direct_superclasses=['Agent'],
+             direct_superclasses=['Agent','Primate'],
              template_slots=[['Eats', 'Grains', 'Vegetables', 'DairyProducts', 'Meats'],
                              ['Speaks', 'English'],
+                             ['Species', 'HomoSapiens']
                             ])
 create_class('Child',
              direct_superclasses=['Human'])
