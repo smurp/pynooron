@@ -57,7 +57,8 @@ create_individual('transform_dot_2_ps',
                              ['RequiresProgram','dot'],
                              ['ReadsFrom','pipe'],
                              ['WritesTo','pipe'],
-                             ['LiteralExternalCommand','dot -Tps']])
+                             ['LiteralExternalCommand',
+                              "dot -Tps -Gsize='10x8'"]])
 create_individual('transform_dot_2_jpg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','jpg_extension'],
@@ -138,6 +139,14 @@ create_individual('rtf_extension',
                               'transform_dbk_2_rtf']])
 
 
+create_individual('linenum_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','text/plain'],
+                             ['LiteralExtension','.linenum'],
+                             ['ApplicableTransformers',
+                              'transform_dbk_2_linenum']])
+
+
 
 ##########################################################
 
@@ -211,5 +220,16 @@ create_individual('transform_dbk_2_tex',
                              ['WritesTo','file'],
                              ['LiteralExternalCommand',
                               'docbook2tex --output %(cache_dir)s %(precursor)s'
+                              ]])
+
+
+create_individual('transform_dbk_2_linenum',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','linenum_extension'],
+                             ['RequiresProgram','awk'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
+                             ['LiteralExternalCommand',
+                              "awk '{print NR,$0}'"
                               ]])
 
