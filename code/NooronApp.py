@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.29 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.29 2003/02/07 22:54:08 smurp Exp $'
+__version__='$Revision: 1.30 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.30 2003/02/08 00:36:46 smurp Exp $'
 
 
 from pyokbc import *
@@ -163,12 +163,12 @@ class GenericFrame(AbstractApp):
                      app.get_npt_hardwired]
             resp = app.get_npt_from_url(request)
             if resp:
-                print "npt_from_url"
+                #print "npt_from_url"
                 return resp
             for m in meths:
                 resp = m(request,frame)
                 if resp:
-                    print m.func_name
+                    #print m.func_name
                     return resp
             return app.default_npt_name
             
