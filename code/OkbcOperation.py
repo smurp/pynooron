@@ -1,7 +1,6 @@
 
-
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.10 2003/03/28 11:04:42 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.11 2003/04/13 19:59:06 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -47,7 +46,6 @@ def detail_preprocessor(form,kb,arg):
         current_key = arg+delim+subarg
         the_val = form.get(current_key,
                            form.get(current_key+delim,def_val))
-
         if expect[subarg] == STR:
             if type(the_val) != type(def_val):
                 if type(the_val) == type([]) and len(the_val):
@@ -57,11 +55,18 @@ def detail_preprocessor(form,kb,arg):
         if expect[subarg] == SLT:
             slot_specs = []
             for slot in the_val:
+                the_val = form.get(current_key+delim+slot)
+                rng = range(len(the_val))
+                rng.reverse()
+                for i in rng:
+                    if the_val[i] == '':
+                        the_val.pop(i)
                 slot_spec = [slot]
-                slot_spec.extend(form.get(current_key+delim+slot))
+                slot_spec.extend(the_val)
                 slot_specs.append(slot_spec)
             the_val = slot_specs
-        details[subarg] = the_val
+        if the_val != '':
+            details[subarg] = the_val
     return details
 put_frame_details.http_argument_preprocessors = {'details':detail_preprocessor}
 
