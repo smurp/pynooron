@@ -1,0 +1,93 @@
+Living Directory/Favors Network API
+version  1.0
+June 13, 2003
+
+To accomplish a dual log-on, send an XMLRPC message with the following parameters:
+
+target:  http://www.favors.org/ffVerify.php
+Function name: ff.startUserSession
+
+Then five parameters in the following order:
+1. username
+2. password
+3. login_group (should be the one to four letter group acronym that represents the LD/FN group - for the Kucinich Network it's KNET)
+4. rpc_return (the URL -on your site- to which you want to return your user, when they click Exit on the favors.org menu)
+5. hostkey (you must obtain a hostkey specific to the group you're logging into - email victor@favors.org for a key)
+
+If the username and password combination are successful, and the hostkey is correct for the group, an associative array is returned as an XMLRPC result, with the following keys (explanations in parenthesis):
+
+[skey] (remote session key - with this key your user can access any user menu item on the LD/FN system. For your profile on favors.org you would link or redirect like so - "http://www.favors.org/display/my_profile.php?PHPSESSID=value_of_skey")
+[name] (user's full name)
+[login_id] (user's favors.org id)
+[status] (LD/FN status - one from the following list -  'Deceased', 'Resigned', 'Unidentified', 'Identified', 'Sponsor', 'Networker', 'Administrator')
+[group_status] (status in the login group - one from the following list -  'Denied','Declined','Suspended','Pending','Applicant','Invited','Active')
+[level] (sponsor level - the first three items in LD/FN Status give zero, then Identified is 1, Sponsor 2, Networker 3, Admin 4)
+[groups] (comma separated list of the groups in which this user is an active participant)
+[firstname] (user's first name)
+[lastname] (user's last name)
+
+At that point a session has been created for this user on favors.org with a PHP session id value pointed to by [skey]. In order to enable the bi-directional login the rpc_return URL that you passed must contain a session id, or else you could have caused the browser to save a cookie.
+
+If the login fails, an XML-RPC fault is sent instead. The fault-string portion can be one of the following:
+1. "First Login - Instructions Emailed" (not exactly an error - it means this user has never logged in before, so an instruction email has been sent to them to explain the procedure. This will not happen for new applicants and invitees - they will have already received their instructions. It is a backup for applicants and invitees in the previous version who still have temporary passwords. You should notify your user to look for the email if this faultstring is returned.)
+2. "Invalid Client" - the hostkey you are sending is incorrect for the login group.
+3. "no account match" - the username does not correspond to a valid account ID or email on the LD/FN system.
+4. "no password match" - the password supplied is incorrect for that account.
+5. "Resigned" or "Deceased" - accounts with these status values cannot be logged into.
+6. "xxx failure" any faultstring ending in "failure" describes some sort of database error.
+
+Once your user has successfully logged in you can use the [skey] to access a number of other functions:
+
+1. Logout - send:
+target:  http://www.favors.org/ffVerify.php
+Function name: ff.logout
+Then one parameter - the skey value.
+
+Returns "logout ok" on success, or faultstring "Missing Data" if skey is not a valid session (could have expired and been removed after three hours).
+
+2. User's email address - send:
+target:  http://www.favors.org/ffVerify.php
+Function name: ff.my_email
+Then one parameter - the skey value.
+
+Returns email address on success, or faultstring "Invalid session id" if skey is not a valid session or "No email" if the user doesn't have an email address in the database.
+
+3. Add a user to an LD/FN event roster (is added as "unconfirmed", and it is expected that a group coordinator will confirm them on receipt of payment or whatever is needed):
+target:  http://www.favors.org/ffEvents.php
+Function name: ff.add_to_roster
+Then two parameters:
+1. the skey value.
+2. the LD/FN event ID (an integer that keys the event in the LD/FN database)
+
+Returns "Success" if user has been entered into the event roster, otherwise one of the following faultstrings:
+1. "No session id" - didn't receive a valid skey
+2. "No event id" - didn't receive a valid event id
+3. "No account found" or ""Invalid session id" - session is invalid or has expired
+4. "Duplicate insert" - user is already in this event roster
+
+Create an new applicant account on the LD/FN system:
+There are two functions, differing only in the number of parameters they require:
+target:  http://www.favors.org/ffNewParticipant.php
+Function name: ff.new_account
+Then six parameters:
+1. Firstname
+2. Lastname
+3. Email
+4. Sponsor_level (0, 1, or 2)
+5. Hostkey (as above)
+6. Sender (the email address you want the invitation letter to come from)
+
+
+OR Function name: ff.new_account_xt
+Then nine parameters:
+1. Firstname
+2. Lastname
+3. City
+4. State (or province or region)
+5. Country Code (the two letter ISO country code)
+6. Email
+7. Sponsor_level (0, 1, or 2)
+8. Hostkey (as above)
+9. Sender (the email address you want the invitation letter to come from)
+
+Both functions return the new account ID upon success, or a faultstring with the database error otherwise. An invitation letter is sent to the Email you supplied with instructions on how to log in and choose a password.
