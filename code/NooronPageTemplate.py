@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.4 2002/08/12 22:48:33 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.5 2002/08/13 04:41:56 smurp Exp $'
 
 import NooronRoot
 
@@ -12,16 +12,18 @@ from TAL.HTMLTALParser import HTMLTALParser
 from TAL.TALParser import TALParser
 
 from cStringIO import StringIO
-Z_DEBUG_MODE = 0
+#Z_DEBUG_MODE = 0
 
-if 1: #safe
+SAFETY = 1
+
+if SAFETY: #safe
     #print "doing things safely"
     from PageTemplates.ZRPythonExpr import PythonExpr, \
          _SecureModuleImporter,\
          call_with_ns
-    
     from SafeExpressions import getEngine
 else:
+    print "Warning: SAFETY is OFF"
     from PageTemplates.PythonExpr import getSecurityManager, PythonExpr
     from PageTemplates.Expressions import getEngine
     def call_with_ns(f, ns, arg=1):
@@ -71,8 +73,8 @@ class NooronPageTemplate(PageTemplate):
         output = StringIO()
         c = self.pt_getContext()
         c.update(extra_context)
-        if Z_DEBUG_MODE:
-            __traceback_info__ = pprint.pformat(c)
+        #if Z_DEBUG_MODE:
+        #    __traceback_info__ = pprint.pformat(c)
         #print "_v_program =",self._v_program
         #print "getEngine().getContext(c) =",getEngine().getContext(c)
         TALInterpreter(self._v_program, self._v_macros,
