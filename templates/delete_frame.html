@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>kb as html</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+<h3 tal:content="string:delete frame '$here'"></h3>
+<form method="GET"
+   action="" 
+   tal:attributes="action string:${request/object_request}__delete_frame">
+
+<input type="hidden" name="frame" value="" tal:attributes="value here">
+
+<tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
+<tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
+                   kb_to_save python:gmnadk(this_kb)">
+
+
+<input type="hidden" name="kb" value="" 
+       tal:attributes="value kb_to_save">
+
+</tal:block>
+</tal:block>
+
+
+
+<table border="1">
+
+</table>
+<input type="submit" name="button_label" value="delete"/>
+
+</form>
+<div tal:define="test python:0" tal:condition="test">
+</div>
+<hr>
+$Id: delete_frame.html,v 1.1 2003/04/22 06:03:13 smurp Exp $
+</div>
+
+  </body>
+</html>
