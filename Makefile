@@ -1,10 +1,10 @@
 
-# $Revision: 1.2 $
-# $Id: Makefile,v 1.2 2002/07/11 17:17:39 smurp Exp $
+# $Revision: 1.3 $
+# $Id: Makefile,v 1.3 2002/08/02 23:44:41 smurp Exp $
 
 PWD     = $(shell /bin/pwd)
 XTMTMP=$(shell mktemp /tmp/xtm.XXXXXX)
-
+VERSION_NAME=$(shell cat version.txt)
 
 XTMS = nooron.xtm
 
@@ -12,6 +12,16 @@ XTMS = nooron.xtm
 
 .atm.xtm:
 	astma2xtm.pl < $< > $@
+
+make_help:
+	echo "distribution all"
+
+distribution:
+	cd /tmp/ && \
+	cvs export -r HEAD nooron && \
+	mv nooron $(VERSION_NAME) && \
+	tar -cvzf $(VERSION_NAME).tgz $(VERSION_NAME) && \
+	rm -fR $(VERSION_NAME)
 
 all: xtm mysql
 

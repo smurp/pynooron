@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.3 2002/08/02 18:47:18 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.4 2002/08/02 23:44:41 smurp Exp $'
 
 DEBUG = 0
 
@@ -28,18 +28,22 @@ class PipeLineFactory:
         """Return a transformer with a template given by uri."""
         if uri:
             if uri[0:7] == 'http://':
-                raise "NotYetImplemented","loading of arbitrary templates by uri"
+                raise "NotYetImplemented",\
+                      "loading of arbitrary templates by uri"
             if uri[0] == '/':
-                raise "NotYetImplemented","loading of templates by full path"
+                raise "NotYetImplemented",\
+                      "loading of templates by full path"
             if uri[0] == '..':
-                raise "NotYetImplemented","loading of templates by relative path"
+                raise "NotYetImplemented",\
+                      "loading of templates by relative path"
             return transformers.arbitrary_producer(object,request,uri)
         else:
             return None
         
         
     def status(self):
-        return medusa.producers.simple_producer("<li>" + status_handler.html_repr(self) + 
+        return medusa.producers.simple_producer("<li>" +
+                                                status_handler.html_repr(self)+
                                                 "<pre>\n" +
                                                 str(self.transformers) +
                                                 "</pre></li>\n")
@@ -128,13 +132,14 @@ class PipeLineFactory:
         return "This is the default text, and the path was: %s" % request.split_uri()[0]
 
         
-    def build_pipeline(self,request,object=None):    #print "the object is ",object
+    def build_pipeline(self,request,object=None):
+        #print "the object is ",object
         if not object:
             object = self.resolve_object(request)
         extens = self.extension_list(request)
         if not extens:
             extens.append('html')
-            ### FIXME we should really as the object and the user about
+            ### FIXME we should really ask the object and the user about
             ###       defaults and preferences
         transs = self.transformers_from_extensions(extens,object,request)
         return transformers.pipeline(transs,request)

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.4 2002/08/02 18:47:18 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.5 2002/08/02 23:44:41 smurp Exp $'
 
 """
 NooronRoot is the root object of a nooron instance.
@@ -10,14 +10,17 @@ http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
 
 """
 import os
+from medusa import http_server, default_handler, logger
+from medusa import filesys, status_handler
+
 import http_request_mixin
 import TMObject_mixin
 
 from TemplateManager import TemplateManager
 import topicmap_handler
-import code_handler
+from code_handler import code_handler
 import PipeLineFactory
-from medusa import http_server, default_handler, logger, filesys, status_handler
+
 
 class NooronRoot:
     __shared_state = {}
@@ -26,22 +29,25 @@ class NooronRoot:
     pipeline_factory = None
     uri_root = '/'
     title = ''
+    initial_maps = {}
     def __init__(self,publishing_root=None,
                  server_name=None,server_port=None,log_to=None,
-                 use_auth = 0,
-                 title = ''):
+                 use_auth = 0, initial_maps = {}, title = ''):
         self.__dict__ = self.__shared_state
         if not self.__dict__.has_key('prepped'):
             self.__dict__['prepped'] = 1
 
             if len(title): self.title = title
+
+            self.initial_maps = initial_maps
             
             self._template_root = TemplateManager(self,'templates')
             statusable_handlers = []
             
-            if server_name and server_port and log_to:
+            if server_name != None and server_port and log_to:
                 lg = logger.file_logger(log_to)
-                hs = http_server.http_server(server_name,server_port,logger_object = lg)
+                hs = http_server.http_server(server_name,server_port,
+                                             logger_object = lg)
                 self.http_server = hs
                 statusable_handlers.append(hs)                
             else:
@@ -54,13 +60,14 @@ class NooronRoot:
             if publishing_root:
                 self.fsroot = publishing_root
                 fs = filesys.os_filesystem(self.fsroot)
-                ch = code_handler.code_handler(fs,list_directories = 1,
-                                               serve=['/code','/templates','/topicmap'],
-                                               skip=['code/CVS','templates/CVS'])
+                ch = code_handler(fs,list_directories = 1,
+                                  serve=['/code','/templates','/topicmap'],
+                                  skip=['code/CVS','templates/CVS'])
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                
 
-            tmh = topicmap_handler.topicmap_handler('know')            
+            tmh = topicmap_handler.topicmap_handler('know',
+                                                    initial = initial_maps)
             statusable_handlers.append(tmh)            
             
             if use_auth:
@@ -98,12 +105,3 @@ class NooronRoot:
     def objectValues(self):
         return []
 
-
-if __name__ == "__main__":
-    nooron1 = NooronRoot()
-    nooron2 = NooronRoot()
-    nooron1.system_basepath = '/home/smurp/src/nooron'
-    print nooron1.system_basepath
-    print nooron2.system_basepath
-    print nooron1,nooron2
-    #print nooron3['arf']

@@ -1,0 +1,12 @@
+
+To install Nooron:
+
+ 1) Install the Goose-Works Toolkit (GWTK)
+
+ 2) Install Zope 2.5 or later
+
+ 3) untar nooron-x.x.x.tgz somewhere you want to run it from
+
+ 4) edit nooron.py to indicate the topicmaps you want to publish
+
+ 5) start it with ./nooron.py
