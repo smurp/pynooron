@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.9 2003/03/28 11:05:56 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.10 2003/04/15 19:20:55 smurp Exp $'
 
 import string
 
@@ -30,7 +30,6 @@ class FileSystemKb(AbstractFileKb):
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
-        place = str(kb)
         frame_found_p = 1
         frame = kb._store.get(str(thing))
         #print "looking in",str(kb),"for",thing,
@@ -50,43 +49,45 @@ class FileSystemKb(AbstractFileKb):
                                         direct_types=['mimetype'])
                 return (frame,1)
 
-        if thing in os.listdir(place):
-            #print "found '%s' on disk" % thing
-            direct_types = []
-            (mime_type,encoding) = mimetypes.guess_type(thing)
-            if mime_type:
-                mime_type = mime_type.replace('/','__')
-                direct_types.append(mime_type)
-            (file_contents,stats) = conn._lines_and_stats(thing,
-                                                          place=place)
-            own_slots = [['file_contents',file_contents]]
-            for (key,val) in stats.items():
-                own_slots.append([key,val])
-            
-            frame = kb.create_frame(thing,Node._individual,
-                                    direct_types=direct_types,
-                                    own_slots=own_slots)
-            
-            return (frame,1)
+        for place in kb._connection._path:
+            #print "seeking %s in %s"%(thing,place)
+            if thing in os.listdir(place):
+                #print "found '%s' on disk" % thing
+                direct_types = []
+                (mime_type,encoding) = mimetypes.guess_type(thing)
+                if mime_type:
+                    mime_type = mime_type.replace('/','__')
+                    direct_types.append(mime_type)
+                (file_contents,stats) = conn._lines_and_stats(thing,
+                                                              place=place)
+                own_slots = [['file_contents',file_contents]]
+                for (key,val) in stats.items():
+                    own_slots.append([key,val])
 
-        for (ext,mime_type) in pyokbc_mimetypes.items():
-            #possible_kb_filename = os.path.join(place,filename+ext)
-            
-            #print "thing =",str(thing),type(thing),type(ext)
-            possible_kb_filename = thing + ext
-            if possible_kb_filename in os.listdir(place):
-                kb_type = kb._kb_types.get(mime_type)
-                if kb_type:
-                    #print kb_type,possible_kb_filename,kb._connection,thing
-                    
-                    frame = kb_type(possible_kb_filename,
-                                    connection = kb._connection,
-                                    place = place,
-                                    name = thing)
-                    #print "caching",frame
-                    kb._add_frame_to_store(frame)
+                frame = kb.create_frame(thing,Node._individual,
+                                        direct_types=direct_types,
+                                        own_slots=own_slots)
 
-                    return (frame,1)
+                return (frame,1)
+
+            for (ext,mime_type) in pyokbc_mimetypes.items():
+                #possible_kb_filename = os.path.join(place,filename+ext)
+
+                #print "thing =",str(thing),type(thing),type(ext)
+                possible_kb_filename = thing + ext
+                if possible_kb_filename in os.listdir(place):
+                    kb_type = kb._kb_types.get(mime_type)
+                    if kb_type:
+                        #print kb_type,possible_kb_filename,kb._connection,thing
+
+                        frame = kb_type(possible_kb_filename,
+                                        connection = kb._connection,
+                                        place = place,
+                                        name = thing)
+                        #print "caching",frame
+                        kb._add_frame_to_store(frame)
+
+                        return (frame,1)
 
         #print 'not found'
         return (None,None)

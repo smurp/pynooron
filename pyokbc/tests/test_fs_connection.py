@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: test_fs_connection.py,v 1.3 2003/02/13 12:16:24 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: test_fs_connection.py,v 1.4 2003/04/15 19:21:10 smurp Exp $'
 
 import os
 import sys
@@ -16,12 +16,20 @@ def str_sort(a,b):
 class FSConnectionTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
-        os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
+        cwd =  os.getcwd()
+        places =  [cwd,cwd+'/more']
+        place_path = string.join(places,':')
+        os.environ["LOCAL_CONNECTION_PLACE"] = place_path
         goto_kb(meta_kb())
 
     def test_open_kb_without_extension(self):
         good = 'MergeKB'
         merge_kb = open_kb('MergeKB')
+        self.assertEquals(good,str(merge_kb))
+
+    def test_open_kb_along_path(self):
+        good = 'MoreDudes'
+        merge_kb = open_kb('MoreDudes')
         self.assertEquals(good,str(merge_kb))
 
     def skip_test_openable_kbs(self):
