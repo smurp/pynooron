@@ -18,11 +18,27 @@ put_slot_values(current_kb(),':DOCUMENTATION',
                 support the automatic generation of management screens for
                 adding, editing, versioning and deleting information.
                 """])
+
+create_slot('BookKeepingSlot',
+             doc="""Bookkeeping slots are those which are used for
+             internal operations of the system and are not generally
+             of interest to casual users.  In particular they are not
+             to be edited by other than extreme power users.""")
+
+create_class('AbstractClass',
+             doc="""An abstract class is one which is never directly
+             instantiated because its purpose is to be a superclass
+             for other classes which may themselves be instantiated.""")
+
+
+
 create_slot('merges_in',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':DOMAIN','nooron_app_component']],
             doc="""Which nooron_app_components does this kind of
             nooron_app_component have as direct_parents?""")
 create_slot('npt_for_instances',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':DOMAIN',':CLASS'],
                        [':SLOT-COLLECTION-TYPE','set']],
@@ -34,6 +50,7 @@ create_slot('npt_for_instances',
             Template (NPT) which is appropriate for displaying instances of
             the class on which ntp_for_instances is an occurrence.""")
 create_slot('actions_for_instances',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':DOMAIN',':CLASS'],
                        [':SLOT-COLLECTION-TYPE','set']],
@@ -41,6 +58,7 @@ create_slot('actions_for_instances',
             type on all classes which have specific nooron_page_templates
             for their instances.""")
 create_slot('actions_for_self',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':DOMAIN',':CLASS'],
                        [':SLOT-COLLECTION-TYPE','set']],
@@ -48,12 +66,14 @@ create_slot('actions_for_self',
             type on all classes which have specific nooron_page_templates
             for their instances.""")
 create_slot('npt_for_self',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
                        [':SLOT-COLLECTION-TYPE','set']],
             doc="""Nooron_app_wardrobes should have npt_for_self
             template_slots on all classes which have specific
             nooron_page_templates for their instances.""")
 create_slot('slot_display_order',
+            direct_types=['BookKeepingSlot'],
             own_slots=[[':SLOT-VALUE-TYPE',':SLOT'],
                        [':SLOT-COLLECTION-TYPE','list']],
             doc="""A list of the slots to display, in the order they
@@ -110,7 +130,9 @@ create_class('nooron_app_wardrobe',
              resources are required to make the app work.""")
 create_class('nooron_app_instance',
              direct_superclasses=['nooron_app_component'],
-             template_slots=[['npt_for_self','nooron_app.html'],
+             template_slots=[['npt_for_self',
+                              'nooron_app.html',
+                              'generic_article.dbk'],
                              ['actions_for_self','save_data.html']],
              own_slots=[['merges_in','nooron_app_wardrobe','nooron_app_data']],
              doc="""A nooron_app_instance is an actual runnable app.
@@ -187,8 +209,8 @@ create_class(':HREF',
              direct_superclasses=[':WORD'],
              doc=""":HREF is a :WORD which may be a local, relative or absolute url.""")
 
-             
-
+create_class(':DOCUMENTATION',
+             direct_types=['BookKeepingSlot'])
 
 # Following is the ontology for Criteria through to Worldviews
 
@@ -390,6 +412,8 @@ create_class('WorldView',
 #create_class('ClarityOfExpressionRange',
 #             direct_types=['CriterionRange'],
 #             own_slots=[['Ordered','']])
+
+
                   
 create_individual('ClarityOfExpression',
                   own_slots=[['SlotCriterionQuestion','How clearly is this expressed?'],
@@ -412,3 +436,4 @@ create_individual('HasVisibility_Critique_ShawnFrancisMurphy',
                               applicability than just Evaluations."""],
                              ['WRTCriterion','Critique'],
                              ['Evaluator','ShawnFrancisMurphy']])
+

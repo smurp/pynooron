@@ -78,7 +78,7 @@ def names_and_pretty_names(frame_list,split=None,kb=None):
     if not kb: kb = current_kb()
     for fn in frame_list:
         pn = get_frame_pretty_name(fn,kb=kb)
-        if pn == None: pn = get_frame_name(fn,kb=kb)
+        if pn == None or pn=='': pn = get_frame_name(fn,kb=kb)
         if split:
             if pn.find(' ') != -1:
                 pnl = list(pn)
@@ -206,8 +206,9 @@ def npts_by_parentage(direct_types,transformations):
     # a cached okbc procedure call.
     if transformations == None:
         transformations = {'ps':['pdf','jpg'],
-                           'dot':['ps','jpg','svg',['pdf','ps.pdf']],
-                           'dbk':['pdf','rtf','tex']} # txt,ps,dvi,tex,texi
+                           'dot':['ps','jpg','svg','gif',['pdf','ps.pdf']],
+                           'dbk':['rtf','pdf','tex']}
+    #                             txt,ps,dvi,tex,texi
 
     train = [] # filled with passengers and their luggage
     #print "parentage: ",direct_types

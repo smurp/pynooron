@@ -50,6 +50,7 @@ create_individual('dot_extension',
                              ['ApplicableTransformers',
                               'transform_dot_2_ps',
                               'transform_dot_2_svg',
+                              'transform_dot_2_gif',
                               'transform_dot_2_jpg']])
 create_individual('transform_dot_2_ps',
                   direct_types=['NooronTransformer','ExternalCommand'],
@@ -66,6 +67,13 @@ create_individual('transform_dot_2_jpg',
                              ['ReadsFrom','pipe'],
                              ['WritesTo','pipe'],
                              ['LiteralExternalCommand','dot -Tjpeg']])
+create_individual('transform_dot_2_gif',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','gif_extension'],
+                             ['RequiresProgram','dot'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
+                             ['LiteralExternalCommand','dot -Tgif']])
 create_individual('transform_dot_2_svg',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','svg_extension'],
@@ -88,6 +96,14 @@ create_individual('jpg_extension',
                   direct_types=['FileExtension'],
                   own_slots=[['MimeType','image/jpeg'],
                              ['LiteralExtension','.jpg'],
+                             ['ApplicableTransformers']])
+
+##########################################################
+
+create_individual('gif_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','image/gif'],
+                             ['LiteralExtension','.gif'],
                              ['ApplicableTransformers']])
 
 ##########################################################
