@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: test_PyKb.py,v 1.5 2003/03/26 16:18:55 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: test_PyKb.py,v 1.6 2003/04/01 19:17:31 smurp Exp $'
 
 import os
 import sys
@@ -79,15 +79,19 @@ class PyKbStuff(unittest.TestCase):
 
 
     def test_ModificationTime(self):
+        MTIME = get_slot_value(current_kb(),'MTIME')
+        ModTime = get_slot_value(current_kb(),'ModificationTime')
+        self.assertEquals(MTIME,ModTime)
+
         pair = []
         def pushpair(self,pair):
             new = get_slot_value(current_kb(),'ModificationTime')[0]
-            print "XX new",[new]
+            #print "XX new",[new]
             pair.append(new)
             if len(pair) > 2:
                 pair.pop(0)
             if len(pair) == 2:
-                print 'XX pair',pair
+                #print 'XX pair',pair
                 self.assertNotEquals(pair[0],pair[1])
                 
         pushpair(self,pair)
