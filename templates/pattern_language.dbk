@@ -1,4 +1,4 @@
- <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
 <tal:dummy replace="python:request.set_header('Content-Type','text/xml')"/>
  <article>
     <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
@@ -78,21 +78,11 @@
                 <title tal:content="pat_slot">pat_slot</title>
                 <span tal:repeat="val vals"
                       tal:omit-tag="">
-
-
-
-                  <para>placeholder</para>
-
                    <para 
-                     tal:define="isin   python:0;
-                                 ishref python:0">
-                     some data
-
-
-
-                     <tal:dummy condition="python: not (isin or ishref)"
+                     tal:define="isin   python:frame_in_kb_p(val);
+                                 ishref python:0 == str(val).find('http')">
+                     <tal:dummy condition="python: not isin and not ishref"
                                 replace="val"/>
-
                      <ulink url=""
                         tal:condition="ishref"
                         tal:content="python: get_frame_pretty_name(val) or
@@ -101,13 +91,7 @@
                      </ulink>
 	             <tal:dummy replace="val" 
                                 tal:condition="isin"/>
-
                    </para>
-
-
-
-
-
                 </span>
               </sect3>
 
@@ -120,13 +104,6 @@
  </article>
 
 <metal:block tal:condition="nothing">
-  para 
-    tal:define="isin   python:frame_in_kb_p(val);
-                ishref python:0 == str(val).find('http')"
-
-
-
-
   The following code is what I wanted to use
   to make links from one pattern to another
   within a docbook instance.  But... ZPT raised 
@@ -135,7 +112,7 @@
   This looks like a bug/mangled feature
   in ZPT where it tries to do some automagic
   stuff with the HTML unary LINK tag.
-   (link linkend="link")youch(/link)
+   (link linkend="booger")youch(/link)
    (link linkend="" 
          tal:condition="isin" 
          tal:content="val" 

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>kb as html</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+
+<form method="GET"
+   action="" 
+   tal:attributes="action string:${request/object_request}__put_frame_pretty_name">
+
+<table border="1">
+  <tal:block define="slot_name string:name;
+                     slot_pretty_name string:New Pretty Name;
+                     slot_value python:get_frame_pretty_name(here)">
+    <tal:block metal:use-macro="container/form_master/macros/text_widget"/>
+  </tal:block>
+
+<input type="hidden" name="frame" value="" 
+       tal:attributes="value here">
+
+<tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
+<tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
+                   kb_to_save python:gmnadk(this_kb)">
+
+<h3 tal:content="string:changing pretty name on $here"></h3>
+<input type="hidden" name="kb" value="" 
+       tal:attributes="value kb_to_save">
+
+</tal:block>
+</tal:block>
+
+<input type="submit" name="button_label" value="Change"/>
+
+</form>
+<div tal:define="test python:0" tal:condition="test">
+</div>
+<hr>
+$Id: change_pretty_name.html,v 1.1 2003/02/26 18:51:57 smurp Exp $
+</div>
+
+  </body>
+</html>
