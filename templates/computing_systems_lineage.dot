@@ -1,0 +1,82 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+  mclimit=8    // run longer, do better
+  size="6,6"   // bounding box in inches
+  center=1
+  //  node[fontname="Courier";fontsize=10]
+
+  URL="<tal:dummy replace="server_absolute_url"/>"
+
+
+<tal:block
+     condition="python:1" 
+     define="groups python:call_procedure(get_procedure('group_by_year'),
+                                          arguments=(this_kb,'late','any'));
+             spawn python:[];
+             sway  python:[]">
+
+  // group the nodes by year
+  <tal:dummy
+       repeat="group groups">
+  <tal:dummy 
+       condition="python:group[0] != '9999'"
+       replace="python:'subgraph year_%s { rank=same;' % group[0]"/>
+
+      <tal:block repeat="a_system python:group[1]">
+
+	<tal:dummy replace="python:a_system['name']"/> 
+	  [label="<tal:dummy replace="python:a_system['pretty'] or a_system['name']"/>",
+           <tal:dummy condition="python:not a_system['href']">
+           URL="<tal:dummy replace="python:request.object_request()+'/'+str(a_system['name'])"/>",
+           </tal:dummy>
+           <tal:dummy condition="python:a_system['href']">
+           URL="<tal:dummy replace="python:a_system['href']"/>",
+           </tal:dummy>
+           shape=plaintext];
+
+      </tal:block>
+
+  <tal:dummy 
+       condition="python:group[0] != '9999'"
+       replace="python:'}'"/>
+
+  </tal:dummy>
+
+
+
+
+
+
+
+  // don't group the edges
+  <tal:dummy
+       repeat="group groups">
+
+      <tal:block repeat="a_system python:group[1]">
+
+        <tal:dummy 
+          repeat="a_relative python:a_system['InfluencedBy']">
+          <tal:dummy condition="python: a_relative != ''">
+          <hr tal:replace="python:a_relative"/> -> <hr tal:replace="python:a_system['name']"/>
+             [style=dashed];
+          </tal:dummy>
+        </tal:dummy>
+
+        <tal:dummy 
+          repeat="a_relative python:a_system['DescendedFrom']">
+          <tal:dummy condition="python: a_relative != ''">
+          <hr tal:replace="python:a_relative"/> -> <hr tal:replace="python:a_system['name']"/>
+             [style=bold];
+          </tal:dummy>
+        </tal:dummy>
+
+      </tal:block>
+
+  </tal:dummy>
+
+
+
+</tal:block>
+
+</metal:block>
+</metal:block>
