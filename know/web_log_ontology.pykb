@@ -24,7 +24,6 @@ create_class('web_log_entry',
 
 create_class('web_log_category',
              direct_types=['nooron_app_class'],
-             #direct_types=['web_log_entry'],
              doc="""Subclasses of 'web log category' are themselves classes 
 		which individual web log entries are instances of.""",
              pretty_name="web log category")
