@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.18 2003/04/28 14:05:22 smurp Exp $'
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.19 2003/04/28 16:20:53 smurp Exp $'
 
 
 
@@ -92,6 +92,10 @@ class NooronPageTemplate(PageTemplate):
              get_frame_pretty_name(self.obj) or get_frame_name(self.obj),
              'Node': Node
              }
+        try:
+            c['error_message'] = self.request._error_message
+        except:
+            pass
         #print "context:",c
         return c
 

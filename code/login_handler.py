@@ -61,22 +61,22 @@ class login_handler:
                 if len(pair) == 2:
                     #print "pair",pair
                     cookie_dict[string.strip(pair[0])]=pair[1]
-        print "get_cookies_as_dict: cookie_dict =",cookie_dict
+        #print "get_cookies_as_dict: cookie_dict =",cookie_dict
         return cookie_dict
         
     def authenticate(self,request):
         dude = AnonymousUser
         auth_info = self.get_auth_info_from_cookie(request)
-        print "authenticate: auth_info =",auth_info
+        #print "authenticate: auth_info =",auth_info
         if not auth_info:
             try_to_set_cookies = 1
             auth_info = self.get_auth_info_from_form(request)
         else:
             try_to_set_cookies = 0
         dude = self.authenticator.authenticate(auth_info)
-        if try_to_set_cookies:
+        if try_to_set_cookies and dude != AnonymousUser:
             self.set_auth_cookies(request,auth_info)
-        print "authenticate: dude =",dude
+        #print "authenticate: dude =",dude
         return dude
 
     def set_auth_cookies(self,request,auth_info):
@@ -86,10 +86,13 @@ class login_handler:
                                      '%s=%s' % (self.the_user_pw_name,
                                                 auth_info[1])]
 
-    def handle_logout(self,request):
+    def set_cookies_for_logout(self,request):
         request['Set-Cookie'] = '%s=; %s' % \
                                 (self.the_user_pw_name,
                                  'expires=Wednesday, 09-Nov-71 23:12:40 GMT')
+
+    def handle_logout(self,request):
+        self.set_cookies_for_logout(request)
         onsuccess = request.form().get(self.onsuccess_name)
         if onsuccess and onsuccess[0]:
             request['Location'] = onsuccess[0]
@@ -242,8 +245,8 @@ class friendly_favors_authenticator:
                     if resp.has_key(fromkey):
                         standard[tokey] = resp[fromkey]
                         del resp[fromkey]
-                print "standard:",standard
-                print "resp:",resp                    
+                #print "standard:",standard
+                #print "resp:",resp                    
                 dude = AuthenticatedUser(auth_info[0],
                                          standard,resp,self.__class__)
                 break
@@ -254,16 +257,18 @@ class friendly_favors_authenticator:
     def authenticate(self,auth_info):
         dude = AnonymousUser
         credentials = str(auth_info)
-        print "ff.authenticate: credentials =",credentials
+        #print "ff.authenticate: credentials =",credentials
         if len(auth_info) == 2:
             if self._cache.has_key(credentials):
-                print "cache hit:",credentials
+                #print "cache hit:",credentials
                 dude = self._cache[credentials]
                 return dude
             else:
                 dude = self._do_auth(auth_info)
-        print "caching",credentials,'as',dude
-        self._cache[credentials] = dude
+
+        if dude != AnonymousUser:
+            #print "caching",credentials,'as',dude
+            self._cache[credentials] = dude
         return dude
 
 class bogus_favors_authenticator(friendly_favors_authenticator):

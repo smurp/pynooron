@@ -16,7 +16,7 @@
     <tr>
       <td bgcolor="white"><b><a href="http://www.nooron.org">Nooron<a/></b></td>
       <td bgcolor="white">
-         <tal:dummy replace="structure container/breadcrumbs"/>
+        The evolution of knowledge and software, driven by human needs.
       </td>
     </tr>
     <tr>
@@ -24,6 +24,15 @@
          <metal:block define-slot="auth_status">
            <tal:dummy replace="structure container/auth_status"/>
          </metal:block>        
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="left" bgcolor="white">
+        <tal:dummy replace="structure container/breadcrumbs"/>
+      </td>
+    </tr>
+    <tr tal:condition="python:exists('error_message')">
+      <td colspan="2" align="right" bgcolor="pink" tal:content="error_message">
       </td>
     </tr>
     <tr>
@@ -78,6 +87,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.29 2003/04/28 14:06:44 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.30 2003/04/28 16:20:53 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>

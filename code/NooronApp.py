@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.36 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.36 2003/04/28 14:05:22 smurp Exp $'
+__version__='$Revision: 1.37 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.37 2003/04/28 16:20:53 smurp Exp $'
 
 
 from pyokbc import *
@@ -30,7 +30,6 @@ class GenericFrame(AbstractApp):
     default_npt_name = "frame_as_html"
     app = {}
     def publish(app,request,frame_name,npt_name,extensions=[]):
-        print nooron_root._authenticator
         request.AUTHENTICATED_USER = nooron_root._authenticator.authenticate(request)
         if frame_name == None:
             frame = app._kb
@@ -51,24 +50,25 @@ class GenericFrame(AbstractApp):
             op = AuthorizedOkbcOperation(a_func,request,
                                          kb=app._kb, frame=frame)
             #print "args and kwargs",op.get_args_and_kwargs()
-            operation_result = op.call(nooron_root.security_engine())
-            print "operation_result",operation_result
-            redir_to = op.get_redirect()
-            if redir_to:
-                request['Location'] = redir_to
-                request.error(302)
-                return
-            if operation_result:
-                res_type = type(operation_result)
-                if not (res_type in [type([]),type(())]) and \
-                       frame_in_kb_p(operation_result):
-                    request['Location'] = operation_result
+            (accepted_p,
+             operation_result) = op.call(nooron_root.security_engine())
+            if accepted_p:
+                #print "operation_result",operation_result
+                redir_to = op.get_redirect()
+                if redir_to:
+                    request['Location'] = redir_to
                     request.error(302)
                     return
-                    
-                    
+                if operation_result:
+                    res_type = type(operation_result)
+                    if not (res_type in [type([]),type(())]) and \
+                           frame_in_kb_p(operation_result):
+                        request['Location'] = operation_result
+                        request.error(302)
+                        return
             if type(operation_result) == type(""):
-                print npt_name,operation_result
+                request._error_message = operation_result
+                #print npt_name,operation_result
             npt_name = 'show_form.html'
 
 
