@@ -1,12 +1,14 @@
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.3 2002/08/07 20:23:41 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.4 2002/08/12 22:48:33 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
 """
 
-import re, string
+import re, string, sys
+import traceback
+
 if __name__ == "__main__":
     class http_request:
         pass
@@ -57,7 +59,6 @@ http_request.effective_query = effective_query
 
 def _effective_query_init(self):
     query_copy = self.split_query().copy()
-    print "query_copy =",query_copy
     self._effective_query = query_copy
     
 http_request._effective_query_init = _effective_query_init    
@@ -94,7 +95,23 @@ def user(self):
         self._user = NullUser()
     return self._user
 http_request.user = user
-        
+
+def instrumented_getattr(me,key):
+    #print key
+    if str(key) == "__allow_access_to_unprotected_subobjects__":
+        #print "NOW WE HAVE IT!"
+        try:
+            raise "Booger!","snort"
+        except:
+            #print "NOW PRINT STACK FRAME!", traceback.print_stack()
+            pass
+    return me.__dict__.get_attr(key)
+#http_request.__getattr__ = instrumented_getattr
+
+
+# /usr/local/zope/Zope-2.5.1/lib/python/AccessControl/ZopeSecurityPolicy.py
+http_request.__roles__ = None
+http_request.__allow_access_to_unprotected_subobjects__ = 1
 
 if __name__ == "__main__":
     errcount = 0

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- $Id: nooron_apps.xtm,v 1.1 2002/08/12 22:48:34 smurp Exp $  -->  
+
+<topicMap id="nooron_apps"
+  xmlns="http://www.topicmaps.org/xtm/1.0/"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm"/>
+
+<topic id="nooron_apps_tm">
+  <baseName>
+    <baseNameString>nooron apps</baseNameString>
+  </baseName>
+  <subjectIdentity>
+    <subjectIndicatorRef xlink:href="#nooron_apps"/>
+  </subjectIdentity>
+  <instanceOf>
+    <subjectIndicatorRef
+       xlink:href="file:///home/smurp/src/nooron/topicmap/nooron_app_architecture.xtm#data_instances"/>
+  </instanceOf>
+  <occurrence>
+    <resourceData>
+      This is a collection of nooron app_skeletons.  In other words:
+      this is a set of data instances 
+      (data_instances in the nooron_app_architecture sense) 
+      where the instances just happen to be individual nooron app
+      instances themselves.
+      <br/>
+      <pre>
+      web_log_skeleton 
+        Publish a weblog easily.
+      schedule_skeleton
+        Publish a personal schedule.
+        Merge many people's personal schedules.
+        Merge personal schedules with other schedules of interest 
+        such as events (meetings, movies, birthdates)
+      </pre>
+    </resourceData>
+  </occurrence>
+</topic>
+
+
+
+</topicMap>
+

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: topicmap_handler.py,v 1.11 2002/08/07 20:23:41 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: topicmap_handler.py,v 1.12 2002/08/12 22:48:33 smurp Exp $'
 
 import string
 
@@ -77,8 +77,31 @@ class topicmap_handler:
         self.hits = counter.counter()
         self.exceptions = counter.counter()
         self.from_root = from_root
-        self.graphs = initial
+        if type(initial) == type(''):
+            self.graphs = {}
+            self.load_map('initial_maps',initial)            
+            self.load_graphs_from_initial(initial)
+            print "graphs =",self.graphs
+        else:
+            self.graphs = initial
         self.initial = initial
+
+    def load_graphs_from_initial(self,initial):
+        #self.load_map('initial_maps',initial)
+        app = self.graphs['initial_maps']
+        resp = app.getAllClasses()
+        print "resp =",resp
+        tms = resp[0].getInstances()
+        for tm in tms:
+            bn = tm.getBaseNames()
+            occs = tm.getOccurrences()
+            if bn and occs:
+                try:
+                    url = str(occs[0][2].getSCR().getUris()[0])
+                    if DEBUG: print bn[0], url
+                    self.graphs[bn[0]] = url
+                except:
+                    raise "","couldn't get uri for %s" % bn[0]
 
     def status(self):
         return medusa.producers.simple_producer("topicmap_handler maps:" +\
@@ -197,8 +220,10 @@ class topicmap_handler:
                 print "topic_name =",topic_name
                 many = app.getAllWhereBaseNameIs(topic_name)
                 if many:
+                    print "getAllWhereBaseNameIs worked!"
                     obj = many[0]
                 else:
+                    print "getAllWhereBaseNameIs failed..."
                     path = app.tm_uri
                     obj = app.getTopicWithID('%s#%s' % \
                                              (path,topic_name))

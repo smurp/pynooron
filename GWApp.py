@@ -10,7 +10,7 @@ class GWApp:
 		graph.startTransaction(GW.XRO)
 
 		result = []
-		q = """FROM {'#role-topic'} DO DONE AS INDEXES"""	
+		q = """FROM {'#role-topic'} DO DONE AS INDEXES"""
 		res = graph.STMQLExec(q)
 		assert(len(res) == 1)
 
@@ -271,7 +271,8 @@ class TMObject:
 		t = self.app.graph.STMQLExec(q)
 		result = self.app.graph.STMQLExec(q)
 		if(len(result) > 0):
-			return result[0].getSIRs()
+			retval = result[0].getSIRs()
+			return retval
 		else:
 			return []
  

@@ -1,20 +1,9 @@
 
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: TMObject_mixin.py,v 1.4 2002/08/12 22:48:33 smurp Exp $'
 
 import GWApp
-
-"""
-    Here is the NPT equivalent: (or close to it)
-    <td>
-       <a tal:define="
-basenames item/getBaseNames;
-link python:len(basenames) and basenames[0].replace(' ','+') or 'index='+str(item.getIndex());
-label python:str(basenames or 'unnamed')"
-          href=""
-          tal:attributes="href link" 
-          tal:content="label">click me</a>
-    </td>
-
-"""
+from VeryEasy import VeryEasy
 
 def getNooronPageTemplate(self):
     q1 = """FROM {%d} DO 
@@ -45,6 +34,15 @@ def getLink(self,label='no label',use_all_basenames=0,index_link=1):
         
 GWApp.TMObject.getLink = getLink
 
+def wrapped_getSIRs(self):
+    retval = GWApp.TMObject.unwrapped_getSIRs(self)
+    retval2 = []
+    for sir in retval:
+        retval2.append(VeryEasy(sir))
+    return retval2
+
+GWApp.TMObject.unwrapped_getSIRs = GWApp.TMObject.getSIRs
+GWApp.TMObject.getSIRs = wrapped_getSIRs
 
 
 # OKBC-inspired stuff
@@ -77,3 +75,12 @@ def get_slot_values(self,slot,
     return retval
 
 GWApp.TMObject.get_slot_values = get_slot_values
+GWApp.TMObject.__allow_access_to_unprotected_subobjects__ = 1
+GWApp.__allow_access_to_unprotected_subobjects__ = 1
+
+
+
+
+import GW
+#GW.Resource.__allow_access_to_unprotected_subobjects__ = 1
+GW.__allow_access_to_unprotected_subobjects__ = 1

@@ -21,6 +21,9 @@
   <dt>user</dt>
   <dd tal:content="user"></dd>
 
+  <dt>modules</dt>
+  <dd tal:content="modules"></dd>
+
 </dl>
 <hr>
-$Id: namespace,v 1.4 2002/08/02 18:47:19 smurp Exp $
+$Id: namespace,v 1.5 2002/08/12 22:48:33 smurp Exp $
