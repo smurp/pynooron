@@ -182,6 +182,7 @@ create_class(':CLASS',
 
 create_class(':KB',
              template_slots=[['npt_for_self',
+                              'entity_relationship.dot',
                               'classes_in_kb.dot',
                               'class_hierarchy.dot',
                               'kb_ancestry.dot',
@@ -216,21 +217,21 @@ create_class(':DOCUMENTATION',
 
 ## Criterion and its slots
 
-create_slot('SlotCriterionRange',
+create_slot('CriterionAnswersAre',
             own_slots=[[':DOMAIN','Criterion'],[':SLOT-CARDINALITY',1]],
             doc="""This is the slot on criterion which specifies the range
             of evaluations with respect to the criterion.  The values on this
             slot may be of the following forms: 1) a :CLASS which specifies
             the possible values e.g. :INTEGER or :STRING
             2) the CriterionRange which specifies the possible values.
-            A SlotCriterionRange of :STRING means that the Criterion is
-            in effect a fill-in-the-blank question.  A SlotCriterionRange
+            A CriterionAnswersAre of :STRING means that the Criterion is
+            in effect a fill-in-the-blank question.  A CriterionAnswersAre
             of, for example, :INTEGER means that the Criterion is asking
-            for an integer to be supplied.  A SlotCriterionRange of
+            for an integer to be supplied.  A CriterionAnswersAre of
             
             """)
 
-create_slot('SlotCriterionDomain',
+create_slot('DomainOfCriterion',
             own_slots=[[':DOMAIN','Criterion'],
                        [':SLOT-CARDINALITY',1]],
             doc="""This is the slot on criterion which specifies the domain
@@ -241,12 +242,12 @@ create_slot('SlotCriterionDomain',
             could/should be recorded between
             criteria-used-to-evaluate-candidates versus
             criteria-used-to-evaluate-versions.  Another issue is this
-            whole matter of whether the SlotCriterionDomain should be
+            whole matter of whether the DomainOfCriterion should be
             recorded at all, or whether this is a matter which can be left
             to self-organize by noting how criteria are used.
             """)
 
-create_slot('SlotCriterionQuestion',
+create_slot('QuestionCriterionAsks',
             own_slots=[[':DOMAIN','Criterion'],
                        [':SLOT-VALUE-TYPE',':STRING'],
                        [':SLOT-CARDINALITY',1]],
@@ -255,12 +256,12 @@ create_slot('SlotCriterionQuestion',
             with respect to the criterion.""")
 
 create_class('Criterion',
-             own_slots=[['SlotCriterionRange'],['SlotCriterionQuestion'],
-                        ['SlotCriterionDomain']],
+             own_slots=[['CriterionAnswersAre'],['QuestionCriterionAsks'],
+                        ['DomainOfCriterion']],
              template_slots=[['slot_display_order',
-                              'SlotCriterionRange',
-                              'SlotCriterionQuestion',
-                              'SlotCriterionDomain']],
+                              'CriterionAnswersAre',
+                              'QuestionCriterionAsks',
+                              'DomainOfCriterion']],
              doc="""A Criterion is a dimension along which opinions may
              be expressed.  Those opinions are called Evaluations and
              may be supplied by either people or software agents.""")
@@ -353,7 +354,9 @@ create_class('Evaluation',
 
 ## CriterionApplication and its slots
 create_slot('WhoToHeed',
-            own_slots=[[':SLOT-COLLECTION-TYPE','list']],
+            own_slots=[[':DOMAIN','CriterionApplication'],
+                       [':SLOT-COLLECTION-TYPE','list'],
+                       ],
             doc="""This slot on CriterionApplication indicates whose
             evaluations to consider.  Hence its list of values
             contains either individual evaluators or classes of same.
@@ -416,16 +419,16 @@ create_class('WorldView',
 
                   
 create_individual('ClarityOfExpression',
-                  own_slots=[['SlotCriterionQuestion','How clearly is this expressed?'],
-                             ['SlotCriterionDomain',':THING'],
-                             ['SlotCriterionRange','ClarityOfExpressionRange']],
+                  own_slots=[['QuestionCriterionAsks','How clearly is this expressed?'],
+                             ['DomainOfCriterion',':THING'],
+                             ['CriterionAnswersAre','ClarityOfExpressionRange']],
                   direct_types=['Criterion'])
 
 
 create_individual('Critique',direct_types=['Criterion'],
-                  own_slots=[['SlotCriterionQuestion','What is the problem with this?'],
-                             ['SlotCriterionDomain',':THING'],
-                             ['SlotCriterionRange',':STRING']])
+                  own_slots=[['QuestionCriterionAsks','What is the problem with this?'],
+                             ['DomainOfCriterion',':THING'],
+                             ['CriterionAnswersAre',':STRING']])
                   
 create_individual('HasVisibility_Critique_ShawnFrancisMurphy',
                   direct_types=['Evaluation'],
