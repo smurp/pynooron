@@ -1,0 +1,27 @@
+
+To install PyOKBC:
+
+ 0) Use python 2.x
+
+    Efforts have been made to keep the code 1.5.2 clean, but there were
+    a few failures to use string.* instead of the built-in string methods.
+
+ 1) Untar the puppy.
+
+      tar -xvzf pyokbc-0.1.0.tgz
+
+ 2) Install the aforementioned puppy.
+
+    Just plunk it wherever you want to use it and rename it to pyokbc or
+    install it in the site-packages directory of your Python installation
+    by running the command:
+
+      python setup.py install
+
+ 3) Getting started:
+
+    Take a look at the stuff in tests/*
+
+
+$Id: INSTALL,v 1.1 2002/10/22 11:23:09 smurp Exp $
+
