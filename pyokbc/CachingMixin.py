@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: CachingMixin.py,v 1.2 2003/01/20 14:52:29 smurp Exp $'
+_version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: CachingMixin.py,v 1.3 2003/02/08 00:07:29 smurp Exp $'
 
 
 from __future__ import nested_scopes
@@ -31,9 +31,6 @@ def make_a_wrapper(kb,wrapped_method,name_of_method):
 def make_a_procedure_wrapper(kb,wrapped_method,name_of_method):
     """Return the wrapped_method with a caching method around it."""
     def procedure_caching_wrapper(procedure,arguments=None):
-#    def procedure_caching_wrapper(*args,**kwargs):
-        #procedure = args[0]
-        #arguments = args[1]
         allow_caching = hasattr(procedure,'read') \
                         and getattr(procedure,'read') \
                         and kb.allow_caching_p()
@@ -41,10 +38,9 @@ def make_a_procedure_wrapper(kb,wrapped_method,name_of_method):
             cache_key = 'call_procedure ' + procedure.func_name + \
                         string.join(map(str,arguments or []),'|')
             if kb._cache.has_key(cache_key):
-                print "CACHE HIT",cache_key            
+                #print "CACHE HIT",cache_key            
                 return kb._cache[cache_key]
         retval = wrapped_method(kb,procedure,arguments)
-        #retval = apply(wrapped_method,args,kwargs)        
         if allow_caching:
             kb._cache[cache_key] = retval
         return retval
