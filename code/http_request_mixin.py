@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: http_request_mixin.py,v 1.9 2002/12/06 20:46:18 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: http_request_mixin.py,v 1.10 2002/12/12 14:00:19 smurp Exp $'
 
 
 """Augment medusa.http_server.http_request with convenience functions.
@@ -8,6 +8,7 @@ __cvs_id__ ='$Id: http_request_mixin.py,v 1.9 2002/12/06 20:46:18 smurp Exp $'
 
 import re, string, sys
 import traceback
+import cgi
 
 if __name__ == "__main__":
     class http_request:
@@ -16,6 +17,9 @@ else:
     from medusa.http_server import http_request
     from medusa.http_server import http_server
     from NooronUser import NooronUser, NullUser
+
+
+http_request.__allow_access_to_unprotected_subobjects__ = 1
 
 
 def absolute_url(server):
@@ -35,6 +39,15 @@ def split_uri (self):
     return self._split_uri
 http_request.split_uri = split_uri
 
+
+def form(self):
+    if not self.__dict__.has_key('_form'):
+        query = self.split_uri()[2]
+        self._form = cgi.parse_qs(query and query[1:] or '',
+                                  keep_blank_values=1)
+    return self._form
+http_request.form = form
+
 ################################
 def set_object_request(request,object_request):
     request._object_request = object_request
@@ -48,8 +61,32 @@ def set_base_request(request,base_request):
     request._base_request = base_request
 http_request.set_base_request = set_base_request
 def base_request(self):
-    return self.__dict__.get('_base_request')
+    return self.__dict__.get('_base_request','')
 http_request.base_request = base_request
+
+################################
+def name_request(request):
+    """The name_request is just the pathless name of the object
+    plus the name of the garment, without ANY extensions.
+
+    Motivation:
+       Handy for naming graphviz graphs.
+    Examples:
+       nooron_pert___aon
+       """
+    br = request.base_request()
+    slashes = string.split(br,'/')
+    return string.split(slashes[-1],'.')[0]
+http_request.name_request = name_request
+
+
+################################
+def set_kb_request(request,kb_request):
+    request._kb_request = kb_request
+http_request.set_kb_request = set_kb_request
+def kb_request(self):
+    return self.__dict__.get('_kb_request','')
+http_request.kb_request = kb_request
 
 ################################
 def set_canonical_request(request,canonical_request):

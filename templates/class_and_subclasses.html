@@ -24,6 +24,7 @@
 <p tal:content="structure python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></p>
 
 
+<p>This template is known to not work properly.</p>
 
 <span  tal:define="items python:get_class_subclasses(here)[0]" 
        tal:condition="items">
@@ -45,7 +46,7 @@
 </div>
 
 <hr>
-$Id: class_and_subclasses.html,v 1.1 2002/12/05 14:19:38 smurp Exp $
+$Id: class_and_subclasses.html,v 1.2 2002/12/12 14:00:20 smurp Exp $
 </div>
   </body>
 </html>

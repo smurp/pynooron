@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.6 2002/12/04 18:08:13 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.7 2002/12/12 14:00:20 smurp Exp $'
 
 import os
 import sys
@@ -31,6 +31,21 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_class_instances('web_log_entry')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_get_class_superclasses_of_web_log_app(self):
+        good = "[:THING]"
+        resp = list(get_class_superclasses('web_log_app')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+
+    def test_get_class_superclasses_of_web_log_app_in_blog_ontology(self):
+        kb = find_kb('web_log_ontology')
+        good = "[:KB, :THING, nooron_app_component, nooron_app_instance]"
+        resp = list(get_class_superclasses('web_log_app',kb=kb)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+        
 
     def test_get_frame_slots_all_gear(self):
         good = "[':DOCUMENTATION', 'npt_for_instances'," + \
@@ -68,9 +83,9 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_get_instance_types_docbook2ps(self):
-        good = "[:INDIVIDUAL, gear, web_log_entry]"
-        resp = list(get_instance_types('docbook2ps')[0])
+    def test_get_instance_types_transform_dot_2_ps(self):
+        good = "[:INDIVIDUAL, :THING, ExternalCommand, NooronTransformer]"
+        resp = list(get_instance_types('transform_dot_2_ps')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 

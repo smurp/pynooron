@@ -834,7 +834,7 @@ unregister_procedure.mandatory=0
 unregister_procedure.write=1
 
 # def untell
-# value_as_string
+# def value_as_string
 
 
 ##########################################

@@ -1,5 +1,5 @@
-_version__='$Revision: 1.24 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.24 2002/12/07 11:46:55 smurp Exp $'
+_version__='$Revision: 1.25 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.25 2002/12/12 14:00:19 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -446,7 +446,8 @@ class KB(FRAME,Programmable):
 
     def connection(kb):# FIXME not part of OKBC Spec
         return kb._connection
-    
+
+
     def create_frame_internal(kb,name,frame_type,
                               direct_types=[],
                               direct_superclasses=[],
@@ -682,12 +683,12 @@ class KB(FRAME,Programmable):
 ##                               number_of_values = Node._all,
 ##                               kb_local_only_p = 0):
 ##        superclasses=[]
-##        return kb.get_class_superclasses_extend(klass,
-##                                                inference_level,
-##                                                number_of_values,
-##                                                kb_local_only_p,
-##                                                superclasses)
-    
+##        return kb.get_class_superclasses_recurse(klass,
+##                                                 inference_level,
+##                                                 number_of_values,
+##                                                 kb_local_only_p,
+##                                                 superclasses)
+
     def get_class_superclasses(kb,klass,
                                inference_level = Node._taxonomic,
                                number_of_values = Node._all,
@@ -703,6 +704,17 @@ class KB(FRAME,Programmable):
                                                   number_of_values,
                                                   kb_local_only_p)
         warn('get_class_superclasses is not properly recursive')
+        #return (supers,exact_p,more_status)
+
+        if not kb_local_only_p:
+            for parent in kb.get_kb_parents():
+                rets = parent.get_class_superclasses(klass,
+                                                     inference_level,
+                                                     number_of_values,
+                                                     1)[0]
+                for super in rets:
+                    if not (super in supers):
+                        supers.append(super)
         return (supers,exact_p,more_status)
 
         for super in supers:
@@ -1439,14 +1451,14 @@ class TupleKb(KB,Constrainable):
         if inference_level == Node._direct:
             return (copy.copy(klass._direct_superclasses),1,0)
         supers = []
-        kb.get_class_superclasses_recurse(klass,supers)
+        kb.get_class_superclasses_internal_recurse(klass,supers)
         return (supers,1,0)
 
-    def get_class_superclasses_recurse(kb,klass,supers):
+    def get_class_superclasses_internal_recurse(kb,klass,supers):
         for super in klass._direct_superclasses:
             if not (super in supers):
                 supers.append(super)
-                kb.get_class_superclasses_recurse(super,supers)
+                kb.get_class_superclasses_internal_recurse(super,supers)
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         found_frame = kb._cache.get(str(thing))

@@ -25,6 +25,9 @@ create_slot('merges_in',
             own_slots=[[':DOMAIN','nooron_app_component']])
 
 create_slot('npt_for_instances',
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
+                       [':DOMAIN',':CLASS'],
+                       [':SLOT-COLLECTION-TYPE','set']],
             doc="""Nooron_app_wardrobes should have template_slots of this
             type on all classes which have specific nooron_page_templates
             for their instances.
@@ -33,14 +36,24 @@ create_slot('npt_for_instances',
             Template (NPT) which is appropriate for displaying instances of
             the class on which ntp_for_instances is an occurrence.""")
 
+create_slot('actions_for_instances',
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
+                       [':DOMAIN',':CLASS'],
+                       [':SLOT-COLLECTION-TYPE','set']],
+            doc="""Nooron_app_wardrobes should have template_slots of this
+            type on all classes which have specific nooron_page_templates
+            for their instances.""")
+
 create_slot('npt_for_self',
-            own_slots=[[':SLOT-VALUE-TYPE',':STRING']],
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','set']],
             doc="""Nooron_app_wardrobes should have npt_for_self
             template_slots on all classes which have specific
             nooron_page_templates for their instances.""")
 
 create_slot('slot_display_order',
-            own_slots=[[':SLOT-VALUE-TYPE',':SLOT']],
+            own_slots=[[':SLOT-VALUE-TYPE',':SLOT'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""A list of the slots to display, in the order they
             should be displayed.  This is respected by the template
             frame_as_html but not required by it.  In other words,
@@ -112,9 +125,10 @@ create_class(':THING',
                               'frame.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
-                              'create_individual.html',
                               'class_and_instances.html',
-                              'class_and_subclasses.html']])
+                              'class_and_subclasses.html'],
+                             ['actions_for_instances',
+                              'create_individual.html']])
 create_class(':KB',
              template_slots=[['npt_for_self',
                               'classes_in_kb.dot',

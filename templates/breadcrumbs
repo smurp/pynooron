@@ -1,4 +1,3 @@
 <a href="" 
   tal:attributes="href python:server_absolute_url"
-  tal:content="python:server_absolute_url"></a> &nbsp;
-<tal:dummy replace="structure request/breadcrumbs"/>
+  tal:content="python:server_absolute_url"></a> <tal:dummy replace="structure request/breadcrumbs"/>

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: code_handler.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: code_handler.py,v 1.7 2002/12/12 14:00:19 smurp Exp $'
 
 
 """Serve up the /code/ directory as described at 
@@ -87,4 +87,6 @@ class code_handler(default_handler.default_handler):
             request.error(401)
             return
 
-        nooron_root.publish(request,obj)
+        request['Content-Type'] = 'text/plain'
+        request.push(obj)
+        request.done()

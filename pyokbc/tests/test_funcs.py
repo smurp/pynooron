@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.13 2002/11/26 20:32:12 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.14 2002/12/12 14:00:20 smurp Exp $'
 
 import os
 import sys
@@ -101,7 +101,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 79
+        good = 85
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
@@ -137,7 +137,7 @@ class ReadOnlyTestCase(unittest.TestCase):
             parent.append(get_kb_direct_parents(kb)[0])
         self.assertEquals(parent[0],parent[1])
 
-    def test_get_instance_types_all(self):
+    def test_get_instance_types_all_SamuelBeckett(self):
         mykb = find_kb('Addenda')        
         good = '[:INDIVIDUAL, :THING, AdultHuman, Agent, Animal,' +\
                ' Human, Mammal, Primate]'

@@ -1,9 +1,7 @@
 
-__version__='$Revision: 1.21 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.21 2002/12/06 20:46:18 smurp Exp $'
+__version__='$Revision: 1.22 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.22 2002/12/12 14:00:18 smurp Exp $'
 
-#import GW
-#from GWApp import GWApp
 
 from pyokbc import *
 import NooronRoot
@@ -12,10 +10,11 @@ from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer
 #allow_module('pyobkc')
 import medusa.producers
 import popen2
+from OkbcOperation import OkbcOperation
 
 class AbstractApp:
     __allow_access_to_unprotected_subobjects__ = 1
-    default_npt_name = "dir_as_html"
+    default_npt_name = None
     
     def __init__(app,kb):
         app._kb = kb
@@ -24,27 +23,6 @@ class AbstractApp:
     def get_npt_from_url(app,request):
         query = request.split_query()
         return query.get('with_template')
-
-    def publish(app,request):
-        npt_name = app.get_npt_from_url(request) or app.default_npt_name
-        request.effective_query_extend({'with_template': npt_name})
-        nooron_root.publish(request,app._kb)
-
-    def get_npt_for_self(app,request,frame):
-        kb = app._kb
-        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
-                                                 number_of_values=1,
-                                                 slot_type=Node._all)
-        return vals and vals[-1]
-
-#class MetaKB(AbstractApp):
-#    """Lets publish a meta-kb shall we?"""
-#    default_npt_name = "dir_as_html"    
-
-
-#class NooronApp(AbstractApp):
-#    """Publish a generic kb generically or a NooronApp kb appropriately."""
-#    default_npt_name = "kb_as_html"
 
 
 class GenericFrame(AbstractApp):
@@ -56,20 +34,29 @@ class GenericFrame(AbstractApp):
         if frame_name == None:
             frame = app._kb
         else:
-            (frame,frame_found_p) = frame_name \
-                                    and app._kb.get_frame_in_kb(frame_name) \
-                                    or (None,None)
+            (frame,frame_found_p) = \
+                  frame_name \
+                  and app._kb.get_frame_in_kb(frame_name) or (None,None)
             if not frame:
-                frame = app._kb
+                npt_name = 'frame_not_found.html'
+                frame = frame_name
+
+
+        if npt_name in okbc_functions.keys():
+            #print "header    ",request.header
+            #print "split_uri ",request.split_uri()
+            #print npt_name, "is an OKBC Func"
+            a_func = okbc_functions[npt_name]
+            op = OkbcOperation(a_func,request,kb=app._kb, frame=frame)
+            #print "args and kwargs",op.get_args_and_kwargs()
+            operation_result = op.call()
+            print operation_result
+            npt_name = 'show_form.html'
+
+
 
         if npt_name == None:
             npt_name = app.choose_an_npt(request,frame)
-            
-        #print "\n=====================\n",\
-        #      "publish() npt_name:",npt_name,\
-        #      "for frame:",frame
-
-        #print "npt_name",npt_name
 
         template = nooron_root.template_root().obtain(npt_name,
                                                       request=request,
@@ -113,9 +100,10 @@ class GenericFrame(AbstractApp):
             #src_prod.close()
             final_producer = medusa.producers.file_producer(fout)
         else:
-            final_producer = medusa.producers.file_producer(os.popen(cmds,'r'))
+            final_producer = \
+                   medusa.producers.file_producer(os.popen(cmds,'r'))
 
-        #resp = cmds or 'no commands'
+        #print "base_request",request.base_request()
         request.push(final_producer)        
         #request.push(dummy_producer())
 
@@ -136,10 +124,12 @@ class GenericFrame(AbstractApp):
           some indication of involved user preferences """
         app.calc_base_request(request,frame,npt_name)
         # FIXME must add change_times for parent_kbs and templates
-        request.set_canonical_request("%s\nkb_mtime=%s\ngarment_mtime=%s\n"%(
+        request.set_canonical_request("%s\nkb_mtime=%s\ngarment_mtime=%s\n%s\n"%(
             request.base_request(),
             str(app._kb.get_kb_parents_maximum_mtime()),
-            str(template._stats['MTIME'])))
+            str(template._stats['MTIME']),
+            str(request.split_uri()[2])
+            ))
 
     def calc_base_request(app,request,frame,npt_name):
         """
@@ -153,7 +143,6 @@ class GenericFrame(AbstractApp):
         THING__GARMENT  eg /know/nooron_faq/faq__details.html
         """
         request.set_base_request(request.object_request() + '__' + npt_name)
-        
 
     def get_pipe_section(app,
                          from_ext=None,from_type=None,
@@ -181,8 +170,6 @@ class GenericFrame(AbstractApp):
         return PipeSection(producer=producer,
                            extension=to_ext,
                            mimetype=mimetype)
-        
-        
 
     def choose_an_npt(app,request,frame):
         return app.get_npt_from_url(request) \
@@ -191,7 +178,6 @@ class GenericFrame(AbstractApp):
                or app.get_npt_for_self(request,frame) \
                or app.get_npt_hardwired(request,frame) \
                or app.default_npt_name
-        
 
     def get_npt_hardwired(app,request,frame):
         kb = app._kb
@@ -230,7 +216,7 @@ class dummy_producer:
     def more(self):
         if not self.__dict__.get('_done') :
             self._done = 1
-            return "This is just great\n" * 500
+            return "This is just great\n"
         else:
             return ''
 

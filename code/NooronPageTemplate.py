@@ -1,8 +1,8 @@
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.12 2002/12/06 20:46:18 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.13 2002/12/12 14:00:18 smurp Exp $'
 
-SAFETY = 1 # safety off means that python in NPTs is omnipotent
+
 
 import NooronRoot
 
@@ -18,20 +18,30 @@ from cStringIO import StringIO
 
 from pyokbc import *
 
-import inspect
 
-okbc_functions={}
-for i in inspect.getmembers(Funcs,inspect.isfunction):
-    okbc_functions[i[0]]=i[1]
+SAFETY = 1 # safety off means that python in NPTs is omnipotent
 
 if SAFETY: #safe
-    print "Relax: NPT SAFETY is ON"
+    print "Notice: NooronPageTemplate.SAFETY is ON"
     from PageTemplates.ZRPythonExpr import PythonExpr, \
          _SecureModuleImporter,\
          call_with_ns
     from SafeExpressions import getEngine
 else:
-    print "Warning: NPT SAFETY is OFF"
+    print """
+Warning: NooronPageTemplate.SAFETY is OFF
+         Python in 'garments' is not restricted and hence has all the
+         powers and privileges of the user set in nooron.py.
+         This can be used to perform any operation the owner of this
+         process is entitled to, such as:
+             read /etc/passwd
+             overwrite ~/.profile
+         This is only deadly dangerous if you are permitting
+         the execution of untrusted remote templates with
+             TemplateManager.SAFETY is OFF
+         or are otherwise executing untrusted templates.
+             """
+    
     from PageTemplates.PythonExpr import getSecurityManager, PythonExpr
     from PageTemplates.Expressions import getEngine
     def call_with_ns(f, ns, arg=1):

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>frame as html</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+
+<h1 tal:content="python:get_frame_pretty_name(here) or 
+                        get_frame_name(here)"></h1>
+
+
+Frame not found.
+
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
+
+<hr>
+$Id: frame_not_found.html,v 1.1 2002/12/12 14:00:20 smurp Exp $
+</div>
+  </body>
+</html>

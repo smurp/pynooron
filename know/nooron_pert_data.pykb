@@ -9,7 +9,7 @@ create_individual('Nooron_0_2_1',
              ['Status','complete'],
              ['TaskDescription',
               """This is a dummy START job marking the state
-              which was current when nooron_pert was started."""],
+              which was current when nooron_pert was begun."""],
              ['EstimatedHours',0]])
 
 create_individual('PyOkbcCorrectness',direct_types=['Task'],
@@ -22,6 +22,7 @@ create_individual('PyOkbcCorrectness',direct_types=['Task'],
 create_individual('RunOnPort80',direct_types=['Task'],
   pretty_name='Run On Port 80',
   own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['Status','complete'],
              ['TaskDescription',
               """Solve the 'starting on port 80' problem."""],
              ['EstimatedHours',2]])
@@ -57,7 +58,7 @@ create_individual('FormActions',direct_types=['Task'],
              ['TaskDescription',
               """Write create_individual and create_class
               npts which are limited by authorization
-              stubs."""],
+              stubs.  method:add_slot_value """],
              ['EstimatedHours',2]])
 
 create_individual('CriteriaAndEvaluationsOntology',

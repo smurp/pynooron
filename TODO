@@ -2,23 +2,28 @@
 TODO for Nooron
 
 * correctness
+** why doesnt nooron_pattern_language.get_instance_types return :KB?
+** because get_class_superclasses is buggy!!
+** not automatically writing to the correct kb (ie a nooron_data KB)
+** save_kb (respect kb_local_only_p by telling parent kbs to save too)
 * performance
+** cache get_class_superclasses?
 * completeness
+** some authorization stubbed in
+** make /know/pert/ a surfable thing (kb?, place?)
+* cosmetics
+** fix truncated (at char 1024) error reporting
 
 BUGS
 ** wrong garment options on site_front_as_html
 ** orange and green!
 ** ensure that kb_as_html is default template for kbs
-** nooron.py can't start on port 80 except as root, doh I forgot!
-* why doesnt nooron_pattern_language.get_instance_types return :KB?
 
 after v0.2
 * implement IntermediateReferent (or SubjectIndicators?)
 Instances of IntermediateReferent are frames which
 can be bibliographic references, URL's and their titles, 
 or SubjectIndictators ala TopicMaps.
-* why doesnt nooron_pattern_language.get_instance_types return :KB?
-* improve NPT error reporting
 * come up with better terminology for distinguishing Nooron Apps (equivalent
 to Zope products) from nooron_app_instances (which are the *uses* of those
 products)
@@ -29,14 +34,14 @@ when they get systematized.)
 * wrap garments in knowledge
 Hmm, two goals: 
   1) keep the garments on-disk as trivially editable files
-  2) wrap them in metadata frames, ie make a garment a frame of some type
+  2) make them accessible as frames (for metadata)
 Solutions:
   1) Come up with some Connection type (or kb-type?) which treats files
   as frames and merges into them any other info discovered in a per-directory
   .pykb 
   2) put all the frame info *into* the garments as leading comments
     (ala Zope's on-disk representation of dtml, python-script, etc. )
-  3) put a .tell file beside each normal content fiel (e.g. each npt)
+  3) look for a .tell file beside each normal content file (e.g. each npt)
 
 * kb interchange
 ** make /know/some_kb surfable, /know/some_kb.pykb downloadable

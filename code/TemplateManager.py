@@ -1,8 +1,38 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: TemplateManager.py,v 1.8 2002/12/05 16:42:35 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.9 2002/12/12 14:00:19 smurp Exp $'
 
 DEBUG = 0
+
+SAFETY = 1
+
+if SAFETY:
+    print "Notice: TemplateManager.SAFETY is ON"
+else:
+    print """
+Warning: TemplateManager.SAFETY is OFF
+         This means that if the query string contains
+           ?with_template=http://some.random.url/garmie.html
+           ?with_template=file:///some/secret/on/your/drive
+           ?with_template=file:///etc/passwd
+         Then the contents of that url will be obtained
+         and executed as a NooronPageTemplate.  This is
+         currently hideously dangerous for three reasons:
+           1) if NooronPageTemplate SAFETY is OFF
+              then python in templates is unrestricted and
+              has all the power of the user running the Nooron.
+           2) there is currently nothing to prevent template authors
+              from inserting (or modifying) instances of
+                /know/transformers_ontology/ExternalCommand
+              which when run have all the power of the unix user.
+           3) there are probably other holes in the restriction of
+              python in templates, specifically through the
+              manipulation of objects accessible to templates.
+         It is safe to run a Nooron instance when
+              TemplateManager SAFETY is OFF
+         if the Nooron instance is behind a firewall on a
+         single user machine or on a completely trusted LAN.
+              """
 
 import string
 import os
@@ -35,18 +65,22 @@ class TemplateManager:
         #NooronRoot = NooronRoot.NooronRoot
         template_uri = template_name
 
+
         #url_tup = urlparse.urlparse(template_name,'file')
-        if template_name.find('http:') == 0 or \
-           template_name.find('https:') == 0 or \
-           template_name.find('ftp:') == 0:
-            if DEBUG: print "start retrieving",template_uri
-            (fname,headers) = urllib.urlretrieve(template_uri)
-            if DEBUG: print "end   retrieving"
+        if SAFETY:
+            fname = nooron_root.make_fname([self.path, template_name])
         else:
-            if template_name.find('file:') == 0:
-                template_name = template_name[7:]
-            fname = nooron_root.make_fname([self.path,
-                                                        template_name])
+            if template_name.find('http:') == 0 or \
+               template_name.find('https:') == 0 or \
+               template_name.find('ftp:') == 0:
+                if DEBUG: print "start retrieving",template_uri
+                (fname,headers) = urllib.urlretrieve(template_uri)
+                if DEBUG: print "end   retrieving"
+            else:
+                if template_name.find('file://') == 0:
+                    template_name = template_name[7:]
+                fname = nooron_root.make_fname([self.path, template_name])
+
         file = open(fname,'r')
         out = string.join(file.readlines(),"")
         file.close()

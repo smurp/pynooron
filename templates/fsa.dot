@@ -17,7 +17,7 @@
 
 </span>
 
-<tal:dummy condition="nothing">
+
 
   <span tal:repeat="a_transition python:get_class_instances('Transition')[0]"
         tal:omit-tag="">
@@ -25,6 +25,7 @@
       [label="<tal:dummy replace="python:get_frame_pretty_name(a_transition) or get_frame_name(a_transition)"/>"];
   </span>
 
+<tal:dummy condition="nothing">
 </tal:dummy>
 
 </metal:block>

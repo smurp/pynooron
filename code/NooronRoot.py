@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.19 2002/12/06 20:46:18 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.20 2002/12/12 14:00:19 smurp Exp $'
 
 DEBUG = 0
 
@@ -20,9 +20,10 @@ from TemplateManager import TemplateManager
 #import topicmap_handler
 import okbc_handler
 from code_handler import code_handler
-import PipeLineFactory
+#import PipeLineFactory
 
 from pyokbc import *
+import NooronApp
 import os
 
 
@@ -93,7 +94,7 @@ class NooronRoot:
         meta_direct_parents.append(open_kb('nooron_app_architecture'))
         
         meta.put_direct_parents(meta_direct_parents)
-        print "get_kb_direct_parents()",get_kb_direct_parents(kb=meta)
+        #print "get_kb_direct_parents()",get_kb_direct_parents(kb=meta)
 
         #print "local_connection =",local_connection()
         #print "current_kb =",current_kb()        
@@ -118,7 +119,7 @@ class NooronRoot:
                 raise "IncompleteNooronRootSetup", \
                       'arguments server_name, server_port and log_to required'
 
-            self.pipeline_factory = PipeLineFactory.PipeLineFactory()
+            self.pipeline_factory = None #PipeLineFactory.PipeLineFactory()
             statusable_handlers.append(self.pipeline_factory)
             
             if publishing_root:
@@ -173,8 +174,11 @@ class NooronRoot:
 ##                                                  extensions)
 ##        pl.publish()
 
-#    def handle_request(self,request):
-#        self.publish(request,self)
+    def handle_request(self,request):
+        meta = meta_kb()
+        request.set_object_request('/')
+        app = NooronApp.GenericFrame(meta)
+        app.publish(request,None,'site_front.html',extensions=[])
 
 #    def objectValues(self):
 #        return []

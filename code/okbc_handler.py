@@ -1,5 +1,5 @@
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.13 2002/12/06 20:46:18 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.14 2002/12/12 14:00:19 smurp Exp $'
 
 
 from pyokbc import *
@@ -70,11 +70,12 @@ class okbc_handler:
             #return
 
         for elem in [self.from_root]:
-            print "checking",elem
-            object_request = object_request + '/' + elem            
+            #print "checking",elem
+            object_request = object_request + '/' + elem
+            kb_request = object_request
             if str(elem) == str(path_list[0]):
                 path_list.pop(0)
-        print "path_list",path_list
+        #print "path_list",path_list
 
         latest_kb = meta_kb()
         pipe = []
@@ -83,24 +84,28 @@ class okbc_handler:
             if len(frag) == 2:
                 elem = frag[0]
                 pipe = string.split(frag[1],'.')
-                npt_name = pipe.pop(0) + '.' + pipe[0]
+                npt_name = pipe.pop(0) + (pipe and '.' + pipe[0] or '')
                 #pipe[0] = npt_name
-                print "pipe",pipe
+                #print "pipe",pipe
             object_request = object_request + '/' + elem
-            print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            
+            #print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            
             (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
             if frame != None:
                 if kb_p(frame):
-                    print elem,"is a kb"
+                    #print elem,"is a kb"
                     latest_kb = frame
+                    kb_request = object_request
                 else:
-                    print elem,"is a frame"
+                    pass
+                    #print elem,"is a frame"
             else:
-                print elem,"was not found in",latest_kb
+                pass
+                #print elem,"was not found in",latest_kb
 
-        print "kb",latest_kb,"frame",elem
-        print "object_request",object_request 
+        #print "kb",latest_kb,"frame",elem
+        #print "object_request",object_request 
         request.set_object_request(object_request)
+        request.set_kb_request(kb_request)
         app = NooronApp.GenericFrame(latest_kb)
         app.publish(request,elem,npt_name,extensions=pipe)
 

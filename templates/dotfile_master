@@ -9,7 +9,7 @@
 // MIME type:  application/x-graphviz 
 // extensions: dot,gv
 
-digraph meaningless {
+digraph <tal:dummy replace="python:request.name_request()"/> {
 <metal:block tal:omit-tag="" metal:define-slot="main" >
 the body of the digraph goes here
 </metal:block>

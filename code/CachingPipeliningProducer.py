@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.5 2002/12/06 20:46:17 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.6 2002/12/12 14:00:18 smurp Exp $'
 
 import string
 import md5
@@ -66,7 +66,7 @@ class CachingPipeliningProducer:
         #sections.reverse()
         while sections and not mt:
             section = sections.pop()
-            print "========>>",section
+            #print "========>>",section
             mt = section.mimetype()
         return mt or 'text/plain'
     def source_and_commands(piper):
@@ -213,6 +213,7 @@ requirements of caching system
 
 terms:
   actual_request
+    The path as specified in the URL.  Might be more or less specific.
     Might be the base_request or it might be only THING or it
     might specify the garment and some encoding extensions,
     in which case a base_request must be deduced.

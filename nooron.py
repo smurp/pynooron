@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.23 2002/12/06 20:46:17 smurp Exp $'
+__version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.24 2002/12/12 14:00:18 smurp Exp $'
 
 
 """
@@ -23,6 +23,7 @@ from NooronRoot import NooronRoot
 
 cwd = os.getcwd()
 
+UID = 'smurp'
 default_place = cwd+'/know' 
 #default_place = cwd+'/pyokbc/tests'
 
@@ -31,8 +32,39 @@ import __main__
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     server_name = '192.168.1.11',
-                    server_port = 8081,
+                    server_port = 80,
                     log_to = sys.stdout,
                     initargs = {'default_place':default_place})
+
+
+try:
+    import pwd
+    try:
+        try:    UID = string.atoi(UID)
+        except: pass
+        gid = None
+        if type(UID) == type(""):
+            uid = pwd.getpwnam(UID)[2]
+            gid = pwd.getpwnam(UID)[3]
+        elif type(UID) == type(1):
+            uid = pwd.getpwuid(UID)[2]
+            gid = pwd.getpwuid(UID)[3]
+        else:
+            raise KeyError 
+        try:
+            if gid is not None:
+                try:
+                    os.setgid(gid)
+                except OSError:
+                    pass
+            os.setuid(uid)
+        except OSError:
+            pass
+    except KeyError:
+        print "can not find UID %s" % UID
+except:
+    pass
+
+#print "final pid =",os.getpid()
 
 asyncore.loop()
