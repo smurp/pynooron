@@ -235,10 +235,11 @@ class friendly_favors_authenticator:
                                        group[0],      #favors group
                                        self._fqdn,
                                        group[1])      #group key
-                if resp['group_status'] != 'Active':
-                    raise 'FriendlyFavorsGroupInactive',\
-                          "group:%s status:%s" % (group[0],
-                                                  resp['group_status'])
+                print "resp=",resp
+                #if resp['group_status'] != 'Active':
+                #    raise 'FriendlyFavorsGroupInactive',\
+                #          "group:%s status:%s" % (group[0],
+                #                                  resp['group_status'])
                 for fromkey,tokey in {'name':'FullName',
                                       'firstname':'FirstName',
                                       'lastname':'LastName'}.items():
