@@ -27,8 +27,7 @@
                 ><tal:dummy 
                       define="current_garmie_p 
                               python:template_title==adornment[1]"><tal:dummy
-	          condition="python: not current_garmie_p"><a
-                 href="" 
+	          condition="python: not current_garmie_p"><a href="" 
                  tal:attributes="href python:baseurl +'__'+ adornment[1]"
                  tal:content="python:adornment[0]"></a></tal:dummy><tal:dummy
 	          condition="current_garmie_p"><b
