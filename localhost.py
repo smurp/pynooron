@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: localhost.py,v 1.1 2003/04/30 15:21:34 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: localhost.py,v 1.2 2003/05/14 08:22:42 smurp Exp $'
 
 
 """
@@ -31,8 +31,8 @@ kr_root = '/home/smurp/knowledge/'
 places = [kr_root+'apps_of/nooron',
           kr_root+'apps_of/smurp',          
           kr_root+'apps_of/givingspace',
+          kr_root+'apps_of/onevoice',          
           kr_root+'apps_of/demo',
-          kr_root+'apps_of/kaliya',
           kr_root+'nooron_apps',
           kr_root+'nooron_foundations',
           cwd+'/know']

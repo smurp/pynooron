@@ -3,6 +3,7 @@
 TODO for Nooron
 
 * possible priorities
+** flesh out attribution of add and change
 ** flesh out AUTHENTICATED_USER
 *** make it an instance of a class wrapped around a kb? a frame?
 ** flesh out login/identity creation

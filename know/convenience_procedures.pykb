@@ -207,7 +207,7 @@ def npts_by_parentage(direct_types,transformations):
     if transformations == None:
         transformations = {'ps':['pdf','jpg'],
                            'dot':['ps','jpg','svg',['pdf','ps.pdf']],
-                           'dbk':['rtf','pdf','tex']} # txt,ps,dvi,tex,texi
+                           'dbk':['pdf','rtf','tex']} # txt,ps,dvi,tex,texi
 
     train = [] # filled with passengers and their luggage
     #print "parentage: ",direct_types
