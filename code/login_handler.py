@@ -21,11 +21,11 @@ get_header = default_handler.get_header
 
 
 class login_handler:
-    def __init__ (self, authorizer, realm='default'):
+    def __init__ (self, authenticator, realm='default'):
         self.the_user_id_name = 'the_user_id'
         self.the_user_pw_name = 'the_user_pw'
         self.onsuccess_name = 'OnSuccessRedirTo'
-        self.authorizer = authorizer
+        self.authenticator = authenticator
         self.realm = realm
         #self.pass_count = counter.counter()
         #self.fail_count = counter.counter()
@@ -68,7 +68,7 @@ class login_handler:
         if not auth_info:
             auth_info = self.get_auth_info_from_form(request)
         #print "authenticator ==> auth_info",auth_info
-        if self.authorizer.authorize(auth_info):
+        if self.authenticator.authenticate(auth_info):
             self.set_auth_cookies(request,auth_info)
             return auth_info
         return []
@@ -157,7 +157,7 @@ class login_handler:
 
     def handle_whoami(self,request):
         content = """
-<html><head><title>Unauthorized</title></head>
+<html><head><title>Who Am I?</title></head>
 <body>
 Whoami
 <hr/>
@@ -179,11 +179,11 @@ Whoami
         
 
 
-class dictionary_authorizer:
+class dictionary_authenticator:
     def __init__ (self, dict):
         self.dict = dict
 
-    def authorize (self, auth_info):
+    def authenticate (self, auth_info):
         try:
             [username, password] = auth_info
             if (self.dict.has_key (username)) and \
@@ -193,3 +193,26 @@ class dictionary_authorizer:
             return 0
         return 0
 
+
+from xmlrpclib import Server
+
+class friendly_favors_authenticator:
+    def __init__(self,group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'}):
+        self._server = Server('http://www.favors.org/ffVerify.php')
+        self._group_key_map = group_key_map
+    def authenticate(self,auth_info):
+        dude = None        
+        if len(auth_info) == 2:
+            for group in self._group_key_map.items():
+                try:
+                    dude = self._server.ff.startUserSession(auth_info[0],  #userid
+                                           auth_info[1],  #passwd
+                                           group[0],      #favors group
+                                           '192.168.1.14',#this fqdn
+                                           group[1])      #group key
+                    break
+                except:
+                    print "failed on",auth_info,group
+                    continue
+        print "dude",dude
+        return dude
