@@ -1,15 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html metal:use-macro="container/standard_master/macros/master">
   <head>
-    <title tal:content="template/title"></title>
+    <title tal:content="python: 'oink'"></title>
   </head>
 
   <body>
 
 <div metal:fill-slot="main">
+
+
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-<span  tal:define="items python:get_instance_types(here,inference_level=Node._direct)[0]" 
+<span  tal:define="items python:get_instance_types(here,inference_level=DIRECT)[0]" 
        tal:condition="items">
   <strong>classes:</strong>
   <span tal:repeat="item items">
@@ -114,7 +116,7 @@
 </div>
 
 <hr>
-$Id: web_log_entry_as_html,v 1.4 2002/10/23 20:05:04 smurp Exp $
+$Id: web_log_entry_as_html,v 1.5 2002/11/11 22:48:51 smurp Exp $
 </div>
   </body>
 </html>

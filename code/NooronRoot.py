@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.10 2002/10/21 23:52:53 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.11 2002/11/11 22:48:50 smurp Exp $'
 
 DEBUG = 0
 
@@ -94,18 +94,16 @@ class NooronRoot:
                 hs.install_handler(kbh)
 
             sh = status_handler.status_extension(statusable_handlers)
-            hs.install_handler(sh)
-            
+            hs.install_handler(sh)            
             hs.install_handler(self)
-            
 
     def make_fname(self,frag):
-        if DEBUG: print "make_fname",frag
+        #if DEBUG: print "make_fname",frag
         if type(frag) == type([]):
             frag = os.path.join(frag[0],frag[1])
         pth = os.path.join(self.fsroot,frag)
         normpath = os.path.normpath(pth)
-        if DEBUG: print "normpath =",normpath
+        #if DEBUG: print "normpath =",normpath
         if normpath.find(self.fsroot) != 0:
             raise "Illegal path requested",\
                   "%s not in %s" % (normpath,self.fsroot)

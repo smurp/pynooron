@@ -1,2 +1,14 @@
 
 put_direct_parents(['web_log_schema.pykb'])
+
+create_class('web_log_entry',
+             #direct_types=['nooron_schema_class'],
+             template_slots=[['npt_for_instances','web_log_entry_as_html']],
+)
+
+create_class('web_log_category',
+             #direct_types=['nooron_schema_class'],
+             template_slots=[['npt_for_self','web_log_category_as_html']],
+             own_slots = [['npt_for_self','web_log_category_self_as_html']],
+             )
+

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.11 2002/11/01 23:47:18 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.12 2002/11/11 22:48:50 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -54,6 +54,7 @@ class GenericFrame(AbstractApp):
         if not frame_found_p:
             NooronApp(app._kb).publish(request)
             return
+        print "frame =",frame
         npt_name = app.get_npt_from_url(request) \
                    or app.get_npt_for_subclasses(request,frame) \
                    or app.get_npt_for_instances(request,frame) \

@@ -1,17 +1,30 @@
 
-TODO (to get v0.2 released)
+TODO for Nooron
 
+[part of the argument for the feasibility of the project]
+Nooron can grow as suggested because it is not limited by factors
+such as: 
+ - a specific rigid knowledge model
+ - bound to a particular human language
+ etc, etc
+
+* fix get_class_instances bug in nooron
+Is it in Nooron or in class_and_instances_as_html?
 * make PRIMORDIAL_KB surfable
+* turn off all print statements
 * figure out how to display a NooronApp instance
 ** app_front_object
 ** app_front_template
 ** app_instance.npt_for_me
-* figure out how to display the nooron_site_config (is it a NooronApp?)
+* figure out how to configure a nooron instance
+
 
 after v0.2
 * cache NPT instances (to improve performance)
-* create topicmap_as_svg
-* create topicmap_as_ps
+* cache intermediate results (types, slots, instances, etc.) on frames
+* create kb_as_svg
+* create kb_as_ps
+* examine PIL for graphics generation
 
 
 The 'Roadmap' aspects of this have been superceded by:
@@ -25,30 +38,21 @@ Principles Guiding ToDo Prioritization
 
 TODO (prioritized as above, roughly)
   - deliver templates by version
-  - display instances in class-specific templates (if they exist)
-    ? are such associations in topic maps?  sounds like they should be
-    ? use ython code or templates to select the right template
 
   - store evaluations (in sql?)
   - create evaluation facilities
   - filter/sort/format things on the basis of evaluations 
       (or other attributes)
-  
-  - implement serving of /map/
-    - load topicmaps as specified in the root topicmap
-    Q. make root (or /map) a topic map? 
-    A. I guess.
-  - write things to a topic map (and save them)
-  - ask Jan whether IDs are a part of the graph
-
+ 
   - ensure that here/blah uses acquisition-like something
   - test root/blah and container/blah
   - implement adding of topics
     - set up form and action architecture
       - early uses to include:
-        - loading topicmaps
-        - creating topics
-        - creating topicmaps
+        - loading KBs
+        - creating frames
+        - creating KBs
+        - save_as
 
   - create user authentication system
     - implement NotSoBasicAuth
@@ -57,14 +61,6 @@ TODO (prioritized as above, roughly)
   - display weblog.xtm
   - generate some svg now
   - time for users
-
-TODO  
-  - sTQML queries to figure out:
-    - instances of a class
-    - attributes of a topic
-    - classes of a topic
-    - 
-  - specific queries required for reproducing nanotech scenario 
 
 
 TODO for nanotech scenario

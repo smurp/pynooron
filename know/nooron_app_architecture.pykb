@@ -20,7 +20,7 @@ create_slot('npt_for_self',
             topic for which a particular template is desired.  Npt_for_self
             has precedence over npt_for_instances.""")
 
-create_class('knowledge_base')
+#create_class('knowledge_base')
 
 create_class('nooron_app_component',
              direct_superclasses=['knowledge_base'],        
@@ -36,7 +36,6 @@ create_class('data_schema',
              same kind, i.e. other data schema information existing elsewhere.
              """)
 create_class('nooron_schema_class',
-             template_slots=[['npt_for_self','class_and_instances_as_html']],
              doc="""Classes defined in data_schema knowledge bases should
              be marked as instances of nooron_schema_class.""")
 create_class('data_instances',
@@ -65,3 +64,13 @@ create_class('app_instance',
              combination of two things: an app skeleton and a set of data
              instances.""")
 
+
+
+# maybe there should be a kb like: nooron_app_core_skeleton for...
+create_class(':THING',
+             template_slots=[['npt_for_self','frame_as_html']])
+create_class(':CLASS',
+             template_slots=[['npt_for_self','class_and_instances_as_html',
+                              'class_and_subclasses_as_html']])
+create_class(':KB',
+             template_slots=[['npt_for_self','app_instance_as_html']])

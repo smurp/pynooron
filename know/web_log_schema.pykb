@@ -1,21 +1,25 @@
 
 put_direct_parents(['nooron_app_architecture.pykb'])
-create_class('web_log_entry',
-             direct_superclasses=['nooron_schema_class'],
-             template_slots=[['npt_for_instances','web_log_entry_as_html']],
-	     doc="""This is an actual entry in a web log.""",
-             pretty_name="web log entry")
+
 create_slot('web_log_url',
-            doc="""This is a link from a 'web log entry' to an item it discusses.""",
+            doc="""This is a link from a 'web log entry' to an item 
+		it discusses.""",
             pretty_name="url")
 create_slot('web_log_text',
-            doc="""This is the text which constitute the remarks fo the blogger.""",
+            doc="""This is the text which constitute the remarks by the
+		 blogger.""",
             pretty_name = "text")
+
+create_class('web_log_entry',
+             direct_types=['nooron_schema_class'],
+             template_slots=[['web_log_text'],
+                             ['web_log_url']],
+	     doc="""Instances of web_log_entry are the posts in a blog.""",
+             pretty_name="web log entry")
+
 create_class('web_log_category',
-             direct_superclasses=['nooron_schema_class'],
-             direct_types=['web_log_entry'],
-             template_slots=[['npt_for_self','web_log_category_as_html']],
-             own_slots = [['npt_for_self','web_log_category_self_as_html']],
-             doc="""Subclasses of 'web log category' are theselves classes which
-             individual web log entries are instances of.""",
+             direct_types=['nooron_schema_class'],
+             #direct_types=['web_log_entry'],
+             doc="""Subclasses of 'web log category' are theselves classes 
+		which individual web log entries are instances of.""",
              pretty_name="web log category")

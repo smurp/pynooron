@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.19 2002/11/01 23:47:17 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.20 2002/11/11 22:48:50 smurp Exp $'
 
 
 """
@@ -35,6 +35,7 @@ __main__.__builtins__.nooron_root = \
                     server_port = 8081,
                     log_to = sys.stdout,
                     initargs = {'default_place':default_place})
+
 
 asyncore.loop()
 

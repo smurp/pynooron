@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.8 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.9 2002/11/11 22:48:50 smurp Exp $'
 
 import NooronRoot
 
@@ -83,6 +83,7 @@ class NooronPageTemplate(PageTemplate):
         c = self.pt_getContext()
         c.update(extra_context)
         c.update(okbc_functions)
+        c.update(Node.kwargs)
         #if Z_DEBUG_MODE:
         #    __traceback_info__ = pprint.pformat(c)
         #print "_v_program =",self._v_program

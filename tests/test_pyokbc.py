@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.1 2002/11/08 21:22:00 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.2 2002/11/11 22:48:51 smurp Exp $'
 
 import os
 import sys
@@ -60,7 +60,8 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
     def test_get_slot_values_THING(self):
-        good = "['class_and_instances_as_html', 'frame_as_html']"
+        good = "['class_and_instances_as_html'," +\
+               " 'class_and_subclasses_as_html', 'frame_as_html']"
         resp = list(get_slot_values(':THING','npt_for_self',
                                     slot_type=Node._all)[0])
         resp.sort(str_sort)
@@ -68,7 +69,8 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
     def skip_test_get_slot_values_gear(self):
-        good = "['class_and_instances_as_html', 'frame_as_html'," +\
+        good = "['class_and_instances_as_html'," +\
+               " 'class_and_subclasses_as_html', 'frame_as_html'," +\
                " web_log_category_as_html', 'web_log_category_self_as_html']"
         resp = list(get_slot_values('web_log_category','npt_for_self',
                                     slot_type=Node._all)[0])
@@ -78,6 +80,7 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_get_slot_values_in_detail_web_log_category(self):
         good = "[['class_and_instances_as_html', 0, 0]," +\
+               " ['class_and_subclasses_as_html', 0, 0]," +\
                " ['frame_as_html', 0, 0]," +\
                " ['web_log_category_as_html', 1, 0]," +\
                " ['web_log_category_self_as_html', 1, 0]]"
@@ -88,11 +91,22 @@ class ReadOnlyTestCase(unittest.TestCase):
                                               kb_local_only_p=0)[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
-        
+
+    def test_get_class_subclasses_web_log_category(self):
+        PyOkbc.DEBUG = 1
+        #PyOkbc.DEBUG_METHODS.append('get_class_subclasses')
+        PyOkbc.DEBUG_METHODS.append('get_class_subclasses_internal')
+        PyOkbc.DEBUG_METHODS.append('get_instance_types_recurse')        
+        good = ""
+        resp = list(get_class_subclasses('web_log_category')[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+        PyOkbc.DEBUG = 0        
 
     def test_get_slot_values_in_detail_THING(self):
-        good = "[['class_and_instances_as_html', 0, 0], ['frame_as_html', 0, 0]]"
-
+        good = "[['class_and_instances_as_html', 0, 0]," + \
+               " ['class_and_subclasses_as_html', 0, 0]," + \
+               " ['frame_as_html', 0, 0]]"
         resp = list(get_slot_values_in_detail(':THING',
                                               'npt_for_self',
                                               slot_type=Node._all,
