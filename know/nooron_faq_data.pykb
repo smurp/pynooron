@@ -1,7 +1,7 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-
+put_slot_value(current_kb(),'cvs_id',['$Id: nooron_faq_data.pykb,v 1.8 2002/11/27 07:53:10 smurp Exp $'])
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -43,12 +43,12 @@ create_individual('U00200',direct_types=['faq'],
 create_individual('U00205',direct_types=['faq'],
                   own_slots=[
     ['Q',"""What other, concrete, features will it have by version 1.0.0?"""],
-    ['A',"""See <a href="/know/nooron_pattern_language.pykb">The Nooron Pattern Language</a>
+    ['A',"""See <a href="/know/nooron_pattern_language">The Nooron Pattern Language</a>
     for the whole conceptual tour, but you asked for a concrete answer.
     <ul>
     <li>A pervasive collaborative filtering system (based on
     user-contributable
-    <a href="/know/nooron_pattern_language.pykb/CriteriaAndEvaluations">criteria and evaluations</a>)
+    <a href="/know/nooron_pattern_language/CriteriaAndEvaluations">criteria and evaluations</a>)
     will provide the
     advantages of both peer review and evolutionary pressure on all
     contents of Nooron: knowledge, logic and presentation.  Criteria
@@ -71,9 +71,9 @@ create_individual('U00205',direct_types=['faq'],
     used by the form generation facilities, and inherited by subclasses.
     </li>
     <li>Nooron will be both 
-    <a href="/know/nooron_pattern_language.pykb/FullyAutomatic">Fully Automatic</a>)
+    <a href="/know/nooron_pattern_language/FullyAutomatic">Fully Automatic</a>)
     and
-    <a href="/know/nooron_pattern_language.pykb/FullyAdjustable">Fully Adjustable</a>)    
+    <a href="/know/nooron_pattern_language/FullyAdjustable">Fully Adjustable</a>)    
     because it will, throughout, be sensitive to settings which
     will be guided by worldviews or specific criteria if not explicitly
     overridden by user preferences.</li>
@@ -134,7 +134,7 @@ create_individual('U00211',direct_types=['faq'],
     core of an App (ontology, wardrobe and garments) will exist in one
     folder.</li>
     <li>Implement
-    <a href="/know/nooron_pattern_language.pykb/URLsHaveMeaning">URLsHaveMeaning</a>
+    <a href="/know/nooron_pattern_language/URLsHaveMeaning">URLsHaveMeaning</a>
     so that server-side generation of 'dot' graphs
     as JPEGs and docbook as PDF becomes possible.
     </li>
@@ -256,23 +256,23 @@ create_individual('U01000',direct_types=['faq'],
     url from a running Nooron instance will be equivalent to most
     anything one might want a command line for.  This is thanks to
     the interaction of the two patterns
-    <a href="/know/nooron_pattern_language.pykb/REST">REST</a> and
-    <a href="/know/nooron_pattern_language.pykb/URLsHaveMeaning">URLsHaveMeaning</a>"""]])
+    <a href="/know/nooron_pattern_language/REST">REST</a> and
+    <a href="/know/nooron_pattern_language/URLsHaveMeaning">URLsHaveMeaning</a>"""]])
 
 create_individual('U01100',direct_types=['faq'],
                   own_slots=[
     ['Q',"How do I make my own pattern_language_app?"],
     ['A',"""Put a file called <code>SOMENAME_pattern_language.pykb</code>
     in /know with contents like:<pre>
-put_direct_parents(['pattern_language_wardrobe.pykb',
-                    'SOMENAME_pattern_language_data.pykb'])
+put_direct_parents(['pattern_language_wardrobe',
+                    'SOMENAME_pattern_language_data'])
 put_instance_types(current_kb(),['pattern_language_app'])
 put_frame_pretty_name(current_kb(),"SOMENAME Pattern Language")
     </pre>
     Put your data in another file called <code>SOMENAME_pattern_language_data.pykb</code>
     with contents like:
     <pre>
-put_direct_parents(['pattern_language_ontology.pykb'])
+put_direct_parents(['pattern_language_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
     </pre>
     followed by <code>create_individual</code> calls that look like

@@ -1,12 +1,10 @@
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.11 2002/11/16 12:00:10 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.12 2002/11/27 07:53:10 smurp Exp $'
 
 DEBUG = 0
 
-#from NooronRoot import NooronRoot
 import NooronRoot
-#NooronRoot = NooronRoot.NooronRoot
 
 from NooronPageTemplate import NooronPageTemplate
 import types
@@ -123,48 +121,12 @@ class arbitrary_producer(templated_producer):
         effquery = request.effective_query()
         self.template_name = effquery.get('with_template')
         templated_producer.__init__(self,content,request)
-        
-
-class topic_html_producer(templated_producer):
-    """Render a topic in a fashion specific to its class, or else generically.
-
-    It does this by attemping to find a template called
-      'instance_of_CLASSNAME_as_html'
-    or should it be
-      NR/templates/by_tclass/TKLASS/instance_as_html
-      NR/templates/by_tclass/TKLASS/instance_as_svg
-      NR/templates/by_tclass/TKLASS/instance_as_html?cvstag=TRICKY
-    and uses it or else it just uses 'topic_as_html'."""
-    domain = ['GWApp.TMObject']
-    extensions = ['html','htm']
-    def_mime_type = ['text/html']
-    template_name = "frame_as_html"
 
 class kb_html_producer(templated_producer):
     domain = ['pyokbc.PyKb.PyKb']
     extensions = ['pykb']
     def_mime_type = ['text/html'] 
     template_name = "kb_as_html"   
-
-class tclass_html_producer(templated_producer):
-    """Render a generic class in a generic fashion.
-
-    Currently unused since no technique has been devised for gracefully
-    employing this template depending on whether the topic is a class.
-    """
-    domain = ['GWApp.TMObject']
-    extensions = ['html','htm']
-    def_mime_type = ['text/html']
-    template_name = "tclass_generic_as_html"
-
-class topicmap_html_producer(templated_producer):
-    """Render a topicmap itself."""
-    domain = ['NooronApp.NooronApp'
-              ,'GWApp.GWApp' # deprecated
-              ]
-    extensions = ['html','htm']
-    def_mime_type = ['text/html']
-    template_name = "topicmap_as_html"
 
 class directory_html_producer(templated_producer):
     domain = ['DirectoryFacade.DirectoryFacade'
@@ -179,13 +141,6 @@ class site_front_html_producer(templated_producer):
     def_mime_type = ['text/html']
     template_name = "site_front_as_html"
 
-
-    
-
-#class python_html_producer(typed_file_producer):
-#    domain = ["<type 'file'>"]
-#    extensions = ['py']
-#    def_mime_type = ['text/plain']
 
 
 class pipeline:

@@ -1,5 +1,5 @@
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.8 2002/11/26 21:52:40 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.9 2002/11/27 07:53:10 smurp Exp $'
 
 
 from pyokbc import *
@@ -12,6 +12,8 @@ from medusa import counter
 import medusa
 from medusa.default_handler import unquote
 
+wedge = '__'
+    
 class okbc_handler:
     def __init__(self,from_root,connection=None):
         self.hits = counter.counter()
@@ -43,9 +45,8 @@ class okbc_handler:
             path = unquote (path)
             #print path
 
-        frame_in_kb_p = 0
+
         frame = None
-        frame_name = None
         kb = None
         npt_name = None
 
@@ -68,7 +69,6 @@ class okbc_handler:
             app.publish(request)
             return
 
-
         for elem in [self.from_root]:
             print "checking",elem
             if str(elem) == str(path_list[0]):
@@ -78,6 +78,10 @@ class okbc_handler:
         latest_kb = meta_kb()
         for elem in path_list:
             print "seeking",elem
+            frag = string.split(elem,wedge)
+            if len(frag) == 2:
+                elem = frag[0]
+                npt_name = frag[1]
             (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
             if frame != None:
                 if kb_p(frame):
@@ -92,49 +96,3 @@ class okbc_handler:
         app = NooronApp.GenericFrame(latest_kb)
         app.publish(request,elem,npt_name)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def old_junk(self):
-        if len(path_list) > 0:
-            kb_name = path_list[1]
-            #print "finding kb",kb_name
-            (frame,frame_found_p) = get_frame_in_kb(kb_name,kb=meta_kb())
-            if frame: # place or a kb without extension
-                if kb_p(frame):
-                    print "so its a kb already"
-                else:
-                    print frame,"is not a kb"
-                
-            kb = find_kb(kb_name)            
-
-            #print "find_kb(",kb_name,") ==> ",kb
-
-            if not kb:
-                kb = open_kb(kb_name)
-#                try:
-#                    kb = open_kb(kb_name)
-#                except OkbcConditions.KbNotFound,e:
-#                    pass
-            if not kb:
-                request.error(301) # not found
-                return
-        if len(path_list) > 1:
-            frame_name = path_list[1]
-            frame_name = frame_name.replace('+',' ')

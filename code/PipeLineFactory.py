@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.9 $'[11:-2]
-__cvs_id__ ='$Id: PipeLineFactory.py,v 1.9 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.10 $'[11:-2]
+__cvs_id__ ='$Id: PipeLineFactory.py,v 1.10 2002/11/27 07:53:10 smurp Exp $'
 
 DEBUG = 0
 
@@ -128,6 +128,6 @@ class PipeLineFactory:
         #print "transs =",transs
         return transformers.pipeline(transs,request)
 
-    def handle_request(self,request):
-        pipeline = self.build_pipeline(request)
-        pipeline.publish()
+#    def handle_request(self,request):
+#        pipeline = self.build_pipeline(request)
+#        pipeline.publish()
