@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.15 2003/04/28 16:20:53 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.16 2003/06/19 21:48:08 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -19,6 +19,9 @@ Warning: OkbcOperation.SAFETY is OFF
 
 import inspect
 from pyokbc import *
+import re
+import time
+import base64
 
 def detail_preprocessor(form,kb,arg):
     """Used by OkbcOperation to obtain a properly constructed detail arg from
@@ -73,7 +76,49 @@ def detail_preprocessor(form,kb,arg):
         if the_val != '':
             details[subarg] = the_val
     return details
-put_frame_details.http_argument_preprocessors = {'details':detail_preprocessor}
+put_frame_details.http_argument_preprocessors = {'details':
+                                                 detail_preprocessor}
+
+def make_wiki_word(input):
+    words = re.findall('\w*',input)
+    words = [(i) for i in words if i != ''] # remove blanks
+    #print "words =",words    
+    words = [(string.upper(i[0])+i[1:]) for i in words ] # initial caps
+    #print "words =",words
+    return string.join(words,'')
+
+def make_good_name(form,kb,arg):
+    """If name is absent, then make it by compressing the pretty_name
+    into a WikiWord.  If pretty_name is absent or unsuitable then make
+    a name automatically from the timestamp which is then base64
+    encoded for size (and /+= are suppressed).  Should really include
+    the IP or something too."""
+    assert(arg=='name')
+    the_name = form.get('name','')
+    pretty_name = ''
+    if the_name in ('',None,['']):
+        the_name = make_wiki_word(form.get('pretty_name',[''])[0])
+    if the_name == '':
+        # the time to hundredths of seconds
+        the_bin = long(time.time() * 100.0)
+        # express as 8 bit string
+        the_parts = []
+        while the_bin > 0:
+            the_bin,part = divmod(the_bin,256)
+            the_parts.append(chr(part))
+        the_string = string.join(the_parts,'')
+        b64 = base64.encodestring(the_string)
+        # remove =, / and +
+        b64good = string.replace(b64,'=','')
+        b64good = string.replace(b64good,'/','')
+        b64good = string.replace(b64good,'+','')        
+        # make sure they don't accidentally look like words
+        b64good = 'ZQ'+string.replace(b64good,'+','') 
+        the_name = b64good[:-1] # loose the trailing newline
+    #print "calling name_automatically_if_absent returns",the_name
+    return the_name
+create_individual.http_argument_preprocessors = {'name':
+                                                 make_good_name}
 
 
 def build_slot_specs(own_or_template_slots,form):
