@@ -8,7 +8,7 @@
     <tal:dummy replace="structure sep"/>
     my stuff
     <tal:dummy replace="structure sep"/>
-    <a tal:attributes="href python:'/logout?OnSuccessRedirTo='+request.object_request()">/logout</a> 
+    <a tal:attributes="href python:'/logout?OnSuccessRedirTo='+request.object_request()">logout</a> 
   </tal:dummy>
 
   <tal:dummy 
