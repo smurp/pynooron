@@ -1,0 +1,45 @@
+create_slot('Eats',
+            own_slots=[[':DOMAIN','Food']])
+create_slot('Age',
+            own_slots=[['SLOT-CARDINALITY',1]])            
+create_slot('Weight',
+            own_slots=[['SLOT-CARDINALITY',1]])
+create_slot('BirthTime',
+            own_slots=[['SLOT-CARDINALITY',1]],
+            pretty_name='Birth Time')
+create_slot('Speaks',
+            own_slots=[[':DOMAIN','Language']])
+create_class('Thing')
+create_class('Food',
+             direct_superclasses=['Thing'])
+create_class('Grains',
+             direct_superclasses=['Food'])
+create_class('DairyProducts',
+             direct_superclasses=['Food'])
+create_class('Meats',
+             direct_superclasses=['Food'])
+create_class('Vegetables',
+             direct_superclasses=['Food'])
+create_class('Berry',
+             direct_superclasses=['Food'])
+create_class('Cookie',
+             direct_superclasses=['Food'])
+create_class('Apple',
+             direct_superclasses=['Food'])
+create_class('Toast',
+             direct_superclasses=['Food'])
+create_class('Agent',
+             direct_superclasses=['Thing'])
+create_class('Human',
+             direct_superclasses=['Agent'],
+             template_slots=[['Eats', 'Grains', 'Vegetables', 'DairyProducts', 'Meats'],
+                             ['Speaks', 'English'],
+                            ])
+create_class('Child',
+             direct_superclasses=['Human'])
+create_class('AdultHuman',
+             direct_superclasses=['Human'])
+create_class('Language',
+             direct_superclasses=['Thing'])
+create_individual('English',
+                  direct_types=['Language'])
