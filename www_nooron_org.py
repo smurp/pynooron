@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: www_nooron_org.py,v 1.4 2003/04/16 18:49:06 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: www_nooron_org.py,v 1.5 2003/04/22 16:12:27 nooron Exp $'
 
 
 """
@@ -36,7 +36,7 @@ places = [kr_root+'apps_of/nooron',
           kr_root+'apps_of/kaliya',
           kr_root+'nooron_apps',
           kr_root+'nooron_foundations',
-          'cwd+'/know']
+          cwd+'/know']
 #default_place = cwd+'/pyokbc/tests'
 
 from OkbcOperation import IPListSecurityEngine 
@@ -55,8 +55,9 @@ __main__.__builtins__.nooron_root = \
                     server_port = 80,
                     log_to = sys.stdout,
                     initargs = {'default_place':string.join(places,':')},
+                    knowledge_under = 'know',
                     security_engine=security_engine,
-                    cache_dir = '/tmp/nooron_cache')
+                    cache_dir = '/tmp/www_nooron_org_cache')
 
 
 try:
