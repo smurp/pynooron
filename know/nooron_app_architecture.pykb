@@ -126,7 +126,8 @@ create_class(':THING',
                               'frame_details.html',
                               ],
                              ['actions_for_self',                              
-                              'change_pretty_name.html']])
+                              'change_pretty_name.html',
+                              'put_frame_details.html']])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
                               'class_and_instances.html',
