@@ -1,7 +1,7 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.11 2002/12/18 18:33:00 smurp Exp $')
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.12 2003/01/31 07:57:43 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -139,7 +139,25 @@ create_individual('U00300',direct_types=['faq'],
                   own_slots=[
     ['Q',"What are the 'available garments' listed over at the left?"],
     ['A',"""Garments are the different appearances, disguises, what-have-you
-    that the currently displayed frame can 'wear'.  Each of these
+    that the currently displayed frame can 'wear'.
+    What you see at the left is a tree containing links to the
+    different views (garments) which are available for the
+    object (frame) being viewed.
+    They are organized, first; by the class which provides the garment,
+    and second; by the name of the garment.  Finally, there is a list
+    of links, each of which is a different file format containing the
+    same logical content.  For example, the various graphs generated
+    by Nooron at the outset are all '.dot' files (GraphViz files) and
+    garments which are .dot files natively are also provided in
+    much more user friendly formats: ps (postscript), jpg (JPEG),
+    svg (Scalable Vector Graphics) and pdf (Portable Document Format.)
+    """]])
+
+
+create_individual('U00310',direct_types=['faq'],
+                  own_slots=[
+    ['Q',"How are the 'available garments' implemented?"],
+    ['A',"""    Each of these
     garments is implemented as a NooronPageTemplate or NPT.  They
     are an adaptation of Zope Page Templates.  Each different thing in
     Nooron (KBs, classes, individuals, slots or facets) has a different
@@ -150,7 +168,7 @@ create_individual('U00300',direct_types=['faq'],
     are themselves instances of the nooron_app_wardrobe class.
     Individuals can also have 'garments' associated directly with them
     (by making the name of the garment one of the values on the own_slot
-    'npt_for_self' on the individual in question.
+    'npt_for_self' on the individual in question.)
     """]])
 
 create_individual('U00400',direct_types=['faq'],
@@ -213,19 +231,19 @@ create_individual('U00700',direct_types=['faq'],
      <a href="http://www.opencyc.org/">http://www.opencyc.org/</a>
      """]])
 
-create_individual('U00800',direct_types=['faq'],
-                  own_slots=[
-    ['Q',"What are the top menu links?"],
-    ['A',"""<dl>
-            <dt>(TOP)<dd>take you to the top (or front) of the site
-            <dt>status<dd>the Medusa status screen
-                (Medusa is the python web-server library which Nooron uses)
-            <dt>know<dd>/know a listing of all the knowledgebases on
-            known of by Nooron
-            <dt>templates<dd>a list of all the templates/garments/NooronPageTemplates
-            in this Nooron
-            <dt>code<dd>all the Python source code for Nooron
-            </dl>"""]])
+#create_individual('U00800',direct_types=['faq'],
+#                  own_slots=[
+#    ['Q',"What are the top menu links?"],
+#    ['A',"""<dl>
+#            <dt>(TOP)<dd>take you to the top (or front) of the site
+#            <dt>status<dd>the Medusa status screen
+#                (Medusa is the python web-server library which Nooron uses)
+#            <dt>know<dd>/know a listing of all the knowledgebases on
+#            known of by Nooron
+#            <dt>templates<dd>a list of all the templates/garments/NooronPageTemplates
+#            in this Nooron
+#            <dt>code<dd>all the Python source code for Nooron
+#            </dl>"""]])
             
 create_individual('U00900',direct_types=['faq'],
                   own_slots=[
@@ -277,7 +295,7 @@ put_instance_types(current_kb(),['nooron_app_data'])
 
 create_individual('U01200',direct_types=['faq'],
                   own_slots=[
-    ['Q',"How do I see the graphs Nooron generates?"],
+    ['Q',"How do I render '.dot' files myself?"],
     ['A',"""For the moment glean what you can from
     <a href="http://www.pinkjuice.com/howto/dot.txt">http://www.pinkjuice.com/howto/dot.txt</a>"""]])
 

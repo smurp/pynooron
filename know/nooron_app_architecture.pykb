@@ -121,7 +121,7 @@ create_class('nooron_app_class',
 create_class(':THING',
              template_slots=[['npt_for_self',
                               'frame.html',
-                              'frame_details.html'
+                              'frame_details.html',
                               ]])
 create_class(':CLASS',
              template_slots=[['npt_for_instances',
