@@ -1,33 +1,55 @@
 
 To install Nooron:
 
- 0) Use python 2.1.x 
+ 0) Untar nooron-x.x.x.tgz somewhere you want to run it from.
 
-    This is because Zope 2.5 does not work with python 2.2.
-    Note that Zope is not ultimately required in its
-    entirety.  It is just that a separate distribution of 
-    the Zope Page Template technology has not yet been created 
-    which includes all the goodies from Zope that it requires.  
-    Hints in this direction are given at:
-      http://www.zopelabs.com/cookbook/998065931
-
- 1) Install Medusa 0.5.2 (or later, presumably, if more come along)
-      http://oedipus.sourceforge.net/medusa/
-
- 2) Install Zope 2.5 or later (presumably).
+ 1) Install Zope 2.5.1 (preferably the binary distribution, because it 
+    comes with a Python 2.1.3 suitable for running Nooron)
       http://zope.org/Products/
 
- 3) Untar nooron-x.x.x.tgz somewhere you want to run it from.
+    There are currently two reasons Nooron requires Python 2.1.3:
+      1) PyOKBC (which is included in the Nooron tarball) has a problem
+         with Python 2.2 for some reason.  Give me a hand with this if you can.
+      2) Zope 2.5.1 requires it (and Nooron uses Zope's Page Template code)
+         There are now several ZPT implementations in Python, but the one
+         which comes as *part* of Zope is required because Nooron needs the
+         restricted execution capabilities which only that ZPT implementation
+         seems to offer.  If I have the facts wrong, please tell me.
+
+ 2) Install Medusa 0.5.3 (or later, presumably, if more come along)
+      http://oedipus.sourceforge.net/medusa/
+
+ 3) Install XML-RPC for Python (xmlrpclib)
+      http://www.pythonware.com/products/xmlrpc/
 
  4) Edit nooron.py 
 
     Things you might need or want to do:
-       - change the user from 'smurp'
-       - adjust for your python 2.1 location
-       - adjust for your Zope installation location
+       - change the user from 'smurp' to the uid you want the process to run as
+       - adjust for your python 2.1 location (is it Zope's python?)
+       - adjust for your Zope installation location (for the ZPT code)
        - adjust for your IP and port
+       - adjust for the authentication mechanism you want to use
+       - adjust the cache_dir location (this director MUST exist)
 
- 5) Start it with ./nooron.py from the nooron-x.x.x directory.
+ 5) Start it with ./nooron.py from within your nooron-x.x.x directory.
 
+ 6) If you want to generate all the various output types you need to do more:
+    
+    The docbook transformations (from .dbk to .rtf, .ps, .pdf, .tex) are 
+    supported by the RPM: docbook-utils-0.6.11-2 which seems to come with, at 
+    least RedHat 8.0 and Mandrake 9.x
 
-$Id: INSTALL,v 1.6 2002/12/17 08:34:28 smurp Exp $
+    The .dot file transformations (into .jpg, .svg, .ps) are performed by
+    graphviz-1.8.10 available from http://www.graphviz.org
+
+    The support for .dot will likely be replaced by the use of the GPLed
+    graphing package called VCG.  I encourage its use as much as possible.
+    I had already implemented several graphs with GraphViz when a non-obfuscated
+    version of the VCG package was finally released:
+      http://introspector.sourceforge.net/debian/incoming/vcg_1.30-4.tar.gz
+      http://introspector.sourceforge.net/debian/incoming/vcg_1.30-4_i386.deb
+
+      
+
+$Id: INSTALL,v 1.7 2003/04/28 20:07:44 smurp Exp $
