@@ -78,11 +78,21 @@
                 <title tal:content="pat_slot">pat_slot</title>
                 <span tal:repeat="val vals"
                       tal:omit-tag="">
+
+
+
+                  <para>placeholder</para>
+
                    <para 
-                     tal:define="isin   python:frame_in_kb_p(val);
-                                 ishref python:0 == str(val).find('http')">
-                     <tal:dummy condition="python: not isin and not ishref"
+                     tal:define="isin   python:0;
+                                 ishref python:0">
+                     some data
+
+
+
+                     <tal:dummy condition="python: not (isin or ishref)"
                                 replace="val"/>
+
                      <ulink url=""
                         tal:condition="ishref"
                         tal:content="python: get_frame_pretty_name(val) or
@@ -91,7 +101,13 @@
                      </ulink>
 	             <tal:dummy replace="val" 
                                 tal:condition="isin"/>
+
                    </para>
+
+
+
+
+
                 </span>
               </sect3>
 
@@ -104,6 +120,13 @@
  </article>
 
 <metal:block tal:condition="nothing">
+  para 
+    tal:define="isin   python:frame_in_kb_p(val);
+                ishref python:0 == str(val).find('http')"
+
+
+
+
   The following code is what I wanted to use
   to make links from one pattern to another
   within a docbook instance.  But... ZPT raised 
