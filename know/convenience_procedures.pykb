@@ -87,36 +87,134 @@ del names_and_pretty_names
 
 ####################################################################
 
-def npts_for_self_and_instances_by_parentage(here):
+def npts_by_parentage(direct_types,transformations):
     """
-    [
-     ['Author',
-       [['publications.html'],
-        ['sumut.dot','.jpg','.ps','.pdf']]],
-     ['Person',
-       [['biography.html']]],
-     [':CLASS',
-       [['class_and_instances.html'],
-        ['class_hierarchy.dot','.jpg','.ps','.pdf']]],
-     [':FRAME',
-       [['frame_details.html'],
-        ['frame.html']]],
+    Objectives:
+      1) create a cachable indication of which garments are available
+         for frames with certain direct_types.
+      2) Organize them first by Class then by 'base garment name' then
+         by the extensions which are available for that garment.
+      3) Reduce the amount of work which the caller must do (and hence
+         the amount of coupling between this method and its caller) by
+         including the complete garment identifier (eg. coauthors.dot.jpg)
+
+    ToDo:
+      0) make sure we are called in a fashion that gets here's garments!
+      1) ensure that this method has its results cached [DONE]
+      2) make this recursive (to take proper advantage of caching)
+      3) eliminate duplicate garments (eg. :KB kb.html appears twice)
+         How? Via COLLECTION-TYPE=set, late filtering or by removing
+         the hacky duplicates (in NooronRoot.py) in the first place?  Sigh.
+         Late filtering for now.  [DONE]
+      4) Fix :THING appearing too early, see PyOKBC innards.
+      5) ensure that multiple transformations are applied (eg. .dot.ps.pdf)
+         without redundant ones (.dot.jpg and .dot.ps.jpg) and
+         without circular ones  (.jpg.ps and .jpg.ps.jpg)
+         [DONE] but not in a knowledge-driven way.
+      
+    [[Author,
+       [publications,
+          [.html,publications.html],
+          [.bibtex,publications.bibtex]
+       ],
+       [coauthors,
+          [.html,coauthors.html],
+          [.dot,coauthors.dot],
+          [.jpg,coauthors.dot.jpg],
+       ],
+     ],
+     [Human
+       [family_tree
+          [.html,family_tree.html],
+          [.dot,family_tree.dot]
+          [.jpg,family_tree.dot.jpg]          
+       ],
+       [employment_history,
+          [.html,employment_history.html],
+          [.dot,employment_history.dot],
+          [.jpg,employment_history.dot.jpg],
+       ],
+     ],     
+     ...
     ]
-    """
 
-    npt_for_self = get_slot_values(here,'npt_for_self',
-                                   slot_type=Node._all)[0] or \
-                                   ['frame_details.html',
-                                    'frame.html',
-                                    'kb_ancestry.dot'];
+    The intention is that the resulting menu will look like:
+       Author
+         publications (.html)(.bibtex)
+         coauthors (.html)(.dot)(.jpg)
+       Human
+         family_tree (.html)(.dot)(.jpg)
+         employment_history (.html)(.dot)(.jpg)
+       Frame
+         frame_details (.html)
+         frame (.html)
 
-    if class_p(here):
-        npt_for_instances = get_slot_values(here,'npt_for_instances',
+       """
+
+    # This fully expanded graph of transformations should be provided by
+    # a cached okbc procedure call.
+    if transformations == None:
+        transformations = {'ps':['pdf','jpg'],
+                           'dot':['ps','jpg','svg',['pdf','ps.pdf']]}
+
+    train = [] # filled with passengers and their luggage
+    #print "parentage: ",direct_types
+
+    type_silo = []
+    count = 0
+    all_garmies = []
+    passenger_thing = None
+    for passenger in direct_types:
+        count = count + 1
+        npt_for_self = get_slot_values(passenger,'npt_for_self',
+                                       inference_level=Node._direct,
+                                       slot_type=Node._all)[0]
+        npt_for_instances = get_slot_values(passenger,'npt_for_instances',
+                                            inference_level=Node._direct,
                                             slot_type=Node._template)[0]
-    else:
-        npt_for_instances = []
-    return npt_for_self + npt_for_instances
-register_procedure('npts_for_self_and_instances_by_parentage',
-                   procedure=create_procedure(body=npts_for_self_and_instances_by_parentage))
-del npts_for_self_and_instances_by_parentage
+        suitcase = [] # full of garments with adornments
+        for garmie in npt_for_self + npt_for_instances:
+            if garmie in all_garmies:
+                continue
+            else:
+                all_garmies.append(garmie)
+                
+            adornments = []
+            ext = garmie.split('.')[-1]
+            garmie_name = garmie[:-1 * len(ext) -1]
+            adornments.append([ext,garmie])
+            targs = transformations.get(ext,[])
+            for targ in targs:
+                if type(targ) == type([]):
+                    label = targ[0]
+                    suffix = targ[1]
+                else:
+                    label = targ
+                    suffix = targ
+                adornments.append([label,garmie+'.'+suffix])
+            suitcase.append([garmie_name,adornments])
+            
+        if suitcase:
+            if str(passenger) == ':THING':
+                passenger_thing = [passenger,suitcase]
+            else:
+                train.append([passenger,suitcase])
+        
+        more_types = get_class_superclasses(passenger,
+                                            inference_level=Node._direct)[0]
+        type_silo.extend(more_types)
+        if count == len(direct_types):
+            #print "emptying silo"
+            for another in type_silo:
+                if not (another in direct_types):
+                    #print "  ",passenger,"adding",another
+                    direct_types.append(another)
+    if passenger_thing:
+        train.append(passenger_thing)
+    return train    
+
+npts_by_parentage.read = 1
+register_procedure('npts_by_parentage',
+                   procedure=create_procedure(body=npts_by_parentage))
+del npts_by_parentage
 
