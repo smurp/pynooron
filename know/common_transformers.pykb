@@ -67,7 +67,7 @@ create_individual('transform_dot_2_svg',
 
 create_individual('jpg_extension',
                   direct_types=['FileExtension'],
-                  own_slots=[['MimeType','image/jpg'],
+                  own_slots=[['MimeType','image/jpeg'],
                              ['LiteralExtension','.jpg'],
                              ['ApplicableTransformers']])
 

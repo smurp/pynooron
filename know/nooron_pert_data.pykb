@@ -66,6 +66,8 @@ create_individual('CriteriaAndEvaluationsOntology',
   pretty_name = 'Criteria and Evaluations Ontology',
   direct_types=['Task'],
   own_slots=[['Predecessors','Nooron_0_2_1'],
+             ['References',
+              'http://www.nooron.org/know/nooron_pattern_language/CriteriaAndEvaluations'],
              ['TaskDescription',
               """Create initial ontology Criteria and Evaluations."""],
              ['EstimatedHours',24]])
