@@ -1,9 +1,9 @@
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.1 2002/12/12 14:00:19 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.2 2003/02/25 01:19:02 smurp Exp $'
 
 
-SAFETY = 1 # safety off means that OkbcOperation are run when call()
+SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
 
 if SAFETY:
     print "Notice: OkbcOperation.SAFETY is ON"
@@ -45,6 +45,8 @@ def convert_query_to_okbc_args_and_kwargs(func,form,kb):
             else:
                 if arg in ['own_slots','template_slots']:
                     kwargs[arg] = build_slot_specs(arg,form)
+                elif arg == 'pretty_name':
+                    kwargs[arg] = len(val) and val[0]
                 else:
                     kwargs[arg] = val
         else:
@@ -79,5 +81,5 @@ class OkbcOperation:
             return 'OkbcOperations are not permitted because SAFETY is ON'
         else:
             (posargs,kwargs) = op.get_args_and_kwargs()
-            #print "callDump",posargs,kwargs
+            print "callDump",posargs,kwargs
             return apply(op._func,posargs,kwargs)
