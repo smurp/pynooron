@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.12 2003/04/01 15:22:28 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.13 2003/04/01 19:15:04 smurp Exp $'
 
 import string
 import md5
@@ -45,8 +45,9 @@ def execute_pipeline(input,command,
 
     fh = os.popen(whole_cmd,'r')
     error_lines = fh.readlines()
-    #if error_lines:
-    #    print "ERROR: ",string.join(error_lines,"")
+    #if error_lines:        
+    #    return string.join(error_lines,"")
+        
     fh.close()
     fh = open(terminal_file_name,'r')
     lines = fh.readlines()
