@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.6 2002/12/16 16:44:41 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.7 2003/02/26 12:10:08 smurp Exp $'
 
 import string
 
@@ -29,6 +29,7 @@ class FileSystemKb(AbstractFileKb):
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
+        place = str(kb)
         frame_found_p = 1
         frame = kb._store.get(str(thing))
         #print "looking in",str(kb),"for",thing,
@@ -48,7 +49,7 @@ class FileSystemKb(AbstractFileKb):
                                         direct_types=['mimetype'])
                 return (frame,1)
 
-        if thing in os.listdir(str(kb)):
+        if thing in os.listdir(place):
             #print "found '%s' on disk" % thing
             direct_types = []
             (mime_type,encoding) = mimetypes.guess_type(thing)
@@ -56,7 +57,7 @@ class FileSystemKb(AbstractFileKb):
                 mime_type = mime_type.replace('/','__')
                 direct_types.append(mime_type)
             (file_contents,stats) = conn._lines_and_stats(thing,
-                                                          place=str(kb))
+                                                          place=place)
             own_slots = [['file_contents',file_contents]]
             for (key,val) in stats.items():
                 own_slots.append([key,val])
@@ -68,15 +69,16 @@ class FileSystemKb(AbstractFileKb):
             return (frame,1)
 
         for (ext,mime_type) in pyokbc_mimetypes.items():
-            #possible_kb_filename = os.path.join(str(kb),filename+ext)
+            #possible_kb_filename = os.path.join(place,filename+ext)
             possible_kb_filename = thing + ext
-            if possible_kb_filename in os.listdir(str(kb)):
+            if possible_kb_filename in os.listdir(place):
                 kb_type = kb._kb_types.get(mime_type)
                 if kb_type:
                     #print kb_type,possible_kb_filename,kb._connection,thing
                     
                     frame = kb_type(possible_kb_filename,
                                     connection = kb._connection,
+                                    place = place,
                                     name = thing)
                     #print "caching",frame
                     kb._add_frame_to_store(frame)
