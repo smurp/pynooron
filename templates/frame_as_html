@@ -1,120 +1,49 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html metal:use-macro="container/standard_master/macros/master">
   <head>
-    <title tal:content="here"></title>
+    <title tal:content="string:boo"></title>
   </head>
 
   <body>
 
 <div metal:fill-slot="main">
-<h1 tal:content="here"></h1>
 
-<dl>
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
-<dt tal:content="structure python:get_doc_for(get_frame_type)"></dt>
-<dd tal:content="python:get_frame_type(here)"></dd>
-
-<div tal:condition="python:class_p(here)">
-<dt tal:content="structure python:get_doc_for(get_class_superclasses)"></dt>
-<dd>
-<div tal:define="items python: get_class_superclasses(here)[0]" 
-       tal:condition="items">
-  <ul tal:repeat="item items">
-    <li><a href=""
-           tal:define="url item"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-    </li>
-  </ul>
-</div>
-</dd>
-</div>
-
-<dt tal:content="structure python:get_doc_for(get_frame_pretty_name)"></dt>
-<dd tal:content="python:get_frame_pretty_name(here)"></dd>
-
-<dt tal:content="structure python:get_doc_for(get_instance_types)"></dt>
-<dd>
-<div tal:define="items python: get_instance_types(here,inference_level=ALL)[0]" 
-       tal:condition="items">
-  <ul tal:repeat="item items">
-    <li><a href=""
-           tal:define="url item"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-    </li>
-  </ul>
-</div>
-</dd>
-
-
-
-<dt tal:content="structure python:get_doc_for(get_frame_slots)+'(slot_type=OWN)'"></dt>
-<dd>
-<div tal:define="items python: get_frame_slots(here,
-                                               slot_type=OWN)[0]" 
-       tal:condition="items">
-  <ul tal:repeat="slot items">
-    <li><a href=""
-           tal:define="url slot"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-       <ul tal:define="vals python: get_slot_values(here,slot,
-						    inference_level=ALL,
-                                                    slot_type=OWN)[0]"
-	   tal:condition="vals"
-           tal:repeat="val vals">
-       <li tal:content="val"></li>
-       </ul>
-    </li>
-  </ul>
-</div>
-</dd>
-
-
-<div tal:condition="python:class_p(here)">
-<dt tal:content="structure python:get_doc_for(get_frame_slots)+'(slot_type=TEMPLATE)'"></dt>
-
-<dd>
-<div tal:define="items python: get_frame_slots(here,
-                                               slot_type=TEMPLATE)[0]" 
-       tal:condition="items">
-  <ul tal:repeat="slot items">
-    <li><a href=""
-           tal:define="url slot"
-	   tal:attributes="href url"
-           tal:content="url">click me</a>
-       <ul tal:define="vals python: get_slot_values(here,slot,
-                                                    slot_type=ALL)[0]"
-	   tal:condition="vals"
-           tal:repeat="val vals">
-       <li tal:content="val"></li>
-       </ul>
-    </li>
-  </ul>
-</div>
-</dd>
-</div>
-
-<dt tal:content="structure python:get_doc_for(get_frame_sentences)"></dt>
-<dd>
-       <ul tal:define="sentences python: get_frame_sentences(here)[0]"
-	   tal:condition="sentences"
-           tal:repeat="sentence sentences">
-       <li tal:content="sentence"></li>
-       </ul>
-</dd>
-
-
-<div tal:define="test python:0" tal:condition="test">
-</div>
-
-
+<dl tal:define="slots python:get_slot_values(here,'slot_display_order',slot_type=ALL)[0] 
+or get_frame_slots(here,slot_type=ALL)[0]"
+    tal:condition="slots">
+  <span tal:repeat="slot slots"
+        tal:omit-tag="">
+  <dt><em><a href=""
+         tal:attributes="href slot"
+         tal:content="python:get_frame_pretty_name(slot) or get_frame_name(slot)"></a></em></dt>
+  <dd>
+    <span tal:repeat="val python:get_slot_values(here,slot)[0]"
+          tal:omit-tag="">
+      <span tal:define="show_url python:frame_in_kb_p(val) or len(str(val)) > 4 and str(val)[:4] == 'http'"
+            tal:omit-tag="">
+	<span tal:condition="python:not show_url" 
+              tal:replace="structure val">
+        </span>
+        <span tal:condition="python:show_url"
+              tal:omit-tag="">
+          <a href=""
+             tal:attributes="href val"
+             tal:content="val"></a><br/>
+        </span>
+      </span>
+    </span>
+  </dd>
+  </span>
 </dl>
 
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
 
 <hr>
-$Id: frame_as_html,v 1.4 2002/11/11 22:48:51 smurp Exp $
+$Id: frame_as_html,v 1.5 2002/11/18 23:42:13 smurp Exp $
 </div>
   </body>
 </html>

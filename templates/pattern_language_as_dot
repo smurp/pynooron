@@ -9,7 +9,8 @@
         tal:omit-tag="">
 	<tal:dummy replace="a_pattern"/> 
           [label="<tal:dummy replace="python:get_frame_pretty_name(a_pattern) or get_frame_name(a_pattern)"/>",
-           URL="<tal:dummy replace="a_pattern"/>"];
+           URL="<tal:dummy replace="a_pattern"/>",
+           shape=plaintext];
         <span tal:repeat="a_relative python:get_slot_values(a_pattern,'RelatedPatterns')[0]"
               tal:omit-tag="">
           <hr tal:replace="a_pattern"/> -> <hr tal:replace="a_relative"/>;

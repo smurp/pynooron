@@ -1,5 +1,5 @@
-<!-- $Revision: 1.4 $ -->
-    <a href="/">/</a> 
+<!-- $Revision: 1.5 $ -->
+    <a href="/">/ (site root)</a> 
 <strong>|</strong>
     <a href="/status">/status</a> 
 <strong>|</strong>
@@ -8,6 +8,4 @@
     <a href="/templates/">/templates/</a>
 <strong>|</strong>
     <a href="/code/">/code/</a>
-<strong>|</strong>
-    <a href="/topicmap/">/topicmap/</a>
 

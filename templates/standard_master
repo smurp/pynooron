@@ -1,6 +1,6 @@
 <html metal:define-macro="master">
   <head>
-    <title tal:content="template/title">template/title</title>
+    <title tal:content="python:get_frame_name(here)">template/title</title>
   </head>
 
   <body bgcolor="orange">
@@ -38,16 +38,18 @@
       </td>
     </tr>
 
+    <span tal:condition="python:0" tal:omit-tag="">
     <tr>
       <td bgcolor="blue">name space</td>
       <td bgcolor="lightgreen"
 	  tal:content="structure container/namespace">req</td>
     </tr>
+    </span>
   </tbody>
   </table>
 
 
 <hr>
-$Id: standard_master,v 1.11 2002/11/16 12:00:11 smurp Exp $
+$Id: standard_master,v 1.12 2002/11/18 23:42:13 smurp Exp $
   </body>
 </html>

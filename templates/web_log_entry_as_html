@@ -14,7 +14,8 @@
        tal:condition="items">
   <strong>web log categories:</strong>
   <span tal:repeat="item items">
-    <em tal:condition="python: str(item) != 'web_log_entry'"><a href="booger"
+    <em tal:condition="python: str(item) != 'web_log_entry' and
+                               str(item) != ':INDIVIDUAL'"><a href="booger"
         	   tal:define="url python:get_frame_name(item)"
 		   tal:attributes="href url"
            	   tal:content="url">click me</a></em>
@@ -51,7 +52,7 @@
 </div>
 
 <hr>
-$Id: web_log_entry_as_html,v 1.6 2002/11/14 10:21:39 smurp Exp $
+$Id: web_log_entry_as_html,v 1.7 2002/11/18 23:42:13 smurp Exp $
 </div>
   </body>
 </html>

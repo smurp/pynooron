@@ -9,6 +9,9 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
+<span tal:condition="python:str(here) != 'PRIMORDIAL_KB'"
+      tal:omit-tag="">
+
 <dl tal:define="items python:get_kb_direct_parents(here)" 
        tal:condition="items">
   <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
@@ -35,10 +38,69 @@
   </dd>
 </dl>
 
+</span>
+
 <table border="1"
-       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
+       tal:define="items python:get_kb_classes(kb_local_only_p=1)" 
        tal:condition="items">
-  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_classes)">link</strong></caption>
+  <tr>
+    <th>frame</th>
+    <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
+  </tr>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+<table border="1"
+       tal:define="items python:get_kb_slots(kb_local_only_p=1)" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_slots)">link</strong></caption>
+  <tr>
+    <th>frame</th>
+    <th><a href=":DOMAIN">:DOMAIN</a></th>
+    <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
+  </tr>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="python:here.get_slot_values(item,':DOMAIN')[0]"></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+<table border="1"
+       tal:define="items python:get_kb_facets(kb_local_only_p=1)" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_facets)">link</strong></caption>
+  <tr>
+    <th>frame</th>
+    <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
+  </tr>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+<table border="1"
+       tal:define="items python:get_kb_individuals(kb_local_only_p=1)" 
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_individuals)">link</strong></caption>
+  <tr>
+    <th>frame</th>
+    <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
+  </tr>
   <tr tal:repeat="item items">
     <td><a href="booger"
            tal:define="url python:here.get_frame_name(item)"
@@ -56,7 +118,7 @@
 </div>
 
 <hr>
-$Id: kb_as_html,v 1.7 2002/11/16 12:00:11 smurp Exp $
+$Id: kb_as_html,v 1.8 2002/11/18 23:42:13 smurp Exp $
 </div>
   </body>
 </html>

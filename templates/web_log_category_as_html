@@ -9,6 +9,8 @@
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
 
+<p tal:content="python:get_slot_value(here,':DOCUMENTATION')[0]"></p>
+
 <span  tal:define="items python:get_instance_types(here,inference_level=DIRECT)[0]" 
        tal:condition="items">
   <strong>classes:</strong>
@@ -114,7 +116,7 @@
 </div>
 
 <hr>
-$Id: web_log_category_as_html,v 1.4 2002/11/11 22:48:51 smurp Exp $
+$Id: web_log_category_as_html,v 1.5 2002/11/18 23:42:13 smurp Exp $
 </div>
   </body>
 </html>
