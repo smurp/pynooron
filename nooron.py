@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.31 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.31 2003/03/28 11:05:06 smurp Exp $'
+__version__='$Revision: 1.32 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.32 2003/03/28 11:43:33 smurp Exp $'
 
 
 """
@@ -78,7 +78,7 @@ try:
 except:
     pass
 
-use_monitor = 1
+use_monitor = 0
 if use_monitor:
     monitor_password = None
     monitor_encrypt = 0
