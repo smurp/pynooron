@@ -13,6 +13,8 @@
    action="" 
    tal:attributes="action string:${request/object_request}__save_kb">
 
+<input type="hidden" name="OnSuccessRedirectTo" tal:attributes="value here"/>
+
 <tal:block condition="python: instance_of_p(this_kb,'nooron_app_instance')[0]">
 <tal:block define="gmnadk python:get_procedure('get_my_nooron_app_data_kb');
                    kb_to_save python:gmnadk(here)">
@@ -30,7 +32,7 @@
 <div tal:define="test python:0" tal:condition="test">
 </div>
 <hr>
-$Id: save_data.html,v 1.1 2003/02/26 18:51:57 smurp Exp $
+$Id: save_data.html,v 1.2 2003/04/14 22:51:22 smurp Exp $
 </div>
 
   </body>
