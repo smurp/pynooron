@@ -1,4 +1,5 @@
-<metal:block define-macro="master"><!DOCTYPE html 
+<metal:block define-macro="master"><?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE html 
          PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -107,7 +108,7 @@
   </table>
 
 <hr/>
-$Id: standard_master,v 1.38 2003/07/09 16:39:54 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.39 2003/07/09 16:48:23 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
 <a href="javascript:void(window.open('http://validator.w3.org/check?uri='+escape(document.location.href)))">validate</a>
   </body>
 </html>
