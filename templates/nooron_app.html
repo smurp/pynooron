@@ -7,27 +7,10 @@
   <body>
 
 <div metal:fill-slot="main">
-<h1 tal:content="here"></h1>
+<h1 tal:content="python:get_frame_pretty_name(here) or here"></h1>
 
 
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
-
-
-
-<table border="1"
-       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
-       tal:condition="items">
-  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
-  <tr tal:repeat="item items">
-    <td><a href="link"
-           tal:define="url python:here.get_frame_name(item)"
-	   tal:attributes="href url"
-           tal:content="url">click me</a></td>
-    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
-  </tr>
-</table>
-
-
 
 
 <tal:dummy
@@ -108,7 +91,7 @@
 </div>
 
 <hr>
-$Id: nooron_app.html,v 1.5 2003/04/02 19:43:05 smurp Exp $
+$Id: nooron_app.html,v 1.6 2003/06/19 22:38:30 smurp Exp $
 </div>
   </body>
 </html>

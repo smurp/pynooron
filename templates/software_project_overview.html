@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title tal:content="template/title"></title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="main">
+<h1 tal:content="python:get_frame_pretty_name(here) or here"></h1>
+
+
+<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+
+
+This page summarizes the various aspects of this software project:
+<ul>
+<li><a href="#PERT_Chart">PERT Chart</a></li>
+<li><a href="#Tasks">Tasks</a></li>
+<li><a href="#UseCases">Use Cases</a></li>
+<li><a href="#AgentTypes">Agent Types</a></li>
+</ul>
+
+<a name="PERT_Chart">
+<img tal:attributes="src python:request.object_request()+'__pert_chart.dot.jpg'"/>
+</a>
+
+<tal:dummy
+    define="app_class string:Task">
+
+<a name="Tasks"></a>
+<table border="1">
+  <caption>
+    <strong>
+      <a href=""
+         tal:attributes="href app_class"
+         tal:content="app_class"></a>&nbsp;instances</strong>
+
+  </caption>
+  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+    <td><a href="link"
+           tal:define="url python:here.get_frame_name(instance)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+</tal:dummy>
+
+
+
+
+
+<hr/>
+
+
+
+<tal:dummy
+    define="app_class string:UseCase">
+
+<a name="UseCases"></a>
+<table border="1">
+  <caption>
+    <strong>
+      <a href=""
+         tal:attributes="href app_class"
+         tal:content="app_class"></a>&nbsp;instances</strong>
+
+  </caption>
+  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+    <td><a href="link"
+           tal:define="url python:here.get_frame_name(instance)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+</tal:dummy>
+
+
+
+
+<hr/>
+
+
+
+<tal:dummy
+    define="app_class string:AgentType">
+
+<a name="AgentTypes"></a>
+<table border="1">
+  <caption>
+    <strong>
+      <a href=""
+         tal:attributes="href app_class"
+         tal:content="app_class"></a>&nbsp;instances</strong>
+
+  </caption>
+  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+    <td><a href="link"
+           tal:define="url python:here.get_frame_name(instance)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(instance,'TaskStatus')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+</tal:dummy>
+
+
+
+
+
+
+
+
+
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
+
+<hr>
+$Id: software_project_overview.html,v 1.1 2003/06/19 22:38:30 smurp Exp $
+</div>
+  </body>
+</html>
