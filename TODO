@@ -1,8 +1,14 @@
 
 TODO for Nooron
 
-* required for v0.2.2
-
+* www.noosphere.org
+** update FAQ
+*** how do I see pictures instead of .dot files?
+*** how do I see pdfs instead of .dbk files?
+** OR put alternative .ps .jpg .pdf extensions on garment links
+** debug pattern_language.dbk
+** get transform_dbk_2_ps and transform_dbk_2_pdf working
+** orange and green!
 
 
 * completeness
@@ -25,6 +31,8 @@ TODO for Nooron
 *** put "main" across entire window to permit rendering before trailing
     unsized images are available
 * correctness
+** ensure that slots with a CARDINALITY of 1 only return a single value
+   (specifically, the :DOCUMENTATION slot on frames in the PRIMORDIAL_KB)
 ** what the hell is http://192.168.1.11/__openable_kbs.html doing?
 ** not automatically writing to the correct kb (ie a nooron_data KB)
 ** save_kb (respect kb_local_only_p by telling parent kbs to save too)
@@ -45,7 +53,7 @@ Instances of IntermediateReferent are frames which
 can be bibliographic references, URL's and their titles, 
 or SubjectIndictators ala TopicMaps.
 * come up with better terminology for distinguishing Nooron Apps (equivalent
-to Zope products) from nooron_app_instances (which are the *uses* of those
+to Zope products) from nooron_app_instances (which are the instances of those
 products)
 * create individual directories for nooron_apps, where the _ontology, 
 _wardrobe and garments all live.  (Along with procedures and widgets,
@@ -54,49 +62,18 @@ when they get systematized.)
 * wrap garments in knowledge
 Hmm, two goals: 
   1) keep the garments on-disk as trivially editable files
-  2) make them accessible as frames (for metadata)
+  2) make them appear to be frames (for metadata)
 Solutions:
   1) Come up with some Connection type (or kb-type?) which treats files
   as frames and merges into them any other info discovered in a per-directory
-  .pykb 
+  .pykb or .tell
   2) put all the frame info *into* the garments as leading comments
     (ala Zope's on-disk representation of dtml, python-script, etc. )
   3) look for a .tell file beside each normal content file (e.g. each npt)
 
-* kb interchange
-** make /know/some_kb surfable, /know/some_kb.pykb downloadable
-
-* performance!
-** cache NPT instances (to improve performance)
-** cache intermediate results (types, slots, instances, etc.) on frames
-
-* graphics
-** create kb_as_svg
-** create kb_as_ps
-** examine PIL for graphics generation
-
-* criteria and evaluations
-* user preferences
-** NotSoBasicAuthentication
-
-* communicate the overall vision
-Nooron can grow as suggested because it is not limited by factors
-such as: 
- - a specific rigid knowledge model
- - bound to a particular human language
- etc, etc
-
-
-OOOOLD STUFF:
-
-The 'Roadmap' aspects of this have been superceded by:
-  http://www.noosphere.org/discuss/zwiki/NooronRoadmap
-
-Principles Guiding ToDo Prioritization
-  - scratch my own itch
-  - do tough stuff early (to ensure they affect design early)
-  - release early, and have something usable (to promote participation)
-      (opposed to scratch own itch?)
+[Really should ontologize Analysis so that one can peek into 
+ the analysis associated with any old thing.  Include: goals, proposals, 
+ pros+cons]
 
 TODO (prioritized as above, roughly)
   - deliver templates by version

@@ -12,16 +12,17 @@ create_slot('to_state',
                        [':DOMAIN','Transistion'],
                        [':SLOT-VALUE-TYPE',':State']])
 
+create_slot('StateDescription',
+            pretty_name='State Description',
+            own_slots=[[':DOMAIN','State'],
+                       [':SLOT-VALUE-TYPE',':STRING']])
+
 create_class('fsa_class',
              direct_types=['nooron_app_class'])
 
 create_class('State',
              direct_types=['fsa_class'],
-             template_slots=[['Predecessors'],
-                             ['TaskDescription'],
-                             ['EstimatedHours'],
-                             ['Status'],
-                             ['References']])
+             template_slots=[['StateDescription']])
 
 create_class('Transition',
              direct_types=['fsa_class'],

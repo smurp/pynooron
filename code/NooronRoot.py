@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.23 2002/12/17 08:22:47 smurp Exp $'
+__version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.24 2002/12/18 18:33:00 smurp Exp $'
 
 DEBUG = 0
 
@@ -57,10 +57,11 @@ class NooronRoot:
     def __init__(self,publishing_root=None,
                  server_name=None,server_port=None,log_to=None,
                  use_auth = 0, initargs = {},
+                 site_front='site_front.html',
                  title = ''):
         #self.__dict__ = self.__shared_state
         self._initargs = initargs
-
+        self._site_front = site_front
         # set up
         #print "initargs =",initargs
         os.environ["LOCAL_CONNECTION_PLACE"] = initargs['default_place']
@@ -187,7 +188,7 @@ class NooronRoot:
         meta = meta_kb()
         request.set_object_request('/')
         app = NooronApp.GenericFrame(meta)
-        app.publish(request,None,'site_front.html',extensions=[])
+        app.publish(request,None,self._site_front,extensions=[])
 
 #    def objectValues(self):
 #        return []

@@ -1,7 +1,7 @@
 
 put_direct_parents(['faq_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.10 2002/12/17 09:05:49 smurp Exp $')
+#put_slot_value(current_kb(),'cvs_id','$Id: nooron_faq_data.pykb,v 1.11 2002/12/18 18:33:00 smurp Exp $')
 
 create_individual('U00100',direct_types=['faq'],
                   own_slots=[
@@ -124,20 +124,15 @@ create_individual('U00211',direct_types=['faq'],
     ['A',"""The things which will be done to Nooron ASAP
     are:
     <ul>
-    <li>Performance improvements in the underlying PyOKBC.</li>
-    <li>a web-based knowledge editing interface, initially just
-    for surfers from a single IP address or users with some
-    particular userid.</li>
+    <li>slot constraints</li>
+    <li>a web-based knowledge editing interface, initially with just
+    a primitive security model of some sort, ultimately with
+    capability-based security (or is this a pipe-dream!).</li>
     <li>KBs to be surfable from <code>/know/kb_name/</code> and downloadable
     from <code>/know/kb_name.pykb</code></li>
     <li>Rejigger Nooron Apps so that everything which constitutes the
     core of an App (ontology, wardrobe and garments) will exist in one
-    folder.</li>
-    <li>Implement
-    <a href="/know/nooron_pattern_language/URLsHaveMeaning">URLsHaveMeaning</a>
-    so that server-side generation of 'dot' graphs
-    as JPEGs and docbook as PDF becomes possible.
-    </li>
+    directory on disk.</li>
     </ul>"""]])
 
 create_individual('U00300',direct_types=['faq'],
@@ -161,13 +156,14 @@ create_individual('U00300',direct_types=['faq'],
 create_individual('U00400',direct_types=['faq'],
                   own_slots=[
     ['Q',"Why call them 'garments' instead of 'skins'?"],
-    ['A',"""Well, because in Nooron there are also skins.
+    ['A',"""Well, because in Nooron there might also end up being skins.
     The term 'skin' is usually
     used to talk about a large-scale cosmetic choice that governs
     details such as the colors, positions and sizes of onscreen elements.
     There is room for Nooron to have skins too, but nothing has been
-    done to implement that yet.  The template 'standard_master' can
-    be thought of as the only skin currently available for Nooron.
+    done to implement that yet.  The template
+      <a href="/templates/standard_master">standard_master</a>
+    can be thought of as the only skin currently available for Nooron.
     It is responsible for placing and formatting all the html screens
     you see when surfing a stock Nooron instance.  A future direction
     is for programmatic selection of standard_master or some alternative

@@ -4,10 +4,8 @@ put_instance_types(current_kb(),['nooron_app_wardrobe'])
 
 create_class('State',
              template_slots=[['slot_display_order',
-                              'TaskDescription',
-                              'EstimatedHours',
-                              'Predecessors',
-                              'References']])
+                              'StateDescription'],
+                             ['npt_for_self','fsa_state.html']])
 
 create_class('Transition',
              template_slots=[['slot_display_order',

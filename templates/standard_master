@@ -4,7 +4,7 @@
     <base href="" tal:attributes="href python:server_absolute_url+request.kb_request()+'/'"/>
   </head>
 
-  <body bgcolor="orange">
+  <body bgcolor="#CCCCCC">
   <tal:dummy define="global lay_reader   string:1;
                      global wired_reader string:1;
                      global nerd_reader  string:1"/>
@@ -20,7 +20,7 @@
     </tr>
 
     <tr>
-      <td bgcolor="green" valign="top">
+      <td bgcolor="#CCFFFF" valign="top">
          <div metal:define-slot="available_garments" tal:omit-tag="">
            <tal:dummy replace="structure container/available_garments"/>
          </div>
@@ -67,6 +67,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.20 2002/12/16 16:44:41 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.21 2002/12/18 18:33:01 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
