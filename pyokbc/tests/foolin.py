@@ -38,10 +38,18 @@ if 0:
                                                slot_type=Node._all)[0]
     print "instance types of Beckett:",get_instance_types('SamuelBeckett')
 
-if 1:
+if 0:
     #beck = get_frame_in_kb('SamuelBeckett')[0]
     #print beck._own_slots
     alice = get_frame_in_kb('AliceLidell')[0]
     #print alice._own_slots
     print get_slot_value('AliceLidell',Node._DOCUMENTATION,
                          slot_type=Node._all)[0]
+
+if 1:
+    print_frame(":THING")
+    print_frame(":CLASS")
+    print string.join(get_frame_sentences(":THING")[0],"\n")
+    print get_slot_values(':THING','nonexistent',
+                          number_of_values=1,
+                          slot_type=Node._all)[0]
