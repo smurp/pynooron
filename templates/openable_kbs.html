@@ -1,21 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<tal:dummy define="global document_title string:Openable KBs"/>
-<html metal:use-macro="container/standard_master/macros/master">
-  <head>
-    <title>kb as html</title>
-  </head>
-
-  <body>
-
-<div metal:fill-slot="lay_docs">
-</div>
-
-<div metal:fill-slot="wired_docs">
-</div>
-
-<div metal:fill-slot="nerd_docs">
-</div>
-
+<tal:dummy define="global document_title string:Openable KBs"/><tal:block 
+     metal:use-macro="container/standard_master/macros/master">
 
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
@@ -40,7 +24,6 @@
   </dd>
 </dl>
 
-
 <table border="1"
        tal:define="items python:openable_kbs()"
        tal:condition="items">
@@ -58,15 +41,7 @@
   </tr>
 </table>
 
-
-
-
-<div tal:define="test python:0" tal:condition="test">
-
+<hr/>
+$Id: openable_kbs.html,v 1.6 2003/07/09 20:43:00 smurp Exp $
 </div>
-
-<hr>
-$Id: openable_kbs.html,v 1.5 2003/04/22 17:49:37 smurp Exp $
-</div>
-  </body>
-</html>
+</tal:block>
