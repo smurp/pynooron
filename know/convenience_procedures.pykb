@@ -85,3 +85,38 @@ del names_and_pretty_names
 
 
 
+####################################################################
+
+def npts_for_self_and_instances_by_parentage(here):
+    """
+    [
+     ['Author',
+       [['publications.html'],
+        ['sumut.dot','.jpg','.ps','.pdf']]],
+     ['Person',
+       [['biography.html']]],
+     [':CLASS',
+       [['class_and_instances.html'],
+        ['class_hierarchy.dot','.jpg','.ps','.pdf']]],
+     [':FRAME',
+       [['frame_details.html'],
+        ['frame.html']]],
+    ]
+    """
+
+    npt_for_self = get_slot_values(here,'npt_for_self',
+                                   slot_type=Node._all)[0] or \
+                                   ['frame_details.html',
+                                    'frame.html',
+                                    'kb_ancestry.dot'];
+
+    if class_p(here):
+        npt_for_instances = get_slot_values(here,'npt_for_instances',
+                                            slot_type=Node._template)[0]
+    else:
+        npt_for_instances = []
+    return npt_for_self + npt_for_instances
+register_procedure('npts_for_self_and_instances_by_parentage',
+                   procedure=create_procedure(body=npts_for_self_and_instances_by_parentage))
+del npts_for_self_and_instances_by_parentage
+

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.24 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.24 2002/12/18 18:33:00 smurp Exp $'
+__version__='$Revision: 1.25 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.25 2003/01/07 18:39:15 smurp Exp $'
 
 DEBUG = 0
 
@@ -55,7 +55,10 @@ class NooronRoot:
     uri_root = '/'
     title = ''
     def __init__(self,publishing_root=None,
-                 server_name=None,server_port=None,log_to=None,
+                 server_ip = None,
+                 server_name=None,
+                 server_port=None,
+                 log_to=None,
                  use_auth = 0, initargs = {},
                  site_front='site_front.html',
                  title = ''):
@@ -117,11 +120,12 @@ class NooronRoot:
 
             self._template_root = TemplateManager(self,'templates')
             statusable_handlers = []
-            
-            if server_name != None and server_port and log_to:
+
+            if server_ip != None and server_port and log_to:
                 lg = logger.file_logger(log_to)
-                hs = http_server.http_server(server_name,server_port,
+                hs = http_server.http_server(server_ip,server_port,
                                              logger_object = lg)
+                http_server.fqdn = server_name
                 self.http_server = hs
                 #print dir(hs)
                 statusable_handlers.append(hs)                
@@ -136,7 +140,7 @@ class NooronRoot:
                 self.fsroot = publishing_root
                 fs = filesys.os_filesystem(self.fsroot)
                 ch = code_handler(fs,list_directories = 1,
-                                  serve=['/code','/templates'],
+                                  serve=['/code','/templates','/pyokbc'],
                                   skip=['code/CVS','templates/CVS'])
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                

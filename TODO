@@ -6,6 +6,19 @@ TODO for Nooron
 *** how do I see pictures instead of .dot files?
 *** how do I see pdfs instead of .dbk files?
 ** OR put alternative .ps .jpg .pdf extensions on garment links
+** fix up nooron_app.html
+** get nooron_app.html to be chosen by get_nearest_preferred_npt_for_self
+** segregate garments by the class through which they are inherited:
+
+     nooron_app_instance
+       nooron_app.html
+     :KB
+       kb.html
+       kb_ancestry.dot (.ps) (.jpg)
+     :FRAME
+       frame.html
+       frame_details.html
+
 ** debug pattern_language.dbk
 ** get transform_dbk_2_ps and transform_dbk_2_pdf working
 ** orange and green!

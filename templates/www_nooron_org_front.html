@@ -29,7 +29,7 @@ Nooron is being released early and often.
    ('Python', 'http://www.python.org')]],
 ['green','nooron-0.2.x','publish knowledge',
   [('Medusa', 'http://oedipus.sourceforge.net/medusa/'),
-   ('ZPT',    '')]],
+   ('ZPT',    'http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage')]],
 ['red',  'nooron-0.3.x','manage knowledge',
   [('ThroughTheWebEditing','/know/nooron_pert/ThroughTheWebEditing')]],
 ['red',  'nooron-0.?.x','manage knowledge applications',
@@ -44,8 +44,8 @@ Nooron is being released early and often.
   [('Versioning','')]],
 ['red',  'nooron-0.?.x','be an intellectual tourist',
   [('WorldViews','/know/nooron_pattern_language/WorldViews')]],
-['red',  'nooron-0.?.x','participate in Noosphere',
-  [('PyKQML','')]],
+['red',  'nooron-0.?.x','collaborate globally',
+  [('PyKQML','http://www.noosphere.org/discuss/zwiki/PyKQML')]],
 ];
 color python:0;
 version python:1;
@@ -76,22 +76,32 @@ technology python:3">
 </table>
 </tal:dummy>
 
+<h4>Current Version</h4>
 <p>
 This version (nooron-0.2.2) can be considered a knowledge publishing system.  
 Knowledge in, documents out.  
 
-The knowledge must currently be in a proprietary format (.pykb), but any 
-new backends which work with 
+The knowledge must currently be in an unusual format 
+(<a href="/code/pyokbc/PyKb.py">.pykb</a>), 
+but any new 
 <a href="http://www.noosphere.org/discuss/zwiki/PyOKBC">PyOKBC</a> 
-will work with Nooron.
+backends will work with Nooron.
+It will be relatively easy to write backends for many kinds of 
+knowledge source including (but not limited to):
+RDF, TopicMaps, Cyc, PostgreSQL, Oracle, Bibtex,
+WordNet, PDB, CSV and nearly every other structured source.
 
-It can generate basically any kind of output; directly via 'NooronPageTempates'
-(a slight mutation of ZPT) or thereafter into anything that a command line
+Likewise, Nooron can generate basically any kind of output; 
+HTML, XML and other
+similar formats directly via 'NooronPageTempates'
+(NPT, a slight mutation of 
+<a href="http://www.zope.org/Wikis/DevSite/Projects/ZPT/FrontPage">ZPT</a>) 
+or thereafter into anything that a command line
 utility can generate from the NPT output.  At the moment that includes:
-HTML, GraphViz .dot files, Docbook, Postscript, PDF and JPG, but it
-is completely open-ended and the 
-<a href="/know/nooron_app_architecture/ExternalCommand">external commands</a>
- are, of course, knowledge based.
+GraphViz .dot files, Docbook, Postscript, PDF and JPG, but it
+is completely open-ended because the whole 
+<a href="/know/nooron_pert/transformer_class">transformer</a>
+system is knowledge driven.
 </p>
 
 
@@ -107,7 +117,7 @@ describes the design principles used in Nooron.
 </li>
 
 <li><b><a href="/know/nooron_pert__aon.dot.ps.pdf">The Nooron Project</a></b>
-is being managed using PERT facilities in Nooron.
+is being managed using (at the moment very minimalist) PERT facilities in Nooron.
 
 <li>To learn how to create so-called 'Nooron Apps' see:
 <b><a href="/know/nooron_app_architecture__kb.html">Nooron App Architecture</a></b>.
@@ -150,7 +160,7 @@ which has been replaced by the <a href="/know/nooron_pert">The Nooron Project</a
 </ul>
 
 <hr>
-$Id: www_nooron_org_front.html,v 1.1 2002/12/18 18:33:01 smurp Exp $
+$Id: www_nooron_org_front.html,v 1.2 2003/01/07 18:39:15 smurp Exp $
 </div>
 </body>
 </html>
