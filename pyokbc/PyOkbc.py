@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.42 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.42 2003/04/14 16:09:58 smurp Exp $'
+__version__='$Revision: 1.43 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.43 2003/04/14 18:24:36 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1013,16 +1013,16 @@ class KB(FRAME,Programmable):
             return (details, not inexact_p)
         # :handle get-frame-handle
         details[':name'] = kb.get_frame_name_internal(found_frame)
-        details[':pretty-name'] = kb.get_frame_pretty_name_internal(found_frame)
+        details[':pretty-name'] = kb.get_frame_pretty_name(found_frame)
         # FIXME get_frame_details ignoring :handle, :frame-type and :primitive_p
         details[':frame-type'] = kb.get_frame_type(found_frame)
         #details[':primitive-p'] = kb.primitive_p_internal(frame)
         details[':superclasses'],exact_p,ignore_more =\
-                        kb.get_class_superclasses_internal(found_frame,
+                        kb.get_class_superclasses(found_frame,
                                                            inference_level)
         if not exact_p: inexact_p = 1
         details[':subclasses'],exact_p,ignore_more = \
-                        kb.get_class_subclasses_internal(found_frame,
+                        kb.get_class_subclasses(found_frame,
                                                          inference_level,
                                                          number_of_values)
         if not exact_p: inexact_p = 1
@@ -1062,7 +1062,7 @@ class KB(FRAME,Programmable):
         #details[':template-facets']
         if not exact_p: inexact_p = 1
         details[':sentences'],exact_p,ignore_status = \
-                        kb.get_frame_sentences_internal(found_frame,
+                        kb.get_frame_sentences(found_frame,
                                                         number_of_values,
                                                         kb_local_only_p = kb_local_only_p)
 
