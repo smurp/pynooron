@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.17 2003/04/24 11:30:27 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.18 2003/04/28 14:05:22 smurp Exp $'
 
 
 
@@ -58,6 +58,7 @@ Warning: NooronPageTemplate.SAFETY is OFF
             return sys.modules[module]
 
 SecureModuleImporter = _SecureModuleImporter()
+from AuthenticatedUser import AnonymousUser
 
 class NooronPageTemplate(PageTemplate):
     request = None
@@ -70,13 +71,12 @@ class NooronPageTemplate(PageTemplate):
         self.root = nooron_root
 
     def pt_getContext(self):
-        AU =  len(self.request._auth_info) \
-             and self.request._auth_info[0] or None
         #absolute_url = 'http://'+nooron_root.server_name+nooron_root.
         c = {'template': self,
              'here': self.obj,
              'this': self.obj,
-             'AUTHENTICATED_USER':AU,
+             'AUTHENTICATED_USER':self.request.AUTHENTICATED_USER,
+             'AnonymousUser': AnonymousUser,
              'this_kb':current_kb(),
              'container': self.container,
              'nothing': None,

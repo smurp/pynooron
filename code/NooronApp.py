@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.35 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.35 2003/04/14 22:43:55 smurp Exp $'
+__version__='$Revision: 1.36 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.36 2003/04/28 14:05:22 smurp Exp $'
 
 
 from pyokbc import *
@@ -30,6 +30,8 @@ class GenericFrame(AbstractApp):
     default_npt_name = "frame_as_html"
     app = {}
     def publish(app,request,frame_name,npt_name,extensions=[]):
+        print nooron_root._authenticator
+        request.AUTHENTICATED_USER = nooron_root._authenticator.authenticate(request)
         if frame_name == None:
             frame = app._kb
         else:
@@ -128,12 +130,14 @@ class GenericFrame(AbstractApp):
           some indication of involved user preferences """
         app.calc_base_request(request,frame,npt_name)
         # FIXME must add change_times for parent_kbs and templates
-        canonical_request = "%s\nkb_mtime=%s\ngarment_mtime=%s\n%s\n"%(
-            request.base_request(),
+        canonical_request = string.join([
+            "base_request="+request.base_request(),
+            "garment_mtime=" + \
             str(app._kb.get_kb_parents_maximum_value_for_slot('ModificationTime')),
-            str(template._stats['MTIME']),
-            str(request.split_uri()[2])
-            )
+            "user="+str(request.AUTHENTICATED_USER),
+            "garment_mtime=" + str(template._stats['MTIME']),
+            "%s\n" % str(request.split_uri()[2])
+            ],'\n')
         #print "canonical_request ",canonical_request
         request.set_canonical_request(canonical_request)
 

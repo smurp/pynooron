@@ -1,4 +1,5 @@
 
+from AuthenticatedUser import AnonymousUser
 
 class AuthenticatedUserAuthorizer:
     """Ideally the AuthenticatedUserAuthorizer is capable of denying
@@ -11,8 +12,7 @@ class AuthenticatedUserAuthorizer:
         
     def denied_p(self,op):
         """Deny nothing to the authenticated."""
-        if op._request.AUTHENTICATED_USER:
-            return None
-        else:
+        if op._request.AUTHENTICATED_USER == AnonymousUser:
             return self.message
-
+        else:
+            return None
