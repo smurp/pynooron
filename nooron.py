@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1 
 
-__version__='$Revision: 1.18 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.18 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.19 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.19 2002/11/01 23:47:17 smurp Exp $'
 
 
 """
@@ -14,10 +14,6 @@ import os
 import sys
 import asyncore
 
-#import GW
-#print dir(GW)
-#GW.setTrace('*')
-
 # adjust for your Zope installation
 sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python')
 sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python/Products')
@@ -27,13 +23,11 @@ from NooronRoot import NooronRoot
 
 cwd = os.getcwd()
 
-default_place = cwd+'/know' # FIXME should use os.pathjoin (sp?)
-#default_place = cwd+'/pyokbc/tests' # FIXME should use os.pathjoin (sp?)
+default_place = cwd+'/know' 
+#default_place = cwd+'/pyokbc/tests'
 
 import __main__
 
-
-#if not hasattr( __main__.__builtins__, 'nooron_root' ):
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     #server_name = '192.168.1.11',

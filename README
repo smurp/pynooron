@@ -6,13 +6,9 @@ Learn a bit about the project:
   http://www.noosphere.org/discuss/zwiki/Nooron
   http://www.noosphere.org/background
 
-
 This version depends on:
   Medusa 0.5.2 (or later, presumably, if more come along)
     http://oedipus.sourceforge.net/medusa/
-  The Goose-Works Toolkit
-    http://www.goose-works.org
-    Gooseworks can use MySQL (and Postgresql too, I think)
   Zope Page Templates
     http://www.zope.org/
 
@@ -29,5 +25,5 @@ why this is an error, please tell me.
 
 Shawn Murphy <smurp@emergence.com>
 
-$Id: README,v 1.9 2002/10/23 20:05:03 smurp Exp $
+$Id: README,v 1.10 2002/11/01 23:47:17 smurp Exp $
 

@@ -9,19 +9,42 @@
 <div metal:fill-slot="main">
 <h1 tal:content="here"></h1>
 
+<dl tal:define="items python:get_kb_direct_parents(here)" 
+       tal:condition="items">
+  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
+  <dd>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>, 
+  </span>
+  </dd>
+</dl>
 
+<dl tal:define="items python:get_kb_direct_children(here)" 
+       tal:condition="items">
+  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_children)">link</strong>:
+  <dd>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>
+  </span>
+  </dd>
+</dl>
 
 <table border="1"
-       tal:define="items get_kb_frames" 
+       tal:define="items python:get_kb_frames(kb_local_only_p=1)" 
        tal:condition="items">
-  <caption><strong>get_kb_individuals</strong></caption>
+  <caption><strong tal:content="structure python:get_doc_for(get_kb_frames)">link</strong></caption>
   <tr tal:repeat="item items">
-    <td tal:content="structure python: here.get_frame_name(item)">link</td>
     <td><a href="booger"
            tal:define="url python:here.get_frame_name(item)"
 	   tal:attributes="href url"
-           tal:content="url">click me</a>
-    </td>
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
   </tr>
 </table>
 
@@ -145,7 +168,7 @@
 </div>
 
 <hr>
-$Id: kb_as_html,v 1.5 2002/10/23 20:05:04 smurp Exp $
+$Id: kb_as_html,v 1.6 2002/11/01 23:47:18 smurp Exp $
 </div>
   </body>
 </html>

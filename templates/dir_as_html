@@ -13,7 +13,7 @@
 <table border="1"
        tal:define="items openable_kbs" 
        tal:condition="items">
-  <caption><strong>Dig Deeper (openable_kbs)</strong></caption>
+  <caption><strong tal:content="structure python:get_doc_for(openable_kbs)">link</strong></caption>
   <tr tal:repeat="item items">
     <td tal:content="structure item">item</td>
     <td><a href="booger"
@@ -38,7 +38,7 @@
 </div>
 
 <hr>
-$Id: dir_as_html,v 1.1 2002/10/21 23:50:19 smurp Exp $
+$Id: dir_as_html,v 1.2 2002/11/01 23:47:18 smurp Exp $
 </div>
   </body>
 </html>

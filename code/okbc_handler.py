@@ -1,5 +1,5 @@
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.4 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.5 2002/11/01 23:47:18 smurp Exp $'
 
 
 from pyokbc import *
@@ -69,11 +69,13 @@ class okbc_handler:
         if len(path_list) > 1:
             kb_name = path_list[1]
             #print "opening kb",kb_name
-            kb = open_kb(kb_name)
+            kb = find_kb(kb_name)
+            print "find_kb(",kb_name,") ==> ",kb
+            if not kb:
+                kb = open_kb(kb_name)
             if not kb:
                 request.error(401) # not found
                 return
-            
         if len(path_list) > 2:
             frame_name = path_list[2]
             frame_name = frame_name.replace('+',' ')

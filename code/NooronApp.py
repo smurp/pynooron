@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.10 2002/10/23 20:05:03 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.11 2002/11/01 23:47:18 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -52,16 +52,37 @@ class GenericFrame(AbstractApp):
                                 and app._kb.get_frame_in_kb(frame_name) \
                                 or (None,None)
         if not frame_found_p:
-            NooronApp(self._kb).publish(request)
+            NooronApp(app._kb).publish(request)
             return
         npt_name = app.get_npt_from_url(request) \
-                   or app.get_npt_from_kb(request,frame) \
+                   or app.get_npt_for_subclasses(request,frame) \
+                   or app.get_npt_for_instances(request,frame) \
+                   or app.get_npt_for_self(request,frame) \
                    or app.default_npt_name
+        print "=====================\n",\
+              "publish() npt_name:",npt_name,\
+              "for frame:",frame
         request.effective_query_extend({'with_template': npt_name})
         nooron_root.publish(request,frame)
 
-    def get_npt_from_kb(app,request,frame):
-        """Get the first npt specified by any of this frame's classes."""
+    def get_npt_for_subclasses(app,request,frame):
+        kb = app._kb
+        if not kb.class_p(frame):
+            return None
+        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_subclasses',
+                                                 number_of_values=1,
+                                                 slot_type=Node._all)
+        return vals and vals[0] 
+
+
+    def get_npt_for_instances(app,request,frame):
+        kb = app._kb
+        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_instances',
+                                                 number_of_values=1,
+                                                 slot_type=Node._all)
+        return vals and vals[0] 
+
+    def get_npt_for_self(app,request,frame):
         kb = app._kb
         (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
                                                  number_of_values=1,

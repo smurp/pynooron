@@ -1,20 +1,17 @@
 
 TODO (to get v0.2 released)
-  - figure out how to display a NooronApp instance
-    - app_front_object
-    - app_front_template
-    - app_instance.npt_for_me
 
-  - figure out how to display the nooron_site_config (is it a NooronApp?)
-  - create topicmap_as_svg
-  - create topicmap_as_ps
+* make PRIMORDIAL_KB surfable
+* figure out how to display a NooronApp instance
+** app_front_object
+** app_front_template
+** app_instance.npt_for_me
+* figure out how to display the nooron_site_config (is it a NooronApp?)
 
-  - add 'type' sensitivity to GWApp:
-        def getOccurringTopics(self,scopes = [], type = None):
-        def getOccurrenceResources(self,scopes = [], type = None):
-   X    def getOccurrences(self,scopes = [], type = None):
-        def getPlayedRoles(self,scopes = [], type = None):
-  - send updated GWApp to Jan
+after v0.2
+* cache NPT instances (to improve performance)
+* create topicmap_as_svg
+* create topicmap_as_ps
 
 
 The 'Roadmap' aspects of this have been superceded by:
