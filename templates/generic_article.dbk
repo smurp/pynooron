@@ -19,20 +19,18 @@
                  tal:define="url python:server_absolute_url+request.object_request()"
                  tal:attributes="url url"
                  tal:content="url"></ulink></para>
-        <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
+        <para 
+           tal:content="python:get_slot_value(here,
+                                              ':DOCUMENTATION')[0] or ''">
+        </para>
        </abstract>
 
     </artheader>
 
 
-    <!-- 
-     Iterate the nooron_app_class instances and publish all THEIR instances.
-    -->
-
-
-
   <tal:dummy
-       define="global app_classes python:get_class_instances('nooron_app_class')[0]"/>
+       define="global app_classes 
+                      python:get_class_instances('nooron_app_class')[0]"/>
 
   <tal:dummy
        repeat="app_class app_classes">
@@ -41,10 +39,6 @@
                                                 'slot_display_order',
                                                 slot_type=ALL)[0];
                sort_frames python:get_procedure('sort_frames')">
-    
-
-
-    
 
   <tal:dummy
        condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
@@ -55,8 +49,8 @@
     <section tal:attributes="id python:app_class">
 
        <title 
-          tal:content="python:get_frame_pretty_name(app_class) or
-                              get_frame_name(app_class)">app_class</title>
+          tal:content="python:'The '+str(get_frame_pretty_name(app_class) or
+                              get_frame_name(app_class))+'s'">app_class</title>
        <para
           tal:content="python:get_slot_values(app_class,
                                              ':DOCUMENTATION')[0][0]"></para>
@@ -115,46 +109,3 @@
   </tal:dummy>
 
  </article>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<metal:block tal:condition="nothing">
-http://newbiedoc.sourceforge.net/metadoc/docbook-guide.html
-
-
-<mediaobject>
-   <imageobject>
-      <tal:dummy replace="structure string:<imagedata fileref=&quot;/usr/share/texmf/doc/latex/rotating/cat.eps&quot; 
-                                           format=&quot;eps&quot;>"/>
-   </imageobject>
-</mediaobject>
-
-
-	<date tal:content="python:get_slot_value(here,'ModificationTime')[0]"></date>
-  The following code is what I wanted to use
-  to make links from one pattern to another
-  within a docbook instance.  But... ZPT raised 
-  some zany error about:
-    "Close tag link should be removed"
-  This looks like a bug/mangled feature
-  in ZPT where it tries to do some automagic
-  stuff with the HTML unary LINK tag.
-   (link linkend="booger")youch(/link)
-   (link linkend="" 
-         tal:condition="isin" 
-         tal:content="val" 
-         tal:attributes="linkend val")(/link)
-
-</metal:block>
