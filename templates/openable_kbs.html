@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html metal:use-macro="container/standard_master/macros/master">
+  <head>
+    <title>kb as html</title>
+  </head>
+
+  <body>
+
+<div metal:fill-slot="lay_docs">
+</div>
+
+<div metal:fill-slot="wired_docs">
+</div>
+
+<div metal:fill-slot="nerd_docs">
+</div>
+
+
+<div metal:fill-slot="main">
+<h1 tal:content="here"></h1>
+
+<dl tal:define="docs python:get_slot_value(here,':DOCUMENTATION')[0] or ''"
+    tal:condition="docs">
+  <dt><strong tal:content="structure python:get_doc_for(get_slot_value)+'(here,:DOCUMENTATION)'">link</strong></dt>
+  <dd tal:content="structure docs"></dd>
+</dl>
+
+<dl tal:define="items python:get_kb_direct_parents(here)" 
+       tal:condition="items">
+
+  <dt><strong tal:content="structure python:get_doc_for(get_kb_direct_parents)">link</strong>:
+  <dd>
+  <span tal:repeat="item items">
+    <em><a href="booger"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href python:'../'+url"
+           	   tal:content="url">click me</a></em>, 
+  </span>
+  </dd>
+</dl>
+
+
+<table border="1"
+       tal:define="items python:openable_kbs()"
+       tal:condition="items">
+  <caption><strong tal:content="structure python:get_doc_for(openable_kbs)">link</strong></caption>
+  <tr>
+    <th>frame</th>
+    <th><a href=":DOCUMENTATION">:DOCUMENTATION</a></th>
+  </tr>
+  <tr tal:repeat="item items">
+    <td><a href="booger"
+           tal:define="url python:here.get_frame_name(item)"
+	   tal:attributes="href url"
+           tal:content="url">click me</a></td>
+    <td tal:content="structure python: here.get_slot_value(item,':DOCUMENTATION')[0] or '&nbsp;'">link</td>
+  </tr>
+</table>
+
+
+
+
+<div tal:define="test python:0" tal:condition="test">
+
+</div>
+
+<hr>
+$Id: openable_kbs.html,v 1.1 2002/12/17 08:34:29 smurp Exp $
+</div>
+  </body>
+</html>

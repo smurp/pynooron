@@ -22,9 +22,12 @@ To install Nooron:
  4) Edit nooron.py 
 
     Things you might need or want to do:
+       - change the user from 'smurp'
        - adjust for your python 2.1 location
        - adjust for your Zope installation location
        - adjust for your IP and port
 
  5) Start it with ./nooron.py from the nooron-x.x.x directory.
 
+
+$Id: INSTALL,v 1.6 2002/12/17 08:34:28 smurp Exp $
