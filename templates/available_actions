@@ -1,4 +1,5 @@
 <em>available actions<a href="/templates/available_actions">:</a></em><br/>
+
        <tal:dummy
             define="actions_proc
                       python:get_procedure('actions_for_self_and_instances');

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.26 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.26 2003/01/07 18:35:23 smurp Exp $'
+__version__='$Revision: 1.27 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.27 2003/01/20 14:51:40 smurp Exp $'
 
 
 from pyokbc import *
@@ -170,12 +170,58 @@ class GenericFrame(AbstractApp):
                            mimetype=mimetype)
 
     def choose_an_npt(app,request,frame):
+        if 0: # the debugging version
+            meths = [app.get_preferred_npt_by_parentage,
+                     app.get_npt_for_self,
+                     app.get_npt_hardwired]
+            resp = app.get_npt_from_url(request)
+            if resp:
+                print "npt_from_url"
+                return resp
+            for m in meths:
+                resp = m(request,frame)
+                if resp:
+                    print m.func_name
+                    return resp
+            return app.default_npt_name
+            
         return app.get_npt_from_url(request) \
-               or app.get_nearest_preferred_npt_for_self(request,frame) \
-               or app.get_npt_for_instances(request,frame) \
+               or app.get_preferred_npt_by_parentage(request,frame) \
                or app.get_npt_for_self(request,frame) \
                or app.get_npt_hardwired(request,frame) \
                or app.default_npt_name
+               #or app.get_npt_for_instances(request,frame) \
+               #or app.get_npt_for_self(request,frame) \
+               #or app.default_npt_name
+
+    def get_preferred_npt_by_parentage(app,request,frame,
+                                       preferred=["html"]):
+        """Return the preferred garment returned by the OKBC procedure
+        npts_by_parentage.  The idea here is that
+        the first garment which has one of the preferred extensions is
+        the one which is the default for frame.  This is the same as the
+        first such garment in templates/available_garments because it
+        uses the same underlying okbc procedure."""
+        kb = app._kb
+        direct_types = list(kb.get_instance_types(frame,
+                                             inference_level=Node._direct)[0])
+        print frame,'has direct_types',direct_types
+        the_proc = get_procedure('npts_by_parentage')
+        if not the_proc: return None
+        train = call_procedure(the_proc,arguments=[direct_types,None])
+        for passenger in train:
+            for garmie in passenger[1]:
+                for adornment in garmie[1]:
+                    if adornment[0] in preferred:
+                        return adornment[1]
+        return None
+        
+    def get_npt_for_self(app,request,frame):
+        kb = app._kb
+        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
+                                                 number_of_values=1,
+                                                 slot_type=Node._all)
+        return vals and vals[-1] 
 
     def get_npt_hardwired(app,request,frame):
         kb = app._kb
@@ -183,6 +229,10 @@ class GenericFrame(AbstractApp):
             return 'kb.html'
         else:
             return 'frame.html'
+
+    ################################################################
+    # folowing get_* methods should be evaluated for usefulness
+    ################################################################
 
     def get_nearest_preferred_npt_for_self(app,request,frame,prefer=".html"):
         """Return the first garment listed as npt_for_self on one of
@@ -214,12 +264,6 @@ class GenericFrame(AbstractApp):
                                                      slot_type=Node._all)
         return vals and vals[0] 
 
-    def get_npt_for_self(app,request,frame):
-        kb = app._kb
-        (vals,exact_p,more) = kb.get_slot_values(frame,'npt_for_self',
-                                                 number_of_values=1,
-                                                 slot_type=Node._all)
-        return vals and vals[-1] 
 
 class dummy_producer:
     def more(self):
