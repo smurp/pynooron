@@ -1,10 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html metal:use-macro="container/standard_master/macros/master">
-  <head>
-    <title tal:content="template/title"></title>
-  </head>
-
-  <body>
+<tal:block 
+     metal:use-macro="container/standard_master/macros/master">
 
 <div metal:fill-slot="main">
 <h1 tal:content="python:get_frame_pretty_name(here) or here"></h1>
@@ -102,7 +97,6 @@ This page summarizes the various aspects of this software project:
 </div>
 
 <hr>
-$Id: software_project_overview.html,v 1.2 2003/06/20 19:40:10 smurp Exp $
+$Id: software_project_overview.html,v 1.3 2003/07/09 20:40:21 smurp Exp $
 </div>
-  </body>
-</html>
+</tal:block>
