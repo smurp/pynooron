@@ -15,8 +15,9 @@
 
 <metal:block metal:define-macro="auto_widget">
 <tal:block 
-  define="slot_value_type python:get_slot_values(slot_name,
-                                                 ':SLOT-VALUE-TYPE')[0][0]">
+  define="svt python:get_slot_values(slot_name,
+                                     ':SLOT-VALUE-TYPE')[0];
+          slot_value_type python:svt and str(svt[0]) or ':INTEGER'">
 
   <tr>
     <td valign="top">
@@ -34,35 +35,34 @@
   </tal:block>
 
   <tal:block condition="python:slot_value_type != None and
-                               not (slot_value_type in [':INTEGER',':STRING'])">
+                               not (slot_value_type in [':INTEGER',
+                                                        ':STRING'])">
     <tal:dummy 
       define="slot_cardinality python:get_slot_value(slot_name,
-                                                     ':SLOT-CARDINALITY');
+                                                     ':SLOT-CARDINALITY')[0];
               slot_collection_type python:get_slot_value(slot_name,
-                                                     ':SLOT-COLLECTION-TYPE');
+                                                     ':SLOT-COLLECTION-TYPE')[0];
               select_size python:slot_cardinality != None and 
                                    slot_cardinality > 1 and 5
                                  or slot_collection_type != None and 5
                                  or 1;
-              options python:get_class_instances(slot_value_type)[0]">
-
-
-
-
-    <select 
-       name="" 
-       multiple 
-       size="" 
-       tal:attributes="name slot_name;
-                       size python:len(options) > select_size and select_size
+              options python:get_class_instances(slot_value_type)[0];
+              multiple python:(slot_cardinality != None and 
+                               slot_cardinality > 1 and 'multiple') or 
+                              (slot_collection_type and 'multiple') or '';
+              size python:len(options) > select_size and select_size
                                    or len(options)">
+
+    <tal:dummy 
+        replace="structure string:<select name=&quot;$slot_name&quot; $multiple size=&quot;$size&quot;>"/>
 
       <option 
           tal:repeat="opt options" 
           tal:content="opt">
       </option>
 
-    </select>
+
+    <tal:dummy replace="structure string:</select>"/>
     </tal:dummy>
   </tal:block>
 
@@ -71,8 +71,7 @@
   </tr>
 </tal:block>
 
-<br/>
 </metal:block>
 
 
-$Id: form_master,v 1.1 2002/12/06 20:45:07 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.2 2002/12/07 11:46:55 smurp Exp $ <a href="/templates/form_master">Show Source</a>

@@ -14,17 +14,20 @@ create_slot('AcceptsType',pretty_name='Accepts Type',
             etc.""")
 
 create_slot('AcceptsExtension',pretty_name='Accepts Extension',
-            own_slots=[[':DOMAIN','NooronTransformer']],
+            own_slots=[[':DOMAIN','NooronTransformer'],
+                       [':SLOT-VALUE-TYPE','FileExtension']],
             doc="""This is the list of file extensions (including
             the preceding dots[?]) which this .""")
 
 create_slot('ApplicableTransformers',pretty_name='Applicable Transformers',
-            own_slots=[[':DOMAIN','FileExtension']],
+            own_slots=[[':DOMAIN','FileExtension'],
+                       [':SLOT-VALUE-TYPE','NooronTransformer']],
             doc="""These are the NooronTransformers which are applicable
             to the associated FileExtension.""")
 
 create_slot('LiteralExtension',pretty_name='Literal Extension',
-            own_slots=[[':DOMAIN','FileExtension']],
+            own_slots=[[':DOMAIN','FileExtension'],
+                       [':SLOT-VALUE-TYPE',':STRING']],
             doc="""These are the actual strings which are the
             equivalent extensions represented by the associated
             FileExtension instance.""")
@@ -35,17 +38,21 @@ create_slot('MimeType',pretty_name='MimeType',
             FileExtension.""")
 
 create_slot('EmitsExtension',pretty_name='Emits Extension',
-            own_slots=[[':DOMAIN','NooronTransformer']],
+            own_slots=[[':DOMAIN','NooronTransformer'],
+                       [':SLOT-VALUE-TYPE','FileExtension']],
             doc="""This is the list of file extensions (including
             the preceding dots[?]) which this .""")
 
-create_slot('LiteralExternalCommand',pretty_name='Literal External Command',
-            own_slots=[[':DOMAIN','ExternalCommand']],
+create_slot('LiteralExternalCommand',
+            pretty_name='Literal External Command',
+            own_slots=[[':DOMAIN','ExternalCommand'],
+                       [':SLOT-VALUE-TYPE',':STRING']],
             doc="""This is the actual command string which
             can be used to perform the transformation..""")
 
-create_slot('RequiresPrograms',pretty_name='Requires Program',
-            own_slots=[[':DOMAIN','ExternalCommand']],
+create_slot('RequiresProgram',pretty_name='Requires Program',
+            own_slots=[[':DOMAIN','ExternalCommand'],
+                       [':SLOT-VALUE-TYPE',':STRING']],
             doc="""This is a list of the programs which must
             exist for this transformer to be able to work.""")
 
@@ -58,9 +65,9 @@ create_class('transformer_class',
 
 create_class('FileExtension',
              direct_types=['transformer_class'],
-             template_slots=['MimeType',
-                             'LiteralExtension',
-                             'ApplicableTransformers'],
+             template_slots=[['MimeType',],
+                             ['LiteralExtension',],
+                             ['ApplicableTransformers']],
 	     doc="""Instances of FileExtension represent extension-mimetype
              mappings and include references to the NooronTransformers
              which are applicable to this type in the

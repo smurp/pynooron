@@ -37,6 +37,7 @@ create_individual('FleshOutPrimordialSlots',direct_types=['Task'],
 create_individual('FormGeneration',direct_types=['Task'],
   pretty_name='Form Generation',
   own_slots=[['Predecessors','FleshOutPrimordialSlots'],
+             ['Status','complete'],
              ['TaskDescription',
               """Create very simple forms automatically by
               using widgets based on slot type."""],

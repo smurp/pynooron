@@ -34,6 +34,7 @@ create_slot('npt_for_instances',
             the class on which ntp_for_instances is an occurrence.""")
 
 create_slot('npt_for_self',
+            own_slots=[[':SLOT-VALUE-TYPE',':STRING']],
             doc="""Nooron_app_wardrobes should have npt_for_self
             template_slots on all classes which have specific
             nooron_page_templates for their instances.""")

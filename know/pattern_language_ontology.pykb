@@ -3,11 +3,15 @@ put_direct_parents(['nooron_app_architecture'])
 put_instance_types(current_kb(),['nooron_app_ontology'])
 
 create_slot('AKA',pretty_name='Also Known As',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','set']],
             doc="""This slot contains a list of strings which are
             alternative names for this same notion.""")
 create_slot('Intent',
-            own_slots=[[':DOMAIN','pattern']],            
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""This is the briefest statement of the intention
             of the pattern and serves well as a summary of it.  As
             the 'Gang of Four' say, it 'answers the following
@@ -15,40 +19,56 @@ create_slot('Intent',
             its rationale and intent? What particular design issue
             problem does it address?'""")
 create_slot('Motivation',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""A scenario which illustrates the problem and how
             the pattern solves it.  The scenario provides a contrete
             touchstone for understanding the more abstract treatment
             in latter slots.""")
 create_slot('Applicability',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""This is where the pattern can be applied.""")
 create_slot('Method',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""This is how to implement the pattern.""")
 create_slot('Consequences',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""How does the pattern succeed?  What are the
             results?""")
 create_slot('Variations',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""This multivalued slot contains descriptions of, or
             urls pointing to variations on this pattern.""")
 create_slot('KnownUses',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','set']],
             doc="""This multivalued slot contains either descriptions
             of, frames names or
             urls pointing to known uses of the pattern.""",
 	    pretty_name='Known Uses')
 create_slot('RelatedPatterns',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE','pattern'],
+                       [':SLOT-COLLECTION-TYPE','set']],
             doc="""This multivalued slot contains other patterns which
             are related to this one.  This is a 'Gang of Four' slot
             would be more informative if replaced by the Alexander slots
             'containing patterns' and 'contained patterns.""",
             pretty_name='Related Patterns')
 create_slot('References',
-            own_slots=[[':DOMAIN','pattern']],
+            own_slots=[[':DOMAIN','pattern'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-COLLECTION-TYPE','list']],
             doc="""References to published documents.""")
 create_class('pattern_language_class',
              direct_types=['nooron_app_class'],

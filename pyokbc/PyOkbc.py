@@ -1,5 +1,5 @@
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.23 2002/12/05 16:42:35 smurp Exp $'
+_version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.24 2002/12/07 11:46:55 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -29,8 +29,8 @@ TRACE_HTML = 0
 def trayce(args=[],format=None,indent=None):
     meth = None
     (ppre,pre,inter,post,ppost) = TRACE_HTML and \
-                       ("<table>","<tr><td>","<td>","</tr>","</table>") or \
-                       ("",""," ","","")
+                       ("<table>","<tr><td>","<td>","</tr>","</table>") \
+                       or ("",""," ","","")
     if format:
         mess = format % args
     else:
@@ -83,6 +83,30 @@ def uniquify_specs(list_of_specs):
 # If you have any idea how to do a better job of this, please
 # tell smurp@emergence.com
 #
+
+class UNIT_SLOT:
+    """UNIT_SLOT is the structure which holds the facets and the values
+    for a slot on a particular frame."""
+    def __init__(self,slot_unit,values=[],facets=[]):
+        self._slot_unit = slot_unit
+        if type(values) != type([]): values = [values]        
+        self._values = values
+        if type(facets) != type([]): facets = [facets]
+        self._facets = facets
+    def __repr__(self):
+        return str(self._values)
+    def facets(self):
+        return self._facets
+    def set_facet(self,facet):
+        self._facets = [facet]
+    def set_facets(self,facets):
+        self._facets = facets
+    def values(self):
+        return self._values
+    def set_value(self,value):
+        self._values = [value]
+    def set_values(self,values):
+        self._values = values
 
 class Symbol:
     __allow_access_to_unprotected_subobjects__ = 1 # for ZPT security    
@@ -270,6 +294,8 @@ Node._INTEGER._direct_superclasses.append(Node._NUMBER)
 Node._STRING. _direct_superclasses.append(Node._INDIVIDUAL)
 Node._SYMBOL. _direct_superclasses.append(Node._SEXPR)
 Node._LIST.   _direct_superclasses.append(Node._INDIVIDUAL)
+Node._DOCUMENTATION._own_slots[str(Node._SLOT_VALUE_TYPE)] = \
+               UNIT_SLOT(Node._SLOT_VALUE_TYPE ,[Node._STRING])
 
 def class_dump(which):
     for w in which:
@@ -1831,31 +1857,6 @@ class NullConnection(Connection):
         connection._meta_kb = NullMetaKb('NullMetaKb',
                                          connection=connection)
         connection._default_kb_type = None
-
-class UNIT_SLOT:
-    """UNIT_SLOT is the structure which holds the facets and the values
-    for a slot on a particular frame."""
-    def __init__(self,slot_unit,values=[],facets=[]):
-        self._slot_unit = slot_unit
-        if type(values) != type([]): values = [values]        
-        self._values = values
-        if type(facets) != type([]): facets = [facets]
-        self._facets = facets
-    def __repr__(self):
-        return str(self._values)
-    def facets(self):
-        return self._facets
-    def set_facet(self,facet):
-        self._facets = [facet]
-    def set_facets(self,facets):
-        self._facets = facets
-    def values(self):
-        return self._values
-    def set_value(self,value):
-        self._values = [value]
-    def set_values(self,values):
-        self._values = values
-
 
 ##########################################
 #    Utils
