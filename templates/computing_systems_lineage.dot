@@ -15,12 +15,26 @@
              spawn python:[];
              sway  python:[]">
 
+  // display just the years
+  {  
+      node [shape=plaintext; fontsize=16];
+  <tal:dummy
+       repeat="group groups">
+    <tal:dummy 
+         condition="python:group[0] != '9999'">
+            <tal:dummy         replace="python:group[0]"/>  ->
+    </tal:dummy>
+  </tal:dummy>
+    future
+  }
+
   // group the nodes by year
+  node [fontsize=9];
   <tal:dummy
        repeat="group groups">
   <tal:dummy 
        condition="python:group[0] != '9999'"
-       replace="python:'subgraph year_%s { rank=same;' % group[0]"/>
+       replace="python:'{ rank=same; %s; ' % group[0]"/>
 
       <tal:block repeat="a_system python:group[1]">
 
@@ -70,6 +84,7 @@
   </tal:dummy>
 
 </tal:block>
+
 
 </metal:block>
 </metal:block>
