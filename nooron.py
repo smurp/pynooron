@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.33 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.33 2003/04/01 19:14:08 smurp Exp $'
+__version__='$Revision: 1.34 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.34 2003/04/13 22:32:23 smurp Exp $'
 
 
 """
@@ -33,6 +33,7 @@ default_place = cwd+'/know'
 from OkbcOperation import IPListSecurityEngine 
 security_engine = IPListSecurityEngine(allow=['192.168.1.14',
                                               '24.52.220.100',
+                                              '24.52.220.146',
                                               '208.38.8.158'],
                                        deny=1)
 
@@ -43,7 +44,7 @@ __main__.__builtins__.nooron_root = \
                     #server_name = 'crusty',
                     server_ip = '192.168.1.14',
                     site_front = 'www_nooron_org_front.html',
-                    server_port = 9001,
+                    server_port = 80,
                     log_to = sys.stdout,
                     initargs = {'default_place':default_place},
                     security_engine=security_engine,

@@ -3,13 +3,18 @@
 TODO for Nooron
 
 * possible priorities
-** nested linguistic shell book garment
+** ontologize criteria
+** knowledge-driven security
+** login against favors.org (relation to NotSoBasicAuthentication?)
 ** prepare NxNxNx... argument in knowledge
-** generic frame editing
-** nested linguistic shell graph
 ** get graphics into docbook
 ** create_kb (so new kbs can be created via the web)
 ** put_direct_parents (so pattern languages can be added to linguistic shells)
+** work around recursion problems with ZPT
+*** nested linguistic shell book garment
+*** nested linguistic shell graph
+** implement some new graphics with VCG
+** replace old graphics with VCG
 
 
 ** xtm output, done down deep (if easily, else as garment)
@@ -27,6 +32,7 @@ TODO for Nooron
 *** create_individual.html
 *** save_data.html
 *** save_kb_as.html
+*** put_frame_details
 
 ** high priority forms for okbc operations (in rough priority order)
 **** What intended purpose(s) guide this prioritization?
@@ -48,7 +54,6 @@ delete_frame
 *** copy-frame
 *** delete-frame
 *** put-frame-name
-*** put-frame-details
 *** create-class
 *** expunge-kb
 *** create-slot
