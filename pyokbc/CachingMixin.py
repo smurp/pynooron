@@ -1,14 +1,14 @@
 
-_version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: CachingMixin.py,v 1.3 2003/02/08 00:07:29 smurp Exp $'
+_version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: CachingMixin.py,v 1.4 2003/02/26 18:54:23 smurp Exp $'
 
 
 from __future__ import nested_scopes
 import string
-from Funcs import okbc_readonly_kb_functions
+from Funcs import okbc_readonly_kb_functions, okbc_side_effecting_kb_functions
 
 
-def make_a_wrapper(kb,wrapped_method,name_of_method):
+def make_caching_wrapper(kb,wrapped_method,name_of_method):
     """Return the wrapped_method with a caching method around it."""
     def caching_wrapper(*args,**kwargs):
         allow_caching = kb.allow_caching_p()
@@ -46,6 +46,15 @@ def make_a_procedure_wrapper(kb,wrapped_method,name_of_method):
         return retval
     return procedure_caching_wrapper
 
+def make_cache_clearing_wrapper(kb,wrapped_method,name_of_method):
+    """Return the wrapped method with a cache clearing routine before it."""
+    def cache_clearing_wrapper(*args,**kwargs):
+        kb._cache = {}
+        args = [kb] + list(args)        
+        return apply(wrapped_method,args,kwargs)
+    return cache_clearing_wrapper
+    
+
 class CachingMixin:
     """A class which when mixed into a KB wraps OKBC read operations with
     caching abilities."""
@@ -61,6 +70,10 @@ class CachingMixin:
             else:
                 if hasattr(kb,fname):
                     kb_meth = getattr(kb,fname)
-                    kb.__dict__[fname] = make_a_wrapper(kb,kb_meth.im_func,fname)
+                    kb.__dict__[fname] = make_caching_wrapper(kb,kb_meth.im_func,fname)
                 else:
                     continue
+        for fname in okbc_side_effecting_kb_functions:
+            if hasattr(kb,fname):
+                kb_meth = getattr(kb,fname)
+                kb.__dict__[fname] = make_cache_clearing_wrapper(kb,kb_meth.im_func,fname)

@@ -1,7 +1,7 @@
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.7 2003/02/26 12:10:08 smurp Exp $'
+__version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.8 2003/02/26 18:54:23 smurp Exp $'
 
 import string
 
@@ -22,6 +22,7 @@ class FileSystemKb(AbstractFileKb):
     #_mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
     def __init__(kb,filename,place='',connection=None):
         #print kb._mimetypes
+        kb._typed_cache = {}
         AbstractFileKb.__init__(kb,filename,connection=connection)
         kb._kb_types = {'application/vnd.pyokbc.kb.pykb':PyKb,
                         'application/vnd.pyokbc.kb.tell':TellKb,

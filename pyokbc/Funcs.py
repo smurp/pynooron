@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.12 2002/12/16 21:00:10 smurp Exp $'
+_version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.13 2003/02/26 18:54:23 smurp Exp $'
 
 
 from PyOkbc import *
@@ -9,15 +9,23 @@ LOCAL_CONNECTION = None
 
 __allow_access_to_unprotected_subobjects__ = 1
 
+def _coerce_to_kb(kb):
+    if not kb:
+        kb = current_kb()
+    elif not kb_p(kb):
+        kb = find_kb(kb)
+    return kb
+
 def add_class_superclass(klass,new_superclass,
                          kb=None,kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.add_class_superclass(klass,new_superclass,kb_local_only_p)
 add_class_superclass.enumerator=0
 add_class_superclass.optional=1
 add_class_superclass.read=0
 add_class_superclass.mandatory=0
 add_class_superclass.write=1
+add_class_superclass.causes_side_effects_p=1
 
 # def add_facet_value
 # def add_instance_type
@@ -30,7 +38,7 @@ add_class_superclass.write=1
 # def attach_slot
 
 def call_procedure(procedure,kb=None,arguments=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.call_procedure(procedure,arguments)
 call_procedure.enumerator=1
 call_procedure.optional=1
@@ -40,7 +48,7 @@ call_procedure.write=0
 
 
 def class_p(thing,kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()    
+    kb = _coerce_to_kb(kb)    
     return kb.class_p(thing,kb_local_only_p)
 class_p.enumerator=0
 class_p.optional=0
@@ -87,7 +95,7 @@ def create_class(name,kb=None,
                  handle=None,
                  pretty_name=None,
                  kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.create_frame_internal(name,Node._class,
                                     direct_types=direct_types,
                                     direct_superclasses=direct_superclasses,
@@ -119,7 +127,7 @@ def create_facet(name,
                  handle = None,
                  pretty_name = None,
                  kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.create_frame_internal(name,Node._facet,
                                     direct_types = direct_types,
                                     own_slots = own_slots,
@@ -144,7 +152,8 @@ def create_individual(name,
                       handle = None,
                       pretty_name = None,
                       kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
+    #if not kb: kb = current_kb()
     return kb.create_frame_internal(name,Node._individual,
                                     direct_types = direct_types,
                                     doc = doc,
@@ -158,6 +167,7 @@ create_individual.optional=1
 create_individual.read=0
 create_individual.mandatory=0
 create_individual.write=1
+create_individual.causes_side_effects_p=1
 
 def create_kb(name,kb_type=None,kb_locator=None,
               initargs={},connection=None):
@@ -172,7 +182,7 @@ create_kb.write=1
 # def create_kb_locator
 
 def create_procedure(kb=None,arguments=None,body=None,environment=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.create_procedure(arguments,body,environment)
 create_procedure.enumerator=0
 create_procedure.optional=1
@@ -191,7 +201,7 @@ def create_slot(name,
                 handle = None,
                 pretty_name = None,
                 kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.create_slot_internal(name,
                                    frame_or_nil = frame_or_nil,
                                    slot_type = slot_type,
@@ -267,7 +277,7 @@ find_kb.write=0
 # def frame_has_slot_p
 
 def frame_in_kb_p(thing, kb=None, kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.frame_in_kb_p(thing,kb_local_only_p)
 frame_in_kb_p.enumerator=0
 frame_in_kb_p.optional=1
@@ -281,7 +291,7 @@ frame_in_kb_p.write=0
 
 def get_class_instances(klass,kb=None,inference_level=Node._taxonomic,
                         number_of_values = Node._all, kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_class_instances(klass,inference_level,
                                   number_of_values,kb_local_only_p)
 get_class_instances.enumerator=1
@@ -292,7 +302,7 @@ get_class_instances.write=0
 
 def get_class_subclasses(klass, kb=None, inference_level=Node._taxonomic,
                          number_of_values=Node._all, kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_class_subclasses(klass,inference_level,number_of_values,
                                    kb_local_only_p)
 get_class_subclasses.enumerator=1
@@ -303,7 +313,7 @@ get_class_subclasses.write=0
 
 def get_class_superclasses(klass, kb=None, inference_level=Node._taxonomic,
                            number_of_values=Node._all, kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_class_superclasses(klass,
                                      inference_level=inference_level,
                                      number_of_values=number_of_values,
@@ -322,7 +332,7 @@ get_class_superclasses.write=0
 # def get_frame_handle
 
 def get_frame_in_kb(thing,kb=None,error_p=1,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_in_kb(thing,kb_local_only_p)
 get_frame_in_kb.enumerator=0
 get_frame_in_kb.optional=0
@@ -331,7 +341,7 @@ get_frame_in_kb.mandatory=1
 get_frame_in_kb.write=0
 
 def get_frame_name(frame,kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_name(frame,kb_local_only_p=kb_local_only_p)
 get_frame_name.enumerator=0
 get_frame_name.optional=0
@@ -340,7 +350,7 @@ get_frame_name.mandatory=1
 get_frame_name.write=0
 
 def get_frame_pretty_name(frame,kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_pretty_name(frame,kb_local_only_p=kb_local_only_p)
 get_frame_pretty_name.enumerator=0
 get_frame_pretty_name.optional=0
@@ -351,7 +361,7 @@ get_frame_pretty_name.write=0
 def get_frame_sentences(frame, kb=None, number_of_values=Node._all,
                         okbc_sentences_p=1,value_selector=Node._either,
                         kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_sentences(frame,number_of_values,okbc_sentences_p,
                                   value_selector,kb_local_only_p)
 get_frame_sentences.enumerator=0
@@ -362,7 +372,7 @@ get_frame_sentences.write=0
 
 def get_frame_slots(frame, kb=None, inference_level=Node._taxonomic,
                     slot_type=Node._all, kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_slots(frame,inference_level,slot_type,
                               kb_local_only_p)
 get_frame_slots.enumerator=1
@@ -373,7 +383,7 @@ get_frame_slots.write=0
 
 def get_frame_type(thing, kb=None, inference_level=Node._taxonomic,
                    kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_frame_type(thing,kb_local_only_p)
 get_frame_type.enumerator=0
 get_frame_type.optional=1
@@ -387,7 +397,7 @@ get_frame_type.write=0
 
 def get_instance_types(frame, kb=None, inference_level=Node._taxonomic,
                        number_of_values = Node._all, kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_instance_types(frame, inference_level,
                                  number_of_values, kb_local_only_p)
 get_instance_types.enumerator=1
@@ -399,7 +409,7 @@ get_instance_types.write=0
 def get_kb_classes(kb=None,
                    selector = Node._system_default,
                    kb_local_only_p=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_classes(selector,kb_local_only_p)
 get_kb_classes.enumerator=1
 get_kb_classes.optional=1
@@ -408,7 +418,7 @@ get_kb_classes.mandatory=0
 get_kb_classes.write=0
 
 def get_kb_direct_children(kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_direct_children()
 get_kb_direct_children.enumerator=1
 get_kb_direct_children.optional=1
@@ -417,7 +427,7 @@ get_kb_direct_children.mandatory=0
 get_kb_direct_children.write=0
 
 def get_kb_direct_parents(kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_direct_parents()
 get_kb_direct_parents.enumerator=1
 get_kb_direct_parents.optional=1
@@ -428,7 +438,7 @@ get_kb_direct_parents.write=0
 def get_kb_facets(kb=None,
                   selector = Node._system_default,
                   kb_local_only_p=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_facets_internal(selector, kb_local_only_p)
 get_kb_facets.enumerator=1
 get_kb_facets.optional=1
@@ -437,7 +447,7 @@ get_kb_facets.mandatory=0
 get_kb_facets.write=0
 
 def get_kb_frames(kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_frames(kb_local_only_p)
 get_kb_frames.enumerator=1
 get_kb_frames.manadatory=1
@@ -448,7 +458,7 @@ get_kb_frames.optional=0
 def get_kb_individuals(kb=None,
                        selector = Node._system_default,
                        kb_local_only_p=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_individuals(selector,kb_local_only_p)
 get_kb_individuals.optional=1
 get_kb_individuals.read=1
@@ -461,7 +471,7 @@ get_kb_individuals.write=0
 def get_kb_slots(kb=None,
                  selector = Node._system_default,
                  kb_local_only_p=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_kb_slots_internal(selector,kb_local_only_p)
 get_kb_slots.optional=1
 get_kb_slots.read=1
@@ -474,7 +484,7 @@ get_kb_slots.mandatory=0
 # def get_kbs
 
 def get_procedure(name,kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_procedure(name)
 get_procedure.optional=1
 get_procedure.read=1
@@ -486,7 +496,7 @@ def get_slot_facets(frame,slot,kb=None,
                    inference_level = Node._taxonomic,
                    slot_type = Node._own,
                    kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_slot_facets(frame,slot,
                               inference_level,slot_type,
                               kb_local_only_p)
@@ -504,7 +514,7 @@ def get_slot_value(frame,slot,
                    slot_type = Node._own,
                    value_selector = Node._either,
                    kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_slot_value(frame,slot,
                              inference_level,
                              slot_type,
@@ -523,7 +533,7 @@ def get_slot_values(frame,slot,
                     number_of_values = Node._all,
                     value_selector = Node._either,
                     kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_slot_values(frame,slot,
                               inference_level,
                               slot_type,
@@ -543,7 +553,7 @@ def get_slot_values_in_detail(frame,slot,
                               number_of_values = Node._all,
                               value_selector = Node._either,
                               kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.get_slot_values_in_detail(frame,slot,
                                         inference_level,
                                         slot_type,
@@ -568,7 +578,7 @@ goto_kb.write=1
 # def has_more
 
 def individual_p(thing,kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.individual_p(thing,kb_local_only_p)
 individual_p.enumerator=0
 individual_p.optional=1
@@ -579,7 +589,7 @@ individual_p.write=0
 def instance_of_p(thing,klass,kb=None,                  
                   inference_level=Node._taxonomic,
                   kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.instance_of_p(thing,klass,inference_level,kb_local_only_p)
 instance_of_p.enumerator=0
 instance_of_p.optional=1
@@ -662,7 +672,7 @@ def print_frame(frame,
                 number_of_values = Node._all,
                 value_selector = Node._either,
                 kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.print_frame(frame,slots,facets,stream,inference_level,
                           number_of_values,value_selector,kb_local_only_p)
     return kb.print_frame(frame,
@@ -691,7 +701,7 @@ procedure_p.write=0
 # def put_behavior_values
 
 def put_class_superclasses(klass,new_superclasses,kb=0,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.put_class_superclasses(klass,new_superclasses,kb_local_only_p)
 put_class_superclasses.enumerator=0
 put_class_superclasses.optional=0
@@ -702,19 +712,28 @@ put_class_superclasses.write=1
 # def put_facet_value
 # def put_facet_values
 # def put_frame_details
-# def put_frame_name
+
+def put_frame_name(frame,new_name,kb=0,kb_local_only_p=0):
+    kb = _coerce_to_kb(kb)
+    kb.put_frame_name(frame,new_name,kb_local_only_p)
+put_frame_name.enumerator=0
+put_frame_name.optional=0
+put_frame_name.read=0
+put_frame_name.mandatory=1
+put_frame_name.write=1    
 
 def put_frame_pretty_name(frame,name,kb=0,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.put_frame_pretty_name(frame,name,kb_local_only_p)
 put_frame_pretty_name.enumerator=0
 put_frame_pretty_name.optional=0
 put_frame_pretty_name.read=0
 put_frame_pretty_name.mandatory=1
 put_frame_pretty_name.write=1
+put_frame_pretty_name.causes_side_effects_p=1
 
 def put_instance_types(frame,new_types,kb=0,kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.put_instance_types(frame,new_types,kb_local_only_p)
 put_instance_types.enumerator=0
 put_instance_types.optional=0
@@ -727,7 +746,7 @@ def put_slot_value(frame,slot, value,
                    slot_type=Node._own,
                    value_selector = Node._known_true,
                    kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.put_slot_value(frame,slot,value,slot_type,
                              value_selector,kb_local_only_p)
 put_slot_value.enumerator=0
@@ -741,7 +760,7 @@ def put_slot_values(frame,slot, values,
                     slot_type=Node._own,
                     value_selector = Node._known_true,
                     kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.put_slot_values(frame,slot,values,slot_type,
                               value_selector,kb_local_only_p)
 put_slot_values.enumerator=0
@@ -751,7 +770,7 @@ put_slot_values.mandatory=1
 put_slot_values.write=1
 
 def register_procedure(name,procedure,kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.register_procedure(name,procedure)
 register_procedure.enumerator=0
 register_procedure.optional=1
@@ -772,7 +791,9 @@ register_procedure.write=1
 # def revert_kb
 
 def save_kb(kb=None,error_p=1):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
+    if not kb_p(kb):
+        kb = find_kb(kb)
     return kb.save_kb(error_p=error_p)
 save_kb.enumerator=0
 save_kb.optional=0
@@ -781,7 +802,7 @@ save_kb.mandatory=1
 save_kb.write=1
 
 def save_kb_as(new_name_or_locator,kb=None,error_p = 1):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.save_kb_as(new_name_or_locator,error_p=error_p)
 save_kb_as.enumerator=0
 save_kb_as.optional=0
@@ -793,7 +814,7 @@ save_kb_as.write=1
 # def slot_has_value_p
 
 def slot_p(thing,kb=None,kb_local_only_p=0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.slot_p(thing,kb_local_only_p)
 slot_p.enumerator=0
 slot_p.optional=1
@@ -804,7 +825,7 @@ slot_p.write=0
 def subclass_of_p(subclass,superclass,kb=None,
                   inference_level=Node._taxonomic,
                   kb_local_only_p = 0):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     return kb.subclass_of_p(subclass,superclass,
                             inference_level,kb_local_only_p)
 subclass_of_p.enumerator=0
@@ -815,7 +836,7 @@ subclass_of_p.write=0
 
 def superclass_of_p(superclass,subclass,kb=None,
                     inference_level=Node._taxonomic):
-    if not kb: kb = current_kb()    
+    kb = _coerce_to_kb(kb)    
     return kb.subclass_of_p(superclass,subclass,
                             inference_level,kb_local_only_p)
 superclass_of_p.enumerator=0
@@ -829,7 +850,7 @@ superclass_of_p.write=0
 # def type_of_p
 
 def unregister_procedure(name,kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.unregister_procedure(name)
 unregister_procedure.enumerator=0
 unregister_procedure.optional=1
@@ -846,7 +867,7 @@ unregister_procedure.write=1
 ##########################################
 
 def put_direct_parents(parent_kbs,kb=None):
-    if not kb: kb = current_kb()
+    kb = _coerce_to_kb(kb)
     kb.put_direct_parents(parent_kbs)
 
 
@@ -860,10 +881,13 @@ for lname,lobj in locals().items():
         okbc_functions[lname] = lobj
 
 okbc_readonly_kb_functions = []
+okbc_side_effecting_kb_functions = []
 for fname,func in okbc_functions.items():
     #print type(func)
     #print dir(func)
     #print "checking",fname,
+    if func.__dict__ and func.__dict__.get('causes_side_effects_p',None):
+        okbc_side_effecting_kb_functions.append(fname)
     if func.__dict__ and func.__dict__.get('read',None):
         (args,varargs,varkb) = inspect.getargs(func.func_code)
         #print fname,args

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.14 2003/02/17 18:49:09 smurp Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.15 2003/02/26 18:54:23 smurp Exp $'
 
 import string
 
@@ -47,6 +47,8 @@ def emit_value(val):
 class PyKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'pykb'
     def __init__(self,filename,place='',connection=None,name=None):
+        if not place:
+            print "place NOT SET FOR",filename
         self._place = place
         if name == None:
             name = filename
@@ -149,7 +151,7 @@ class PyKb(AbstractFileKb,CachingMixin):
         got_one = 0
         local_indent_str = indent_str + " " * len(line)
         own_slots = kb.get_frame_slots(frame,slot_type=Node._own)[0]
-        print frame,own_slots
+        #print frame,own_slots
         if ":DOCUMENTATION" in own_slots:
             doc_p = 1
             own_slots.remove(':DOCUMENTATION')
@@ -157,8 +159,6 @@ class PyKb(AbstractFileKb,CachingMixin):
             doc_p = None
         own_slots.sort()
         for slot in own_slots:
-            if str(slot) == 'from_state':
-                print string(frame), "has slot",str(slot)
             #if not kb.instance_of_p(slot,':TRANSIENT_SLOT',
             #                        inference_level=Node._direct)[0]:
             line = line + kb._to_slot_spec(frame,slot,Node._own) \

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.33 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.33 2003/02/14 19:47:06 smurp Exp $'
+__version__='$Revision: 1.34 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.34 2003/02/26 18:54:23 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1463,7 +1463,13 @@ class KB(FRAME,Programmable):
                 parent = open_kb(parent)
                 kb._parent_kbs.append(parent)
 
+    def put_frame_name(kb,frame,new_name,kb_local_only_p=0):
+        kb.put_frame_name_internal(frame,new_name,kb_local_only_p)
+
     def put_frame_pretty_name(kb,frame,name,kb_local_only_p=0):
+        print "put_frame_pretty_name kb =",kb,type(kb),name
+        if type(kb) != type(current_kb()):
+            raise 'ell',name
         kb.put_frame_pretty_name_internal(frame,name,kb_local_only_p)
 
     def put_instance_types(kb,frame,new_types,kb_local_only_p = 0):
@@ -1523,6 +1529,20 @@ class TupleKb(KB,Constrainable):
             warn("_add_frame_to_store duplicate call for "+frame_name)
             # silently pass over any attempted duplication
             pass
+
+    def _rename_frame_in_store(kb,frame,new_name,kb_local_only_p):
+        frame_name = kb.get_frame_name(frame)
+        frame_type = kb.get_frame_type(frame)
+        if not kb._store.has_key(new_name):
+            del kb._store[frame_name]
+            kb._typed_cache[frame_type].remove(frame)
+            frame._name = new_name
+            kb._add_frame_to_store(frame)
+        else:
+            # FIXME should really raise an error
+            raise FrameAlreadyExists(new_name,kb)
+            #warn('_rename_frame_in_store name already in use '+frame_name)
+            #pass
 
     def add_class_superclass(kb,klass,new_superclass,
                              kb_local_only_p = 0):
@@ -1771,6 +1791,15 @@ class TupleKb(KB,Constrainable):
                     new_direct_superclasses.append(new_class)
         klass._direct_superclasses = new_direct_superclasses
 
+    def put_frame_name_internal(kb,frame,new_name,kb_local_only_p=0):
+        (found_frame,
+         frame_found_p) = kb.get_frame_in_kb(frame,
+                                             kb_local_only_p=0)
+        if found_frame:
+            kb._rename_frame_in_store(frame,new_name,kb_local_only_p)
+            return found_frame
+        # FIXME all references to the old name should be changed!
+
     def put_frame_pretty_name_internal(kb,frame,name,kb_local_only_p=0):
         (found_frame,
          frame_found_p) = kb.get_frame_in_kb(frame,
@@ -1859,23 +1888,68 @@ class TupleKb(KB,Constrainable):
 
         return superclass in supers[0]
 
+class PrimordialKb(TupleKb):
+    """Implements synthetic :DOCUMENTATION slot values which are URLs
+    pointing at the OKBC Spec."""
+    def __init__(self,name='',connection=None):
+        null_connection = NullConnection()
+        TupleKb.__init__(self,name,connection=null_connection)
+
+    def get_frame_slots_internal(kb,frame,
+                                 inference_level = Node._taxonomic,
+                                 slot_type = Node._all,
+                                 kb_local_only_p = 0):
+        apkb_gfsi = AbstractPersistentKb.get_frame_slots_internal
+        (list_of_slots,exact_p) = apkb_gfsi(kb,frame,inference_level,
+                                            slot_type,kb_local_only_p)
+        if not (':DOCUMENTATION' in list_of_slots):
+            list_of_slots.append(':DOCUMENTATION')
+        return (list_of_slots,exact_p)
+            
+    def get_slot_values_in_detail_internal(kb,frame,slot,
+                                          inference_level = Node._taxonomic,
+                                          slot_type = Node._own,
+                                          number_of_values = Node._all,
+                                          value_selector = Node._either,
+                                          kb_local_only_p = 0,
+                                          checked_kbs=[],checked_classes=[]):
+        if kb.coerce_to_frame_internal(str(frame)):
+            if str(slot) == ':DOCUMENTATION' and \
+               str(frame) != 'PRIMORDIAL_KB':
+                #FIXME more generally skip things which are not in OKBC Spec
+                # list-of-specs,exact-p,more-status,default-p
+                return ([[get_doc_for(frame),1,0]],1,0,0)
+        apkb_gsvidi = AbstractPersistentKb.get_slot_values_in_detail_internal
+        return apkb_gsvidi(kb,frame,slot,
+                           inference_level,slot_type,
+                           number_of_values,
+                           value_selector,
+                           kb_local_only_p,
+                           checked_kbs,checked_classes)
+
 class AbstractPersistentKb(TupleKb):
-    """PersistentKb implements save_kb and save_kb_as to someplace.."""
+    """PersistentKb implements save_kb and save_kb_as."""
     def save_kb(kb,error_p = 1):
         filename = kb.get_frame_name(kb)
         ext = kb._kb_type_file_extension
-        filename = 'DELETEME_' + filename 
+
+        if 0: # save safety 
+            deleteme = 'DELETEME_'
+            if len(filename) < len(deleteme) or \
+                   filename[0:len(deleteme)] != deleteme:
+                filename = 'DELETEME_' + filename
+        
         if ext != None and ext:
             filename = filename + '.' + ext
-        print "place =",kb._place
         kb._save_to_storage(filename,error_p=error_p)
 
     def save_kb_as(kb,new_name_or_locator,error_p = 1):
-        if type(new_name_or_locator) != type(''):
-            raise 'NotStoragePath', \
-                  str(new_name_or_locator) + " not a storage path"
-        filename = new_name_or_locator
-        kb._save_to_storage(filename,error_p=error_p)
+        meta_kb().put_frame_name(kb,new_name_or_locator)
+        kb.save_kb(error_p)
+        #kb._save_to_storage(new_name_or_locator,error_p=error_p)
+
+    def _get_place(kb):
+        return kb._place
 
     def _print_kb(kb):
         for frame in \
@@ -1928,54 +2002,19 @@ class AbstractPersistentKb(TupleKb):
 
     def _print_kb_own_attributes(kb):
         return ''
-
-class PrimordialKb(TupleKb):
-    """Implements synthetic :DOCUMENTATION slot values which are URLs
-    pointing at the OKBC Spec."""
-    def __init__(self,name='',connection=None):
-        null_connection = NullConnection()
-        TupleKb.__init__(self,name,connection=null_connection)
-
-    def get_frame_slots_internal(kb,frame,
-                                 inference_level = Node._taxonomic,
-                                 slot_type = Node._all,
-                                 kb_local_only_p = 0):
-        apkb_gfsi = AbstractPersistentKb.get_frame_slots_internal
-        (list_of_slots,exact_p) = apkb_gfsi(kb,frame,inference_level,
-                                            slot_type,kb_local_only_p)
-        if not (':DOCUMENTATION' in list_of_slots):
-            list_of_slots.append(':DOCUMENTATION')
-        return (list_of_slots,exact_p)
-            
-    def get_slot_values_in_detail_internal(kb,frame,slot,
-                                          inference_level = Node._taxonomic,
-                                          slot_type = Node._own,
-                                          number_of_values = Node._all,
-                                          value_selector = Node._either,
-                                          kb_local_only_p = 0,
-                                          checked_kbs=[],checked_classes=[]):
-        if kb.coerce_to_frame_internal(str(frame)):
-            if str(slot) == ':DOCUMENTATION' and \
-               str(frame) != 'PRIMORDIAL_KB':
-                #FIXME more generally skip things which are not in OKBC Spec
-                # list-of-specs,exact-p,more-status,default-p
-                return ([[get_doc_for(frame),1,0]],1,0,0)
-        apkb_gsvidi = AbstractPersistentKb.get_slot_values_in_detail_internal
-        return apkb_gsvidi(kb,frame,slot,
-                           inference_level,slot_type,
-                           number_of_values,
-                           value_selector,
-                           kb_local_only_p,
-                           checked_kbs,checked_classes)
-
     
 class AbstractFileKb(AbstractPersistentKb):
     def _file_name(kb):
         return kb._name + '.' + kb._kb_type_file_extension
     
     def _save_to_storage(kb,filename,error_p = 1):
-        print "saving to",filename
-        outfile = open(filename,"w")
+        place = kb._get_place()
+        if place:
+            path = os.path.join(place,filename)
+        else:
+            path = filename
+        print "saving to",path            
+        outfile = open(path,"w")
         outfile.write(kb._print_kb_own_attributes())
         for frame in \
             get_kb_facets(kb,kb_local_only_p=1) + \
