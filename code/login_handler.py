@@ -152,11 +152,15 @@ class login_handler:
         <a href="/">/(root)</a><br/>
         <a href="/login">/login</a><br/>
         <a href="/logout">/logout</a><br/>        
-        <a href="/whoami">/whoami</a><br/>        
+        <a href="/whoami">/whoami</a><br/>
+        <!--
+        %s
+        -->
         </body>
         </html>
         """ % (request.AUTHENTICATED_USER,
-               """ <input type="hidden" name="OnSuccessRedirTo" value="/"/> """)
+               """ <input type="hidden" name="OnSuccessRedirTo" value="/"/> """,
+               string.join(request.header,'\n'))
         request['Content-Length'] = len(content)
         request['Content-Type'] = 'text/html'
         #if request.command == 'GET':
@@ -240,7 +244,8 @@ class friendly_favors_authenticator:
                                                     str(resp))
                 #if resp['group_status'] != 'Active':
                 #    raise 'FriendlyFavorsGroupInactive',\
-                #          "group:%s status:%s" % (group[0],
+                #          "username:%s group:%s status:%s" % (auth_info[0],
+                #                                  group[0],
                 #                                  resp['group_status'])
                 for fromkey,tokey in {'name':'FullName',
                                       'firstname':'FirstName',
