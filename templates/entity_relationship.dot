@@ -1,6 +1,6 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
-// $Id: entity_relationship.dot,v 1.1 2003/07/03 20:59:25 smurp Exp $
+// $Id: entity_relationship.dot,v 1.2 2003/07/03 21:22:55 smurp Exp $
 //  size="7.5,10"
 //  rotate=90
  ratio=compress
@@ -21,19 +21,14 @@
                              or get_frame_name(this_kb))"/>"
   <tal:dummy
      repeat="app_class app_classes">
-        node [shape=box,fontsize=12];
+//        node [shape=box,fontsize=12];
 
 	<tal:dummy replace="python:app_class[0]"/> 
           [label="<tal:dummy replace="python:app_class[1]"/>",
-           shape=box,fontsize=12
-    <tal:block 
-       condition="python:str(get_slot_value(app_class[0],
-                                            'Status')[0]) == 'complete'">
-         style=filled,
-         fillcolor=green,
-    </tal:block>
-      //   URL="<tal:dummy replace="python:abs_kb_url+str(app_class[0])"/>"
-         ];
+           shape=box,
+           fontsize=12,
+           URL="<tal:dummy replace="python:abs_kb_url+str(app_class[0])"/>"
+          ];
 
     edge [arrowhead=none];
     node [shape=ellipse,fontsize=8];
