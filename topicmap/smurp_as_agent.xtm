@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topicMap xmlns="http://www.topicmaps.org/xtm/1.0/"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          id="smurp_as_agent">
+
+<mergeMap xlink:href="file:///home/smurp/src/nooron/topicmap/psi_not_so_basic_auth.xtm"/>
+
+<topic id="smurp_as_agent_tm">
+  <subjectIdentity>
+    <subjectIndicatorRef xlink:href="#smurp_as_agent"/>
+  </subjectIdentity>
+</topic>
+
+<topic id="agent">
+  <subjectIdentity>
+    <subjectIndicatorRef
+      xlink:href="file:///home/smurp/src/nooron/topicmap/psi_not_so_basic_auth.xtm#agent"/>
+  </subjectIdentity>
+  <baseName>
+    <baseNameString>agent</baseNameString>
+  </baseName>
+</topic>
+
+<topic id="person">
+  <subjectIdentity>
+    <subjectIndicatorRef
+      xlink:href="file:///home/smurp/src/nooron/topicmap/psi_not_so_basic_auth.xtm#person"/>
+  </subjectIdentity>
+  <baseName>
+    <baseNameString>person</baseNameString>
+  </baseName>
+</topic>
+
+<topic id="crypted_basic_auth_password">
+  <subjectIdentity>
+    <subjectIndicatorRef
+       xlink:href="file:///home/smurp/src/nooron/topicmap/psi_not_so_basic_auth.xtm#crypted_basic_auth_password"/>
+  </subjectIdentity>
+  <baseName>
+    <baseNameString>crypted_basic_auth_password</baseNameString>
+  </baseName>
+</topic>
+
+
+<topic id="smurp">
+  <baseName>
+    <baseNameString>smurp</baseNameString>
+  </baseName>
+  <baseName>
+    <baseNameString>Shawn Francis Murphy</baseNameString>
+  </baseName>
+  <baseName>
+    <baseNameString>smurp@emergence.com</baseNameString>
+  </baseName>
+  <instanceOf>
+    <topicRef xlink:href="#person"/>
+  </instanceOf>
+  <occurrence>
+    <instanceOf>
+      <topicRef xlink:href="#crypted_basic_auth_password"/>
+    </instanceOf>
+    <resourceData>doZLMLzCJMEw2</resourceData>
+  </occurrence>
+</topic>
+
+
+
+</topicMap>
