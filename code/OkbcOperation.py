@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: OkbcOperation.py,v 1.6 2003/03/08 13:02:12 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: OkbcOperation.py,v 1.7 2003/03/28 07:31:46 smurp Exp $'
 
 
 SAFETY = 0 # safety off means that OkbcOperation are run when call()ed
@@ -184,3 +184,58 @@ replace them with creation attempts in appropriate _data kbs.
             (posargs,kwargs) = op.get_args_and_kwargs()
             print "callDump",posargs,kwargs
             return apply(op._func,posargs,kwargs)
+
+
+class AuthorizedOkbcOperation(OkbcOperation):
+    def call(op,security_engine):
+        if SAFETY:
+            return 'OkbcOperations are not permitted because SAFETY is ON'
+        denied = security_engine.denied_p(op)
+        if not denied:
+            (posargs,kwargs) = op.get_args_and_kwargs()
+            #print "callDump",posargs,kwargs
+            return apply(op._func,posargs,kwargs)
+        else:
+            return denied
+        
+class IPListSecurityEngine:
+    """IPListSecurityEngine allows or denies listed IPs or denies everybody.
+
+    usage:
+      # allow only listed IPs deny everybody else
+      IPListSecurityEngine(allow=['1.1.1.17'],deny=1)
+      
+      # deny listed IPs, allow everybody else
+      IPListSecurityEngine(deny=['1.1.1.17'],allow=1)
+      
+      # deny everybody, tell them why
+      IPListSecurityEngine(deny=1,message="On hiatus!")
+    """
+    def __init__(self,allow=[],deny=[],
+                 message='Not authorized to perform that operation.',
+                 chain = None):
+        self._allow   = allow
+        self._deny    = deny
+        self._message = message
+        self._chain   = chain
+
+    def denied_p(self,op):
+        addr = op._request.channel.addr[0]
+        #print ">'%s'<" % addr, self._allow
+        #if self._allow == 1 or addr in self._allow:
+        the_guy_is_bad = type(self._deny) == type([]) and addr in self._deny
+        the_guy_is_good = type(self._allow) == type([]) and addr in self._allow
+        if the_guy_is_bad:
+            return self._message
+        if the_guy_is_good:
+            return None
+        
+        if self._allow == 1:
+            return None
+        if self._deny == 1:
+            return self._message
+        
+        if self._chain:
+            return self._chain.denied_p(op)
+        
+        return None  # allow ALL otherwise
