@@ -218,8 +218,31 @@ create_class(':DOCUMENTATION',
 
 ## Criterion and its slots
 
+
+create_slot('PromptForDataEntry',
+            own_slots=[[':DOMAIN',':SLOT'],
+                       [':SLOT-VALUE-TYPE',':STRING'],
+                       [':SLOT-CARDINALITY',1]],
+            doc="""This is a slot on slots which contains
+            a text prompt which can be presented to users to help
+            them to understand the kind of value they should enter
+            into the slot.
+            """)
+
+
 create_slot('CriterionAnswersAre',
-            own_slots=[[':DOMAIN','Criterion'],[':SLOT-CARDINALITY',1]],
+            own_slots=[[':DOMAIN','Criterion'],
+                       [':SLOT-VALUE-TYPE',':CLASS'],
+                       ['PromptForDataEntry',
+                        """The type of answers this question expects.
+                        Note that nearly any :CLASS is suitable here.
+                        Eg.  YesNoMaybe means users can answer Yes No or Maybe,
+                        :STRING means people can enter a single line response,
+                        :PARAGRAPH means people can go on at length,
+                        :INTEGER, etc.
+                        
+                        """],
+                       [':SLOT-CARDINALITY',1]],
             doc="""This is the slot on criterion which specifies the range
             of evaluations with respect to the criterion.  The values on this
             slot may be of the following forms: 1) a :CLASS which specifies
@@ -234,7 +257,11 @@ create_slot('CriterionAnswersAre',
 
 create_slot('DomainOfCriterion',
             own_slots=[[':DOMAIN','Criterion'],
-                       [':SLOT-CARDINALITY',1]],
+                       [':SLOT-VALUE-TYPE',':CLASS'],
+                       [':SLOT-COLLECTION-TYPE','set'],
+                       ['PromptForDataEntry',
+                        'Which classes this Criterion is applicable to.'],
+                       [':MINIMUM-SLOT-CARDINALITY',1]],
             doc="""This is the slot on criterion which specifies the domain
             of the criterion, in other words the classes of things which
             the criterion may be applied to.  If the value of this slot is
@@ -248,9 +275,19 @@ create_slot('DomainOfCriterion',
             to self-organize by noting how criteria are used.
             """)
 
+create_slot('PertinentCriteria',
+            pretty_name='Pertinent Criteria',
+            own_slots=[[':DOMAIN',':THING'],
+                       [':INVERSE',':DomainOfCriterion']],
+            doc="""The PertinentCriteria for a class are those which
+            have that class as a value on their DomainOfCriterion slot.""")
+
+
 create_slot('QuestionCriterionAsks',
             own_slots=[[':DOMAIN','Criterion'],
                        [':SLOT-VALUE-TYPE',':STRING'],
+                       ['PromptForDataEntry',
+                        'The question which people will be asked at evaluation time.'],
                        [':SLOT-CARDINALITY',1]],
             doc="""This is the slot on criterion which has as its value
             the question which is asked of people when evaluating something
@@ -271,6 +308,8 @@ create_class('Criterion',
 create_class('CriterionRange',
              doc="""A CriterionRange is a class whose instances are
              the values an evaluation might have.  """)
+
+
 
 ## Evaluation and its slots
 
@@ -410,15 +449,35 @@ create_class('WorldView',
 ### typical ones: average, sum, max, min, stddeviation, mean, mode, median
 ### weird one:    random,  shortest, longest
 
-## some general Criteria (should be moved soon)
-### ClarityOfExpression, Quality, Interest, Accuracy, Brevity, Humourousness
 
 #create_class('ClarityOfExpressionRange',
 #             direct_types=['CriterionRange'],
 #             own_slots=[['Ordered','']])
 
+## some general CriterionRanges
 
-                  
+create_class('StopWaitGo',
+             direct_types=['CriterionRange'])
+create_individual('Stop',direct_types=['StopWaitGo'])
+create_individual('Wait',direct_types=['StopWaitGo'])
+create_individual('Go',direct_types=['StopWaitGo'])
+
+create_class('YesNoMaybe',
+             direct_types=['CriterionRange'])
+create_individual('Maybe',direct_types=['YesNoMaybe'])
+
+create_class('YesNo',
+             direct_types=['CriterionRange'],             
+             direct_superclasses=['YesNoMaybe'])
+create_individual('Yes',direct_types=['YesNo'])
+create_individual('No',direct_types=['YesNo'])
+
+
+
+## some general Criteria (should be moved soon)
+### ClarityOfExpression, Quality, Interest, Accuracy, Brevity, Humourousness
+
+
 create_individual('ClarityOfExpression',
                   own_slots=[['QuestionCriterionAsks','How clearly is this expressed?'],
                              ['DomainOfCriterion',':THING'],
@@ -429,7 +488,12 @@ create_individual('ClarityOfExpression',
 create_individual('Critique',direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','What is the problem with this?'],
                              ['DomainOfCriterion',':THING'],
-                             ['CriterionAnswersAre',':STRING']])
+                             ['CriterionAnswersAre',':PARAGRAPH']])
+
+create_individual('Endorsement',direct_types=['Criterion'],
+                  own_slots=[['QuestionCriterionAsks','What is good about this?'],
+                             ['DomainOfCriterion',':THING'],
+                             ['CriterionAnswersAre',':PARAGRAPH']])
                   
 create_individual('HasVisibility_Critique_ShawnFrancisMurphy',
                   direct_types=['Evaluation'],
