@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.11 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.11 2003/01/20 14:54:08 smurp Exp $'
+__version__='$Revision: 1.12 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.12 2003/02/07 22:53:16 smurp Exp $'
 
 import os
 import sys
@@ -48,7 +48,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         
 
     def test_get_frame_slots_all_gear(self):
-        good = "[':DOCUMENTATION', 'actions_for_instances'," +\
+        #good = "[':DOCUMENTATION', 'actions_for_instances'," +\
+        good = "[':DOCUMENTATION'," +\
                " 'npt_for_instances'," + \
                " 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots('web_log_category',
@@ -68,7 +69,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))    
 
     def test_get_frame_slots_all_web_log_category(self):
-        good = "[':DOCUMENTATION', 'actions_for_instances'," +\
+        #good = "[':DOCUMENTATION', 'actions_for_instances'," +\
+        good = "[':DOCUMENTATION'," +\
                " 'npt_for_instances'," + \
                " 'npt_for_self', 'slot_display_order']"
         resp = list(get_frame_slots('web_log_category',
