@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.1 2002/12/04 18:08:11 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.2 2002/12/04 19:17:28 smurp Exp $'
 
 import string
 import md5
@@ -14,9 +14,12 @@ class CachingPipeliningProducer:
         piper._cachedir = None
         piper._canonical_request = canonical_request
         piper._pipeline = []
-
+        piper._cachekey = None
         piper._done = 0
         piper._file = None
+    def __str__(piper):
+        return string.join(map(str,piper._pipeline),'\n')
+    
     out_buffer_size = 1<<16
     def more(self):
         """Execute the whole pipeline. See composite_producer &
@@ -41,8 +44,9 @@ class CachingPipeliningProducer:
     def cachekey(piper):
         """Return a key into the cache which is a hash (md5sum) of
         the canonical_request."""
-        digest = md5.new(piper._canonical_request).digest()
-        piper._cachekey = '%x' * 16 % tuple(map(ord,tuple(digest)))
+        if piper._cachekey == None:
+            digest = md5.new(piper._canonical_request).digest()
+            piper._cachekey = '%x' * 16 % tuple(map(ord,tuple(digest)))
         return piper._cachekey
     def set_cachedir(piper,cachedir):
         piper._cachedir = cachedir
@@ -50,6 +54,11 @@ class CachingPipeliningProducer:
             p.set_cachedir(cachedir)
     def append_pipe(piper,pipe):
         piper._pipeline.append(pipe)
+        if piper._cachedir:
+            pipe.set_cachedir(piper._cachedir)
+        ck = piper.cachekey()
+        if ck:
+            pipe.set_cachekey(ck)
     def mimetype(piper):
         mt = 'text/plain'
         sections = copy.copy(piper._pipeline)
@@ -98,6 +107,13 @@ class PipeSection:
         pipesection._extension = extension
         pipesection._cachedir = cachedir
         pipesection._cachekey = cachekey
+        pipesection._producer = producer
+    def __str__(self):
+        return "<PipeSection: %s %s %s >" % (
+            str(self._command or self._producer),
+            self._mimetype,
+            self._extension)
+        
     def set_cachedir(pipesection,cachedir):
         pipesection._cachedir = cachedir
     def set_cachekey(pipesection,cachekey):

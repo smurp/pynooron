@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.17 2002/12/04 18:08:11 smurp Exp $'
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.18 2002/12/04 19:17:28 smurp Exp $'
 
 #import GW
 #from GWApp import GWApp
@@ -51,7 +51,6 @@ class GenericFrame(AbstractApp):
     default_npt_name = "frame_as_html"
     app = {}
     def publish(app,request,frame_name,npt_name,extensions=[]):
-        print "we ARE getting to here"
         
         if frame_name == None:
             frame = app._kb
@@ -70,18 +69,24 @@ class GenericFrame(AbstractApp):
               "for frame:",frame
 
         cp = CachingPipeliningProducer()
-        print "request.uri",request.uri
         cp.set_canonical_request(request.uri)
+        cp.set_cachedir('/tmp/nooron_cache')
+
         dotsplit = npt_name.split('.')
         prev_ext = dotsplit[-1]
+        extensions.pop(0) # only required so long as okbc_handler prepends npt
+        spigot = app.get_pipe_section_for_spigot(prev_ext)
+        if spigot:
+            cp.append_pipe(spigot)
         for this_ext in extensions:
-            print this_ext
             pipesection = app.get_pipe_section(from_ext=prev_ext,
                                                to_ext=this_ext)
             prev_ext = this_ext
             cp.append_pipe(pipesection)
         request['Content-Type'] = cp.mimetype()
+
         cmds = cp.source_and_commands()[1]
+        print cp.source_and_commands()
         resp = cmds or 'no commands'
         request.push(resp)
         request.done()
@@ -90,7 +95,7 @@ class GenericFrame(AbstractApp):
                          from_ext=None,from_type=None,
                          to_ext=None,to_type=None):
         """Find a frame for a NooronTransformer which goes from
-        the from_ situation to the to_ situations.  There are two
+        the from_ situation to the to_ situation.  There are two
         well-know-name forms that this implementation relies on
         (though sufficient information exists on the frames for
         the well-knownedness to merely be for efficiency).
@@ -101,10 +106,18 @@ class GenericFrame(AbstractApp):
         extension_frame = '%s_extension' % to_ext
         mimetype=get_slot_value(extension_frame,'MimeType')[0]
         transformer_frame = 'transform_%s_2_%s' % (from_ext,to_ext)
-        command=get_slot_value(transformer_frame,'Command')[0]
+        command=get_slot_value(transformer_frame,'LiteralExternalCommand')[0]
         return PipeSection(command=command,
                            extension=to_ext,
-                           mimetype=mimetype)        
+                           mimetype=mimetype)
+
+    def get_pipe_section_for_spigot(app,to_ext,producer=None):
+        extension_frame = '%s_extension' % to_ext
+        mimetype=get_slot_value(extension_frame,'MimeType')[0]        
+        return PipeSection(producer=None,
+                           extension=to_ext,
+                           mimetype=mimetype)
+        
         
 
     def choose_an_npt(app,request,frame):

@@ -4,7 +4,8 @@ put_direct_parents(['transformer_ontology'])
 ##########################################################
 
 create_individual('ps_extension',
-                  own_slots=[['MimeType','application/postscript']
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','application/postscript'],
                              ['LiteralExtension','.ps'],
                              ['ApplicableTransformers',
                               'transform_ps_2_pdf']])
@@ -17,6 +18,7 @@ create_individual('transform_ps_2_pdf',
 ##########################################################
 
 create_individual('dot_extension',
+                  direct_types=['FileExtension'],                  
                   own_slots=[['MimeType','application/x-graphviz'],
                              ['LiteralExtension','.dot'],
                              ['ApplicableTransformers',
@@ -42,6 +44,7 @@ create_individual('transform_dot_2_svg',
 ##########################################################
 
 create_individual('jpg_extension',
+                  direct_types=['FileExtension'],
                   own_slots=[['MimeType','image/jpg'],
                              ['LiteralExtension','.jpg'],
                              ['ApplicableTransformers']])
@@ -49,6 +52,7 @@ create_individual('jpg_extension',
 ##########################################################
 
 create_individual('svg_extension',
+                  direct_types=['FileExtension'],
                   own_slots=[['MimeType','application/svg'],
                              ['LiteralExtension','.svg'],
                              ['ApplicableTransformers',
@@ -57,6 +61,7 @@ create_individual('svg_extension',
 ##########################################################
 
 create_individual('pdf_extension',
+                  direct_types=['FileExtension'],
                   own_slots=[['MimeType','application/pdf'],
                              ['LiteralExtension','.pdf'],
                              ['ApplicableTransformers',

@@ -4,7 +4,6 @@
 #put_direct_parents(['nooron_app_architecture'])
 #put_instance_types(current_kb(),['nooron_app_ontology'])
 
-
 create_slot('AcceptsType',pretty_name='Accepts Type',
             own_slots=[[':DOMAIN','NooronTransformer'],
                        [':SLOT-VALUE-TYPE',':CLASS']],
@@ -14,19 +13,28 @@ create_slot('AcceptsType',pretty_name='Accepts Type',
             nooron_app, pattern_language_app, application/postscript,
             etc.""")
 
-create_slot('EmitsType',pretty_name='Emits Type',
-            own_slots=[[':DOMAIN','NooronTransformer']],
-            doc="""This is the type of the output which the transformer
-            is capable of generating, such as :KB, :FRAME,
-            nooron_app, pattern_language_app, application/postscript,
-            etc.""")
-
-create_slot('AcceptsExtensions',pretty_name='Accepts Extensions',
+create_slot('AcceptsExtension',pretty_name='Accepts Extension',
             own_slots=[[':DOMAIN','NooronTransformer']],
             doc="""This is the list of file extensions (including
             the preceding dots[?]) which this .""")
 
-create_slot('EmitsExtensions',pretty_name='Emits Extensions',
+create_slot('ApplicableTransformers',pretty_name='Applicable Transformers',
+            own_slots=[[':DOMAIN','FileExtension']],
+            doc="""These are the NooronTransformers which are applicable
+            to the associated FileExtension.""")
+
+create_slot('LiteralExtension',pretty_name='Literal Extension',
+            own_slots=[[':DOMAIN','FileExtension']],
+            doc="""These are the actual strings which are the
+            equivalent extensions represented by the associated
+            FileExtension instance.""")
+
+create_slot('MimeType',pretty_name='MimeType',
+            own_slots=[[':DOMAIN','NooronTransformer']],
+            doc="""This is the mimetype of the associated
+            FileExtension.""")
+
+create_slot('EmitsExtension',pretty_name='Emits Extension',
             own_slots=[[':DOMAIN','NooronTransformer']],
             doc="""This is the list of file extensions (including
             the preceding dots[?]) which this .""")
@@ -36,7 +44,7 @@ create_slot('LiteralExternalCommand',pretty_name='Literal External Command',
             doc="""This is the actual command string which
             can be used to perform the transformation..""")
 
-create_slot('ProgramsRequired',pretty_name='Programs Required',
+create_slot('RequiresPrograms',pretty_name='Requires Program',
             own_slots=[[':DOMAIN','ExternalCommand']],
             doc="""This is a list of the programs which must
             exist for this transformer to be able to work.""")
@@ -48,21 +56,15 @@ create_class('transformer_class',
              YAGNI (you aren't going to need it) suggest that it be
              removed.""")
 
-create_class('Acceptor',
+create_class('FileExtension',
              direct_types=['transformer_class'],
-             template_slots=[['AcceptsType'],['AcceptsExtensions']],
-	     doc="""Subclasses of transformer are any kind
-             of thing which transforms something from one
-             representation to another.  Garments, Okbc PROCEDUREs
-             and external commands are all examples..""")
-
-create_class('Emitter',
-             direct_types=['transformer_class'],
-             template_slots=[['EmitsType'],['EmitsExtensions']],
-	     doc="""Subclasses of transformer are any kind
-             of thing which transforms something from one
-             representation to another.  Garments, Okbc PROCEDUREs
-             and external commands are all examples..""")
+             template_slots=['MimeType',
+                             'LiteralExtension',
+                             'ApplicableTransformers'],
+	     doc="""Instances of FileExtension represent extension-mimetype
+             mappings and include references to the NooronTransformers
+             which are applicable to this type in the
+             ApplicableTransformers slot..""")
 
 create_class('NooronTransformer',
              direct_types=['transformer_class'],
@@ -72,25 +74,12 @@ create_class('NooronTransformer',
              representation to another.  Garments, Okbc PROCEDUREs
              and external commands are all examples..""")
 
-create_class('Garment',
-             doc="""Garments are weird because they are presumed
-             to be laid over actual NPTs which are, through some
-             magic, appearing as frames.  Because of this there
-             is no need to explicitly name the npt file which
-             an instance of this class refers to.  It is being
-             directly extended, because it is an existing frame
-             with the same name.  THIS IS TRICKERY AND SHOULD BE FIXED.""",
-             direct_types=['transformer_class'],
-             direct_superclasses=['NooronTransformer'],
-             template_slots=[['AcceptsType'],
-                             ['EmitsType'],])
-
 create_class('ExternalCommand',
              direct_types=['transformer_class'],
              direct_superclasses=['NooronTransformer'],
-             template_slots=[['AcceptsType'],
-                             ['EmitsType'],
-                             ['ProgramsRequired'],
+             template_slots=[['AcceptsExtension'],
+                             ['EmitsExtension'],
+                             ['RequiresProgram'],
                              ['LiteralExternalCommand'],],
              doc="""ExternalCommands are wrappers for unix pipeline
              commands which accept standard input and emit standard
