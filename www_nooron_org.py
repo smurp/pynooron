@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: www_nooron_org.py,v 1.2 2003/04/13 23:03:11 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: www_nooron_org.py,v 1.3 2003/04/14 22:42:02 smurp Exp $'
 
 
 """
@@ -38,7 +38,7 @@ security_engine = IPListSecurityEngine(allow=['192.168.1.14',
                                        deny=1)
 
 import __main__
-
+__main__.__builtins__.wedge_string = '__'
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     #server_name = 'crusty',
