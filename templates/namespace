@@ -18,12 +18,14 @@
   <dt>request</dt>
   <dd tal:content="request"></dd>
 
+<div tal:define="test python:0" tal:condition="test">
   <dt>user</dt>
   <dd tal:content="user"></dd>
+</div>
 
   <dt>modules</dt>
   <dd tal:content="modules"></dd>
 
 </dl>
 <hr>
-$Id: namespace,v 1.5 2002/08/12 22:48:33 smurp Exp $
+$Id: namespace,v 1.6 2002/10/16 19:29:50 smurp Exp $

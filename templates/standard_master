@@ -9,7 +9,7 @@
     <tr>
       <td bgcolor="white"><a href="http://www.noosphere.org/discuss/zwiki/Nooron">Nooron<a/></td>
       <td><div tal:content="structure container/main_menu">main menu</div><br>
-          <div tal:content="structure container/breadcrumbs">breadcrumbs</div>
+
       </td>
     </tr>
 
@@ -50,6 +50,6 @@ Other skins:<br/>
 Rember that <code><hr tal:replace="python: request.split_uri()[0]"/>?with_template=anything_as_html</code> calls a particular template.
 
 <hr>
-$Id: standard_master,v 1.6 2002/08/12 22:48:34 smurp Exp $
+$Id: standard_master,v 1.7 2002/10/16 19:29:50 smurp Exp $
   </body>
 </html>

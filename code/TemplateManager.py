@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: TemplateManager.py,v 1.5 2002/08/07 20:23:41 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: TemplateManager.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
 
 DEBUG = 0
 
@@ -45,7 +45,7 @@ class TemplateManager:
         else:
             if template_name.find('file:') == 0:
                 template_name = template_name[7:]
-            fname = NooronRoot.NooronRoot().make_fname([self.path,
+            fname = nooron_root.make_fname([self.path,
                                                         template_name])
         file = open(fname,'r')
         out = string.join(file.readlines(),"")
@@ -57,10 +57,11 @@ class TemplateManager:
         if request and obj:
             self.latest.update({'request':request,
                                 'obj':obj})
-        
+        #print "TemplateManger.obtain() obj =",obj,"self =",self
         template = NooronPageTemplate(request=request,
                                       obj=obj,
                                       container=self)
+        print "template_name =",template_name
         self.setObject(template_name,template)
                 
         src = self.obtain_template_src(template_name)

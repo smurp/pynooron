@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.8 $'[11:-2]
-__cvs_id__ ='$Id: transformers.py,v 1.8 2002/08/07 20:23:41 smurp Exp $'
+__version__='$Revision: 1.9 $'[11:-2]
+__cvs_id__ ='$Id: transformers.py,v 1.9 2002/10/16 19:29:50 smurp Exp $'
 
 DEBUG = 0
 
@@ -96,7 +96,7 @@ class templated_producer(typed_producer):
     def __init__(self,content,request=None):
         #print "templated_producer obj=",content,"request =",request
         producer.__init__(self,content)
-        tr = NooronRoot.NooronRoot().template_root()
+        tr = nooron_root.template_root()
         template=tr.obtain(self.template_name,
                            request=request,
                            obj=content)
@@ -138,7 +138,7 @@ class topic_html_producer(templated_producer):
     domain = ['GWApp.TMObject']
     extensions = ['html','htm']
     def_mime_type = ['text/html']
-    template_name = "topic_as_html"
+    template_name = "frame_as_html"
 
 class tclass_html_producer(templated_producer):
     """Render a generic class in a generic fashion.

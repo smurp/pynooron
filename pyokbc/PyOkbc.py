@@ -1,5 +1,5 @@
 
-WARNINGS = 10
+WARNINGS = 2
 # 10 critical
 # 20 noops
 # 30 subtleties
@@ -9,6 +9,7 @@ PRIMORDIAL_KB = ()
 
 import exceptions
 import copy
+import os
 
 ##########################################
 #    Classes
@@ -288,6 +289,9 @@ class Connection:
         my_meta_kb._add_frame_to_cache(kb)
         return kb
 
+    def meta_kb(connection):
+        return connection._meta_kb
+
     def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
         if not kb_type:
             kb_type = connection._default_kb_type
@@ -460,15 +464,53 @@ class KB(Node):
         return kb._behavior_values.get(behavior,[])
     get_behaviour_values = get_behaviour_values_internal
 
+    def get_class_subclasses(kb,klass,
+                             inference_level = Node._taxonomic,
+                             number_of_values = Node._all,
+                             kb_local_only_p = 0,
+                             checked_kbs=[]):
+        (klass,class_found_p) = kb.coerce_to_class(klass)
+        checked_kbs.append(kb)
+        rets = kb.get_class_subclasses_internal(klass,
+                                                inference_level,
+                                                number_of_values,
+                                                kb_local_only_p=1)
+        warn('get_class_subclasses ignoring kb_local_only_p')
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                rets = parent.get_class_subclasses(klass,
+                                                   inference_level,
+                                                   number_of_values,
+                                                   kb_local_only_p,
+                                                   checked_kbs)
+        return rets
+
     def get_class_superclasses(kb,klass,
                                inference_level = Node._taxonomic,
                                number_of_values = Node._all,
-                               kb_local_only_p = 0):
+                               kb_local_only_p = 0,
+                               superclasses = []):
         (klass,class_found_p) = kb.coerce_to_class(klass)
-        return kb.get_class_superclasses_internal(klass,
-                                         inference_level=inference_level,
-                                         number_of_values=number_of_values,
-                                         kb_local_only_p=kb_local_only_p)
+        (supers,exact_p,more_status) =\
+               kb.get_class_superclasses_internal(klass,
+                                                  inference_level,
+                                                  number_of_values,
+                                                  kb_local_only_p)
+        warn('get_class_superclasses is not properly recursive')
+        return (supers,exact_p,more_status)
+        for super in supers:
+            if not (super in superclasses):
+                superclasses.append(super)
+                more_supers = kb.get_class_superclasses(super,
+                                                        inference_level,
+                                                        number_of_values,
+                                                        kb_local_only_p)[0]
+                #print "more_supers",super,more_supers
+                for more_super in more_supers:
+                    if not (more_super in superclasses):
+                        superclasses.append(more_super)
+        return (superclasses,exact_p,more_status)
 
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
                         checked_kbs=None): # FIXME shouldn't add arg!
@@ -552,6 +594,21 @@ class KB(Node):
 
     def get_kb_direct_parents(kb):
         return kb._parent_kbs
+
+    def get_kb_classes(kb,selector=Node._system_default,kb_local_only_p=0,
+                       checked_kbs=[]):
+        classes = kb.get_kb_classes_internal(selector,kb_local_only_p)
+        if kb_local_only_p: return classes
+        checked_kbs = []
+        for parent in kb.get_kb_direct_parents():
+            if not (parent in checked_kbs):
+                checked_kbs.append(parent)
+                for klass in parent.get_kb_classes(selector,
+                                                   kb_local_only_p,
+                                                   checked_kbs):
+                    if not (klass in classes):
+                        classes.append(klass)
+        return classes
 
     def get_kb_frames(kb,kb_local_only_p=0):
         frames = kb.get_kb_frames_internal(0)
@@ -652,22 +709,54 @@ class TupleKb(KB):
     def _add_frame_to_cache(kb,frame):
         frame_name = kb.get_frame_name(frame)
         frame_type = get_frame_type(frame,kb=kb)
+#        print "_add_frame_to_cache",frame_name
         if not kb._cache.has_key(frame_name):
+            #print "caching",frame,frame_name
             kb._cache[frame_name] = frame
             kb._typed_cache[frame_type].append(frame)
+            #print kb._name,kb._typed_cache
         else:
+            warn("_add_frame_to_cache duplicate call for "+frame_name)
             # silently pass over any attempted duplication
             pass
 
     def class_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,KLASS)
 
+    def subclass_of_p(kb,subclass,superclass,
+                      inference_level=Node._taxonomic,
+                      kb_local_only_p = 0):
+        #print "is",subclass,"a subclass of",superclass,"?",
+        return kb.superclass_of_p(superclass,subclass,inference_level)
+
+    def superclass_of_p(kb,superclass,subclass,
+                        inference_level=Node._taxonomic):
+        supers = kb.get_class_superclasses(subclass,inference_level)
+        #print supers
+        if superclass in supers[0]:
+            #print "yes"
+            return 1
+        else:
+            #print "no"
+            return 0
+
+    def get_class_subclasses_internal(kb,klass,
+                                      inference_level = Node._taxonomic,
+                                      number_of_values = Node._all,
+                                      kb_local_only_p = 0):
+        subclasses = []
+        #print kb._name,kb._typed_cache
+        for a_class in kb._typed_cache[Node._class]:
+            if kb.subclass_of_p(a_class,klass,inference_level,kb_local_only_p):
+                subclasses.append(a_class)
+                #print a_class,"is a subclass of",klass
+        return (subclasses,1,0)
+    
     def get_class_superclasses_internal(kb,klass,
                                         inference_level = Node._taxonomic,
                                         number_of_values = Node._all,
                                         kb_local_only_p = 0):
         if inference_level == Node._direct:
-            print "_internal",klass
             return (copy.copy(klass._direct_superclasses),1,0)
         supers = []
         kb.get_class_superclasses_recurse(klass,supers)
@@ -999,10 +1088,11 @@ def create_slot(name,
 
 def current_kb():
     global CURRENT_KB
+    if not CURRENT_KB: CURRENT_KB = meta_kb()
     return CURRENT_KB
 
-#def establish_connection(connection_type,initargs=None):
-#    return Connection(initargs)
+def establish_connection(connection_type,initargs=None):
+    return connection_type(initargs)
 
 def frame_in_kb_p(kb,thing, kb_local_only_p = 0):
     if not kb: kb = current_kb()
@@ -1018,7 +1108,8 @@ def get_class_instances(klass,kb=None,inference_level=Node._taxonomic,
 
 def get_class_subclasses(klass, kb=None, inference_level=Node._taxonomic,
                          number_of_values=Node._all, kb_local_only_p=0):
-    return kb.get_class_subclasses(inference_level,number_of_values,
+    if not kb: kb = current_kb()
+    return kb.get_class_subclasses(klass,inference_level,number_of_values,
                                    kb_local_only_p)
 
 def get_class_superclasses(klass, kb=None, inference_level=Node._taxonomic,
@@ -1080,7 +1171,7 @@ def get_kb_classes(kb=None,
                    selector = Node._system_default,
                    kb_local_only_p=None):
     if not kb: kb = current_kb()
-    return kb.get_kb_classes_internal(selector,kb_local_only_p)
+    return kb.get_kb_classes(selector,kb_local_only_p)
 
 def get_kb_direct_parents(kb=None):
     if not kb: kb = current_kb()
@@ -1139,8 +1230,18 @@ def kb_p(thing):
 
 def local_connection():
     global LOCAL_CONNECTION
-    if not LOCAL_CONNECTION: LOCAL_CONNECTION = Connection()
+    if not LOCAL_CONNECTION:
+        place = os.environ.get('LOCAL_CONNECTION_PLACE')
+        if place != None:
+            from FileSystemConnection import FileSystemConnection
+            LOCAL_CONNECTION = FileSystemConnection({'default_place':place})
+        else:
+            LOCAL_CONNECTION = Connection()
     return LOCAL_CONNECTION
+
+def meta_kb(connection = None):
+    if not connection: connection = local_connection()
+    return connection.meta_kb()
 
 def open_kb(kb_locator,
             kb_type = None,
@@ -1148,6 +1249,10 @@ def open_kb(kb_locator,
             error_p = 1):
     if not connection: connection = local_connection()
     return connection.open_kb(kb_locator,kb_type,error_p)
+
+def openable_kbs(kb_type,connection = None,place=None):
+    if not connection: connection = local_connection()
+    return connection.openable_kbs(kb_type,place)
 
 def print_frame(frame,
                 kb = None,

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.5 2002/08/13 04:41:56 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.6 2002/10/16 19:29:49 smurp Exp $'
 
 import NooronRoot
 
@@ -49,7 +49,7 @@ class NooronPageTemplate(PageTemplate):
         self.request = request
         self.obj = obj
         self.container = container
-        self.root = NooronRoot.NooronRoot()
+        self.root = nooron_root
 
     def pt_getContext(self):
         c = {'template': self,
@@ -59,7 +59,7 @@ class NooronPageTemplate(PageTemplate):
              'options': {},
              'root': self.root,
              'request': self.request,
-             'user': self.request.user(),
+             #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,
              }
         return c

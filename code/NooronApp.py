@@ -1,18 +1,21 @@
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: NooronApp.py,v 1.6 2002/09/27 19:01:23 smurp Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: NooronApp.py,v 1.7 2002/10/16 19:29:49 smurp Exp $'
 
-import GW
-from GWApp import GWApp
+#import GW
+#from GWApp import GWApp
 
 import NooronRoot
 
-class NooronApp(GWApp):
+class NooronApp:
 
     __allow_access_to_unprotected_subobjects__ = 1
     
     src_uris = []
     app_skeleton = []
+
+    def __init__(app,kb):
+        app._kb = kb
 
     def set_src_uris(self,src_uris):
         self.src_uris = src_uris
@@ -27,23 +30,13 @@ class NooronApp(GWApp):
             return None
 
 # see http://www.noosphere.org/discuss/zwiki/VariousTemplateUseCases
-    def publish(self,request,topic_obj):
+    def publish(self,request,topic_obj=None):
         npt_name = ""
         args = {}
         this_is_app_front = 0
         if not topic_obj:
-            print "there is no topic_obj, determining ..."
-            bname_contains = self.getAllWhereBaseNameContains
-            bname_is = self.getAllWhereBaseNameIs
-            app_instance = bname_contains('app instance') or \
-                           bname_is('app instance') 
-            if app_instance:
-                app_instances = app_instance[0].getInstances()
-                if app_instances:
-                    this_is_app_front = 1                    
-                    topic_obj = app_instances[0]
-        if not topic_obj:
-            topic_obj = self
+            npt_name = "kb_as_html"
+            topic_obj = app.kb
         if this_is_app_front:
             npt_name = self.npt_for_app_front(request,topic_obj)
         if not npt_name:
@@ -52,7 +45,7 @@ class NooronApp(GWApp):
         if npt_name:
             request.effective_query_extend({'with_template':
                                             npt_name})
-        NooronRoot.NooronRoot().publish(request,topic_obj)
+        nooron_root.publish(request,topic_obj)
 
     def npt_for_app_front(self,request,topic_obj):
         print "topic_obj = "+str(topic_obj)
