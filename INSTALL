@@ -1,12 +1,34 @@
 
 To install Nooron:
 
- 1) Install the Goose-Works Toolkit (GWTK)
+ 0) Use python 2.1.x 
 
- 2) Install Zope 2.5 or later
+    This is because Zope 2.5 does not work with python 2.2.
+    Note that Zope is not ultimately required in its
+    entirety.  It is just that a separate distribution of 
+    the Zope Page Template technology has not yet been created 
+    which includes all the required goodies from Zope that it
+    requires.  Hints in this direction are given at:
+      http://www.zopelabs.com/cookbook/998065931
 
- 3) untar nooron-x.x.x.tgz somewhere you want to run it from
+ 1) Install the Goose-Works Toolkit (GWTK) (maybe post 0.5 required)
 
- 4) edit nooron.py to indicate the topicmaps you want to publish
+ 2) Install Zope 2.5 or later (presumably).
 
- 5) start it with ./nooron.py
+ 3) Untar nooron-x.x.x.tgz somewhere you want to run it from.
+
+    The python modules which constitute Nooron are intentionally
+    not installed within site-packages as conventional modules are.
+    The reason is that one of the nearterm goals is for Nooron
+    to actually expose its own python code to modification by
+    users at runtime.  Yes, this sounds a little odd.
+
+ 4) Edit nooron.py 
+
+    Things you might need or want to do:
+       - indicate the topicmaps you want to publish
+       - adjust for your python 2.1 location
+       - adjust for your Zope installation location
+       - adjust for your IP and port
+
+ 5) Start it with ./nooron.py

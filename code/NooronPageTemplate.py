@@ -1,17 +1,12 @@
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.2 2002/08/02 18:47:18 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.3 2002/08/04 21:43:20 smurp Exp $'
 
 import NooronRoot
 
-# PageTemplate Support
 import sys
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python')
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python/Products')
 from PageTemplates.PageTemplate import PageTemplate
 
-#print sys.pwd
-#sys.path.append('code')
 
 class NooronPageTemplate(PageTemplate):
     request = None

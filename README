@@ -8,14 +8,6 @@ Home:
 
 To understand the scope of the project please see:
   http://www.noosphere.org
-On Thu, 1 Aug 2002, Jan Algermissen wrote:
-
-> I would also like to know (if you like to tell me) WHAT you are
-> doing with GwTk, which tasks it supports well and which not.   
-
-Here are some nice examples of the OKBC API:
-  http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#follow-slot-chain
-
 
 This version depends on:
   Medusa 0.5.2 (or later, presumably, if more come along)
@@ -30,5 +22,13 @@ This distribution of Nooron contains GWApp.py which is a
 slight modification of Goose-Works' GWSAM.py.  It is likely that
 GWApp.py will soon be included in GWTK (Goose-Works).  GWApp.py
 has only been tested with an unreleased version of GWTK later than
-0.5 (the latest on the gooseworks site as of Aug 4th, 2002.  Many T
+0.5 (the latest on the gooseworks site as of Aug 4th, 2002.  Many
 thanks to Jan Algermissen for access to his ongoing work.
+
+For now the Nooron license is GPL2.0, if you have wise words on
+why this is an error, please tell me.
+
+Shawn Murphy <smurp@emergence.com>
+
+$Revision: 1.7 $
+
