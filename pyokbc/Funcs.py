@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.14 2003/03/03 21:20:11 smurp Exp $'
+_version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.15 2003/03/06 09:42:44 smurp Exp $'
 
 
 from PyOkbc import *
@@ -338,7 +338,20 @@ get_class_superclasses.write=0
 # def get_facet_value
 # def get_facet_values
 # def get_facet_values_in_detail
-# def get_frame_details
+
+def get_frame_details(frame,kb=None,inference_level=Node._taxonomic,
+                      number_of_values=Node._all,kb_local_only_p=0):
+    kb = _coerce_to_kb(kb)
+    return kb.get_frame_details(frame,
+                                inference_level,
+                                number_of_values,
+                                kb_local_only_p)
+get_frame_details.enumerator=0
+get_frame_details.optional=1
+get_frame_details.read=1
+get_frame_details.mandatory=0
+get_frame_details.write=0
+    
 # def get_frame_handle
 
 def get_frame_in_kb(thing,kb=None,error_p=1,kb_local_only_p=0):
@@ -671,7 +684,16 @@ openable_kbs.mandatory=1
 openable_kbs.write=0
 
 # def prefetch
-# def primitive_p
+
+def primitive_p(klass,kb=None,kb_local_only_p=0):
+    kb = _coerce_to_kb(kb)
+    return kb.primitive_p(klass,kb_local_only_p)
+primitive_p.enumerator=0
+primitive_p.optional=0
+primitive_p.read=1
+primitive_p.mandatory=1
+primitive_p.write=0
+
 
 def print_frame(frame,
                 kb = None,
