@@ -1,7 +1,5 @@
-
 put_direct_parents(['web_log_ontology'])
 put_instance_types(current_kb(),['nooron_app_data'])
-
 create_class('spoonerism',
              direct_types=['web_log_category'],
              doc="""Mangled verbal constructions spontaneously generated in
@@ -18,58 +16,45 @@ create_class('gear',
 create_class('architecture',
              direct_types=['web_log_category'],
              doc="""Artists freeing the possibilities of space.""")
-
 create_individual('wle_0001',
-                  direct_types = ['web_log_entry','marvel','book'],
-                  own_slots = [['web_log_text',
-                                """Hey Moses (er, Stephen) what are those tablets you're carrying?"""],
-                               ['web_log_url',
-                                "http://www.amazon.com/exec/obidos/ASIN/1579550088"]],
-                  pretty_name = "A New Kind of Science")
-
+                  pretty_name='A New Kind of Science',
+                  direct_types=['web_log_entry','marvel','book'],
+                  own_slots=[['web_log_text', """Hey Moses (er, Stephen) what are those tablets you're carrying?"""],
+                             ['web_log_url', 'http://www.amazon.com/exec/obidos/ASIN/1579550088'],
+                            ])
 create_individual('wle_0002',
-                  direct_types = ['web_log_entry','marvel'],
-                  own_slots = [['web_log_text',
-                                """To think that these sorts of conversations  are going on all the time!"""],
-                               ['web_log_url',
-                                "http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html"]],
-                  pretty_name = "Endurantism and Perdurantism: An Ongoing Debate")
-
+                  pretty_name='Endurantism and Perdurantism: An Ongoing Debate',
+                  direct_types=['web_log_entry','marvel'],
+                  own_slots=[['web_log_text', 'To think that these sorts of conversations  are going on all the time!'],
+                             ['web_log_url', 'http://ontology.teknowledge.com:8080/rsigma/dialog-3d-4d.html'],
+                            ])
 create_individual('wle_0003',
-                  direct_types = ['web_log_entry','gear'],
-                  own_slots = [['web_log_text',
-                                """It's bright, it's blue, you shake it..."""],
-                               ['web_log_url',
-                                "http://www.excaliburelectronics.com/foreverflashl.html"]],
-                  pretty_name = "A Permanent Flashlight, Finally")
-
+                  pretty_name='A Permanent Flashlight, Finally',
+                  direct_types=['web_log_entry','gear'],
+                  own_slots=[['web_log_text', """It's bright, it's blue, you shake it..."""],
+                             ['web_log_url', 'http://www.excaliburelectronics.com/foreverflashl.html'],
+                            ])
 create_individual('wle_0004',
-                  direct_types = ['web_log_entry','spoonerism'],
-                  own_slots = [['web_log_text',
-                                """How tired I must have been when I caught myself
-                                using the phrase "freaking insleepwently"."""],],
-                  pretty_name = "freaking insleepwently")
-
-
+                  pretty_name='freaking insleepwently',
+                  direct_types=['web_log_entry','spoonerism'],
+                  own_slots=[['web_log_text', """How tired I must have been when I caught myself
+                                using the phrase "freaking insleepwently"."""],
+                            ])
 create_individual('wle_0005',
-                  direct_types = ['web_log_entry','architecture'],
-                  own_slots = [['web_log_text',
-                                """Some quite amazing architecture."""],
-                               ['web_log_url',
-                                "http://www.radio.cbc.ca/programs/ideas/libeskind/index.html",
-                                "http://www.daniel-libeskind.com/"]],
-                  pretty_name = "Libeskind's Architecture")
-
+                  pretty_name="""Libeskind's Architecture""",
+                  direct_types=['web_log_entry','architecture'],
+                  own_slots=[['web_log_text', 'Some quite amazing architecture.'],
+                             ['web_log_url', 'http://www.radio.cbc.ca/programs/ideas/libeskind/index.html', 'http://www.daniel-libeskind.com/'],
+                            ])
 create_individual('wle_0006',
-                  direct_types = ['web_log_entry','spoonerism'],
-                  own_slots = [['web_log_text',
-                                """The scene: family playing dominoes when
-                                someone drops a glass.  Then I said:
-                                "That's why glaminoes aren't made of doss." """],],
-                  pretty_name = "glaminoes are not made of doss")
-
+                  pretty_name='glaminoes are not made of doss',
+                  direct_types=['web_log_entry','spoonerism'],
+                  own_slots=[['web_log_text', """The scene: family playing dominoes when
+                              someone drops a glass.  Then I said:
+                              "That's why glaminoes aren't made of doss." """],
+                            ])
 create_individual('wle_0007',
-                  direct_types = ['web_log_entry','spoonerism'],
-                  own_slots = [['web_log_text',
-                                """Caffeination does not help."""],],
-                  pretty_name = "dadly mashing")
+                  pretty_name='dadly mashing',
+                  direct_types=['web_log_entry','spoonerism'],
+                  own_slots=[['web_log_text', 'Caffeination does not help.'],
+                            ])
