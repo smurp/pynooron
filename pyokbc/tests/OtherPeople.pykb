@@ -1,9 +1,7 @@
-
 put_direct_parents(['PeopleSchema'])
-
 create_individual('JonathanSwift',
+                  pretty_name='Jonathan Swift',
                   direct_types=['AdultHuman'],
-                  own_slots=[['Wrote', "Gulliver's Travels"],
-                             ['BirthTime', '1667-11-30 GMT-6'],
-                            ],
-                  pretty_name='Jonathan Swift')
+                  own_slots=[['BirthTime', '1667-11-30 GMT-6'],
+                             ['Wrote', """Gulliver's Travels"""],
+                            ])
