@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.34 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.34 2003/04/22 17:32:58 smurp Exp $'
+__version__='$Revision: 1.35 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.35 2003/04/23 23:32:22 smurp Exp $'
 
 DEBUG = 0
 
@@ -10,7 +10,7 @@ NooronRoot is the root object of a nooron instance.
 """
 import os
 from medusa import http_server, default_handler, logger
-from medusa import filesys, status_handler
+from medusa import filesys, status_handler, auth_handler
 
 import http_request_mixin
 import http_channel_mixin
@@ -19,6 +19,7 @@ import http_channel_mixin
 from TemplateManager import TemplateManager
 #import topicmap_handler
 import okbc_handler
+import login_handler
 from code_handler import code_handler
 #import PipeLineFactory
 
@@ -64,7 +65,8 @@ class NooronRoot:
                  server_name=None,
                  server_port=None,
                  log_to=None,
-                 use_auth = 0, initargs = {},
+                 use_auth = None,
+                 initargs = {},
                  template_path = ['templates'],
                  knowledge_under = 'know',
                  site_front='site_front.html',
@@ -162,14 +164,21 @@ class NooronRoot:
                                             connection = self._connection)
             #tmh = topicmap_handler.topicmap_handler('know',
             #                                        initial = initial_maps)
+
             statusable_handlers.append(kbh)
-            
-            if use_auth:
-                ah = auth_handler({'guest':'password'},kbh)
-                statusable_handlers.append(ah)
-                hs.install_handler(ah)
-            else:
-                hs.install_handler(kbh)
+
+            lih = login_handler.login_handler(use_auth)
+            hs.install_handler(lih)
+            hs.install_handler(kbh)
+            #statusable_handlers.append(lih)            
+            statusable_handlers.append(kbh)
+            #if use_auth:
+            #    ah = auth_handler.auth_handler(use_auth,login_handler('login'))
+            #    statusable_handlers.append(ah)
+            #    hs.install_handler(ah)
+            #    hs.install_handler(kbh)                
+            #else:
+            #    hs.install_handler(kbh)
 
             sh = status_handler.status_extension(statusable_handlers)
             hs.install_handler(sh)            

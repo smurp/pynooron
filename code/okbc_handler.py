@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.19 2003/04/22 16:05:59 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.20 2003/04/23 23:32:22 smurp Exp $'
 
 
 from pyokbc import *
@@ -29,7 +29,7 @@ class okbc_handler:
 
     def match(self,request):
         [path, params, query, fragment] = request.split_uri()
-        path_list = path.split('/')        
+        path_list = path.split('/')
 
         #print path,path_list
 
