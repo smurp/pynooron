@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.10 $'[11:-2]
-__cvs_id__ ='$Id: test_pyokbc.py,v 1.10 2002/12/17 08:22:48 smurp Exp $'
+__version__='$Revision: 1.11 $'[11:-2]
+__cvs_id__ ='$Id: test_pyokbc.py,v 1.11 2003/01/20 14:54:08 smurp Exp $'
 
 import os
 import sys
@@ -187,8 +187,27 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_class_subclasses('web_log_category')[0])
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
-        PyOkbc.DEBUG = 0        
+        PyOkbc.DEBUG = 0
 
+    def skip_test_npts_for_self_and_instances_by_parentage(self):
+        nooron_faq = find_kb('nooron_faq')
+        proc = get_procedure('npts_for_self_and_instances_by_parentage',
+                             kb=nooron_faq)
+        luggage = call_procedure(proc,kb=nooron_faq,
+                                 arguments=[['web_log_app'],None])
+        print len(luggage)
+        print luggage
+
+    def test_get_class_superclasses_of_faq_app_directly(self):
+        nooron_faq = find_kb('nooron_faq')        
+        good = "[:THING, nooron_app_instance]"
+        resp = list(get_class_superclasses('faq_app',
+                                           kb=nooron_faq,
+                                           inference_level=Node._direct)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+        
 
 if __name__ == "__main__":
     unittest.main()
+    

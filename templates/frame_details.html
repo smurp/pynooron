@@ -9,8 +9,8 @@
 <div metal:fill-slot="lay_docs">
 This page is like an X-ray of 
 <em tal:content="python:get_frame_name(here)"></em>
-showing every little nerdy detail about it.  This skin or template
-(whatever you want to call it) is useful
+showing every little nerdy detail about it.  This 'garment'
+is useful
 for understanding how the system works or fixing a problem with it.
 </div>
 
@@ -114,10 +114,10 @@ knowledge base.
 
 
 
-<dt tal:content="structure python:get_doc_for(get_frame_slots)+'(slot_type=ALL)'"></dt>
+<dt tal:content="structure python:get_doc_for(get_frame_slots)+'(slot_type=OWN)'"></dt>
 <dd>
 <div tal:define="items python: get_frame_slots(here,
-                                               slot_type=ALL)[0]" 
+                                               slot_type=OWN)[0]" 
        tal:condition="items">
   <ul tal:repeat="slot items">
     <li><a href=""
@@ -179,7 +179,7 @@ knowledge base.
 
 
 <hr>
-$Id: frame_details.html,v 1.1 2002/12/05 12:51:44 smurp Exp $
+$Id: frame_details.html,v 1.2 2003/01/20 14:54:03 smurp Exp $
 </metal:block>
   </body>
 </html>

@@ -74,7 +74,7 @@ create_class('pattern_language_class',
              direct_types=['nooron_app_class'],
              doc="""This is the superclass of all classes in the
              pattern_language_ontology.  It might not be very useful...
-             YAGNI (you aren't going to need it) suggest that it be
+             YAGNI (you aren't going to need it) suggests that it be
              removed.""")
 create_class('pattern',
              direct_types=['pattern_language_class'],

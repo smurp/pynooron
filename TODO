@@ -3,26 +3,13 @@ TODO for Nooron
 
 * www.noosphere.org
 ** update FAQ
-*** how do I see pictures instead of .dot files?
 *** how do I see pdfs instead of .dbk files?
-** OR put alternative .ps .jpg .pdf extensions on garment links
+
+* Nooron features
+** fix Content-Type of http://mybox:9001/know/PRIMORDIAL_KB
 ** fix up nooron_app.html
-** get nooron_app.html to be chosen by get_nearest_preferred_npt_for_self
-** segregate garments by the class through which they are inherited:
-
-     nooron_app_instance
-       nooron_app.html
-     :KB
-       kb.html
-       kb_ancestry.dot (.ps) (.jpg)
-     :FRAME
-       frame.html
-       frame_details.html
-
 ** debug pattern_language.dbk
 ** get transform_dbk_2_ps and transform_dbk_2_pdf working
-** orange and green!
-
 
 * completeness
 ** make nooron.py sensitive to commandline parameters
@@ -32,13 +19,8 @@ TODO for Nooron
 ** make /know/pert/ a surfable thing (kb?, place?)
 ** implement proper cache flushing, tee hee
 * useability
-** clean up /template/nooron_app.html
 ** fix available garments defaults for site_front.html and other weirdos
 ** fix truncated (at char 1024) error reporting
-** redesign "available garments" to add links for typical conversions
-   such as dot.jpg, dot.ps, dot.pdf, dbk.ps, dbk.pdf and so on
-   e.g   aon.dot (.jpg) (.ps) (.pdf)
-         -------  ----   ---   ------- 
 ** put "available actions" and "available garments" in better places
    Probably redo entire layout of standard_master
 *** put "main" across entire window to permit rendering before trailing

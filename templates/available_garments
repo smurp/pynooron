@@ -1,4 +1,46 @@
 <em>available garments<a href="/templates/available_garments">:</a></em><br/>
+
+<tal:dummy condition="python:1">
+   <tal:dummy
+        define="npts_proc
+                  python:get_procedure('npts_by_parentage');
+                template_title python:request.name_of_garmie()"
+        condition="nocall:npts_proc">           
+   <div tal:define="luggage 
+            python:call_procedure(npts_proc,
+                                  arguments=[get_instance_types(here,
+                                                inference_level=DIRECT)[0],
+                                             None]);
+            baseurl python:request.object_request()"
+        tal:condition="luggage"
+     	tal:repeat="ancestor luggage"
+        tal:omit-tag="">
+
+       <tal:dummy define="klass python:len(ancestor) and ancestor[0] or '';
+                          suitcase python:len(ancestor) > 1 and ancestor[1:] or []">
+         <u tal:content="klass"></u><br/>
+
+         <tal:dummy repeat="garmie_set python:suitcase[0]">
+           &nbsp;&nbsp;<tal:dummy content="python:garmie_set[0]">
+           </tal:dummy>:&nbsp;<tal:dummy 
+                                   repeat="adornment python:len(garmie_set) > 1 and garmie_set[1] or []"
+                ><tal:dummy 
+                      define="current_garmie_p 
+                              python:template_title==adornment[1]"><tal:dummy
+	          condition="python: not current_garmie_p"><a
+                 href="" 
+                 tal:attributes="href python:baseurl +'__'+ adornment[1]"
+                 tal:content="python:adornment[0]"></a></tal:dummy><tal:dummy
+	          condition="current_garmie_p"><b
+                 tal:content="python:adornment[0]"></b></tal:dummy></tal:dummy>&nbsp;</tal:dummy><br/>
+         </tal:dummy>         
+       </tal:dummy>
+   </div>
+
+   </tal:dummy>
+</tal:dummy>
+
+<tal:dummy condition="python:0">
    <tal:dummy
         define="npts_proc
                   python:get_procedure('npts_for_self_and_instances');
@@ -23,3 +65,5 @@
        &nbsp; <br/>
    </div>
    </tal:dummy>
+</tal:dummy>
+
