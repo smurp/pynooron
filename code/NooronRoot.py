@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.32 $'[11:-2]
-__cvs_id__ ='$Id: NooronRoot.py,v 1.32 2003/04/22 06:53:24 smurp Exp $'
+__version__='$Revision: 1.33 $'[11:-2]
+__cvs_id__ ='$Id: NooronRoot.py,v 1.33 2003/04/22 08:26:15 smurp Exp $'
 
 DEBUG = 0
 
@@ -66,12 +66,14 @@ class NooronRoot:
                  log_to=None,
                  use_auth = 0, initargs = {},
                  template_path = ['templates'],
+                 knowledge_under = None,
                  site_front='site_front.html',
                  title = '',
                  security_engine=None,
                  cache_dir = None):
         #self.__dict__ = self.__shared_state
         self._initargs = initargs
+        self._knowledge_under = knowledge_under
         self._site_front = site_front
         self._security_engine = security_engine
         self._cache_dir = cache_dir
@@ -156,7 +158,7 @@ class NooronRoot:
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                
 
-            kbh = okbc_handler.okbc_handler('know',
+            kbh = okbc_handler.okbc_handler(self._knowledge_under,
                                             connection = self._connection)
             #tmh = topicmap_handler.topicmap_handler('know',
             #                                        initial = initial_maps)

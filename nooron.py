@@ -1,7 +1,11 @@
+
+
+
+
 #!/usr/bin/env python
 
-__version__='$Revision: 1.34 $'[11:-2]
-__cvs_id__ ='$Id: nooron.py,v 1.34 2003/04/13 22:32:23 smurp Exp $'
+__version__='$Revision: 1.35 $'[11:-2]
+__cvs_id__ ='$Id: nooron.py,v 1.35 2003/04/22 08:27:05 smurp Exp $'
 
 
 """
@@ -47,6 +51,7 @@ __main__.__builtins__.nooron_root = \
                     server_port = 80,
                     log_to = sys.stdout,
                     initargs = {'default_place':default_place},
+                    knowledge_under = None,
                     security_engine=security_engine,
                     cache_dir = '/tmp/nooron_cache'
                     #cache_dir = None

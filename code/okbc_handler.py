@@ -1,5 +1,7 @@
-__version__='$Revision: 1.17 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.17 2003/04/14 22:43:55 smurp Exp $'
+
+
+__version__='$Revision: 1.18 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.18 2003/04/22 08:26:15 smurp Exp $'
 
 
 from pyokbc import *
@@ -27,9 +29,22 @@ class okbc_handler:
 
     def match(self,request):
         [path, params, query, fragment] = request.split_uri()
-        retval = path.find(self.from_root)
-        if retval < 0:
+        path_list = path.split('/')        
+
+        print path,path_list
+
+        while path_list and path_list[0] == '':
+            path_list = path_list[1:]
+
+        if self.from_root:
+            retval = path.find(self.from_root)
+            if retval < 0:
+                retval = 0
+        elif path_list:
+            (frame,retval) =  get_frame_in_kb(path_list[0],kb=meta_kb())
+        else:
             retval = 0
+
         #if DEBUG: print "okbc_handler %s %s\n" % (path,str(retval))
         return retval
 
@@ -67,14 +82,15 @@ class okbc_handler:
             kb = meta_kb()
 
         no_frame_specified = 0
-        for elem in [self.from_root]:
-            #print "checking",elem
-            object_request = object_request + '/' + elem
-            kb_request = object_request
-            if elem == str(path_list[0]):
-                path_list.pop(0)
-            elif path_list[0].find(elem) == 0:
-                no_frame_specified = 1
+        if self.from_root:
+            for elem in [self.from_root]:
+                #print "checking",elem
+                object_request = object_request + '/' + elem
+                kb_request = object_request
+                if elem == str(path_list[0]):
+                    path_list.pop(0)
+                elif path_list[0].find(elem) == 0:
+                    no_frame_specified = 1
                 
         #print "path_list",path_list
         elem = None
