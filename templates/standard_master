@@ -28,7 +28,7 @@
     </tr>
     <tr>
       <td colspan="2" align="left" bgcolor="white">
-        <tal:dummy replace="structure container/breadcrumbs"/>
+        you are here: <tal:dummy replace="structure container/breadcrumbs"/>
       </td>
     </tr>
     <tr tal:condition="python:exists('error_message')">
@@ -87,6 +87,6 @@
   </table>
 
 <hr>
-$Id: standard_master,v 1.30 2003/04/28 16:20:53 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
+$Id: standard_master,v 1.31 2003/04/28 17:43:16 smurp Exp $ <a href="/templates/standard_master">Show Source</a>
   </body>
 </html>
