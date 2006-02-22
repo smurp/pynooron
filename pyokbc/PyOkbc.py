@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.49 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.49 2006/02/21 17:49:03 smurp Exp $'
+__version__='$Revision: 1.50 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.50 2006/02/21 21:31:58 willsro Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -182,7 +182,9 @@ class Symbol:
 class Node(Symbol):
     pass
 
-class FRAME(Node):
+from persistent import Persistent
+
+class FRAME(Node, Persistent):
     __allow_access_to_unprotected_subobjects__ = 1
         
     def __init__(self,frame_name,kb=None,frame_type=None):
@@ -1769,7 +1771,7 @@ class TupleKb(KB,Constrainable):
     Saving and reading ability can be left to subclasses. """
     def __init__(self,name='',connection=None):
         KB.__init__(self,name,connection=connection)
-        self._store = {}
+        self._v_store = {}
         self._typed_cache = {}
         for frame_type in Node._cache_types:
             self._typed_cache[frame_type] = []
@@ -1778,9 +1780,9 @@ class TupleKb(KB,Constrainable):
         frame_name = kb.get_frame_name(frame)
         frame_type = kb.get_frame_type(frame)
 #        print "_add_frame_to_store",frame_name
-        if not kb._store.has_key(frame_name):
+        if not kb._v_store.has_key(frame_name):
             #print "caching",frame,frame_name
-            kb._store[frame_name] = frame
+            kb._v_store[frame_name] = frame
             kb._typed_cache[frame_type].append(frame)
             #print kb._name,kb._typed_cache
         else:
@@ -1794,8 +1796,8 @@ class TupleKb(KB,Constrainable):
         if frame_found_p:
             frame_name = kb.get_frame_name(found_frame)
             frame_type = kb.get_frame_type(found_frame)
-            if kb._store.has_key(frame_name):
-                del kb._store[frame_name]
+            if kb._v_store.has_key(frame_name):
+                del kb._v_store[frame_name]
                 try:
                     kb._typed_cache[frame_type].remove(found_frame)
                 except:
@@ -1804,8 +1806,8 @@ class TupleKb(KB,Constrainable):
     def _rename_frame_in_store(kb,frame,new_name,kb_local_only_p):
         frame_name = kb.get_frame_name(frame)
         frame_type = kb.get_frame_type(frame)
-        if not kb._store.has_key(new_name):
-            del kb._store[frame_name]
+        if not kb._v_store.has_key(new_name):
+            del kb._v_store[frame_name]
             kb._typed_cache[frame_type].remove(frame)
             frame._name = new_name
             kb._add_frame_to_store(frame)
@@ -1828,14 +1830,14 @@ class TupleKb(KB,Constrainable):
     def coerce_to_frame_internal(kb,frame):
         if str(kb) == str(frame):
             return kb
-        return kb._store.get(frame)
+        return kb._v_store.get(frame)
 
     def delete_frame_internal(kb,frame,kb_local_only_p=0):
         kb._remove_frame_from_store(frame)
 
     def frame_in_kb_p_internal(kb,thing,
                                kb_local_only_p = 0):
-        return kb._store.has_key(str(thing))
+        return kb._v_store.has_key(str(thing))
 
     def get_class_subclasses_internal(kb,klass,
                                       inference_level = Node._taxonomic,
@@ -1875,7 +1877,7 @@ class TupleKb(KB,Constrainable):
                 kb.get_class_superclasses_internal_recurse(super,supers)
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
-        found_frame = kb._store.get(str(thing))
+        found_frame = kb._v_store.get(str(thing))
         if not found_frame:
             if thing == kb or str(thing) == str(kb):
                 found_frame = kb
@@ -1949,7 +1951,7 @@ class TupleKb(KB,Constrainable):
 
     def get_kb_frames_internal(kb,selector=Node._system_default,
                                kb_local_only_p=None):
-        return copy.copy(kb._store.values())
+        return copy.copy(kb._v_store.values())
 
     def get_kb_individuals_internal(kb,selector=Node._system_default,
                                 kb_local_only_p = 0):

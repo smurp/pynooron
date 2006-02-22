@@ -126,6 +126,7 @@ class ZfsKb(AbstractFileKb #,CachingMixin
 
     def _save_to_storage(kb,filename,error_p = 1):
         #transaction.commit()
+        #kb._close_kb()        
         #return
     
         #place = kb._get_place()
@@ -166,5 +167,8 @@ class ZfsKb(AbstractFileKb #,CachingMixin
                 print "finally saving %s" % real_path
                 os.rename(path,real_path)
         transaction.commit()
+        kb._close_kb()
 
+    def _close_kb(kb):
+        kb._v_conn.close()
     

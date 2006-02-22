@@ -1,8 +1,8 @@
 #!/bin/env python
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.13 2006/02/21 17:49:03 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.14 2006/02/21 21:31:58 willsro Exp $'
 
 import string
 
@@ -35,7 +35,7 @@ class FileSystemKb(AbstractFileKb):
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
         frame_found_p = 1
-        frame = kb._store.get(str(thing))
+        frame = kb._v_store.get(str(thing))
         #print "looking in",str(kb),"for",thing,
         if frame:
             #print 'found'

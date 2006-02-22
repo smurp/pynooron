@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: test_ZfsKb.py,v 1.1 2006/02/21 17:49:03 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: test_ZfsKb.py,v 1.2 2006/02/21 21:32:16 willsro Exp $'
 
 import os
 import sys
@@ -38,6 +38,13 @@ class ZfsKbStuff(unittest.TestCase):
         spec_loc = create_kb_locator('Species.zfskb')
         mykb = create_kb("Species",kb_type=ZfsKb,kb_locator=spec_loc)
         goto_kb(mykb)
+
+
+    #def __getattr__(self,attrname):
+    #    if attrname == '_store':
+    #        return self.__dict__['_v_store']
+    #    else:
+    #        return self.__dict__
 
     def test_make_a_frame(self):
         create_class('LifeOnEarth')
