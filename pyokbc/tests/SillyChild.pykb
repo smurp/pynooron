@@ -1,5 +1,6 @@
 # -*-mode: python -*-
-put_direct_parents(['PeopleSchema','evenmore/SillyParent'])
+#put_direct_parents(['PeopleSchema','evenmore/SillyParent'])
+put_direct_parents(['PeopleSchema','http://localhost:8998/evenmore/SillyParent.pykb'])
 create_individual('GeorgeWalkerBush',
                   pretty_name='George Walker Bush',
                   direct_types=['AdultHuman'],

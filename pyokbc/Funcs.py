@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.20 2003/05/22 20:28:39 smurp Exp $'
+_version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.21 2006/02/21 17:49:03 smurp Exp $'
 
 
 from PyOkbc import *
@@ -10,10 +10,12 @@ LOCAL_CONNECTION = None
 __allow_access_to_unprotected_subobjects__ = 1
 
 def _coerce_to_kb(kb):
+    #print "  coercing",kb
     if not kb:
         kb = current_kb()
     elif not kb_p(kb):
         kb = find_kb(kb)
+    #print "  returning",kb
     return kb
 
 def add_class_superclass(klass,new_superclass,
@@ -174,7 +176,7 @@ create_individual.causes_side_effects_p=1
 def create_kb(name,kb_type=None,kb_locator=None,
               initargs={},connection=None):
     if not connection: connection = local_connection()
-    return connection.create_kb(kb_type,kb_locator,initargs)
+    return connection.create_kb(name,kb_type,kb_locator,initargs)
 create_kb.enumerator=0
 create_kb.optional=1
 create_kb.read=0
@@ -183,6 +185,16 @@ create_kb.write=1
 create_kb.causes_side_effects_p=1
 
 # def create_kb_locator
+def create_kb_locator(thing,kb_type=None,connection=None):
+    if not connection: connection = local_connection()
+    return connection.create_kb_locator(thing,kb_type)
+create_kb_locator.enumerator=0
+create_kb_locator.optional=0
+create_kb_locator.read=1
+create_kb_locator.mandatory=1
+create_kb_locator.write=1
+create_kb_locator.causes_side_effects_p=1
+
 
 def create_procedure(kb=None,arguments=None,body=None,environment=None):
     kb = _coerce_to_kb(kb)
@@ -346,7 +358,11 @@ get_class_superclasses.write=0
 
 def get_frame_details(frame,kb=None,inference_level=Node._taxonomic,
                       number_of_values=Node._all,kb_local_only_p=0):
+    print "VVVVVVVVVVVVVVVVVVVV"
+    print "kb is",kb
     kb = _coerce_to_kb(kb)
+    print "kb is",kb
+    print "^^^^^^^^^^^^^^^^^^^"    
     return kb.get_frame_details(frame,
                                 inference_level,
                                 number_of_values,

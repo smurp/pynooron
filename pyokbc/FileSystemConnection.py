@@ -1,8 +1,4 @@
 
-
-
-
-
 from PyOkbc import *
 from OkbcConditions import *
 import dircache
@@ -13,6 +9,7 @@ import string
 def _make_allowed_fname(allowed_place,kb_locator):
     #if DEBUG: print "make_fname",frag
     #print "_make_allowed_fname",allowed_place,kb_locator
+    #print allowed_place,kb_locator
     fullpath = os.path.join(allowed_place,kb_locator)
     normpath = os.path.normpath(fullpath)
     if string.find(kb_locator,'pert') == 0:
@@ -71,6 +68,9 @@ class FileSystemConnection(Connection):
         rets.sort()
         return rets
 
+    def get_full_path(connection,filename):
+        return _make_allowed_fname(connection._path[0],filename)
+
     def _lines_and_stats(connection,filename,place):
         path = connection._path
         #print "_lines_and_stats place =",place,filename
@@ -84,7 +84,7 @@ class FileSystemConnection(Connection):
                 fname = os.path.join(place,filename)
             try:
                 f = open(fname)
-                print "found",fname
+                #print "found",fname
                 #raise bogusissue
                 lines = f.readlines()
                 f.close()
@@ -93,16 +93,20 @@ class FileSystemConnection(Connection):
                 print "failing to find",fname
                 continue
         if lines:
-            st = os.stat(fname)
-            stats = {'UID':st[4],
-                     'GID':st[5],
-                     'SIZE':st[6],
-                     'ATIME':st[7],
-                     'MTIME':st[8],
-                     'CTIME':st[9]}
-            stats['ModificationTime'] = stats['MTIME']
-            stats['CreationTime'] =     stats['CTIME']
-            stats['AccessTime'] =       stats['ATIME']
+            stats = connection._stats(fname)
             return (lines,stats)
         else:
             raise KbNotFound,(filename,path)            
+
+    def _stats(connection,fname):
+        st = os.stat(fname)
+        stats = {'UID':st[4],
+                 'GID':st[5],
+                 'SIZE':st[6],
+                 'ATIME':st[7],
+                 'MTIME':st[8],
+                 'CTIME':st[9]}
+        stats['ModificationTime'] = stats['MTIME']
+        stats['CreationTime'] =     stats['CTIME']
+        stats['AccessTime'] =       stats['ATIME']
+        return stats

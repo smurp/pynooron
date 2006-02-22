@@ -10,7 +10,7 @@ create_individual('ChristopherRobin',
                              ['Eats', 'Toast', 'Cookie'],
                             ])
 create_individual('AliceLidell',
-                  pretty_name='Alice in Wonderland',
+                  pretty_name='Alice Lidell AKA Alice in Wonderland',
                   direct_types=['Child'],
                   own_slots=[['Eats', 'ThingsThatSayEatMe'],
                             ],

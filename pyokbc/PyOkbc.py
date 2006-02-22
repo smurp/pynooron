@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.48 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.48 2003/07/18 17:08:31 smurp Exp $'
+__version__='$Revision: 1.49 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.49 2006/02/21 17:49:03 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -138,8 +138,7 @@ def uniquify_specs(list_of_specs):
 # 
 # Oh, order is *so* important below!  Bootstrapping madness!
 # If you have any idea how to do a better job of this, please
-# tell smurp@emergence.com
-#
+# tell smurp@smurp.com
 
 class UNIT_SLOT:
     """UNIT_SLOT is the structure which holds the facets and the values
@@ -520,7 +519,7 @@ class KB(FRAME,Programmable):
                                                          kb_local_only_p=klop)
         if found_class:
             return (found_class,class_found_p)
-        #warn(str( thing)+" being coerced to class in "+str(kb))
+        #print str( thing)+" being coerced to class in "+str(kb)
         found_class = kb.create_frame_internal(thing,Node._class)
         class_found_p = found_class
         if not class_found_p and error_p:
@@ -615,8 +614,13 @@ class KB(FRAME,Programmable):
                               handle=None,
                               pretty_name=None,
                               kb_local_only_p=0):    
+        #print "create_frame_internal(",kb,name,")"
         if kb != current_kb():
-            print "noncurrent kb",kb,"for",name
+            if type(name) <> type(''):
+                print type(name),name.__class__,
+            if str(name) == "SamuelBeckett" :# and not (str(kb) in ('PeopleDatar')):
+                return None
+            print "noncurrent kb",kb,"for '%s'" % name            
         klop = kb_local_only_p
         is_name = type(name) == type('')
         if is_name:
@@ -966,7 +970,7 @@ class KB(FRAME,Programmable):
         superclasses = []
         #if Node._INDIVIDUAL in superclasses:
         #    print klass, "sub of INDIVIDUAL",superclasses,"doh"
-            
+        #print "get_class_superclasses(",kb,klass,")"
         (klass,class_found_p) = kb.coerce_to_class(klass)
         (supers,exact_p,more_status) =\
                kb.get_class_superclasses_internal(klass,
@@ -1007,10 +1011,12 @@ class KB(FRAME,Programmable):
 
     def get_frame_details(kb,frame,inference_level=Node._taxonomic,
                           number_of_values=Node._all,kb_local_only_p=0):
+        print "\n==seeking '%s' in kb '%s'==" % (frame,kb)        
         (found_frame,
          frame_found_p)\
          = kb.get_frame_in_kb(frame,error_p=1,kb_local_only_p=kb_local_only_p)
-        #print "found this",found_frame,frame,kb
+        print "\n==found '%s' while seeking '%s' in kb '%s'==" % (found_frame,
+                                                            frame,kb)
         details = {}
         inexact_p = 0
         if not frame_found_p:
@@ -1020,16 +1026,24 @@ class KB(FRAME,Programmable):
         details[':pretty-name'] = kb.get_frame_pretty_name(found_frame)
         # FIXME get_frame_details ignoring :handle, :frame-type and :primitive_p
         details[':frame-type'] = kb.get_frame_type(found_frame)
-        #details[':primitive-p'] = kb.primitive_p_internal(frame)
-        details[':superclasses'],exact_p,ignore_more =\
-                        kb.get_class_superclasses(found_frame,
+
+        if str(details[':frame-type']) == ':class':
+            print "%s is class" % frame
+            details[':superclasses'],exact_p,ignore_more =\
+                                 kb.get_class_superclasses(found_frame,
                                                            inference_level)
-        if not exact_p: inexact_p = 1
-        details[':subclasses'],exact_p,ignore_more = \
-                        kb.get_class_subclasses(found_frame,
-                                                         inference_level,
-                                                         number_of_values)
-        if not exact_p: inexact_p = 1
+            if not exact_p: inexact_p = 1
+            details[':subclasses'],exact_p,ignore_more = \
+                             kb.get_class_subclasses(found_frame,
+                                                     inference_level,
+                                                     number_of_values)
+            #details[':primitive-p'] = kb.primitive_p_internal(frame)
+            if not exact_p: inexact_p = 1
+        else:
+            details[':superclasses'] = []
+            details[':subclasses']   = []
+
+            
         details[':types'],exact_p,ignore_more = \
                         kb.get_instance_types(found_frame,
                                               inference_level,
@@ -2374,6 +2388,7 @@ class Connection: #abstract
         connection._default_kb_type = PyKb
 
     def create_kb(connection,
+                  name,
                   kb_type=None,
                   kb_locator=None,
                   initargs={}):
@@ -2381,10 +2396,20 @@ class Connection: #abstract
             kb_type = connection._default_kb_type
         my_meta_kb = connection._meta_kb
         
-        kb = kb_type(kb_locator,initargs=initargs,
-                     meta=my_meta_kb)
+        kb = kb_type(kb_locator, connection,
+                     name=name,
+                     initargs=initargs)
         my_meta_kb._add_frame_to_store(kb)
         return kb
+
+    def create_kb_locator(connection,
+                          thing,
+                          kb_type = None):
+        if not kb_type:
+            kb_type = connection._default_kb_type
+        # should give connection and kb_type a whack at
+        #    handling this too; study the lisp
+        return thing
 
     def find_kb(connection,name_or_kb_or_kb_locator):
         meta = connection.meta_kb()

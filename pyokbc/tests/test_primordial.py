@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: test_primordial.py,v 1.4 2002/11/26 20:32:12 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: test_primordial.py,v 1.5 2006/02/21 17:49:03 smurp Exp $'
 
 import os
 import sys
@@ -43,14 +43,14 @@ class PrimordialTestCase(unittest.TestCase):
 
 
     def test_get_frame_slots_of_THING(self):
-        good = "[':DOCUMENTATION']"
+        good = "[':DOCUMENTATION-LINK']"
         resp = list(get_frame_slots(':THING')[0])
         resp.sort(str_sort)
         self.assertEquals(good,str(resp))
 
     def test_get_slot_value_of_THING_DOCUMENTATION(self):
-        good = "[':DOCUMENTATION']"
-        resp = get_slot_value(':THING',':DOCUMENTATION')[0]
+        good = "[':DOCUMENTATION-LINK']"
+        resp = get_slot_value(':THING',':DOCUMENTATION-LINK')[0]
         self.assertNotEquals(-1,resp.find('http'))
 
     def test_get_kb_direct_children_PRIMORDIAL_KB(self):

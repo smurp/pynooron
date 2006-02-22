@@ -1,7 +1,8 @@
+#!/bin/env python
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.12 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.12 2003/05/22 20:28:39 smurp Exp $'
+__version__='$Revision: 1.13 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.13 2006/02/21 17:49:03 smurp Exp $'
 
 import string
 
@@ -14,6 +15,7 @@ import mimetypes
 from PyKb import *
 from TellKb import *
 from BrainKb import *
+from ZODBFileStorageKb import *
 
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
@@ -84,12 +86,12 @@ class FileSystemKb(AbstractFileKb):
 
 
                         poss_path = string.split(possible_kb_filename,'/')
-                        print "poss_path =",poss_path
+                        #print "poss_path =",poss_path
                         if len(poss_path) > 1:
                             place = os.path.join(place,poss_path[0:-2])
                             possible_kb_filename = poss_path[-1]
-                            print "place = %s  filename = %s" % (place,
-                                                                possible_kb_filename)
+                            #print "place = %s  filename = %s" % (place,
+                            #                                    possible_kb_filename)
 
 
                             

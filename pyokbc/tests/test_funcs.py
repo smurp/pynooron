@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.20 2004/06/05 10:28:40 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.21 2006/02/21 17:49:03 smurp Exp $'
 
 import os
 import sys
@@ -18,13 +18,19 @@ class ReadOnlyTestCase(unittest.TestCase):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
         addenda = open_kb("Addenda")
-        mykb = open_kb("OtherPeople")
+        #mykb = open_kb("OtherPeople")
         mykb = open_kb("PeopleData")
         goto_kb(mykb)
 
-
     def test_documentation(self):
         good = doc="You know, Alice!  With the restaraunt..."
+        print "current_kb",current_kb()        
+        goto_kb("PeopleData")
+        print "current_kb",current_kb()
+        #print "direct_parents",get_kb_direct_parents()
+        #print "AliceLidell",get_frame_details('AliceLidell')
+        #print "Child instances",get_class_instances('Child')[0]
+        
         resp = get_slot_value('AliceLidell',Node._DOCUMENTATION,
                               slot_type=Node._own)[0]
         self.assertEquals(good, str(resp))
@@ -48,13 +54,14 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good,str(resp))
 
     def test_get_frame_details(self):
+        good = 738
         resp = get_frame_details('SamuelBeckett')[0]
         str_resp = str(resp)
         #print resp
         len_str_resp = len(str(resp))
         #print resp
         ## FIXME this 738 nonsense needs analysis
-        self.assertEquals(738,len_str_resp)
+        self.assertEquals(good,len_str_resp)
         num_keys = len(resp.keys())
         #print resp.keys()
         self.assertEquals(9,num_keys)
@@ -113,7 +120,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_get_kb_frames(self):
-        good = 91
+        good = 90
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
