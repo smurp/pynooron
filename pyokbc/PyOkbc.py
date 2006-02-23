@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.50 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.50 2006/02/21 21:31:58 willsro Exp $'
+__version__='$Revision: 1.51 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.51 2006/02/22 20:37:44 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -207,6 +207,15 @@ class FRAME(Node, Persistent):
         #return "<"+self._name+">"
         return self._name
 
+    def _return_as_kwargs(self):
+        return {'direct_types'   : repr(self._direct_types),
+                'pretty_name'    : repr(self._pretty_name),
+                'own_slots'      : repr(self._own_slots),
+                'template_slots' : repr(self._template_slots),
+                'doc'            : repr(self._doc),
+                'direct_superclasses' : repr(self._direct_superclasses),
+                }
+        
 #    def __cmp__(self,other):
 #        return str(self).__cmp__(str(other))
 
@@ -2341,7 +2350,9 @@ class AbstractPersistentKb(TupleKb):
 class AbstractFileKb(AbstractPersistentKb):
     def _file_name(kb):
         return kb._name + '.' + kb._kb_type_file_extension
-    
+
+    make_backups = 1
+    via_temp = 1
     def _save_to_storage(kb,filename,error_p = 1):
         place = kb._get_place()
         if place:
@@ -2349,27 +2360,29 @@ class AbstractFileKb(AbstractPersistentKb):
         else:
             path = filename
 
-        via_temp = 1 # FIXME make this a property of the kb
-        make_backups = 1 # FIXME make this a property of the kb
+        via_temp = kb.via_temp
+        make_backups = kb.make_backups
         written = 0
 
+        print "via_temp =",via_temp
         if via_temp:
+
             real_path = path
             path = path + '.tmp'
         print "saving to",path
-        outfile = open(path,"w")
+        kb._open_output_file_at_path(path)
         try:
-            outfile.write(kb._preamble())
-            outfile.write(kb._print_kb_own_attributes())
+            kb._write_preamble()
+            kb._write_kb_own_attributes()
             for frame in \
                     get_kb_facets(kb,kb_local_only_p=1) + \
                     get_kb_slots(kb,kb_local_only_p=1) + \
                     get_kb_classes(kb,kb_local_only_p=1) + \
                     get_kb_individuals(kb,kb_local_only_p=1):
-                outfile.write(kb.print_frame(frame,stream=0))
+                kb._save_frame_to_storage(frame,stream=0)
             written = 1
         finally:
-            outfile.close()
+            kb._close_output_file()
         if written:
             if make_backups:
                 backup_path = real_path + '~'
@@ -2378,6 +2391,22 @@ class AbstractFileKb(AbstractPersistentKb):
             if via_temp:
                 print "finally saving %s" % real_path
                 os.rename(path,real_path)
+
+    def _write_preamble(kb):
+        kb._outfile.write(kb._preamble())
+    def _write_kb_own_attributes(kb):
+        kb._outfile.write(kb._print_kb_own_attributes())
+
+
+    def _open_output_file_at_path(kb,path):
+        kb._outfile = open(path,"w")
+
+    def _close_output_file(kb):
+        kb._outfile.close()
+
+    def _save_frame_to_storage(kb,frame,stream=1):
+        kb._outfile.write(kb.print_frame(frame,stream))
+        
 
 
 class Connection: #abstract

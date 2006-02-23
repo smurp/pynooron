@@ -34,7 +34,9 @@ Conclusion:
 import os
 class ZfsKb(AbstractFileKb #,CachingMixin
             ):
-    _kb_type_file_extension = 'zfskb'    
+    _kb_type_file_extension = 'zfskb'
+    make_backups = 0
+    via_temp = 0
     def open_kb(self,kb_locator,connection=None,error_p=1):
         pass
     def create_kb(self,name,kb_locator=None,initargs={},connection=None):
@@ -80,7 +82,7 @@ class ZfsKb(AbstractFileKb #,CachingMixin
         self._fullpath = fullpath
         self._name = name
         self._filename = filename
-
+        self._place = ''
 
         AbstractFileKb.__init__(self,name,connection=connection)
         #CachingMixin.__init__(self)
@@ -106,7 +108,7 @@ class ZfsKb(AbstractFileKb #,CachingMixin
         #self._allow_caching_p = orig_allow_caching_p
         goto_kb(prev_kb)
 
-    def _save_frame(kb,frame):
+    def _save_frame(kb,frame):  # DEPRECATED
         from pickle import dumps
         root = kb._v_store
         #root = kb.conn.root()
@@ -123,8 +125,18 @@ class ZfsKb(AbstractFileKb #,CachingMixin
             
         #print "ZfsKb._save_frame not implemented"
 
+    def _save_frame_to_storage(kb,frame,stream=1):
+        root = kb._v_store
+        frame_name = kb.get_frame_name(frame)
+        print "saving",frame_name,"explicitly"
 
-    def _save_to_storage(kb,filename,error_p = 1):
+        tree = frame._return_as_dict_tree()
+        print tree
+        root[frame_name] = tree
+
+        
+
+    def _OLD_save_to_storage(kb,filename,error_p = 1):
         #transaction.commit()
         #kb._close_kb()        
         #return
@@ -145,7 +157,7 @@ class ZfsKb(AbstractFileKb #,CachingMixin
             real_path = path
             path = path + '.tmp'
         print "saving to",path
-        outfile = open(path,"w")
+        #outfile = open(path,"w")
         try:
             #outfile.write(kb._preamble())
             #outfile.write(kb._print_kb_own_attributes())
@@ -169,6 +181,26 @@ class ZfsKb(AbstractFileKb #,CachingMixin
         transaction.commit()
         kb._close_kb()
 
+    def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0,
+                                 checked_kbs=None):
+        if kb._v_store.has_key(thing):
+            print 'found thing:',thing
+            return (kb._v_store.get(thing),1)
+        return (None,None)
+
+    def _open_output_file_at_path(kb,path):
+        pass
+
+    def _close_output_file(kb):
+        transaction.commit()        
+        kb._close_kb()
+
     def _close_kb(kb):
         kb._v_conn.close()
+
+    def _write_preamble(kb):
+        pass
+
+    def _write_kb_own_attributes(kb):
+        pass
     
