@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.51 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.51 2006/02/22 20:37:44 smurp Exp $'
+__version__='$Revision: 1.52 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.52 2006/02/27 04:17:26 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -208,13 +208,18 @@ class FRAME(Node, Persistent):
         return self._name
 
     def _return_as_kwargs(self):
-        return {'direct_types'   : repr(self._direct_types),
-                'pretty_name'    : repr(self._pretty_name),
-                'own_slots'      : repr(self._own_slots),
-                'template_slots' : repr(self._template_slots),
-                'doc'            : repr(self._doc),
-                'direct_superclasses' : repr(self._direct_superclasses),
-                }
+        def list_of_repr(l):
+            return ret
+        
+        args = (self.name,repr(self.frame_type))
+        kwargs = {'direct_types'   : repr(self._direct_types),
+                  'pretty_name'    : self._pretty_name,
+                  'own_slots'      : repr(self._own_slots),
+                  'template_slots' : repr(self._template_slots),
+                  'doc'            : self._doc,
+                  'direct_superclasses' : repr(self._direct_superclasses),
+                  }
+        return (args,kwargs)
         
 #    def __cmp__(self,other):
 #        return str(self).__cmp__(str(other))

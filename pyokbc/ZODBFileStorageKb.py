@@ -130,56 +130,9 @@ class ZfsKb(AbstractFileKb #,CachingMixin
         frame_name = kb.get_frame_name(frame)
         print "saving",frame_name,"explicitly"
 
-        tree = frame._return_as_dict_tree()
-        print tree
-        root[frame_name] = tree
-
-        
-
-    def _OLD_save_to_storage(kb,filename,error_p = 1):
-        #transaction.commit()
-        #kb._close_kb()        
-        #return
-    
-        #place = kb._get_place()
-        place = ''
-        if place:
-            path = os.path.join(place,filename)
-        else:
-            path = filename
-            
-
-        via_temp = 1 # FIXME make this a property of the kb
-        make_backups = 1 # FIXME make this a property of the kb
-        written = 0
-
-        if via_temp:
-            real_path = path
-            path = path + '.tmp'
-        print "saving to",path
-        #outfile = open(path,"w")
-        try:
-            #outfile.write(kb._preamble())
-            #outfile.write(kb._print_kb_own_attributes())
-            for frame in \
-                    get_kb_facets(kb,kb_local_only_p=1) + \
-                    get_kb_slots(kb,kb_local_only_p=1) + \
-                    get_kb_classes(kb,kb_local_only_p=1) + \
-                    get_kb_individuals(kb,kb_local_only_p=1):
-                kb._save_frame(frame)
-            written = 1
-        finally:
-            outfile.close()
-        if written:
-            if make_backups:
-                backup_path = real_path + '~'
-                print "making backup %s" % backup_path
-                os.rename(real_path,real_path + '~')
-            if via_temp:
-                print "finally saving %s" % real_path
-                os.rename(path,real_path)
-        transaction.commit()
-        kb._close_kb()
+        args_and_kwargs = frame._return_as_args_and_kwargs()
+        print args_and_kwargs
+        root[frame_name] = args_and_kwargs
 
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0,
                                  checked_kbs=None):
