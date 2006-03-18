@@ -30,7 +30,8 @@ class BrainKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'brn'
     def __init__(self,filename,place='',connection=None,name=None):
         if not place:
-            print "place NOT SET FOR",filename
+            print "place NOT SET FOR",filename,self.__class__.__name__
+            raise
         self._place = place
         if name == None:
             name = filename

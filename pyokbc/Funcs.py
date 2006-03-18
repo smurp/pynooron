@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.21 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.21 2006/02/21 17:49:03 smurp Exp $'
+_version__='$Revision: 1.22 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.22 2006/03/17 23:57:32 smurp Exp $'
 
 
 from PyOkbc import *
@@ -60,7 +60,16 @@ class_p.write=0
 
 
 # def close_connection
-# def close_kb
+
+def close_kb(kb=None,save_p=0):
+    kb = _coerce_to_kb(kb)
+    return kb.close_kb(save_p=save_p)
+close_kb.mandatory = 1
+close_kb.optional = 0
+close_kb.write = 1
+close_kb.read = 0
+close_kb.enumerator = 0
+close_kb.causes_side_effects_p=1
 
 def connection(kb): # FIXME not in OKBC Spec
     return kb._connection
@@ -84,6 +93,21 @@ connection_p.write=0
 # def continuable_error_p
 # def copy_frame
 # def copy_kb
+
+def copy_kb(name,from_bk,to_kb,
+            kb_local_only_p = 1,  # spec says should be no default value!?!
+            error_p = 1,
+            missing_frame_action = ':stop'):
+    return to_kb.copy_kb(from_kb,
+                         kb_local_only_p = kb_local_only_p,
+                         error_p = error_p,
+                         missing_frame_action = missing_frame_action)
+copy_kb.optional = 1
+copy_kb.enumerator = 0
+copy_kb.write = 1
+copy_kb.mandatory = 0
+copy_kb.read = 1
+                         
 
 def create_class(name,kb=None,
                  direct_types=[],
@@ -298,7 +322,15 @@ find_kb.read=1
 find_kb.mandatory=0
 find_kb.write=0
 
-# def find_kb_locator
+def find_kb_locator(thing,kb_type=None,connection = None):
+    if not connection: connection = local_connection()
+    return connection.find_kb_locator(thing,kb_type=kb_type)
+find_kb.enumerator=0
+find_kb.optional=0
+find_kb.read=1
+find_kb.mandatory=1
+find_kb.write=0
+
 # def find_kb_of_type
 # def follow_slot_chain
 # def frame_has_slot_p
@@ -358,11 +390,7 @@ get_class_superclasses.write=0
 
 def get_frame_details(frame,kb=None,inference_level=Node._taxonomic,
                       number_of_values=Node._all,kb_local_only_p=0):
-    print "VVVVVVVVVVVVVVVVVVVV"
-    print "kb is",kb
     kb = _coerce_to_kb(kb)
-    print "kb is",kb
-    print "^^^^^^^^^^^^^^^^^^^"    
     return kb.get_frame_details(frame,
                                 inference_level,
                                 number_of_values,
@@ -762,6 +790,7 @@ procedure_p.mandatory=0
 procedure_p.write=0
 
 # def put_behavior_values
+# def put_instance_types
 
 def put_class_superclasses(klass,new_superclasses,kb=0,kb_local_only_p=0):
     kb = _coerce_to_kb(kb)

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.52 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.52 2006/02/27 04:17:26 smurp Exp $'
+__version__='$Revision: 1.53 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.53 2006/03/17 23:57:32 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -11,6 +11,10 @@ import sys
 import copy
 import os
 import time
+try:
+    import logging
+except Exception,e:
+    print e
 
 from  OkbcConditions import *
 from Constraints import Constrainable
@@ -21,6 +25,7 @@ from Constraints import Constrainable
 
 DEBUG_METHODS =[]# ['get_slot_values_in_detail_recurse']
 DEBUG = 0
+BREAK = 0
 WARNINGS = 2
 TRACE_HTML = 0
 # 10 critical
@@ -29,6 +34,9 @@ TRACE_HTML = 0
 
 
 def trayce(args=[],format=None,indent=None):
+    if not DEBUG and not BREAK:
+        return        
+
     meth = None
     (ppre,pre,inter,post,ppost) = TRACE_HTML and \
                        ("<table>","<tr><td>","<td>","</tr>","</table>") \
@@ -44,20 +52,24 @@ def trayce(args=[],format=None,indent=None):
         #stack = traceback.extract_stack(tb)
         code = tb.tb_frame.f_back.f_code        
         meth = code.co_name
-    if DEBUG:
-        if meth in DEBUG_METHODS:
-            if indent == None:
-                print pre,meth,inter,mess,post
-            else:
-                print pre,indent,mess,post
-            if 0:
-                for m in ['co_filename','co_nlocals',
-                          'co_varnames','co_consts',
-                          'co_cellvars','co_name','co_firstlineno']:
-                    print "  ",m,":",eval("code.%s"%m)
-            if 0:                    
-                for m in dir(code):
-                    print "  ",m,":",eval("code.%s"%m)
+
+    if meth in DEBUG_METHODS:
+        if indent == None:
+            print pre,meth,'(',inter,mess,post,")"
+        else:
+            print pre,indent,mess,post
+        if 0:
+            for m in ['co_filename','co_nlocals',
+                      'co_varnames','co_consts',
+                      'co_cellvars','co_name','co_firstlineno']:
+                print "  ",m,":",eval("code.%s"%m)
+        if 0:                    
+            for m in dir(code):
+                print "  ",m,":",eval("code.%s"%m)
+
+    if BREAK:
+        import pdb;        pdb.set_trace()
+
                 
 def warn(mess,level=10):
     if WARNINGS >= level:
@@ -182,9 +194,8 @@ class Symbol:
 class Node(Symbol):
     pass
 
-from persistent import Persistent
 
-class FRAME(Node, Persistent):
+class FRAME(Node):
     __allow_access_to_unprotected_subobjects__ = 1
         
     def __init__(self,frame_name,kb=None,frame_type=None):
@@ -207,17 +218,17 @@ class FRAME(Node, Persistent):
         #return "<"+self._name+">"
         return self._name
 
-    def _return_as_kwargs(self):
-        def list_of_repr(l):
-            return ret
-        
-        args = (self.name,repr(self.frame_type))
+    def _return_as_args_and_kwargs(self):
+        def list_of_repr(objs):
+            return map(repr, objs)
+
+        args = (self._name,repr(self._class))
         kwargs = {'direct_types'   : repr(self._direct_types),
                   'pretty_name'    : self._pretty_name,
                   'own_slots'      : repr(self._own_slots),
                   'template_slots' : repr(self._template_slots),
                   'doc'            : self._doc,
-                  'direct_superclasses' : repr(self._direct_superclasses),
+                  'direct_superclasses' : map(repr,self._direct_superclasses),
                   }
         return (args,kwargs)
         
@@ -236,6 +247,8 @@ class SLOT(FRAME): pass
 
 class FACET(FRAME): pass
 
+#class KB_LOCATOR(FRAME): pass
+
 Node._class = KLASS(':class')
 Node._class._frame_type = Node._class
 KLASS._frame_type = Node._class
@@ -252,7 +265,9 @@ Node._individual = INDIVIDUAL(':individual')
 Node._individual._frame_type = Node._class
 INDIVIDUAL._frame_type = Node._individual
 
-
+#Node._kb_locator = KB_LOCATOR(':kb_locator')
+#Node._kb_locator._frame_type = Node._class
+#KB_LOCATOR._frame_type = Node._class
 
 primordials = []
 def primordialFACET(name):
@@ -291,6 +306,9 @@ primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
                        ":DOCUMENTATION-IN-FRAME")
 
 primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME",
+
+                                # not in spec
+                                ':LOCATOR',':KB_TYPE',':ASSOCIATED_KB',
                                 'ModificationTime','CreationTime','AccessTime')
 
 # Slots on slot frames okbc2.html#3169
@@ -303,11 +321,15 @@ primordial['slot'] = (":DOCUMENTATION",
                       ":SLOT-NUMERIC-MINIMUM",":SLOT-NUMERIC-MAXIMUM",
                       ":SLOT-SOME-VALUES",":SLOT-COLLECTION-TYPE")
 
+
 primordial['class'] = (":INDIVIDUAL",
                        ":SLOT",":FACET",":KB",
                        ":NUMBER",":INTEGER",":STRING",
                        ":SEXPR",":SYMBOL",":LIST",
-                       ":TRANSIENT_SLOT")
+                       ":TRANSIENT_SLOT",
+                       # not in spec
+                       ':KB_LOCATOR')
+
 
 primordial['individual'] = ()
 
@@ -496,12 +518,12 @@ class KB(FRAME,Programmable):
     __allow_access_to_unprotected_subobjects__ = 1
     def __init__(self,name,initargs = {},connection=None):
         if connection:
-            kb = connection.meta_kb()
+            metakb = connection.meta_kb()
         else:
-            kb = None
+            metakb = None
         self._connection = connection
         node_kb = Node.__dict__.get('_kb') # equivalent to Node._kb see below
-        FRAME.__init__(self,name,frame_type=node_kb,kb=kb)
+        FRAME.__init__(self,name,frame_type=node_kb,kb=metakb)
         self._direct_types.append(Node._KB)
         self._initargs = initargs
         
@@ -522,10 +544,18 @@ class KB(FRAME,Programmable):
         return kb._allow_caching_p
     
     def kb_p(kb):
-        return 1
+        return True
 
     def class_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,KLASS)
+
+    def close_kb(kb,save_p = 0):
+        return kb.close_kb_internal(save_p = save_p)
+
+    def close_kb_internal(kb,save_p = 0):
+        if save_p:
+            kb.save_kb()
+        logging.warn('close_kb_internal should remove the kb from meta_kb')
 
     def coerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
         klop = kb_local_only_p
@@ -604,7 +634,7 @@ class KB(FRAME,Programmable):
                      handle=None,
                      pretty_name=None,
                      kb_local_only_p=0):
-        return kb.create_frame_internal(kb,name,
+        return kb.create_frame_internal(name,
                                         frame_type,
                                         direct_types,
                                         direct_superclasses,
@@ -636,7 +666,7 @@ class KB(FRAME,Programmable):
                 print type(name),name.__class__,
             if str(name) == "SamuelBeckett" :# and not (str(kb) in ('PeopleDatar')):
                 return None
-            print "noncurrent kb",kb,"for '%s'" % name            
+            #print "noncurrent kb",kb,"for '%s'" % name
         klop = kb_local_only_p
         is_name = type(name) == type('')
         if is_name:
@@ -1027,12 +1057,11 @@ class KB(FRAME,Programmable):
 
     def get_frame_details(kb,frame,inference_level=Node._taxonomic,
                           number_of_values=Node._all,kb_local_only_p=0):
-        print "\n==seeking '%s' in kb '%s'==" % (frame,kb)        
+        #print "\n==seeking '%s' in kb '%s'==" % (frame,kb)        
         (found_frame,
          frame_found_p)\
          = kb.get_frame_in_kb(frame,error_p=1,kb_local_only_p=kb_local_only_p)
-        print "\n==found '%s' while seeking '%s' in kb '%s'==" % (found_frame,
-                                                            frame,kb)
+        #print "\n==found '%s' while seeking '%s' in kb '%s'==" % (found_frame, frame,kb)
         details = {}
         inexact_p = 0
         if not frame_found_p:
@@ -1044,7 +1073,7 @@ class KB(FRAME,Programmable):
         details[':frame-type'] = kb.get_frame_type(found_frame)
 
         if str(details[':frame-type']) == ':class':
-            print "%s is class" % frame
+            #print "%s is class" % frame
             details[':superclasses'],exact_p,ignore_more =\
                                  kb.get_class_superclasses(found_frame,
                                                            inference_level)
@@ -1120,6 +1149,7 @@ class KB(FRAME,Programmable):
                                               checked_kbs)
                 if rets[1]: return rets
         return (None,None)
+    
     get_frame_in_kb_internal = get_frame_in_kb
         
     def get_frame_name(kb,frame,kb_local_only_p=0):
@@ -1718,6 +1748,8 @@ class KB(FRAME,Programmable):
             return out
 
     def put_direct_parents(kb,parent_kbs):
+        #print "PUT_DIRECT_PARENTS",parent_kbs
+        #import pdb;        pdb.set_trace()
         if hasattr(kb,'_cached_kb_parents'):
             kb._cached_kb_parents = []
 
@@ -1726,11 +1758,23 @@ class KB(FRAME,Programmable):
                 
         #if hasattr(kb,'_cached_get_instance_types'):
         #    del kb['_cached_get_instance_types']
-
+        conn = kb.connection()
+        meta = conn.meta_kb()
+        #print "meta._v_store =",meta._v_store
         for parent in parent_kbs:
             if not kb_p(parent):
-                parent = open_kb(parent)
-                kb._parent_kbs.append(parent)
+                loc = conn.find_kb_locator(parent)
+                if loc:
+                    parent_as_kb = conn.open_kb(loc)
+                else:
+                    loc = conn.create_kb_locator(parent)
+                    parent_as_kb = conn.open_kb(loc)
+            else:
+                parent_as_kb = parent
+            #print "parent_as_kb =",parent_as_kb
+                #parent_as_kb = open_kb(find_kb_locator(parent))
+                #parent = open_kb(parent)
+            kb._parent_kbs.append(parent_as_kb)
 
     def put_frame_name(kb,frame,new_name,kb_local_only_p=0):
         kb.put_frame_name_internal(frame,new_name,kb_local_only_p)
@@ -1791,7 +1835,17 @@ class TupleKb(KB,Constrainable):
             self._typed_cache[frame_type] = []
 
     def _add_frame_to_store(kb,frame):
-        frame_name = kb.get_frame_name(frame)
+        if isinstance(frame,KB):
+            return
+        try:
+            frame_name = kb.get_frame_name(frame)
+        except Exception,e:
+            print "frame =",type(frame)
+            print frame.__class__.__name__
+            raise
+            #print frame
+            return 
+
         frame_type = kb.get_frame_type(frame)
 #        print "_add_frame_to_store",frame_name
         if not kb._v_store.has_key(frame_name):
@@ -2369,24 +2423,21 @@ class AbstractFileKb(AbstractPersistentKb):
         make_backups = kb.make_backups
         written = 0
 
-        print "via_temp =",via_temp
+        #print "via_temp =",via_temp
         if via_temp:
 
             real_path = path
             path = path + '.tmp'
-        print "saving to",path
+        #print "saving to",path
         kb._open_output_file_at_path(path)
+        kb._begin_transaction()
         try:
             kb._write_preamble()
             kb._write_kb_own_attributes()
-            for frame in \
-                    get_kb_facets(kb,kb_local_only_p=1) + \
-                    get_kb_slots(kb,kb_local_only_p=1) + \
-                    get_kb_classes(kb,kb_local_only_p=1) + \
-                    get_kb_individuals(kb,kb_local_only_p=1):
-                kb._save_frame_to_storage(frame,stream=0)
+            kb._cause_frames_to_persist()
             written = 1
         finally:
+            kb._commit_transaction()
             kb._close_output_file()
         if written:
             if make_backups:
@@ -2396,6 +2447,14 @@ class AbstractFileKb(AbstractPersistentKb):
             if via_temp:
                 print "finally saving %s" % real_path
                 os.rename(path,real_path)
+
+    def _cause_frames_to_persist(kb):
+        for frame in \
+                get_kb_facets(kb,kb_local_only_p=1) + \
+                get_kb_slots(kb,kb_local_only_p=1) + \
+                get_kb_classes(kb,kb_local_only_p=1) + \
+                get_kb_individuals(kb,kb_local_only_p=1):
+            kb._save_frame_to_storage(frame,stream=0)
 
     def _write_preamble(kb):
         kb._outfile.write(kb._preamble())
@@ -2408,6 +2467,12 @@ class AbstractFileKb(AbstractPersistentKb):
 
     def _close_output_file(kb):
         kb._outfile.close()
+
+    def _commit_transaction(kb):
+        pass
+
+    def _begin_transaction(kb):
+        pass
 
     def _save_frame_to_storage(kb,frame,stream=1):
         kb._outfile.write(kb.print_frame(frame,stream))
@@ -2428,14 +2493,21 @@ class Connection: #abstract
                   kb_type=None,
                   kb_locator=None,
                   initargs={}):
+        metakb = connection.meta_kb()
+
+        if kb_locator and not kb_type:
+            possible_kb_type = metakb.get_slot_value(kb_locator,':KB_TYPE')[0]
+            #print possible_kb_type
+            if possible_kb_type:
+                kb_type = possible_kb_type
         if not kb_type:
             kb_type = connection._default_kb_type
-        my_meta_kb = connection._meta_kb
-        
-        kb = kb_type(kb_locator, connection,
+
+        #print "kb_type",kb_type
+        kb = kb_type(kb_locator, connection=connection,
                      name=name,
                      initargs=initargs)
-        my_meta_kb._add_frame_to_store(kb)
+        metakb._add_frame_to_store(kb)
         return kb
 
     def create_kb_locator(connection,
@@ -2445,11 +2517,48 @@ class Connection: #abstract
             kb_type = connection._default_kb_type
         # should give connection and kb_type a whack at
         #    handling this too; study the lisp
+        #print dir(connection)
+        #print connection
         return thing
 
     def find_kb(connection,name_or_kb_or_kb_locator):
+        #trayce([name_or_kb_or_kb_locator])
+        if isinstance(name_or_kb_or_kb_locator,KB):
+            return name_or_kb_or_kb_locator
         meta = connection.meta_kb()
-        return meta.get_frame_in_kb(name_or_kb_or_kb_locator)[0]
+        #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
+        
+                
+        #locator,frame_found_p = meta.get_frame_in_kb(name_or_kb_or_kb_locator)
+        locator = connection.find_kb_locator(name_or_kb_or_kb_locator)
+        
+        value_or_false,exact_p = meta.get_slot_value(locator,':ASSOCIATED_KB')
+        if isinstance(value_or_false,KB):
+            return value_or_false
+        
+        return False
+
+    def find_kb_locator(connection,thing,kb_type=None):
+        #trayce([thing,kb_type])
+        preface = "find_kb_locator(%s)" % thing        
+        meta = connection.meta_kb()
+        frame,frame_found_p = meta.get_frame_in_kb(thing)
+        if frame_found_p:
+            #print get_frame_details(frame)
+            #print preface,'found'
+            git = "get_instance_types(%s)" % frame
+            #print git,meta.get_instance_types(frame,
+            #                                  inference_level=Node._direct,
+            #                                  kb_local_only_p = True)[0]
+            
+            if meta.instance_of_p(frame,':KB_LOCATOR'):
+                #meta.print_frame(frame)
+                return frame
+            else:
+                pass
+        #else:
+        return connection.create_kb_locator(thing,kb_type=kb_type)
+        
 
     def get_kb_types(connection):
         list_of_kb_types = connection.meta_kb()._kb_types.values()
@@ -2458,17 +2567,61 @@ class Connection: #abstract
     def meta_kb(connection):
         return connection._meta_kb
 
-    def open_kb(connection, kb_locator, kb_type = None, error_p = 1):
-        if not kb_type:
-            kb_types = connection.get_kb_types()
-            #kb_type = connection._default_kb_type
-        for kb_type in kb_types:
-            my_meta_kb = kb = connection._meta_kb
-            (kb,frame_found_p) = kb.get_frame_in_kb(kb_locator,error_p)
-            if not kb:
-                kb = kb_type(kb_locator,connection=connection)
-                my_meta_kb._add_frame_to_store(kb)
+    def open_kb(connection, name_or_kb_locator, kb_type = None, error_p = 1):
+        metakb = connection.meta_kb()
+        trayce([name_or_kb_locator,metakb._v_store.keys()])
+        preface = "open_kb(%s)" % name_or_kb_locator
+        #print "we are in",preface
+
+        kb_locator = connection.find_kb_locator(name_or_kb_locator)
+        if not kb_locator:
+            raise "open_kb('%s) can not find_kb_locator or create_kb_locator"
+        
+##         if type(name_or_kb_locator) == type(''):
+##             print "create_kb_locator(%s)" % name_or_kb_locator
+            
+##         else:
+##             print str("open_kb(%s)" % name_or_kb_locator),
+##             print type(name_or_kb_locator),
+##             print name_or_kb_locator.__class__.__name__,
+##             print 
+##             kb_locator = name_or_kb_locator
+##             #print "dump_frame",kb_locator
+##             #dump_frame(metakb,kb_locator)            
+##         if not kb_locator:
+##             print "Could not create_kb_locator() for",name_or_kb_locator
+        kb,found_p = metakb.get_slot_value(kb_locator,':ASSOCIATED_KB')
+
+        #if not found_p:
+        #    print preface,kb_locator,"did not have an :ASSOCIATED_KB"
+        #return connection.find_kb(kb_locator)
+    
+        if not kb:
+            
+            if not kb_type:
+                kb_type = metakb.get_slot_value(kb_locator,':KB_TYPE')[0]
+            if not kb_type:
+                #print preface,"the kb_type '%s' does not exist" % kb_type
+                #simple_dump_kb(metakb,skip=['SLOT','FACET','PrimordialKb','KLASS'])
+                dump_frame(metakb,kb_locator)
+            kb = kb_type(kb_locator,connection=connection)
+            #import pdb; pdb.set_trace()
+            metakb.put_slot_value(kb_locator,':ASSOCIATED_KB', kb )
         return kb
+
+##     def open_kb_OLD(connection, kb_locator, kb_type = None, error_p = 1):
+##         if not kb_type:
+##             kb_types = connection.get_kb_types()
+##             #kb_type = connection._default_kb_type
+##         for kb_type in kb_types:
+##             my_meta_kb = kb = connection._meta_kb
+##             (kb,frame_found_p) = my_meta_kb.get_frame_in_kb(kb_locator,
+##                                                             error_p)
+            
+##             if not kb:
+##                 kb = kb_type(kb_locator,connection=connection)
+##                 my_meta_kb._add_frame_to_store(kb)
+##         return kb
 
 
     def openable_kbs(connection, kb_type = None, place = None):
@@ -2492,8 +2645,21 @@ class NullConnection(Connection):
 
 def dump_kb(kb):
     for frame in get_kb_frames(kb=kb):
-        dump_frame(frame,kb=kb)
-        print ""
+        #dump_frame(frame,kb=kb)
+        print frame,""
+
+def simple_dump_kb(kb,skip=[]):
+    print "simple_dump_kb(%s)" % kb
+    grouped = {}
+    for frame in get_kb_frames(kb=kb):
+        grouped.setdefault(frame.__class__.__name__,[]).append(frame)
+    for class_name,group in grouped.items():
+        if class_name in skip:
+            continue
+        print "%s:" % class_name
+        group.sort(lambda a,b: cmp(str(a),str(b)))
+        for frame in group: 
+            print "  %s" % frame 
 
 def dump_frame(frame,kb=None):
     kb = current_kb()

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.19 2003/05/13 16:28:14 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.20 2006/03/17 23:57:32 smurp Exp $'
 
 from PyOkbc import *
 from CachingMixin import CachingMixin
@@ -44,9 +44,20 @@ def emit_value(val):
 
 class PyKb(AbstractFileKb,CachingMixin):
     _kb_type_file_extension = 'pykb'
-    def __init__(self,filename,place='',connection=None,name=None):
-        if not place:
-            print "place NOT SET FOR",filename
+    def __init__(self,filename_or_kb_locator,
+                 place='',connection=None,name=None,
+                 initargs = {}):
+
+        if type(filename_or_kb_locator) == type(''):
+            #print "PyKb.__init__()","filename_or_kb_locator is a string"
+            filename = filename_or_kb_locator
+        else:
+            #print "PyKb.__init__()","filename_or_kb_locator is a kb_locator"
+            filename = connection.meta_kb().get_slot_value(filename_or_kb_locator,
+                                                           'filename')[0]
+        #print "filename =",filename
+        #if not place:
+        #    print "place NOT SET FOR",filename
         self._place = place
         if name == None:
             name = filename
@@ -54,7 +65,7 @@ class PyKb(AbstractFileKb,CachingMixin):
         #print name,filename
         ext = self._kb_type_file_extension 
         if not (len(filename) > len(ext) and \
-           filename[-1 * len(ext):] == ext):
+                filename[-1 * len(ext):] == ext):
             filename = filename + '.' + ext
         (raw_kb,stats) = connection._lines_and_stats(filename,place)
         AbstractFileKb.__init__(self,name,connection=connection)

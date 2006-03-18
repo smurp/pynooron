@@ -1,8 +1,8 @@
 #!/bin/env python
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.14 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.14 2006/02/21 21:31:58 willsro Exp $'
+__version__='$Revision: 1.15 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.15 2006/03/17 23:57:32 smurp Exp $'
 
 import string
 
@@ -15,7 +15,22 @@ import mimetypes
 from PyKb import *
 from TellKb import *
 from BrainKb import *
-from ZODBFileStorageKb import *
+import sys
+
+
+python_version = sys.version.split(' ')[0]
+zfskb_min_python_version = '2.1.3'
+if python_version > zfskb_min_python_version:
+    from ZODBFileStorageKb import *
+else:
+    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
+                                                                 zfskb_min_python_version)
+
+try:
+    from ZODBFileStorageKb import *
+except:
+    print "skipping ZODBFileStorageKb"
+
 
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
@@ -26,13 +41,25 @@ class FileSystemKb(AbstractFileKb):
     def __init__(kb,filename,place='',connection=None):
         #print kb._mimetypes
         kb._typed_cache = {}
+        kb._place = place
         AbstractFileKb.__init__(kb,filename,connection=connection)
         kb._kb_types = {'application/vnd.pyokbc.kb.pykb':PyKb,
                         'application/vnd.pyokbc.kb.tell':TellKb,
                         'application/vnd.brain':BrainKb,
                         }
+        try:
+            kb._kb_types['application/vnd.pyokbc.kb.zfskb'] = ZfsKb
+        except:
+            pass
+        kb._make_kb_types_by_extension()
 
+    def _make_kb_types_by_extension(kb):
+        kb._kb_types_by_extension = ktbe = {}
+        for kb_type in kb._kb_types.values():
+            ktbe[kb_type._kb_type_file_extension] = kb_type
+            
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
+        trayce([kb,thing])
         conn = kb._connection
         frame_found_p = 1
         frame = kb._v_store.get(str(thing))

@@ -36,10 +36,84 @@ class FileSystemConnection(Connection):
                               kb=connection._meta_kb)
         connection._meta_kb._add_frame_to_store(Node._primordial_kb)
         from PyKb import PyKb
-        connection._default_kb_type = PyKb
-        connection._ignore_tildes = 1
+        connection._default_kb_type = initargs.get('default_kb_type',PyKb)
+        connection._ignore_tildes = initargs.get('ignore_tildes',True)
 
+    def find_kb_locator(connection,thing,kb_type=None):
+        meta = connection.meta_kb()
 
+        if not meta._v_store.has_key(str(thing)):
+            #print meta._v_store.keys()
+            #import pdb; pdb.set_trace()
+            return connection.create_kb_locator(thing,kb_type=kb_type)
+        return meta.get_frame_in_kb(thing)[0]
+
+    def create_kb_locator(connection,
+                          thing,
+                          kb_type = None):
+        """Create a frame in the meta_kb for the kb 'thing'.
+
+        Thing may or may not have an extension.  If it lacks an extension
+        then it will be given an extension suitable for the kb_type.
+        If kb_type is not given and thing has no extension then an inspection
+        of the filesystem will occur looking for files with known extensions
+        which have a basename as in 'thing'.  If no such file is found kb_type
+        will be set to the default kb_type for this connection.
+        
+        @param kb_type a subclass of AbstractFileKb.
+        
+        """
+        thing_has_extension = len(thing.split('.')) > 1
+        extension = thing_has_extension and thing.split('.')[-1] or None
+        file_name = thing_has_extension and thing or None
+        
+        if kb_type and extension <> None and \
+               kb_type._kb_type_file_extension <> extension:
+            #print kb_type
+            #print extension
+            raise('KBTypeAndExtensionMismatch_%s_<>_%s' % (
+                kb_type._kb_type_file_extension,
+                extension))
+        files = connection._find_kbs_in(connection._default_place)
+
+        # if the extension is determined, constrain to it now
+        if kb_type and not extension:
+            extension = kb_type._kb_type_file_extension
+            file_name = thing + '.' + extension
+
+        metakb = connection.meta_kb()
+        ktbe = metakb._kb_types_by_extension
+        if not extension:
+            for f in files:
+                if f.startswith(thing):
+                    if len(f.split('.')) > 1:
+                        possible_extension = f.split('.')[-1]
+                        if ktbe.has_key(possible_extension):
+                            extension = possible_extension
+                            file_name = f
+                            kb_type = ktbe.get(extension)
+                            break
+            else: # thing was not found
+                kb_type = connection._default_kb_type
+                file_name = thing + '.' + kb_type._kb_type_file_extension
+
+        if extension and not kb_type:
+            print ktbe
+            print extension
+            kb_type = ktbe.get(extension)
+
+        #print "we are getting to here",kb_type,thing,file_name
+        #return kb_type(thing,connection=connection)
+        just_name = thing.split('.')[0]
+        #print "create_kb_locator(name=%s,file=%s)" % (thing,file_name)
+        fr = metakb.create_individual(thing,#just_name, #thing,#file_name,
+                                      direct_types = [':KB_LOCATOR'],
+                                      own_slots = [[':KB_TYPE',kb_type],
+                                                   ['filename',file_name]])
+
+        return fr
+        
+            
     def _find_kbs_in(connection,place):
         rets = []
         entries = dircache.listdir(place)        
@@ -58,6 +132,8 @@ class FileSystemConnection(Connection):
         return rets
 
     def openable_kbs(connection,kb_type,place=None):
+        my_meta_kb = connection.meta_kb()
+        
         if not place: place = connection._default_place
         warn("openable_kbs doing listdir of "+place)
 
