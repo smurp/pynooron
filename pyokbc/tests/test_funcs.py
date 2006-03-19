@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.22 2006/03/17 23:56:47 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.23 2006/03/19 16:55:16 smurp Exp $'
 
 import os
 import sys
@@ -26,12 +26,17 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_0003_connection(self):
         con = local_connection()
+        #PyOkbc.DEBUG_METHODS.append('get_kbs')
+        #PyOkbc.BREAK = 1
+        #PyOkbc.DEBUG = 0        
+        #print "OH MY GOD"
         self.assertNotEquals(type(con),type(''))
         self.assertEquals(con.__class__.__name__,'FileSystemConnection')
 
     def test_0005_create_kb_locator(self):
         locator = create_kb_locator('PeopleData')
         meta = meta_kb()
+        
         #print "meta    =",type(meta),   meta.__class__.__name__
         #print "locator =",type(locator),locator.__class__.__name__
         #self.assertEquals(meta.get_instance_types(locator),[])
@@ -138,7 +143,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         #print resp.keys()
         self.assertEquals(9,num_keys)
 
-    def test_0050_get_frame_sentences(self):
+    def test_0055_get_frame_sentences(self):
         good = \
              """(individual SamuelBeckett)\n""" + \
              """(instance-of SamuelBeckett :INDIVIDUAL)\n""" + \
@@ -192,10 +197,11 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_0100_get_kb_frames(self):
-        good = 90
+        good = 94
         resp = list(get_kb_frames(kb_local_only_p=0))
         self.assertEquals(good,len(resp))
 
+#class Bogus:
     def test_0110_get_kb_frames_klop(self):
         good = "[AliceInWonderland, AliceLidell," + \
                " CharlesLutwidgeDodgson, ChristopherRobin," + \
@@ -219,6 +225,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_kb_individuals(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_0133_get_kbs(self):
+        kbs = meta_kb().get_kbs()
+        self.assertEquals(kbs,'not sure yet')
 
     def test_0135_get_kb_parents(self):
         peeps = find_kb('PeopleData')

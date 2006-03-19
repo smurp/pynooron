@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.22 2006/03/17 23:57:32 smurp Exp $'
+_version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.23 2006/03/19 16:55:16 smurp Exp $'
 
 
 from PyOkbc import *
@@ -553,7 +553,23 @@ get_kb_slots.mandatory=0
 
 # def get_kb_type
 # def get_kb_types
-# def get_kbs
+
+def get_kbs(connection = None):
+    if not connection:
+        connection = local_connection()
+    return connection.meta_kb().get_kbs()
+get_kbs.optional=1
+get_kbs.read=1
+get_kbs.write=0
+get_kbs.mandatory=0
+get_kbs.enumerator=1
+
+
+#def get_kbs_from_meta_kb(metakb = None,connection = None): # FIXME not in OKBC Spec
+#    if not metakb:
+#        if not connection: connection = local_connection()
+#        metakb = meta_kb(connection)
+#    return metakb.get_kbs_from_meta_kb()
 
 def get_procedure(name,kb=None):
     kb = _coerce_to_kb(kb)

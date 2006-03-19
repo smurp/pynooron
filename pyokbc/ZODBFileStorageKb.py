@@ -86,7 +86,7 @@ class ZfsKb(AbstractFileKb #,CachingMixin
             filename = name + '.' + self._kb_type_file_extension
             #print 'WHAT_THE?',type(kb_locator),kb_locator,name
         fullpath = connection.get_full_path(filename)
-
+        
         self._fullpath = fullpath
         self._name = name
         self._filename = filename
@@ -221,6 +221,8 @@ class ZfsKb(AbstractFileKb #,CachingMixin
 
     def _close_kb(kb):
         kb._v_conn.close()
+
+        
 
     def _write_preamble(kb):
         pass

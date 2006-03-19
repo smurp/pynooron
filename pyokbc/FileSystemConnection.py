@@ -1,7 +1,7 @@
 
 from PyOkbc import *
 from OkbcConditions import *
-import dircache
+#import dircache
 import os
 from FileSystemKb import *
 import string
@@ -41,7 +41,6 @@ class FileSystemConnection(Connection):
 
     def find_kb_locator(connection,thing,kb_type=None):
         meta = connection.meta_kb()
-
         if not meta._v_store.has_key(str(thing)):
             #print meta._v_store.keys()
             #import pdb; pdb.set_trace()
@@ -83,17 +82,21 @@ class FileSystemConnection(Connection):
 
         metakb = connection.meta_kb()
         ktbe = metakb._kb_types_by_extension
+        print "looking for",thing
         if not extension:
             for f in files:
                 if f.startswith(thing):
+
                     if len(f.split('.')) > 1:
                         possible_extension = f.split('.')[-1]
+                        print f,'starts with',thing,possible_extension
                         if ktbe.has_key(possible_extension):
                             extension = possible_extension
                             file_name = f
                             kb_type = ktbe.get(extension)
                             break
             else: # thing was not found
+                print "using default_kb_type"
                 kb_type = connection._default_kb_type
                 file_name = thing + '.' + kb_type._kb_type_file_extension
 
@@ -107,7 +110,7 @@ class FileSystemConnection(Connection):
         just_name = thing.split('.')[0]
         #print "create_kb_locator(name=%s,file=%s)" % (thing,file_name)
         fr = metakb.create_individual(thing,#just_name, #thing,#file_name,
-                                      direct_types = [':KB_LOCATOR'],
+                                      direct_types = [':kb_locator'],
                                       own_slots = [[':KB_TYPE',kb_type],
                                                    ['filename',file_name]])
 
@@ -116,7 +119,8 @@ class FileSystemConnection(Connection):
             
     def _find_kbs_in(connection,place):
         rets = []
-        entries = dircache.listdir(place)        
+        entries = os.listdir(place)
+
         for e in entries:
             splits = os.path.splitext(e)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.1
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: test_ZfsKb.py,v 1.3 2006/03/17 23:56:47 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: test_ZfsKb.py,v 1.4 2006/03/19 16:55:16 smurp Exp $'
 
 import os
 import sys
@@ -39,9 +39,9 @@ class ZfsKbStuff(unittest.TestCase):
 
 
     def new_kb(self):
-        os.system("rm -f Species.zfskb*")
+        #os.system("rm -f Species.zfskb*")
         spec_loc = create_kb_locator('Species',kb_type = ZfsKb)
-        print "spec_loc =",spec_loc
+        #print "spec_loc =",spec_loc
         #meta_kb().print_frame(spec_loc)
         mykb = create_kb("Species",kb_locator=spec_loc)
         #mykb = create_kb(spec_loc)
@@ -80,12 +80,16 @@ class ZfsKbStuff(unittest.TestCase):
         #  (Pdb) u
         #  (Pdb) p state['_container']['Animalia']._kb.__dict__
         save_kb()
-        close_kb()
+        #close_kb()
         
+
     def test_0030_get_class_superclasses(self):
-        """Save KB"""
         #self.new_kb()
-        spec_loc = find_kb_locator('Species')
+        meta = meta_kb()
+        print meta._v_store.keys()
+        spec_loc = find_kb_locator('Species',
+                                   #kb_type = ZfsKb
+                                   )
         my_kb = open_kb(spec_loc)
         goto_kb(my_kb)
         #print get_frame_details('Animalia',inference_level='DIRECT')

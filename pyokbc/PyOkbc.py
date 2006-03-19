@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.53 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.53 2006/03/17 23:57:32 smurp Exp $'
+__version__='$Revision: 1.54 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.54 2006/03/19 16:55:16 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -267,7 +267,7 @@ INDIVIDUAL._frame_type = Node._individual
 
 #Node._kb_locator = KB_LOCATOR(':kb_locator')
 #Node._kb_locator._frame_type = Node._class
-#KB_LOCATOR._frame_type = Node._class
+#KB_LOCATOR._frame_type = Node._kb
 
 primordials = []
 def primordialFACET(name):
@@ -306,7 +306,6 @@ primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
                        ":DOCUMENTATION-IN-FRAME")
 
 primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME",
-
                                 # not in spec
                                 ':LOCATOR',':KB_TYPE',':ASSOCIATED_KB',
                                 'ModificationTime','CreationTime','AccessTime')
@@ -328,7 +327,7 @@ primordial['class'] = (":INDIVIDUAL",
                        ":SEXPR",":SYMBOL",":LIST",
                        ":TRANSIENT_SLOT",
                        # not in spec
-                       ':KB_LOCATOR')
+                       ':kb_locator')
 
 
 primordial['individual'] = ()
@@ -1917,7 +1916,8 @@ class TupleKb(KB,Constrainable):
         klass = kb.get_frame_in_kb(str(klass))[0]
         if klass != None:
 
-            for a_class in kb._typed_cache[Node._class]:
+            for a_class in kb.get_kb_frames_by_type(Node._class):
+                           #kb._typed_cache[Node._class]:
                 #trayce((klass,a_class),format="does %s == %s ?",indent=" ")
                 #if str(a_class) == 'gear':trayce([kb,klass,a_class],indent="YOW ")
                 if kb.subclass_of_p(a_class,klass,inference_level,
@@ -2034,8 +2034,34 @@ class TupleKb(KB,Constrainable):
                               kb_local_only_p=None):
         return copy.copy(kb._typed_cache[frame_type])
 
+
     def get_kbs(kb):
+        """
+        
+        """
         return kb.get_kb_frames_by_type(Node._kb)
+        conn = kb.connection()
+        retlist = []
+        print "HERE"
+
+
+        for loc in kb.get_class_instances(':kb_locator',
+                                          inference_level = Node._direct,
+                                          kb_local_only_p = True)[0]:
+            print "loc =",loc
+            #import pdb; pdb.set_trace()            
+            for slot_and_val in loc._own_slots:
+                if str(slot_and_val[0]) == ':ASSOCIATED_KB':
+                    print "ASSOC"
+                    #yield slot_and_val[1]
+                    retlist.append(slot_and_val[1])
+                    
+            #kb_or_false = conn.find_kb(loc)
+            #if kb_or_false:
+                #yield kb_or_false
+            #    retlist.append(kb_or_false)
+        return retlist
+        #return kb.get_kb_frames_by_type(Node._kb)
 
     def get_slot_facets_internal(kb,frame,slot,
                                  inference_level = Node._taxonomic,
@@ -2540,7 +2566,7 @@ class Connection: #abstract
 
     def find_kb_locator(connection,thing,kb_type=None):
         #trayce([thing,kb_type])
-        preface = "find_kb_locator(%s)" % thing        
+        preface = "find_kb_locator(%s)" % thing
         meta = connection.meta_kb()
         frame,frame_found_p = meta.get_frame_in_kb(thing)
         if frame_found_p:
@@ -2551,14 +2577,13 @@ class Connection: #abstract
             #                                  inference_level=Node._direct,
             #                                  kb_local_only_p = True)[0]
             
-            if meta.instance_of_p(frame,':KB_LOCATOR'):
+            if meta.instance_of_p(frame,':kb_locator'):
                 #meta.print_frame(frame)
                 return frame
             else:
                 pass
         #else:
         return connection.create_kb_locator(thing,kb_type=kb_type)
-        
 
     def get_kb_types(connection):
         list_of_kb_types = connection.meta_kb()._kb_types.values()
