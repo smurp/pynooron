@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.20 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.20 2006/03/17 23:57:32 smurp Exp $'
+__version__='$Revision: 1.21 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.21 2006/03/19 20:33:19 smurp Exp $'
 
 from PyOkbc import *
 from CachingMixin import CachingMixin
@@ -47,33 +47,36 @@ class PyKb(AbstractFileKb,CachingMixin):
     def __init__(self,filename_or_kb_locator,
                  place='',connection=None,name=None,
                  initargs = {}):
-
-        if type(filename_or_kb_locator) == type(''):
-            #print "PyKb.__init__()","filename_or_kb_locator is a string"
-            filename = filename_or_kb_locator
+        if type(filename_or_kb_locator) == type({}):
+            self._locator = filename_or_kb_locator
+            self._name = self._locator['kb_name']
+            self._file_uri = self._locator['file_uri']
+            self._filename = self._file_uri
+            filename = self._file_uri # should convert from uri
+            name = self._name
         else:
-            #print "PyKb.__init__()","filename_or_kb_locator is a kb_locator"
-            filename = connection.meta_kb().get_slot_value(filename_or_kb_locator,
-                                                           'filename')[0]
-        #print "filename =",filename
-        #if not place:
-        #    print "place NOT SET FOR",filename
+            raise "expecting filename_or_kb_locator as dict"
+        
         self._place = place
-        if name == None:
-            name = filename
-        self._name = name
-        #print name,filename
-        ext = self._kb_type_file_extension 
-        if not (len(filename) > len(ext) and \
-                filename[-1 * len(ext):] == ext):
-            filename = filename + '.' + ext
-        (raw_kb,stats) = connection._lines_and_stats(filename,place)
+        self._connection = connection
+        self._opened = False
         AbstractFileKb.__init__(self,name,connection=connection)
         CachingMixin.__init__(self)
-        #if place == '': # FIXME this should be passed in!
-            #place = os.getcwd() + '/know/'
-        #    place = connection._default_place        
-        #fname = place+filename # FIXME should os.pathjoin be used?
+
+
+    def open_kb_internal(self,
+                         kb_type = None,
+                         error_p = True):
+        if self._opened:
+            return self
+        connection = self._connection
+        name = self._name
+        (raw_kb,stats) = connection._lines_and_stats(self._filename,
+                                                     self._place)
+
+        #AbstractFileKb.__init__(self,name,connection=connection)
+        #CachingMixin.__init__(self)
+
         prev_kb = current_kb()
         goto_kb(self)
         orig_allow_caching_p = self.allow_caching_p()
@@ -98,6 +101,8 @@ class PyKb(AbstractFileKb,CachingMixin):
         #print "setting changes_register... ",self.changes_register_as_modifications_p(),"in",self
         self._allow_caching_p = orig_allow_caching_p
         goto_kb(prev_kb)
+        self._opened = True
+        return self
 
     def _preamble(kb):
         return '# -*-mode: python -*-\n'

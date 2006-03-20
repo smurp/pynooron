@@ -82,7 +82,7 @@ class FileSystemConnection(Connection):
 
         metakb = connection.meta_kb()
         ktbe = metakb._kb_types_by_extension
-        print "looking for",thing
+        #print "looking for",thing
         if not extension:
             for f in files:
                 if f.startswith(thing):
@@ -96,7 +96,7 @@ class FileSystemConnection(Connection):
                             kb_type = ktbe.get(extension)
                             break
             else: # thing was not found
-                print "using default_kb_type"
+                #print "using default_kb_type"
                 kb_type = connection._default_kb_type
                 file_name = thing + '.' + kb_type._kb_type_file_extension
 
@@ -109,6 +109,10 @@ class FileSystemConnection(Connection):
         #return kb_type(thing,connection=connection)
         just_name = thing.split('.')[0]
         #print "create_kb_locator(name=%s,file=%s)" % (thing,file_name)
+        locator = {'file_uri':file_name,'kb_name':just_name}
+        return kb_type(locator,connection=connection)
+        return kb_type(file_name,connection=connection)
+    
         fr = metakb.create_individual(thing,#just_name, #thing,#file_name,
                                       direct_types = [':kb_locator'],
                                       own_slots = [[':KB_TYPE',kb_type],
@@ -116,6 +120,9 @@ class FileSystemConnection(Connection):
 
         return fr
         
+    def open_kb_internal(connection, name_or_kb_locator,kb_type = None,
+                         errro_p = 1):
+        pass
             
     def _find_kbs_in(connection,place):
         rets = []

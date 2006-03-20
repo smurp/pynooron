@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.23 2006/03/19 16:55:16 smurp Exp $'
+__version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.24 2006/03/19 20:33:19 smurp Exp $'
 
 import os
 import sys
@@ -40,7 +40,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         #print "meta    =",type(meta),   meta.__class__.__name__
         #print "locator =",type(locator),locator.__class__.__name__
         #self.assertEquals(meta.get_instance_types(locator),[])
-        self.assertEquals(meta.instance_of_p(locator,':KB_LOCATOR')[0],True)
+        #self.assertEquals(meta.instance_of_p(locator,':KB')[0],True)
+        self.failIf(not kb_p(locator))
 
 
     def test_0006_find_kb_locator(self):
@@ -50,64 +51,54 @@ class ReadOnlyTestCase(unittest.TestCase):
         
         locator = find_kb_locator('PeopleData')
         meta = meta_kb()
-        self.assertEquals(meta.instance_of_p(locator,':KB_LOCATOR')[0],True)
-        self.assertEquals(meta.get_slot_value(locator,'filename')[0],
-                          'PeopleData.pykb')
+        self.failIf(not kb_p(locator))        
+        #self.assertEquals(meta.instance_of_p(locator,':KB_LOCATOR')[0],True)
+        #self.assertEquals(meta.get_slot_value(locator,'filename')[0],
+        #                  'PeopleData.pykb')
 
     def test_0007_open_kb(self):
-        #PyOkbc.DEBUG_METHODS.append('open_kb')
-        #PyOkbc.DEBUG_METHODS.append('get_frame_in_kb_internal')        
-        #PyOkbc.BREAK = 0
-        #PyOkbc.DEBUG = 0        
-
         locator = find_kb_locator('PeopleData')
-
-        meta = meta_kb()        
-        #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
-
-        mykb = open_kb(locator,connection=local_connection())
-        #print mykb._v_store.keys()
-        PyOkbc.BREAK = 0
-        #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
-        self.assertNotEquals(type(mykb),type(''))
-
-
-
+        mykb = open_kb(locator)
+        self.failIf(not kb_p(mykb))
+        self.failIf(not mykb._opened)
+        #print get_kb_frames(mykb)
 
 
     def test_0008_goto_kb(self):
         meta = meta_kb()
         #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
         loc = find_kb_locator("PeopleData")
-        #print meta.print_frame(loc)
-        #peep = find_kb(loc)
-        PyOkbc.BREAK = 0        
-        peep = find_kb('PeopleData')
+        peep = find_kb(loc)
         goto_kb(peep)        
         the_kb = current_kb()
         self.failIf(not kb_p(the_kb))
-        locator_names = meta._v_store.keys()
-        locator_names.sort()
-        self.assertEquals(locator_names,
-                          ['LiteratureOntology', 'PeopleData', 'PeopleSchema'])
         self.assertEquals(str(the_kb),'PeopleData')
         #self.assertNotEquals(type(the_kb),type(''),'current_kb() returns a string')
         #print the_kb.get_frame_name()
 
+#class Bogus:
+
+    def test_0009_get_kb_direct_parents(self):
+        #peeps = find_kb('PeopleData')
+        peeps = current_kb()
+        parents = peeps.get_kb_direct_parents()
+        parent_names = map(lambda x: str(x),parents)
+        parent_names.sort()
+        self.assertEquals(parent_names,
+                          ['LiteratureOntology', 'PeopleSchema'])
+        
 
 
     def test_0010_documentation(self):
         good = doc="You know, Alice!  With the restaraunt..."
-        #print "current_kb",current_kb()        
-        #goto_kb("PeopleData")
-        #print "current_kb",current_kb()
-        #print "direct_parents",get_kb_direct_parents()
-        #print "AliceLidell",get_frame_details('AliceLidell')
-        #print "Child instances",get_class_instances('Child')[0]
-        
         resp = get_slot_value('AliceLidell',
                               ':DOCUMENTATION', # Node._DOCUMENTATION,
                               slot_type=Node._own)[0]
+        self.assertEquals(good, str(resp))
+
+    def test_0011_get_frame_pretty_name(self):
+        good = 'Alice in Wonderland'
+        resp = get_frame_pretty_name('AliceInWonderland')
         self.assertEquals(good, str(resp))
 
 
@@ -171,6 +162,7 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_0060_get_frame_slots_direct(self):
         good = "['Age', 'BirthTime', 'Eats', 'Wrote']"
+        #print_frame('SamuelBeckett')
         resp = list(get_frame_slots('SamuelBeckett',
                                     inference_level=Node._direct)[0])
         resp.sort(str_sort)
@@ -191,7 +183,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.assertEquals(good, str(resp))
 
     def test_0090_get_kb_direct_parents(self):
-        good = "[LiteratureOntology, PRIMORDIAL_KB, PeopleSchema]"
+        good = "[LiteratureOntology, PeopleSchema]"
         resp = list(get_kb_direct_parents())
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -245,13 +237,22 @@ class ReadOnlyTestCase(unittest.TestCase):
         """
         ontology = find_kb('PeopleSchema')
         self.assertEquals(kb_p(ontology),True)
-        #meta_kb().print_frame(ontology)
+
+        otherpeople = open_kb(create_kb_locator('OtherPeople'))
+        self.assertEquals(kb_p(otherpeople),True)        
+
         children = get_kb_direct_children(ontology)
         self.failIf(len(children) < 1,"get_kb_direct_children() failing")
         parent = []
         for kb in children:
+            kb.get_kb_direct_parents()
             parent.append(kb.get_kb_direct_parents()[0])
-        self.assertEquals(parent[0],parent[1])
+        #print "PARENTS =",parent
+        for p in parent:
+            self.assertEquals(p,parent[0],"the kb '%s' is duplicated" % p)
+        self.failIf(len(parent) < 1,
+                    'something wrong with get_kb_direct_parents()')
+            
 
     def test_0150_get_instance_types_all_SamuelBeckett(self):
         mykb = find_kb('Addenda')        

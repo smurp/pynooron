@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.54 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.54 2006/03/19 16:55:16 smurp Exp $'
+__version__='$Revision: 1.55 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.55 2006/03/19 20:33:19 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -31,6 +31,36 @@ TRACE_HTML = 0
 # 10 critical
 # 20 noops
 # 30 subtleties
+
+def get_calling_method(show_line_number=True,show_method=True,show_call=True,
+                       show_traceback = False):
+    """get_calling_method shows the line number of the method which called
+    the method which was the context of the call to show_caller.
+
+    It answers the question "How did this method get called?".
+    """
+    import sys,traceback
+    retval = ''
+    try:
+        a = 0 / 0
+    except Exception,e:
+        lines = traceback.format_stack()
+        #lines = map(lambda x: x.strip(),lines)
+        retlist = []
+        full_location = \
+                   lines[-3].split(' line ')[1].split('\n')
+        line_number = 'line '+full_location[0].replace(',','').split(' ')[0]
+        call_line   = full_location[1].strip()
+        method_name = 'in '+full_location[0].replace(',','').split(' ')[2]
+        if show_traceback:
+            return ''.join(lines)
+        if show_line_number:
+            retlist.append(line_number)
+        if show_method:
+            retlist.append(method_name + (show_call and ':' or ''))
+        if show_call:
+            retlist.append(call_line)
+    return ' '.join(retlist)
 
 
 def trayce(args=[],format=None,indent=None):
@@ -307,7 +337,7 @@ primordial['facet'] = (":VALUE-TYPE",":INVERSE",":CARDINALITY",
 
 primordial['transient_slot'] = ("UID","GID","SIZE","ATIME","MTIME","CTIME",
                                 # not in spec
-                                ':LOCATOR',':KB_TYPE',':ASSOCIATED_KB',
+                                #':LOCATOR',':KB_TYPE',':ASSOCIATED_KB',
                                 'ModificationTime','CreationTime','AccessTime')
 
 # Slots on slot frames okbc2.html#3169
@@ -525,16 +555,24 @@ class KB(FRAME,Programmable):
         FRAME.__init__(self,name,frame_type=node_kb,kb=metakb)
         self._direct_types.append(Node._KB)
         self._initargs = initargs
-        
-        parent_kbs = initargs.get(Node._parent_kbs,[])
-        if PRIMORDIAL_KB: parent_kbs.append(PRIMORDIAL_KB) #FIXME not always!
-        self._parent_kbs = parent_kbs
 
+        #print "Node._parent_kbs =", Node._parent_kbs
+        parent_kbs = initargs.get(Node._parent_kbs,[])
+        #parent_kbs = [] # FIXME should default to initargs :parent-kbs value
+        #print "parent_kbs =",parent_kbs
+        #if self <> PRIMORDIAL_KB:            parent_kbs.append(PRIMORDIAL_KB)
+        self._the_parent_kbs = parent_kbs
+        #self._the_parent_kbs = []       
+        #print "PARENT_KBS",self._the_parent_kbs
         # caching stuff (should get moved to separate mixin class?)
         self._cache = {}
         self._cache_timestamp = time.clock()
         self._allow_caching_p = 1
         self._changes_register_as_modifications_p = 1
+
+    def open_kb_internal(self,*args,**kwargs):
+        print "Warn open_kb_internal() should be overriden in subclasses of KB"\
+              % (args,kwargs)
 
     def changes_register_as_modifications_p(self):
         return self._changes_register_as_modifications_p
@@ -1414,7 +1452,7 @@ class KB(FRAME,Programmable):
     get_kb_behaviors = get_kb_behaviors_internal
 
     def get_kb_direct_parents(kb):
-        return kb._parent_kbs
+        return kb._the_parent_kbs
 
     def get_kb_direct_children(kb):
         meta = kb.connection().meta_kb()
@@ -1761,19 +1799,20 @@ class KB(FRAME,Programmable):
         meta = conn.meta_kb()
         #print "meta._v_store =",meta._v_store
         for parent in parent_kbs:
-            if not kb_p(parent):
+            if kb_p(parent):
+                parent_as_kb = parent
+            else:
                 loc = conn.find_kb_locator(parent)
                 if loc:
                     parent_as_kb = conn.open_kb(loc)
                 else:
                     loc = conn.create_kb_locator(parent)
                     parent_as_kb = conn.open_kb(loc)
-            else:
-                parent_as_kb = parent
+
             #print "parent_as_kb =",parent_as_kb
                 #parent_as_kb = open_kb(find_kb_locator(parent))
                 #parent = open_kb(parent)
-            kb._parent_kbs.append(parent_as_kb)
+            kb._the_parent_kbs.append(parent_as_kb)
 
     def put_frame_name(kb,frame,new_name,kb_local_only_p=0):
         kb.put_frame_name_internal(frame,new_name,kb_local_only_p)
@@ -1834,8 +1873,8 @@ class TupleKb(KB,Constrainable):
             self._typed_cache[frame_type] = []
 
     def _add_frame_to_store(kb,frame):
-        if isinstance(frame,KB):
-            return
+        #if isinstance(frame,KB):
+        #    return
         try:
             frame_name = kb.get_frame_name(frame)
         except Exception,e:
@@ -2039,7 +2078,15 @@ class TupleKb(KB,Constrainable):
         """
         
         """
-        return kb.get_kb_frames_by_type(Node._kb)
+        
+        retlist = kb.get_kb_frames_by_type(Node._kb)
+        #print "get_kbs()",retlist,get_calling_method(show_call = False)
+        #print get_calling_method(show_traceback=True)
+        return retlist
+
+
+
+    
         conn = kb.connection()
         retlist = []
         print "HERE"
@@ -2552,12 +2599,15 @@ class Connection: #abstract
         if isinstance(name_or_kb_or_kb_locator,KB):
             return name_or_kb_or_kb_locator
         meta = connection.meta_kb()
-        #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
         
-                
+        
         #locator,frame_found_p = meta.get_frame_in_kb(name_or_kb_or_kb_locator)
         locator = connection.find_kb_locator(name_or_kb_or_kb_locator)
-        
+        return locator
+
+
+
+
         value_or_false,exact_p = meta.get_slot_value(locator,':ASSOCIATED_KB')
         if isinstance(value_or_false,KB):
             return value_or_false
@@ -2568,6 +2618,7 @@ class Connection: #abstract
         #trayce([thing,kb_type])
         preface = "find_kb_locator(%s)" % thing
         meta = connection.meta_kb()
+        print "keys",meta._v_store.keys()
         frame,frame_found_p = meta.get_frame_in_kb(thing)
         if frame_found_p:
             #print get_frame_details(frame)
@@ -2593,6 +2644,26 @@ class Connection: #abstract
         return connection._meta_kb
 
     def open_kb(connection, name_or_kb_locator, kb_type = None, error_p = 1):
+        """Convert a KB from mere KB_LOCATOR status to full-fledged open status.
+        """
+        metakb = connection.meta_kb()
+        trayce([name_or_kb_locator,metakb._v_store.keys()])
+        preface = "open_kb(%s)" % name_or_kb_locator
+
+        if isinstance(name_or_kb_locator,KB):
+            #print name_or_kb_locator,"is a",name_or_kb_locator.__class__.__name__
+            kb_locator = name_or_kb_locator
+        else:
+            #print name_or_kb_locator,"is not a KB"
+            kb_locator = connection.find_kb_locator(name_or_kb_locator)
+            
+        if not kb_locator:
+            raise "open_kb('%s) can not find_kb_locator or create_kb_locator"
+        
+        return kb_locator.open_kb_internal(kb_type=kb_type,error_p=error_p)
+
+    def open_kb_USING_KB_LOCATORS(connection, name_or_kb_locator,
+                                  kb_type = None, error_p = 1):
         metakb = connection.meta_kb()
         trayce([name_or_kb_locator,metakb._v_store.keys()])
         preface = "open_kb(%s)" % name_or_kb_locator
@@ -2602,24 +2673,7 @@ class Connection: #abstract
         if not kb_locator:
             raise "open_kb('%s) can not find_kb_locator or create_kb_locator"
         
-##         if type(name_or_kb_locator) == type(''):
-##             print "create_kb_locator(%s)" % name_or_kb_locator
-            
-##         else:
-##             print str("open_kb(%s)" % name_or_kb_locator),
-##             print type(name_or_kb_locator),
-##             print name_or_kb_locator.__class__.__name__,
-##             print 
-##             kb_locator = name_or_kb_locator
-##             #print "dump_frame",kb_locator
-##             #dump_frame(metakb,kb_locator)            
-##         if not kb_locator:
-##             print "Could not create_kb_locator() for",name_or_kb_locator
         kb,found_p = metakb.get_slot_value(kb_locator,':ASSOCIATED_KB')
-
-        #if not found_p:
-        #    print preface,kb_locator,"did not have an :ASSOCIATED_KB"
-        #return connection.find_kb(kb_locator)
     
         if not kb:
             
@@ -2634,7 +2688,7 @@ class Connection: #abstract
             metakb.put_slot_value(kb_locator,':ASSOCIATED_KB', kb )
         return kb
 
-##     def open_kb_OLD(connection, kb_locator, kb_type = None, error_p = 1):
+##     def open_kb_BEFORE_KB_LOCATORS(connection, kb_locator, kb_type = None, error_p = 1):
 ##         if not kb_type:
 ##             kb_types = connection.get_kb_types()
 ##             #kb_type = connection._default_kb_type
