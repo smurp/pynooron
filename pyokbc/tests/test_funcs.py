@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.24 $'[11:-2]
-__cvs_id__ ='$Id: test_funcs.py,v 1.24 2006/03/19 20:33:19 smurp Exp $'
+__version__='$Revision: 1.25 $'[11:-2]
+__cvs_id__ ='$Id: test_funcs.py,v 1.25 2006/03/21 20:48:06 smurp Exp $'
 
 import os
 import sys
@@ -76,7 +76,8 @@ class ReadOnlyTestCase(unittest.TestCase):
         #self.assertNotEquals(type(the_kb),type(''),'current_kb() returns a string')
         #print the_kb.get_frame_name()
 
-#class Bogus:
+
+
 
     def test_0009_get_kb_direct_parents(self):
         #peeps = find_kb('PeopleData')
@@ -86,17 +87,34 @@ class ReadOnlyTestCase(unittest.TestCase):
         parent_names.sort()
         self.assertEquals(parent_names,
                           ['LiteratureOntology', 'PeopleSchema'])
+
+    def test_0011_get_kb_parents(self):
+        #peeps = find_kb('PeopleData')
+        peeps = current_kb()
+        parents = peeps.get_kb_parents()
+        parent_names = map(lambda x: str(x),parents)
+        parent_names.sort()
+        self.assertEquals(parent_names,
+                          ['LiteratureOntology','PRIMORDIAL_KB','PeopleSchema'])
+
+
+
+    def test_0014_get_frame_in_kb_documentation(self):
+        frame,frame_found_p = get_frame_in_kb(':DOCUMENTATION')
         
+        self.failIf(not frame_found_p,'Cannot find :DOCUMENTATION frame')
 
 
-    def test_0010_documentation(self):
+    def test_0016_documentation(self):
         good = doc="You know, Alice!  With the restaraunt..."
         resp = get_slot_value('AliceLidell',
                               ':DOCUMENTATION', # Node._DOCUMENTATION,
                               slot_type=Node._own)[0]
+        if not resp:
+            print_frame('AliceLidell')
         self.assertEquals(good, str(resp))
 
-    def test_0011_get_frame_pretty_name(self):
+    def test_0018_get_frame_pretty_name(self):
         good = 'Alice in Wonderland'
         resp = get_frame_pretty_name('AliceInWonderland')
         self.assertEquals(good, str(resp))
@@ -114,6 +132,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         good = "[:THING, Agent, Animal, Human, Mammal, Primate]"
         self.assertEquals(good,str(resp))
+
 
     def test_0040_get_class_subclasses(self):
         resp = list(get_class_subclasses('Agent')[0])
@@ -149,36 +168,41 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort()
         self.assertEquals(good, string.join(resp,"\n"))
 
-    def test_0060_get_frame_slots_all(self):
-        mykb = find_kb('Addenda')
-        #mykb = current_kb()
-        good = "['Age', 'BirthTime', 'Eats', 'Friend'," + \
-               " 'Speaks', 'Species', 'Wrote']"
-        resp = list(get_frame_slots('SamuelBeckett',kb=mykb,
-                                    slot_type=Node._all,
-                                    inference_level=Node._all)[0])
-        resp.sort(str_sort)
-        self.assertEquals(good, str(resp))
-
     def test_0060_get_frame_slots_direct(self):
         good = "['Age', 'BirthTime', 'Eats', 'Wrote']"
         #print_frame('SamuelBeckett')
-        resp = list(get_frame_slots('SamuelBeckett',
-                                    inference_level=Node._direct)[0])
+        fs = get_frame_slots('SamuelBeckett',
+                             inference_level=Node._direct)[0]
+        #print 'SamuelBeckett.get_frame_slots(direct)  =',fs        
+        resp = list(fs)
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
+
+    def test_0065_get_frame_slots_all(self):
+        orig_kb = current_kb()
+        mykb = find_kb('Addenda')
+        #print mykb,type(mykb),mykb.__class__.__name__
+        self.failIf(not kb_p(mykb),'No kb Addenda')
+
+        #import epdb;     p = epdb.Epdb();     p.set_trace()        
+        good = "['Age', 'BirthTime', 'Eats', 'Friend'," + \
+               " 'Speaks', 'Species', 'Wrote']"
+        goto_kb(mykb)
+        self.assertEquals(current_kb(),mykb)
+        fs = get_frame_slots('SamuelBeckett',#kb=mykb,
+                             slot_type=Node._all,
+                             inference_level=Node._all)[0]
+        #print 'SamuelBeckett.get_frame_slots(all)  =',fs
+        resp = list(fs)
+        goto_kb(orig_kb)
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
 
     def test_0070_get_frame_slots_taxonomic(self):
         good = "['Age', 'BirthTime', 'Eats', 'Speaks', 'Species', 'Wrote']"
         resp = list(get_frame_slots('SamuelBeckett',
                                     inference_level=Node._taxonomic)[0])
-        resp.sort(str_sort)
-        self.assertEquals(good, str(resp))
-
-    def skip_0080_test_get_kb_direct_children(self):
-        schema = find_kb('PeopleSchema')
-        good = "[OtherPeople, PeopleData]"
-        resp = list(get_kb_direct_children(schema))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
@@ -188,10 +212,42 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
 
-    def test_0100_get_kb_frames(self):
-        good = 94
+    def PASS_test_0100_get_kb_frames(self):
+        """
+        Really, this test shows a problem with the ontologies because
+        Wrote appears in both LiteratureOntology.pykb and PeopleSchema.pykb
+
+        Anyway, should get_kb_frames return two frames of the same name
+        if they happen to appear in two different kbs?  I'd say yes!
+
+        """
+        
         resp = list(get_kb_frames(kb_local_only_p=0))
-        self.assertEquals(good,len(resp))
+        resp.sort(str_sort)
+        unique = {}
+        dupes = {}
+        there_were_dupes = 0
+        for frame in resp:
+            #if not unique.has_key(str(frame)):
+            l = unique.setdefault(str(frame),[])
+            if l <> []:
+                there_were_dupes =+ 1
+                dupes[str(frame)] = 1
+            l.append(frame)
+        #print "lengths",len(resp), len(unique.keys())
+        for f in resp:
+            u = unique[str(f)]
+            if len(u) > 1:
+                if not eql(u[0],u[1]):
+                    print u[0].__dict__                    
+                    print "----------------------------"
+                    print u[1].__dict__
+                    #print get_frame_details(u[1],kb=u[1]._kb)
+                self.failIf(not eql(u[0],u[1]),
+                            "get_kb_frames() has duplicates AND not eql(%s)"%str(u))
+
+        self.failIf(there_were_dupes,
+                    'duplicates frames: ' + str(','.join(dupes.keys())))
 
 #class Bogus:
     def test_0110_get_kb_frames_klop(self):
@@ -253,6 +309,14 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.failIf(len(parent) < 1,
                     'something wrong with get_kb_direct_parents()')
             
+
+    def test_0145_test_get_kb_direct_children(self):
+        schema = find_kb('PeopleSchema')
+        good = "[OtherPeople, PeopleData]"
+        resp = list(get_kb_direct_children(schema))
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
 
     def test_0150_get_instance_types_all_SamuelBeckett(self):
         mykb = find_kb('Addenda')        
@@ -391,4 +455,11 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
+
+    #pdb.set_trace()
+
+    #p.set_break('../PyOkbc.py',159,"str(frame) == 'AliceLidell'")
+    # b ../PyOkbc.py:159
+    # condition 1 "str(frame) == 'AliceLidell'"    
+
     unittest.main()

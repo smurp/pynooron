@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.55 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.55 2006/03/19 20:33:19 smurp Exp $'
+__version__='$Revision: 1.56 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.56 2006/03/21 20:48:06 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -18,6 +18,18 @@ except Exception,e:
 
 from  OkbcConditions import *
 from Constraints import Constrainable
+from ProcedureLanguage import *
+try:
+    if True:
+        pass
+except:
+    True = 1
+
+try:
+    if False:
+        pass
+except:
+    False = 0
 
 ##########################################
 #    Debugging utils
@@ -142,6 +154,8 @@ def initialize_slots_and_facets(frame, kb,
                                 defined_facet_alist = None):
     # FIXME initialize_slots_and_facets ignores facets
     # FIXME initialize_slots_and_facets ignores defaults
+
+    #if str(frame) == 'AliceLidell': import pdb; pdb.set_trace()
     for slot_spec in slot_specs:
         slot = slot_spec[0]
         slot_values = []            
@@ -560,7 +574,9 @@ class KB(FRAME,Programmable):
         parent_kbs = initargs.get(Node._parent_kbs,[])
         #parent_kbs = [] # FIXME should default to initargs :parent-kbs value
         #print "parent_kbs =",parent_kbs
-        #if self <> PRIMORDIAL_KB:            parent_kbs.append(PRIMORDIAL_KB)
+        #import pdb; pdb.set_trace()
+        #if self <> PRIMORDIAL_KB:
+        #    parent_kbs.append(PRIMORDIAL_KB)
         self._the_parent_kbs = parent_kbs
         #self._the_parent_kbs = []       
         #print "PARENT_KBS",self._the_parent_kbs
@@ -996,7 +1012,7 @@ class KB(FRAME,Programmable):
                 rets = parent.get_class_subclasses(klass,
                                                    inference_level,
                                                    number_of_values,
-                                                   kb_local_only_p)[0]
+                                                   kb_local_only_p = True)[0]
                 for sub in rets:
                     if not (sub in subs):
                         subs.append(sub)
@@ -1280,11 +1296,11 @@ class KB(FRAME,Programmable):
         checked_kbs = []
         checked_classes = []
         return kb.get_frame_slots_recurse(frame,
-                                          inference_level,
-                                          slot_type,
-                                          kb_local_only_p,
-                                          checked_kbs,
-                                          checked_classes)
+                                          inference_level = inference_level,
+                                          slot_type = slot_type,
+                                          kb_local_only_p = kb_local_only_p,
+                                          checked_kbs = checked_kbs,
+                                          checked_classes = checked_classes)
                                
     def get_frame_slots_recurse(kb,frame,
                                 inference_level = Node._taxonomic,
@@ -1306,7 +1322,7 @@ class KB(FRAME,Programmable):
         #list_of_slot_names = map(lambda a:str(a),list_of_slots)
         #print "  primordial",list_of_slots,list_of_slot_names
         if not kb_local_only_p:
-            for kaybee in kb.get_kb_direct_parents():
+            for kaybee in kb.get_kb_parents():
                 if kaybee in checked_kbs:
                     continue
                 slots = kaybee.get_frame_slots_recurse(frame,inference_level,
@@ -1452,7 +1468,7 @@ class KB(FRAME,Programmable):
     get_kb_behaviors = get_kb_behaviors_internal
 
     def get_kb_direct_parents(kb):
-        return kb._the_parent_kbs
+        return kb._the_parent_kbs or [PRIMORDIAL_KB]
 
     def get_kb_direct_children(kb):
         meta = kb.connection().meta_kb()
@@ -1538,6 +1554,11 @@ class KB(FRAME,Programmable):
         if not hasattr(kb,'_cached_kb_parents'):
             kb._cached_kb_parents = kb.get_kb_parents_recurse([])
         return kb._cached_kb_parents
+
+        if kb == PRIMORDIAL_KB:
+            return []
+        else:
+            return kb._cached_kb_parents or [PRIMORDIAL_KB]
     get_kb_parents._caching = 1
 
     # FIXME not in OKBC spec
@@ -1601,6 +1622,7 @@ class KB(FRAME,Programmable):
                        slot_type = Node._own,
                        value_selector = Node._either,
                        kb_local_only_p = 0):
+
         number_of_values = 1
         r = kb.get_slot_values(frame,slot,
                                inference_level,slot_type,
@@ -2286,8 +2308,9 @@ class TupleKb(KB,Constrainable):
             warn('get_class_subclasses ignores inference_level > direct')
         if type(value) == type([]): raise CardinalityViolation,str(value)
         (frame,frame_found_p) = kb.get_frame_in_kb(frame)
-        (slot,slot_found_p) = kb.get_frame_in_kb(slot)
         slot_key = str(slot)
+        (slot,slot_found_p) = kb.get_frame_in_kb(slot)
+        #if not slot_found_p and str(
         if slot_type == Node._own:
             #print "got to here",frame,slot,slot_type
             if frame._own_slots.has_key(slot_key):
@@ -2603,16 +2626,11 @@ class Connection: #abstract
         
         #locator,frame_found_p = meta.get_frame_in_kb(name_or_kb_or_kb_locator)
         locator = connection.find_kb_locator(name_or_kb_or_kb_locator)
+        if locator:
+            locator.open_kb_internal()
         return locator
 
 
-
-
-        value_or_false,exact_p = meta.get_slot_value(locator,':ASSOCIATED_KB')
-        if isinstance(value_or_false,KB):
-            return value_or_false
-        
-        return False
 
     def find_kb_locator(connection,thing,kb_type=None):
         #trayce([thing,kb_type])

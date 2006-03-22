@@ -1,6 +1,6 @@
 
-_version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: Funcs.py,v 1.23 2006/03/19 16:55:16 smurp Exp $'
+_version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: Funcs.py,v 1.24 2006/03/21 20:48:06 smurp Exp $'
 
 
 from PyOkbc import *
@@ -8,6 +8,7 @@ CURRENT_KB = None
 LOCAL_CONNECTION = None
 
 __allow_access_to_unprotected_subobjects__ = 1
+
 
 def _coerce_to_kb(kb):
     #print "  coercing",kb
