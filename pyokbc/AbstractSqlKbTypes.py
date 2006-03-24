@@ -1,9 +1,22 @@
 
 """
+These 
+
 How to do this against multiple relational backends?!?
 I will proceed by doing psql and sqlite simultaneously.
 
+
+
 """
+
+def abstract():
+    import inspect
+    caller = inspect.getouterframes(inspect.currentframe())[1][3]
+    raise NotImplementedError(caller + ' must be implemented in subclass')
+
+class Abstract_Sql_Kb_Type:
+    def _sql_connect(self,*args,**kwargs):
+        abstract()
 
 class Assertion_Sql_Kb_Type(Abstract_Sql_Kb_Type): 
     """Persist knowledge via an SQL schema of assertion form.
@@ -60,7 +73,24 @@ KnownUses:
   Chris and Shawn did this in java and perl against SolidSQL.
   A similar structure was used in LABBASE for AHLB!
     """
-    pass
+    
+    _table_name = 'triple'
+    _create_table_sql = """
+    create table triple (
+      subject       varchar,
+      verb          varchar,
+      object_id     int,
+      object_int    int,
+      object_real   real,
+      object_str    varchar,
+      primary key   (subject,verb,object_id)
+    )
+    """
+    def _ensure_triple_table_exists(self):
+        if not self._table_exists_p(self._table_name):
+            self._create_table(self._create_table_sql)
+                               
+            
 
 class Sql_Schema_From_Onto_Kb_Type(Abstract_Sql_Kb_Type):
     """

@@ -1,8 +1,8 @@
 #!/bin/env python
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.15 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.15 2006/03/17 23:57:32 smurp Exp $'
+__version__='$Revision: 1.16 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.16 2006/03/24 03:57:38 smurp Exp $'
 
 import string
 
@@ -20,14 +20,15 @@ import sys
 
 python_version = sys.version.split(' ')[0]
 zfskb_min_python_version = '2.1.3'
-if python_version > zfskb_min_python_version:
-    from ZODBFileStorageKb import *
-else:
-    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
-                                                                 zfskb_min_python_version)
+#if python_version > zfskb_min_python_version:
+#    from ZODBFileStorageKb import *
+#else:
+#    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
+#                                                                 zfskb_min_python_version)
 
 try:
-    from ZODBFileStorageKb import *
+    raise
+    #from ZODBFileStorageKb import *
 except:
     print "skipping ZODBFileStorageKb"
 
