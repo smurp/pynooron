@@ -115,7 +115,10 @@ class KbNotFound(AbstractError):
     mess = "Kb '%s' not found at '%s'"
     def __init__(self,kb,fname):
         self.kb = kb
-        AbstractError.__init__(self,self.mess % (kb,fname))
+        self.fname = fname
+        AbstractError.__init__(self,
+                               error_message = self.mess % (kb,fname,),
+                               continuable = False)
 
 class KbValueReadError(AbstractError):
     _name = "kb-value-read-error"

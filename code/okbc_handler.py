@@ -1,7 +1,7 @@
 
 
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: okbc_handler.py,v 1.22 2003/04/28 14:05:22 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: okbc_handler.py,v 1.23 2008/08/13 16:08:47 smurp Exp $'
 
 
 from pyokbc import *
@@ -95,6 +95,7 @@ class okbc_handler:
         #print "path_list",path_list
         elem = None
         latest_kb = meta_kb()
+        the_meta_kb = latest_kb
         pipe = []
         for elem in path_list:
             #print "checking elem",elem
@@ -109,8 +110,12 @@ class okbc_handler:
                 # this is an error
                 pass
             object_request = object_request + '/' + elem
-            #print "seeking",elem,"in",latest_kb,kb_p(latest_kb)            
-            (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
+            #print "seeking",elem,"in",latest_kb,kb_p(latest_kb)
+            if the_meta_kb == latest_kb:
+                locator = find_kb_locator(elem)
+                frame = open_kb(locator)
+            else:
+                (frame,found_frame_p) =  get_frame_in_kb(elem,kb=latest_kb)
             if frame != None:
                 if kb_p(frame):
                     #print elem,"is a kb"

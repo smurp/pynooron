@@ -1,8 +1,8 @@
 #!/bin/env python
 
 """FileSystemKB presents a directory (and its subdirectories) as a KB."""
-__version__='$Revision: 1.16 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemKb.py,v 1.16 2006/03/24 03:57:38 smurp Exp $'
+__version__='$Revision: 1.17 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemKb.py,v 1.17 2008/08/13 16:08:47 smurp Exp $'
 
 import string
 
@@ -20,18 +20,15 @@ import sys
 
 python_version = sys.version.split(' ')[0]
 zfskb_min_python_version = '2.1.3'
-#if python_version > zfskb_min_python_version:
-#    from ZODBFileStorageKb import *
-#else:
-#    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
-#                                                                 zfskb_min_python_version)
 
-try:
-    raise
-    #from ZODBFileStorageKb import *
-except:
-    print "skipping ZODBFileStorageKb"
-
+if python_version > zfskb_min_python_version:
+    try:
+        from ZODBFileStorageKb import *
+    except Exception, e:
+        print  "skipping ZODBFileStorageKb because %s" % str(e)
+else:
+    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
+                                                                 zfskb_min_python_version)
 
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])

@@ -1,17 +1,17 @@
 
-__version__='$Revision: 1.19 $'[11:-2]
-__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.19 2003/04/28 16:20:53 smurp Exp $'
+__version__='$Revision: 1.20 $'[11:-2]
+__cvs_id__ ='$Id: NooronPageTemplate.py,v 1.20 2008/08/13 16:08:47 smurp Exp $'
 
 
 
 import NooronRoot
 
 import sys
-from PageTemplates.PageTemplate import PageTemplate, PTRuntimeError
-from TAL.TALInterpreter import TALInterpreter
-from TAL.TALGenerator import TALGenerator
-from TAL.HTMLTALParser import HTMLTALParser
-from TAL.TALParser import TALParser
+from ZopePageTemplates import PageTemplate, PTRuntimeError
+from ZopePageTemplates.TAL.TALInterpreter import TALInterpreter
+from ZopePageTemplates.TAL.TALGenerator import TALGenerator
+from ZopePageTemplates.TAL.HTMLTALParser import HTMLTALParser
+from ZopePageTemplates.TAL.TALParser import TALParser
 
 from cStringIO import StringIO
 #Z_DEBUG_MODE = 0
@@ -23,9 +23,8 @@ SAFETY = 1 # safety off means that python in NPTs is omnipotent
 
 if SAFETY: #safe
     print "Notice: NooronPageTemplate.SAFETY is ON"
-    from PageTemplates.ZRPythonExpr import PythonExpr, \
-         _SecureModuleImporter,\
-         call_with_ns
+    from ZopePageTemplates.PythonExpr import PythonExpr
+    from ZopePageTemplates.Expressions import _SecureModuleImporter, call_with_ns
     from SafeExpressions import getEngine
 else:
     print """

@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.21 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.21 2006/03/19 20:33:19 smurp Exp $'
+__version__='$Revision: 1.22 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.22 2008/08/13 16:08:47 smurp Exp $'
 
 from PyOkbc import *
 from CachingMixin import CachingMixin
@@ -47,15 +47,24 @@ class PyKb(AbstractFileKb,CachingMixin):
     def __init__(self,filename_or_kb_locator,
                  place='',connection=None,name=None,
                  initargs = {}):
-        if type(filename_or_kb_locator) == type({}):
+        if type(filename_or_kb_locator) == dict:
             self._locator = filename_or_kb_locator
             self._name = self._locator['kb_name']
             self._file_uri = self._locator['file_uri']
             self._filename = self._file_uri
             filename = self._file_uri # should convert from uri
             name = self._name
+        elif type(filename_or_kb_locator) == str:
+            self._locator = filename_or_kb_locator
+            self._name = filename_or_kb_locator
+            self._file_uri = filename_or_kb_locator
+            self._filename = filename_or_kb_locator
+            filename = self._file_uri # should convert from uri
+            name = self._name            
         else:
-            raise "expecting filename_or_kb_locator as dict"
+            raise "expecting filename_or_kb_locator as dict, not " + \
+                str(filename_or_kb_locator) + \
+                'of type' + str(type(filename_or_kb_locator))
         
         self._place = place
         self._connection = connection

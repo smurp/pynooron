@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: localhost.py,v 1.2 2003/05/14 08:22:42 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: localhost.py,v 1.3 2008/08/13 16:08:47 smurp Exp $'
 
 
 """
@@ -28,10 +28,10 @@ cwd = os.getcwd()
 
 UID = os.getuid()
 kr_root = '/home/smurp/knowledge/'
+
 places = [kr_root+'apps_of/nooron',
           kr_root+'apps_of/smurp',          
           kr_root+'apps_of/givingspace',
-          kr_root+'apps_of/onevoice',          
           kr_root+'apps_of/demo',
           kr_root+'nooron_apps',
           kr_root+'nooron_foundations',
@@ -46,11 +46,12 @@ places = [kr_root+'apps_of/nooron',
 
 import login_handler
 
-use_auth = login_handler.friendly_favors_authenticator(\
-    group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'},
-    fqdn = "www.smurp.com")
+use_auth = login_handler.permissive_favors_authenticator(\
+    #group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'},
+    fqdn = "prom.smurp.com")
 
-use_auth = login_handler.bogus_favors_authenticator()
+
+use_auth = login_handler.permissive_favors_authenticator()
 
 from AuthenticatedUserAuthorizer import AuthenticatedUserAuthorizer
 security_engine = AuthenticatedUserAuthorizer()
@@ -68,7 +69,7 @@ __main__.__builtins__.nooron_root = \
                     initargs = {'default_place':string.join(places,':')},
                     knowledge_under = 'know',
                     security_engine=security_engine,
-                    cache_dir = '/tmp/www_nooron_org_cache')
+                    cache_dir = '/tmp/nooron_localhost_cache')
 
 
 try:

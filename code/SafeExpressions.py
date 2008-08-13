@@ -24,26 +24,29 @@ code.  Much code was just nabbed, holus bolus, because Expressions
 was written in a fashion which discouraged inheritance.
 """
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: SafeExpressions.py,v 1.2 2002/10/21 08:34:04 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: SafeExpressions.py,v 1.3 2008/08/13 16:08:47 smurp Exp $'
 
 Expressions__version__='Revision: 1.31.10.2'
 
 DEBUG = 0
 
 import re, sys
-from PageTemplates.TALES import Engine, CompilerError, _valid_name, \
+from ZopePageTemplates.TALES import Engine, CompilerError, _valid_name, \
      NAME_RE, TALESError, Undefined, Default, _parse_expr
 from string import strip, split, join, replace, lstrip
-from Acquisition import aq_base, aq_inner, aq_parent
+#from ZopePageTemplates.Acquisition import aq_base, aq_inner, aq_parent
 
-from AccessControl import getSecurityManager
-from AccessControl import SpecialUsers
-SpecialUsers.nobody='nob'
+from ZopePageTemplates.PythonExpr import getSecurityManager
+#from ZopePageTemplates.PythonExpr import SpecialUsers
+#SpecialUsers.nobody='nob'
 
-from PageTemplates.ZRPythonExpr import PythonExpr, \
-     _SecureModuleImporter,\
-     call_with_ns
+from ZopePageTemplates.PythonExpr import PythonExpr
+from ZopePageTemplates.Expressions import _SecureModuleImporter, call_with_ns
+
+#from ZopePageTemplates.PythonExpr import PythonExpr, \
+#     _SecureModuleImporter,\
+#     call_with_ns
 
 _engine = None
 def getEngine():
@@ -81,7 +84,7 @@ def render(ob, ns):
     if hasattr(ob, '__render_with_namespace__'):
         ob = call_with_ns(ob.__render_with_namespace__, ns)
     else:
-        base = aq_base(ob)
+        base = ob
         if callable(base):
             try:
                 if getattr(base, 'isDocTemp', 0):

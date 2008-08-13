@@ -1,9 +1,97 @@
 -*-mode: outline -*-
 
+
 TODO for Nooron
+
+* desirable deliverables
+** enter evaluations
+** edit in wiki form
+** http put in nooron
+** Identities
+*** preferences
+*** evaluation
+*** attribution
+*** admin rights (ownership)
+** Communities
+*** members
+*** enrolement
+*** favors interop
+** get another site up (smurp.com?)
+** get blogs working well
+
+* possible activities
+** convert kbs on the fly 
+*** examples:
+**** /know/kb_name.pykb 
+**** /know/kb_name.tell
+**** /know/kb_name.okbc
+**** /know/kb_name.owl
+**** /know/kb_name.xtm
+**** /know/kb_name.sql
+**** /know/kb_name/some_class.csv
+
+* aids evaluation display
+** :SLOT-INVERSE 
+** follow-slot-chain
+
+** finally add lisp
+*** benefits:
+**** basis for tell-ask interface
+**** basis for reading and writing .okbc files
+**** basis for reading and writing .tell files
+***** good basis for refactoring pyokbc to assertion-centricity
+**** safer procedures in knowledge-bases
+***** leading to true restricted reading of remote knowledge-bases
+**** begin interoperability testing with okbc-lisp
+
+** make :DOCUMENTATION editable in put_frame_details.html
+** make some BookKeepingSlots (set their cardinality too!)
+*** how to do this?
+**** have 'intrinsic frames' which hang off the kb-type?
+**** maybe transient frames would do it too?
+*** issues
+**** so where not?
+***** NOT in nooron_app_architecture (this is a pyokbc issue)
+***** NOT in PrimordialKB (that is alreadly polluted)
+***** NOT in PrimordialKB (we need a kb-type specific mechanism)
+**** but where?
+***** In AbstractFileKb?
+*** which slots?
+**** SIZE, ATIME, MTIME, CTIME,UID, GID, (unix specific?)
+**** AccessTime, CreationTime, ModificationTime (not platform specific)
+** ??include bookkeepingslots CreatedByAgent and ModifiedByAgent
+** why is :DOCUMENTATION busting everything?
+** fix the slot-cardinality-constraint problem
+** why is the Task -> UseCase edge not appearing in entity_relationship.dot
+** implement create_kb.html
+** build a suggestion box app
+** ?? use suggestion box as testcase for criteria and evaluations
+** logins should *all* be dude@identitybroker.foo starting now!
+
+** send email by implementing an Outbox KB-type
+** view email archives via IMAP and/or mbox kb-types (POP sucks)
+** implement full webmail on above
+** FOAF, VFC, Resume, current-user-degree-of-separation-graph
+
+** capture typical access_log info as knowledge (in standard combined format?)
+** implement typical weblog reporting stuff (graphically, etc)
+** knowledgebases negotiate for frames being written, society-of-mindishly
+** finally do cvs stuff???
+*** note relationship with version creation, cvs,
+** implement wikiesque put_frame_details and create_individual ala Tom
+
+** implement TopicSpaceKBType
+** CSVKbType
+** first whack at PostgreSqlKBType
+** RSS feeds from web_log (as kbtype or as garment???)
+** make more typical garments for weblog
+** how hard would C2-style wiki's be?
+
+
 
 * possible priorities
 ** flesh out attribution of add and change
+
 ** flesh out AUTHENTICATED_USER
 *** make it an instance of a class wrapped around a kb? a frame?
 ** flesh out login/identity creation

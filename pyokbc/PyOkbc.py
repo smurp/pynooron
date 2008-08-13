@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.56 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.56 2006/03/21 20:48:06 smurp Exp $'
+__version__='$Revision: 1.57 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.57 2008/08/13 16:08:47 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -587,7 +587,7 @@ class KB(FRAME,Programmable):
         self._changes_register_as_modifications_p = 1
 
     def open_kb_internal(self,*args,**kwargs):
-        print "Warn open_kb_internal() should be overriden in subclasses of KB"\
+        print "Warn open_kb_internal(%s,%s) should be overriden in subclasses of KB"\
               % (args,kwargs)
 
     def changes_register_as_modifications_p(self):

@@ -1,4 +1,7 @@
 
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemConnection.py,v 1.23 2008/08/13 16:08:47 smurp Exp $'
+
 from PyOkbc import *
 from OkbcConditions import *
 #import dircache
@@ -12,8 +15,8 @@ def _make_allowed_fname(allowed_place,kb_locator):
     #print allowed_place,kb_locator
     fullpath = os.path.join(allowed_place,kb_locator)
     normpath = os.path.normpath(fullpath)
-    if string.find(kb_locator,'pert') == 0:
-        print "LOOKING FOR pert IN",allowed_place,normpath
+    if string.find(kb_locator,'nooron_app') == 0:
+        print "LOOKING FOR nooron_app IN",allowed_place,normpath
         
     #if DEBUG: print "normpath =",normpath
     if normpath.find(allowed_place) != 0:
@@ -126,7 +129,13 @@ class FileSystemConnection(Connection):
             
     def _find_kbs_in(connection,place):
         rets = []
-        entries = os.listdir(place)
+        entries = []
+        for dir in place.split(':'):
+            print "",dir
+            more = os.listdir(dir)
+            #for file in more:
+            #    print "  ", file
+            entries.extend(more)
 
         for e in entries:
             splits = os.path.splitext(e)
@@ -165,25 +174,28 @@ class FileSystemConnection(Connection):
             path = [place]
         lines = []
         for a_place in path:
-            if __builtins__.has_key('nooron_root'): # FIXME bad hack
-                fname = _make_allowed_fname(a_place,filename)
-            else:
-                fname = os.path.join(place,filename)
+            #if __builtins__.has_key('nooron_root'): # FIXME bad hack
+            #    fname = _make_allowed_fname(a_place,filename)
+            #else:
+            fname = os.path.join(a_place,filename)
             try:
                 f = open(fname)
+                #print "ahh, found", fname,"in",a_place
                 #print "found",fname
                 #raise bogusissue
                 lines = f.readlines()
                 f.close()
+
                 break
-            except:
-                print "failing to find",fname
+            except Exception,e:
+                #print "failing to find",fname,"in",a_place
+                #print e
                 continue
         if lines:
             stats = connection._stats(fname)
             return (lines,stats)
         else:
-            raise KbNotFound,(filename,path)            
+            raise KbNotFound,(filename,path,)
 
     def _stats(connection,fname):
         st = os.stat(fname)

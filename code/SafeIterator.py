@@ -5,13 +5,13 @@ A TALES Iterator with the ability to use first() and last() on
 subpaths of elements and which uses the SafeExpressions mechanisms.
 """
 
-__version__='$Revision: 1.1 $'[11:-2]
+__version__='$Revision: 1.2 $'[11:-2]
 
-import PageTemplates
+import ZopePageTemplates
 from SafeExpressions import restrictedTraverse, Undefs, getSecurityManager
 from string import split
 
-class Iterator(PageTemplates.TALES.Iterator):
+class Iterator(ZopePageTemplates.TALES.Iterator):
     def __bobo_traverse__(self, REQUEST, name):
         if name in ('first', 'last'):
             path = REQUEST['TraversalRequestNameStack']

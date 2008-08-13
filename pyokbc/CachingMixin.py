@@ -1,9 +1,8 @@
-
-_version__='$Revision: 1.7 $'[11:-2]
-__cvs_id__ ='$Id: CachingMixin.py,v 1.7 2003/04/13 22:33:07 smurp Exp $'
-
-
 from __future__ import nested_scopes
+
+_version__='$Revision: 1.8 $'[11:-2]
+__cvs_id__ ='$Id: CachingMixin.py,v 1.8 2008/08/13 16:08:47 smurp Exp $'
+
 import string
 import time
 from Funcs import okbc_readonly_kb_functions, okbc_side_effecting_kb_functions

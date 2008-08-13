@@ -1,7 +1,7 @@
 #!/usr/bin/python2.1
 
-__version__='$Revision: 1.13 $'[11:-2]
-__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.13 2003/04/01 19:15:04 smurp Exp $'
+__version__='$Revision: 1.14 $'[11:-2]
+__cvs_id__ ='$Id: CachingPipeliningProducer.py,v 1.14 2008/08/13 16:08:47 smurp Exp $'
 
 import string
 import md5
@@ -11,7 +11,7 @@ import stat
 
 import popen2
 import time
-import fcntl, FCNTL
+#import fcntl, FCNTL
 import select
 import signal
 
