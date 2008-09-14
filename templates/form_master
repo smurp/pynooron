@@ -1,5 +1,4 @@
 
-
 <metal:block metal:define-macro="text_display_widget">
 <tr>
   <td><strong tal:content="slot_pretty_name">slot_pretty_name</strong></td>
@@ -152,17 +151,17 @@ msct exists:my_slot_collection_type;
                                                         ':PARAGRAPH',
                                                         ])">
     <tal:dummy 
-      define="options python:map(str,get_class_instances(slot_value_type)[0]);
-              size python:len(options) > select_size and select_size
-                                   or len(options)">
+      define="the_optionz python:map(str,get_class_instances(slot_value_type)[0]);
+              size python:len(the_optionz) > select_size and select_size
+                                   or len(the_optionz)">
 
-    <tal:dummy replace="structure python:options.sort()"/>
+    <tal:dummy replace="structure python:the_optionz.sort()"/>    
 
     <tal:dummy 
         replace="structure string:<select name=&quot;$field_name&quot; $multiple size=&quot;$size&quot;>"/>
 
       <tal:block 
-         repeat="opt options">
+         repeat="opt the_optionz">
          <tal:block
            define="selected python:str(opt) in slot_values and ' SELECTED' or ''">
            <tal:dummy replace="structure string:<option$selected>$opt</option>"/>
@@ -198,4 +197,4 @@ msct exists:my_slot_collection_type;
 
 
 
-$Id: form_master,v 1.14 2008/09/13 18:37:10 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.15 2008/09/14 04:10:10 smurp Exp $ <a href="/templates/form_master">Show Source</a>

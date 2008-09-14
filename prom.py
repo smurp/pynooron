@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: prom.py,v 1.2 2008/09/13 18:53:18 smurp Exp $'
+__version__='$Revision: 1.3 $'[11:-2]
+__cvs_id__ ='$Id: prom.py,v 1.3 2008/09/14 04:10:09 smurp Exp $'
 
 
 """
@@ -62,7 +62,7 @@ __main__.__builtins__.wedge_string = '__'
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     #server_name = 'crusty',
-                    server_ip = '192.168.1.14',
+                    server_ip = '127.0.0.1',
                     site_front = 'www_nooron_org_front.html',
                     server_port = 9001,
                     log_to = sys.stdout,
