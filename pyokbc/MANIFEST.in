@@ -1,0 +1,4 @@
+include *.py
+recursive-include tests *.py *.pykb
+prune tests/DELETEME_*
+prune tests/DataSource.py
