@@ -1,9 +1,15 @@
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
-
+<?xml version='1.0'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+          "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!--
+  $Revision: 1.3 $
+  $Id: software_project_book.dbk,v 1.3 2008/09/13 18:37:10 smurp Exp $
+  http://www.docbook.org/tdg/en/html/book.html
+-->
 <tal:dummy replace="python:request.set_header('Content-Type','text/xml')"/>
  <book>
     <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
-    <artheader>
+    <bookinfo>
        <title tal:content="python:get_frame_pretty_name(here) or 
                                   get_frame_name(here)"></title>
 
@@ -23,7 +29,7 @@
         <para tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></para>
        </abstract>
 
-    </artheader>
+    </bookinfo>
 
 
     <tal:dummy 

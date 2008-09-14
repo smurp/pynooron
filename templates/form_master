@@ -169,19 +169,17 @@ msct exists:my_slot_collection_type;
          </tal:block>
       </tal:block>
 
+
     <tal:dummy replace="structure string:</select>"/>
-
-
         
 <ul tal:condition="slot_values">
   <li tal:repeat="slotval slot_values" tal:content="slotval"></li>
 </ul>
 
-
-
-
     </tal:dummy>
   </tal:block>
+
+
 
   <tal:dummy tal:condition="slot_help">
   <br/>
@@ -200,4 +198,4 @@ msct exists:my_slot_collection_type;
 
 
 
-$Id: form_master,v 1.13 2003/06/19 22:38:30 smurp Exp $ <a href="/templates/form_master">Show Source</a>
+$Id: form_master,v 1.14 2008/09/13 18:37:10 smurp Exp $ <a href="/templates/form_master">Show Source</a>
