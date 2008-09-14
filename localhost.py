@@ -1,23 +1,17 @@
-#!/usr/local/Zope-2.5.1/bin/python
+#!/usr/bin/env python
 
-__version__='$Revision: 1.3 $'[11:-2]
-__cvs_id__ ='$Id: localhost.py,v 1.3 2008/08/13 16:08:47 smurp Exp $'
+__version__='$Revision: 1.4 $'[11:-2]
+__cvs_id__ ='$Id: localhost.py,v 1.4 2008/09/13 18:53:18 smurp Exp $'
 
 
 """
-Nooron -- a whack at a proof of concept for the collective intelligence
-approach described at http://www.noosphere.org/
-
+The default way to start a nooron instance out of the box.
 """
 
 import os
 import sys
 import asyncore
 
-# adjust for your Zope installation
-sys.path.append('/usr/local/Zope-2.5.1/lib/python')
-sys.path.append('/usr/local/Zope-2.5.1/lib/python/Products')
-sys.path.append('/usr/local/Zope-2.5.1/ZServer')
 
 sys.path.append('code')
 from NooronRoot import NooronRoot
@@ -30,12 +24,10 @@ UID = os.getuid()
 kr_root = '/home/smurp/knowledge/'
 
 places = [kr_root+'apps_of/nooron',
-          kr_root+'apps_of/smurp',          
-          kr_root+'apps_of/givingspace',
           kr_root+'apps_of/demo',
           kr_root+'nooron_apps',
-          kr_root+'nooron_foundations',
           cwd+'/know']
+
 #default_place = cwd+'/pyokbc/tests'
 
 #from OkbcOperation import IPListSecurityEngine 
@@ -46,29 +38,23 @@ places = [kr_root+'apps_of/nooron',
 
 import login_handler
 
-use_auth = login_handler.permissive_favors_authenticator(\
-    #group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'},
-    fqdn = "prom.smurp.com")
-
-
-use_auth = login_handler.permissive_favors_authenticator()
-
+dict_auth = login_handler.dictionary_authenticator({'guest1':'pw1',
+                                                   'guest2':'pw2'})
 from AuthenticatedUserAuthorizer import AuthenticatedUserAuthorizer
-security_engine = AuthenticatedUserAuthorizer()
+auth_user_security_engine = AuthenticatedUserAuthorizer()
 
 import __main__
 __main__.__builtins__.wedge_string = '__'
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
-                    #server_name = 'crusty',
-                    server_ip = 'localhost',
-                    site_front = 'www_nooron_org_front.html',
-                    use_auth=use_auth,
+                    server_ip = '127.0.0.1',
+                    site_front = 'localhost_front.html',
+                    use_auth=dict_auth,
                     server_port = 8001,
                     log_to = sys.stdout,
                     initargs = {'default_place':string.join(places,':')},
                     knowledge_under = 'know',
-                    security_engine=security_engine,
+                    security_engine=auth_user_security_engine,
                     cache_dir = '/tmp/nooron_localhost_cache')
 
 

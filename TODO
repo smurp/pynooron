@@ -1,9 +1,43 @@
 -*-mode: outline -*-
 
+2008.09.13
+* prep for new release
+** package using distutils (or whatever)
+** clean up
+*** clean out crud and sensitive information
+*** clean up tests so they are as clean as possible
+** make release usable for something
+*** fix editing
+*** set up default authorization
+*** write/update docs for installation and initial use
+** convert from docbook 3.1 to 4.1.2
+*** docs
+  http://www.docbook.org/tdg/en/html/docbook.html
+  http://www.docbook.org/tdg/en/html/article.html
+  http://en.wikipedia.org/wiki/Docbook
+*** recipe
+**** change beginning to
+<?xml version='1.0'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+          "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+**** replace artheader with articleinfo
+
 
 TODO for Nooron
 
-* desirable deliverables
+* scratch own itch
+** make project_app more useful
+with the motivation of having it accelerate Nooron development
+*** debug ThroughTheWebEditing
+*** automate checkin of saved project data
+*** finish software_project_book.dbk 
+**** show all kinds of things in the kb: Tasks, Actors, Use_Cases
+*** ontologize milestones
+*** ontologize roadmap
+*** ontologize bugreport
+
+
+
 ** enter evaluations
 ** edit in wiki form
 ** http put in nooron

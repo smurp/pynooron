@@ -1,23 +1,17 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.1 $'[11:-2]
-__cvs_id__ ='$Id: prom.py,v 1.1 2008/09/08 02:15:29 smurp Exp $'
+__version__='$Revision: 1.2 $'[11:-2]
+__cvs_id__ ='$Id: prom.py,v 1.2 2008/09/13 18:53:18 smurp Exp $'
 
 
 """
-Nooron -- a whack at a proof of concept for the collective intelligence
-approach described at http://www.noosphere.org/
-
+The way smurp starts nooron on his own machine.
 """
 
 import os
 import sys
 import asyncore
 from medusa.monitor import *
-
-# adjust for your Zope installation
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python')
-sys.path.append('/usr/local/zope/Zope-2.5.1/lib/python/Products')
 
 sys.path.append('code')
 from NooronRoot import NooronRoot

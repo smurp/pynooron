@@ -51,4 +51,4 @@ class Sqlite_Assertion_Kb_Type(AbstractFileKb,CachingMixin,
         
         
     def create_kb(self,name,kb_locator=None,initargs={},connection=None):   pass
-
+    

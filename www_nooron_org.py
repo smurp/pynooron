@@ -1,7 +1,7 @@
 #!/usr/local/Zope-2.5.1/bin/python
 
-__version__='$Revision: 1.6 $'[11:-2]
-__cvs_id__ ='$Id: www_nooron_org.py,v 1.6 2003/04/30 23:24:45 nooron Exp $'
+__version__='$Revision: 1.7 $'[11:-2]
+__cvs_id__ ='$Id: www_nooron_org.py,v 1.7 2008/09/13 18:53:18 smurp Exp $'
 
 
 """
@@ -16,9 +16,9 @@ import asyncore
 
 
 # adjust for your Zope installation
-sys.path.append('/usr/local/Zope-2.5.1/lib/python')
-sys.path.append('/usr/local/Zope-2.5.1/lib/python/Products')
-sys.path.append('/usr/local/Zope-2.5.1/ZServer')
+#sys.path.append('/usr/local/Zope-2.5.1/lib/python')
+#sys.path.append('/usr/local/Zope-2.5.1/lib/python/Products')
+#sys.path.append('/usr/local/Zope-2.5.1/ZServer')
 
 sys.path.append('code')
 from NooronRoot import NooronRoot
