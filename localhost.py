@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-__version__='$Revision: 1.4 $'[11:-2]
-__cvs_id__ ='$Id: localhost.py,v 1.4 2008/09/13 18:53:18 smurp Exp $'
+__version__='$Revision: 1.5 $'[11:-2]
+__cvs_id__ ='$Id: localhost.py,v 1.5 2008/09/19 02:48:10 smurp Exp $'
 
 
 """
 The default way to start a nooron instance out of the box.
 """
-
+global wedge_string,nooron_root
 import os
 import sys
 import asyncore
@@ -45,6 +45,10 @@ auth_user_security_engine = AuthenticatedUserAuthorizer()
 
 import __main__
 __main__.__builtins__.wedge_string = '__'
+
+#wedge_string  = '__'
+
+# nooron_root =\
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     server_ip = '127.0.0.1',
