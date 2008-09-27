@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.57 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.57 2008/08/13 16:08:47 smurp Exp $'
+__version__='$Revision: 1.58 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.58 2008/09/26 20:45:33 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
@@ -1824,6 +1824,7 @@ class KB(FRAME,Programmable):
             if kb_p(parent):
                 parent_as_kb = parent
             else:
+                print parent,type(parent)
                 loc = conn.find_kb_locator(parent)
                 if loc:
                     parent_as_kb = conn.open_kb(loc)
@@ -2521,10 +2522,9 @@ class AbstractFileKb(AbstractPersistentKb):
 
         #print "via_temp =",via_temp
         if via_temp:
-
             real_path = path
             path = path + '.tmp'
-        #print "saving to",path
+        print "saving to",path
         kb._open_output_file_at_path(path)
         kb._begin_transaction()
         try:
@@ -2539,7 +2539,7 @@ class AbstractFileKb(AbstractPersistentKb):
             if make_backups:
                 backup_path = real_path + '~'
                 print "making backup %s" % backup_path
-                os.rename(real_path,real_path + '~')
+                os.rename(real_path,backup_path)
             if via_temp:
                 print "finally saving %s" % real_path
                 os.rename(path,real_path)
@@ -2570,9 +2570,13 @@ class AbstractFileKb(AbstractPersistentKb):
     def _begin_transaction(kb):
         pass
 
-    def _save_frame_to_storage(kb,frame,stream=1):
-        kb._outfile.write(kb.print_frame(frame,stream))
-        
+    def _save_frame_to_storage(kb,frame,stream=True):
+        try:
+            kb._outfile.write(kb.print_frame(frame,stream=stream))
+        except Exception,e:
+            print "frame =",frame
+            print e
+            raise e
 
 
 class Connection: #abstract

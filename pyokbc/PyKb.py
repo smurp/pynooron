@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.22 $'[11:-2]
-__cvs_id__ ='$Id: PyKb.py,v 1.22 2008/08/13 16:08:47 smurp Exp $'
+__version__='$Revision: 1.23 $'[11:-2]
+__cvs_id__ ='$Id: PyKb.py,v 1.23 2008/09/26 20:45:33 smurp Exp $'
 
 from PyOkbc import *
 from CachingMixin import CachingMixin
@@ -104,7 +104,7 @@ class PyKb(AbstractFileKb,CachingMixin):
         except exceptions.SyntaxError,e:
             #raise GenericError,str(e)+ " of "+str(filename)
             #print stanza
-            raise GenericError,str(e)+ " in "+str(filename)
+            raise GenericError,str(e)+ " in "+ stanza
         #return self._changes_register_as_modifications_p        
         self._changes_register_as_modifications_p = 1
         #print "setting changes_register... ",self.changes_register_as_modifications_p(),"in",self

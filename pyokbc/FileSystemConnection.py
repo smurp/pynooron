@@ -1,6 +1,6 @@
 
-__version__='$Revision: 1.23 $'[11:-2]
-__cvs_id__ ='$Id: FileSystemConnection.py,v 1.23 2008/08/13 16:08:47 smurp Exp $'
+__version__='$Revision: 1.24 $'[11:-2]
+__cvs_id__ ='$Id: FileSystemConnection.py,v 1.24 2008/09/26 20:45:32 smurp Exp $'
 
 from PyOkbc import *
 from OkbcConditions import *
@@ -44,7 +44,7 @@ class FileSystemConnection(Connection):
 
     def find_kb_locator(connection,thing,kb_type=None):
         meta = connection.meta_kb()
-        if not meta._v_store.has_key(str(thing)):
+        if not meta._v_store.has_key(thing):
             #print meta._v_store.keys()
             #import pdb; pdb.set_trace()
             return connection.create_kb_locator(thing,kb_type=kb_type)
@@ -65,54 +65,83 @@ class FileSystemConnection(Connection):
         @param kb_type a subclass of AbstractFileKb.
         
         """
-        thing_has_extension = len(thing.split('.')) > 1
-        extension = thing_has_extension and thing.split('.')[-1] or None
-        file_name = thing_has_extension and thing or None
-        
-        if kb_type and extension <> None and \
-               kb_type._kb_type_file_extension <> extension:
-            #print kb_type
-            #print extension
+        print "create_kb_locator(",thing,kb_type,")", type(thing)
+        if type(thing) == dict:
+            locator = thing
+        else:
+            locator = {}
+            thing_has_extension = len(thing.split('.')) > 1
+            if thing_has_extension:
+                locator['extension'] = thing.split('.')[-1]
+                locator['file_name'] = ''.join(thing.split('.')[:-1])
+            else:
+                locator['file_name'] = thing
+        if type(locator['file_name']) == list:
+            print " *=* " * 20
+        if locator.get('kb_type'):
+            locator['kb_type'] = kb_type or connection._default_kb_type
+        if not locator.has_key('base_name'):
+            if locator.has_key('file_name'):
+                locator['base_name'] = locator['file_name'].split('.')[0]
+            if locator.has_key('kb_name'):
+                locator['base_name'] = locator['kb_name']
+        if locator.get('kb_type') and locator.get('extension') <> None \
+                and locator.get('kb_type')._kb_type_file_extension \
+                <> locator.get('extension'):
             raise('KBTypeAndExtensionMismatch_%s_<>_%s' % (
-                kb_type._kb_type_file_extension,
-                extension))
-        files = connection._find_kbs_in(connection._default_place)
+                    locator.get('kb_type')._kb_type_file_extension,
+                    locator.get('extension')))
+        if locator.get('in_directory'):
+            files = connection._find_kbs_in(locator.get('in_directory'))
+        else:
+            files = []
 
         # if the extension is determined, constrain to it now
-        if kb_type and not extension:
-            extension = kb_type._kb_type_file_extension
-            file_name = thing + '.' + extension
+        if locator.get('kb_type') and not locator.get('extension'):
+            locator['extension'] = \
+                locator.get('kb_type')._kb_type_file_extension
+            locator['file_name'] = thing + '.' + extension
 
         metakb = connection.meta_kb()
         ktbe = metakb._kb_types_by_extension
         #print "looking for",thing
-        if not extension:
+        base_name = locator['base_name']
+        #extension = locator['extension']
+        if not locator.get('extension'):
             for f in files:
-                if f.startswith(thing):
-
+                if f.startswith(base_name):
                     if len(f.split('.')) > 1:
                         possible_extension = f.split('.')[-1]
-                        print f,'starts with',thing,possible_extension
+                        print f,'starts with',base_name,possible_extension
                         if ktbe.has_key(possible_extension):
-                            extension = possible_extension
-                            file_name = f
-                            kb_type = ktbe.get(extension)
+                            locator['extension'] = possible_extension
+                            locator['file_name'] = f
+                            kb_type = ktbe.get(locator['extension'])
                             break
             else: # thing was not found
                 #print "using default_kb_type"
-                kb_type = connection._default_kb_type
-                file_name = thing + '.' + kb_type._kb_type_file_extension
+                locator['kb_type'] = connection._default_kb_type
+                #print 'kb_type =',locator['kb_type']
+                #for i in dir(locator['kb_type']):
+                #    if i.startswith('_'):
+                #        print "    ",i
+                #print locator['kb_type']._kb_type_file_extension
+                locator['file_name'] = thing + '.' + \
+                         locator['kb_type']._kb_type_file_extension
 
-        if extension and not kb_type:
+        if locator.get('extension') and not kb_type:
             print ktbe
-            print extension
-            kb_type = ktbe.get(extension)
+            print locator.get('extension')
+            locator['kb_type'] = ktbe.get(locator.get('extension'))
 
-        #print "we are getting to here",kb_type,thing,file_name
-        #return kb_type(thing,connection=connection)
-        just_name = thing.split('.')[0]
+        #just_name = thing.split('.')[0]
         #print "create_kb_locator(name=%s,file=%s)" % (thing,file_name)
-        locator = {'file_uri':file_name,'kb_name':just_name}
+        ##locator = {'file_uri':file_name,'kb_name':just_name}
+        if not locator.has_key('file_uri'):
+            locator['file_uri'] = locator['file_name']
+        if not locator.has_key('kb_name'):
+            locator['kb_name'] = locator['base_name']
+        kb_type = locator['kb_type']
         return kb_type(locator,connection=connection)
         return kb_type(file_name,connection=connection)
     
@@ -130,25 +159,37 @@ class FileSystemConnection(Connection):
     def _find_kbs_in(connection,place):
         rets = []
         entries = []
+        dirs_n_files = []
         for dir in place.split(':'):
             print "",dir
-            more = os.listdir(dir)
-            #for file in more:
-            #    print "  ", file
-            entries.extend(more)
+            #more = os.listdir(dir)
+            for root,dirs,files in os.walk(dir):
+                dirs_n_files.append((dir,files,))
+                #entries.extend(files)
 
-        for e in entries:
-            splits = os.path.splitext(e)
+        for dir,files in dirs_n_files:
+            for e in files:
+                splits = os.path.splitext(e)
 
-            if not (connection._ignore_tildes and e[-1] == '~') and \
-                   not (e[0] == e[-1] and e[0] == '#') or \
-                   os.path.isdir(os.path.join(place,e)):
+                if not (connection._ignore_tildes and e[-1] == '~') and \
+                       not (e[0] == e[-1] and e[0] == '#') or \
+                       os.path.isdir(os.path.join(place,e)):
 
-                if splits[-1] in pyokbc_mimetypes.keys():
-                    just_the_name = string.join(list(splits[:-1]),'')
-                    rets.append(just_the_name)
-                else:
-                    rets.append(e)
+                    if splits[-1] in pyokbc_mimetypes.keys():
+                        just_the_name = string.join(list(splits[:-1]),'')
+                        #connection.
+                        kbl = connection.create_kb_locator(dict(
+                                kb_name = just_the_name,
+                                in_directory = dir,
+                                extension = splits[-1]
+                                ))
+                        rets.append(kbl)
+                    else:
+                        kbl = connection.create_kb_locator(dict(
+                                file_name = e,
+                                in_directory = place,
+                                ))
+                        rets.append(kbl)
         return rets
 
     def openable_kbs(connection,kb_type,place=None):

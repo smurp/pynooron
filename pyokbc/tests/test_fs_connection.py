@@ -1,7 +1,7 @@
-#!/usr/bin/env python2.1
+#!/usr/bin/env python
 
-__version__='$Revision: 1.5 $'[11:-2]
-__cvs_id__ ='$Id: test_fs_connection.py,v 1.5 2003/05/22 20:28:39 smurp Exp $'
+__version__='$Revision: 1.6 $'[11:-2]
+__cvs_id__ ='$Id: test_fs_connection.py,v 1.6 2008/09/26 20:45:33 smurp Exp $'
 
 import os
 import sys
