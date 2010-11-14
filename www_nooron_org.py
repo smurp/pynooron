@@ -29,6 +29,7 @@ cwd = os.getcwd()
 
 UID = 'nooron'
 kr_root = '/home/nooron/knowledge/'
+kr_root = '/home/smurp/src/knowledge/branches/HEAD'
 places = [kr_root+'apps_of/nooron',
           kr_root+'apps_of/smurp',          
           kr_root+'apps_of/givingspace',
@@ -61,9 +62,9 @@ __main__.__builtins__.wedge_string = '__'
 __main__.__builtins__.nooron_root = \
          NooronRoot(publishing_root = cwd,
                     #server_name = 'crusty',
-                    server_ip = '216.194.67.142',
+                    server_ip = '127.0.0.1',
                     site_front = 'www_nooron_org_front.html',
-                    server_port = 80,
+                    server_port = 8000,
                     log_to = sys.stdout,
                     use_auth = use_auth,
                     initargs = {'default_place':string.join(places,':')},
