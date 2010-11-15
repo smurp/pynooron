@@ -2640,7 +2640,7 @@ class Connection: #abstract
         #trayce([thing,kb_type])
         preface = "find_kb_locator(%s)" % thing
         meta = connection.meta_kb()
-        print "keys",meta._v_store.keys()
+        #print "keys",meta._v_store.keys()
         frame,frame_found_p = meta.get_frame_in_kb(thing)
         if frame_found_p:
             #print get_frame_details(frame)
