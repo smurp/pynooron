@@ -41,15 +41,19 @@ class FileSystemConnection(Connection):
 
 
     def _find_kbs_in(connection,place):
+        ignore_dirs = ['CVS','.bzr']
+        ignore_things_starting_with = ['#']
         rets = []
         entries = dircache.listdir(place)        
         for e in entries:
+            #print "considering e =",e
             splits = os.path.splitext(e)
 
-            if not (connection._ignore_tildes and e[-1] == '~') and \
-                   not (e[0] == e[-1] and e[0] == '#') or \
-                   os.path.isdir(os.path.join(place,e)):
-
+            if not (connection._ignore_tildes and e[-1] == '~') \
+                    and not (e in ignore_dirs) \
+                    and not (e[0] in ignore_things_starting_with) \
+                    or os.path.isdir(os.path.join(place,e)):
+                
                 if splits[-1] in pyokbc_mimetypes.keys():
                     just_the_name = string.join(list(splits[:-1]),'')
                     rets.append(just_the_name)
