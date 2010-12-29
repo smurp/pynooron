@@ -39,7 +39,6 @@ class FileSystemKb(AbstractFileKb):
     def __init__(kb,filename,place='',connection=None):
         #print kb._mimetypes
         kb._typed_cache = {}
-        kb._place = place
         AbstractFileKb.__init__(kb,filename,connection=connection)
         kb._kb_types = {'application/vnd.pyokbc.kb.pykb':PyKb,
                         'application/vnd.pyokbc.kb.tell':TellKb,
@@ -57,7 +56,6 @@ class FileSystemKb(AbstractFileKb):
             ktbe[kb_type._kb_type_file_extension] = kb_type
             
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
-        trayce([kb,thing])
         conn = kb._connection
         frame_found_p = 1
         frame = kb._v_store.get(str(thing))

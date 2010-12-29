@@ -1,11 +1,11 @@
 
-__version__='$Revision: 1.58 $'[11:-2]
-__cvs_id__ ='$Id: PyOkbc.py,v 1.58 2008/09/26 20:45:33 smurp Exp $'
+__version__='$Revision: 1.57 $'[11:-2]
+__cvs_id__ ='$Id: PyOkbc.py,v 1.57 2008/08/13 16:08:47 smurp Exp $'
 
 PRIMORDIAL_KB = ()
 OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
 
-
+from debug_tools import timed
 import string
 import sys
 import copy
@@ -260,7 +260,10 @@ class FRAME(Node):
 
     def __str__(self):
         #return "<"+self._name+">"
-        return self._name
+        try:
+            return self._name
+        except:
+            return "unnamed instance of " + self.__class__.__name__
 
     def _return_as_args_and_kwargs(self):
         def list_of_repr(objs):
@@ -1824,7 +1827,6 @@ class KB(FRAME,Programmable):
             if kb_p(parent):
                 parent_as_kb = parent
             else:
-                print parent,type(parent)
                 loc = conn.find_kb_locator(parent)
                 if loc:
                     parent_as_kb = conn.open_kb(loc)
@@ -2112,8 +2114,6 @@ class TupleKb(KB,Constrainable):
     
         conn = kb.connection()
         retlist = []
-        print "HERE"
-
 
         for loc in kb.get_class_instances(':kb_locator',
                                           inference_level = Node._direct,
@@ -2429,15 +2429,14 @@ class AbstractPersistentKb(TupleKb):
     def save_kb(kb,error_p = 1):
         filename = kb.get_frame_name(kb)
         ext = kb._kb_type_file_extension
-
         if 0: # save safety 
             deleteme = 'DELETEME_'
             if len(filename) < len(deleteme) or \
                    filename[0:len(deleteme)] != deleteme:
                 filename = 'DELETEME_' + filename
         
-        if ext != None and ext:
-            filename = filename + '.' + ext
+        #if ext != None and ext:
+        #    filename = filename + '.' + ext
         kb._save_to_storage(filename,error_p=error_p)
 
     def save_kb_as(kb,new_name_or_locator,error_p = 1):
@@ -2450,6 +2449,9 @@ class AbstractPersistentKb(TupleKb):
 
     def _get_place(kb):
         return kb._place
+
+    def _set_place(kb,place):
+        kb._place = place
 
     def _print_kb(kb):
         for frame in \
@@ -2524,7 +2526,7 @@ class AbstractFileKb(AbstractPersistentKb):
         if via_temp:
             real_path = path
             path = path + '.tmp'
-        print "saving to",path
+        #print "saving to",path
         kb._open_output_file_at_path(path)
         kb._begin_transaction()
         try:
@@ -2538,10 +2540,14 @@ class AbstractFileKb(AbstractPersistentKb):
         if written:
             if make_backups:
                 backup_path = real_path + '~'
-                print "making backup %s" % backup_path
+                if False:
+                    items = locals().items()
+                    items.sort(lambda a,b: cmp(a[0],b[0]))
+                    for pair in items:
+                        print "%-20s = %s" % pair
                 os.rename(real_path,backup_path)
             if via_temp:
-                print "finally saving %s" % real_path
+                #print "finally saving %s" % real_path
                 os.rename(path,real_path)
 
     def _cause_frames_to_persist(kb):
@@ -2550,7 +2556,8 @@ class AbstractFileKb(AbstractPersistentKb):
                 get_kb_slots(kb,kb_local_only_p=1) + \
                 get_kb_classes(kb,kb_local_only_p=1) + \
                 get_kb_individuals(kb,kb_local_only_p=1):
-            kb._save_frame_to_storage(frame,stream=0)
+            if frame <> None:
+                kb._save_frame_to_storage(frame,stream=0)
 
     def _write_preamble(kb):
         kb._outfile.write(kb._preamble())
@@ -2570,13 +2577,9 @@ class AbstractFileKb(AbstractPersistentKb):
     def _begin_transaction(kb):
         pass
 
-    def _save_frame_to_storage(kb,frame,stream=True):
-        try:
-            kb._outfile.write(kb.print_frame(frame,stream=stream))
-        except Exception,e:
-            print "frame =",frame
-            print e
-            raise e
+    def _save_frame_to_storage(kb,frame,stream=1):
+        kb._outfile.write(kb.print_frame(frame,stream=stream))
+        
 
 
 class Connection: #abstract

@@ -47,11 +47,17 @@ class PyKb(AbstractFileKb,CachingMixin):
     def __init__(self,filename_or_kb_locator,
                  place='',connection=None,name=None,
                  initargs = {}):
+        self._name = 'never_assigned'
         if type(filename_or_kb_locator) == dict:
+            from urlparse import urlparse
+            import os.path
             self._locator = filename_or_kb_locator
+            (scheme,netloc,path,param,query,fragment) = urlparse(self._locator['file_uri'])
+            filename = os.path.basename(path)
+            place = os.path.basename(path)
             self._name = self._locator['kb_name']
             self._file_uri = self._locator['file_uri']
-            self._filename = self._file_uri
+            self._filename = filename #self._file_uri
             filename = self._file_uri # should convert from uri
             name = self._name
         elif type(filename_or_kb_locator) == str:
@@ -66,7 +72,7 @@ class PyKb(AbstractFileKb,CachingMixin):
                 str(filename_or_kb_locator) + \
                 'of type' + str(type(filename_or_kb_locator))
         
-        self._place = place
+        self._set_place(place)
         self._connection = connection
         self._opened = False
         AbstractFileKb.__init__(self,name,connection=connection)
