@@ -2,9 +2,6 @@
 
 2010.12.24
 * prep for DogFoodOne milestone:
-** unite the accidentally separated nooron code bases
-** move nooron to bzr
-** install on www.karaba.net
 ** install rendering packages on karaba, ie. graphviz, jade, gnuplot
 ** set up accounts for each pod member
 * prep for PublicReleaseOne milestone:

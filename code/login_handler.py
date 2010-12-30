@@ -244,6 +244,11 @@ class dictionary_authenticator:
 import xmlrpclib
 
 class friendly_favors_authenticator:
+    """
+    use_auth = login_handler.friendly_favors_authenticator(\
+              group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'},
+              fqdn = "www.nooron.org")
+    """
     def __init__(self,
                  group_key_map={},
                  fqdn=None,

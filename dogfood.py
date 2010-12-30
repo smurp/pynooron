@@ -24,23 +24,10 @@ places = [kr_root+'apps_of/nooron',
           cwd+'/know']
 #default_place = cwd+'/pyokbc/tests'
 
-#from OkbcOperation import IPListSecurityEngine 
-#security_engine = IPListSecurityEngine(allow=['192.168.1.14',
-#                                              '152.163.188.*', # linda
-#                                              '24.52.220.*',   # tom
-#                                              '208.38.8.158'],
-#                                       deny=1)
-
 import login_handler
 
-#use_auth = login_handler.friendly_favors_authenticator(\
-#        group_key_map={'GS':'4009e3fa8d42a0f8fac49932f6b5fcb8'},
-#            fqdn = "www.nooron.org")
-#use_auth = login_handler.bogus_favors_authenticator()
-use_auth = login_handler.dictionary_authenticator({'smurp':'badtemppw'})
-#use_auth = login_handler.kb_authenticator('DevelopmentUsers')
-
-
+from users import dict_of_users
+use_auth = login_handler.dictionary_authenticator(dict_of_users)
 
 from AuthenticatedUserAuthorizer import AuthenticatedUserAuthorizer
 security_engine = AuthenticatedUserAuthorizer()

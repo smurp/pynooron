@@ -30,12 +30,10 @@ UID = 'smurp'
 default_place = cwd+'/know' 
 #default_place = cwd+'/pyokbc/tests'
 
-from OkbcOperation import IPListSecurityEngine 
-security_engine = IPListSecurityEngine(allow=['192.168.1.14',
-                                              '24.52.220.100',
-                                              '24.52.220.146',
-                                              '208.38.8.158'],
-                                       deny=1)
+import login_handler
+from users import dict_of_users
+use_auth = login_handler.dictionary_authenticator(dict_of_users)
+
 
 import __main__
 
