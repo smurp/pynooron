@@ -3,6 +3,7 @@
 2010.12.30
 
 * EatTheDogFood milestone:
+** embed svg in html (because graphviz on karaba has no bitmap support)
 ** best_practices
 *** make a diagram 
 *** design an html display
