@@ -4,24 +4,37 @@
   size="7.5,10"
 //  rotate=90
 //  ratio=compress
-
 <tal:block
    define="abs_kb_url
              python:server_absolute_url + request.object_request() + '/';
            all_tasks 
-             python:call_procedure(get_procedure('names_and_pretty_names'),
-                                   arguments=(get_class_instances('Task')[0],
-                                              '\\n',this_kb))">
+             python:call_procedure(
+                get_procedure('names_and_pretty_names'),
+                arguments=(get_class_instances('Task')[0] + get_class_instances('TaskStatus')[0],'\\n',this_kb))">
+
   URL="<tal:dummy replace="abs_kb_url"/>"
   <tal:dummy
      repeat="a_task all_tasks">
 	<tal:dummy replace="python:a_task[0]"/> 
-          [label="<tal:dummy replace="python:a_task[1]"/>",
+          [label="<tal:dummy replace="python:a_task[1]"/>", 
+           shape=component,
     <tal:block 
        condition="python:str(get_slot_value(a_task[0],
                                             'Status')[0]) == 'complete'">
          style=filled,
          fillcolor=green,
+    </tal:block>
+    <tal:block 
+       condition="python:str(get_slot_value(a_task[0],
+                                            'Status')[0]) == 'in_progress'">
+         style=filled,
+         fillcolor=orange,
+    </tal:block>
+    <tal:block 
+       condition="python:str(get_slot_value(a_task[0],
+                                            'Status')[0]) == 'blocked'">
+         style=filled,
+         fillcolor=pink,
     </tal:block>
          URL="<tal:dummy replace="python:abs_kb_url+str(a_task[0])"/>"];
         <tal:block
@@ -32,5 +45,6 @@
         </tal:block>
   </tal:dummy>
 </tal:block>
+
 </metal:block>
 </metal:block>
