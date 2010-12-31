@@ -5,6 +5,7 @@
 <html>
   <head>
     <title tal:content="python:document_title or here">template/title</title>
+    <link REL="shortcut icon" HREF="/favicon.ico" TYPE="image/x-icon">
     <base href="" tal:attributes="href python:server_absolute_url+request.kb_request()+'/'"/>
     <STYLE TYPE="text/css">
     <!--

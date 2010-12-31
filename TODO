@@ -1,9 +1,13 @@
 -*-mode: outline -*-
 
 2010.12.24
-* prep for DogFoodOne milestone:
-** install rendering packages on karaba, ie. graphviz, jade, gnuplot
-** set up accounts for each pod member
+* retire all old cvs stuff
+** finish salvaging divergent templates
+*** $NOO_nh/templates/pert_chart.dot
+*** $NOO_nh/templates/software_project_book.dbk (merge)
+*** 
+* EatTheDogFood milestone:
+** get best_practices into bzr and on to karaba
 * prep for PublicReleaseOne milestone:
 ** add htpasswd support
 *** using http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
