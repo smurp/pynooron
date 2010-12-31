@@ -30,6 +30,14 @@ create_individual('transform_ps_2_jpg',
                              ['WritesTo','pipe'],
                              ['LiteralExternalCommand',
                               'gs -sDEVICE=jpeg -q -sOutputFile=- -']])
+create_individual('transform_ps_2_png',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','png_extension'],
+                             ['RequiresProgram','gs'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
+                             ['LiteralExternalCommand',
+                              'gs -sDEVICE=png16m -q -sOutputFile=- -']])
 
 #
 # commented out so random people don't use your printer!
@@ -67,6 +75,13 @@ create_individual('transform_dot_2_jpg',
                              ['ReadsFrom','pipe'],
                              ['WritesTo','pipe'],
                              ['LiteralExternalCommand','dot -Tjpeg']])
+create_individual('transform_dot_2_png',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','png_extension'],
+                             ['RequiresProgram','dot'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
+                             ['LiteralExternalCommand','dot -Tpng']])
 create_individual('transform_dot_2_gif',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','gif_extension'],
@@ -96,6 +111,12 @@ create_individual('jpg_extension',
                   direct_types=['FileExtension'],
                   own_slots=[['MimeType','image/jpeg'],
                              ['LiteralExtension','.jpg'],
+                             ['ApplicableTransformers']])
+
+create_individual('png_extension',
+                  direct_types=['FileExtension'],
+                  own_slots=[['MimeType','image/png'],
+                             ['LiteralExtension','.png'],
                              ['ApplicableTransformers']])
 
 ##########################################################
