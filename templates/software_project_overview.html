@@ -22,19 +22,19 @@ This page summarizes the various aspects of this software project:
 See PERT as: 
 <tal:block repeat="extension python:[['ps','ps'],
                                      ['svg','svg'],
-                                     ['gif','gif']]">
+                                     ['png','png']]">
   <a tal:attributes="href 
                      python:request.object_request()+
                             '__pert_chart.dot.'+extension[1];"
      tal:content="python:extension[0]"></a>
 </tal:block>
 
-<img 
-   tal:attributes="src python:request.object_request()+'__pert_chart.dot.jpg';
+<a tal:attributes="href python:request.object_request()+'__pert_chart.dot.svg'"><img 
+   tal:attributes="src python:request.object_request()+'__pert_chart.dot.png';
                    alt python:(get_frame_pretty_name(here) 
                                or get_frame_name(here))
                               + ' PERT Chart'"/>
-
+</a>
 
 
 
