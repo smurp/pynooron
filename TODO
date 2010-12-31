@@ -1,12 +1,18 @@
 -*-mode: outline -*-
 
-2010.12.24
-* retire all old cvs stuff
-** finish salvaging divergent templates
-*** $NOO_nh/templates/software_project_book.dbk (merge)
-*** 
+2010.12.30
+
 * EatTheDogFood milestone:
-** get best_practices into bzr and on to karaba
+** best_practices
+*** make a diagram 
+*** design an html display
+*** add Description slot (and/or other slots in consultation with Tamsin and Wolf)
+*** smarten up nooron_app.html to show most specific image for kb as a whole
+** nooron_project
+*** fix legend on .dot
+*** add "add Task" button to the .dot
+*** distinguish milestones from tasks in .dot and .html
+*** move these TODO entries into the nooron_project as needed
 * prep for PublicReleaseOne milestone:
 ** add htpasswd support
 *** using http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
@@ -14,6 +20,13 @@
 ** make KBAdapter for /etc/passwd (only for use when ssl used)
 ** implement special security restrictions when access is insecure
 *** eg. Can only manage packages, users and transformers via https
+** run_nooron.py
+*** accepts command line arguments and switches
+**** run_nooron.py [--localhost | [--ip_address xx.xx.xx.xx | --host_name HN]] 
+                   [--places DIRS:SEP:BY:COLONS] [--just_serve DIRS:COLONS]
+                   [--port 8000] [--site_front some_template.html]
+                   [--cache_dir PATH] [--config_file PATH]
+                   [--log_to FILE] 
 
 2008.09.13
 * prep for new release
