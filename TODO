@@ -28,6 +28,13 @@
                    [--cache_dir PATH] [--config_file PATH]
                    [--log_to FILE] 
 
+** remove spurious printf cruft
+** remove warnings
+** remove ZOBB support
+** look for rough optimization
+** add KBAdapter around pellet.sh
+
+
 2008.09.13
 * prep for new release
 ** package using distutils (or whatever)
