@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-__version__='$Revision: 1.2 $'[11:-2]
-__cvs_id__ ='$Id: PyCLIBoilerPlateNG.py,v 1.2 2008/06/16 15:08:39 smurp Exp $'
-
+__version__= open('version.txt').read()
 __doc__ = """
   The program run_nooron.py offers command line options to start
   a nooron instance on a port, at an IP, publishing knowledge and 
@@ -19,8 +17,10 @@ home_dir  = os.path.expanduser("~")
 UID       = 'nooron'
 kr_root   = '%(home_dir)s/knowledge/' % locals()
 cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
-localhost = '127.0.0.1'
-karaba    = '72.47.237.232'
+default_port = '8000'
+default_ip_address = '127.0.0.1'
+default_media_path = cwd + "/media"
+default_site_front = "dogfood_front.html"
 know_list = [kr_root+'apps_of/nooron',
              kr_root+'apps_of/smurp',          
              #kr_root+'apps_of/givingspace',
@@ -33,7 +33,16 @@ know_list = [kr_root+'apps_of/nooron',
              cwd+'/know']
 
 def path_to_list(path):
-    return path.split(':')
+    """ 
+    >>> p = "a:b:c"
+    >>> path_to_list(p)
+    ['a', 'b', 'c']
+
+    >>> list_to_path(path_to_list(p)) == p
+    True
+    
+    """
+    return path.split(":")
 def list_to_path(lst):
     return ":".join(lst)
 
@@ -57,19 +66,14 @@ def start_nooron(options,args):
     from AuthenticatedUserAuthorizer import AuthenticatedUserAuthorizer
     security_engine = AuthenticatedUserAuthorizer()
 
-    if options.localhost:
-        ip_address = localhost
-    if options.ip_address:
-        ip_address = options.ip_address
-
     import __main__
     __main__.__builtins__.wedge_string = '__'
     __main__.__builtins__.nooron_root = \
              NooronRoot(publishing_root = cwd,
                         #server_name = 'crusty',
-                        server_ip = ip_address,
-                        site_front = 'dogfood_front.html',
-                        just_serve = [cwd + '/media'],
+                        server_ip = options.ip_address,
+                        site_front = options.site_front,
+                        just_serve = path_to_list(options.media_path),
                         server_port = options.port,
                         log_to = sys.stdout,
                         use_auth = use_auth,
@@ -137,68 +141,71 @@ if __name__ == "__main__":
                       help = "show the manual for this program")
     parser.add_option("--port",
                       type="int",
-                      default = 8000,
-                      help = "the port for the server")
-    parser.add_option("--localhost",
-                      action = 'store_true',
-                      default = True,
-                      help = "indicate that %(localhost)s is to be used" % globals())
+                      default = default_port,
+                      help = "the port for the server, default: %s" % default_port)
     parser.add_option("--ip_address",
                       type="str",
-                      help = "accept a string")
+                      default = default_ip_address,
+                      help = "dotted quad ip address to serve, default: %s" % default_ip_address)
     parser.add_option("--cache_dir",
                       type="str",
                       default = cache_dir,
                       help = "the directory to use as cache, default: %s" % cache_dir)
 
-    parser.add_option("--unittest",
-                      action = 'store_true',
-                      help = "perform unit tests")
-    parser.add_option("-V","--verbose",
-                      action = 'store_true',
-                      help = "be verbose in all things, go with god")
-    parser.add_option("-v","--version",
-                      action = 'store_true',
-                      help = "show version")
     parser.add_option("--knowledge_path",
                       type="str",
                       default = list_to_path(know_list),
-                      help = "colon-separated list of directories containing knowledge (places)")
+                      help = "colon-separated path to knowledge, default: %s" % list_to_path(know_list))
     parser.add_option("--media_path",
                       type="str",
-                      help = "colon-separated list of directories containing templates and static files (just_serve)")
+                      default = default_media_path,
+                      help = "colon-separated path for static files, default: %s" % default_media_path)
     parser.add_option("--site_front",
                       type="str",
-                      help = "the name of the path to serve when / is hit")
-    parser.add_option("--ini_file",
-                      type="str",
-                      help = "path to file containing ")
-    parser.add_option("--dump_as_ini_file",
+                      default = default_site_front,
+                      help = "file to serve when / is hit, default: %s" % default_site_front)
+    parser.add_option("--unittest",
                       action = 'store_true',
-                      help = "emit the current configuration in format for --ini_file ")
+                      help = "perform unit tests")
+    parser.add_option("-v","--version",
+                      action = 'store_true',
+                      help = "show version")
+    parser.add_option("-V","--verbose",
+                      action = 'store_true',
+                      help = "be verbose in all things, go with god")
+    
+    if False:
+        parser.add_option("--ini_file",
+                          type="str",
+                          help = "path to file containing ")
+        parser.add_option("--dump_as_ini_file",
+                          action = 'store_true',
+                          help = "emit the current configuration in format for --ini_file ")
     
 
     parser.version = __version__
     parser.usage =  """
     e.g.
        %prog 
-          start Nooron on localhost
+          start Nooron on localhost and port 8000
 
-       %prog --ip_address xxx.xxx.xxx.xxx --port 8000
+       %prog --ip_address 72.47.237.232 --port 8000
           start Nooron at a given ip and port (e.g. karaba)
 
     """ 
     (options,args) = parser.parse_args()
-    if options.dump_as_ini_file:
-        print dir(options)
-        #print repr(options),repr(args)
-        os.exit()
+    if False:
+        if options.dump_as_ini_file:
+            print dir(options)
+            #print repr(options),repr(args)
+            os.exit()
 
     show_usage = True
     if options.unittest:
         show_usage = False
         import doctest
         doctest.testmod(verbose=options.verbose)
+        sys.exit()
     if options.version:
         show_usage = False
         if options.verbose:
