@@ -1,0 +1,237 @@
+@charset "UTF-8";
+/* Nooron Master Template Style - created 2011-01-01 */
+
+
+/* basic elements */
+
+body  {
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 80%;
+	background-color: #E8F0FC;
+}
+
+a {
+	color: #004285;
+}
+a:hover {
+	text-decoration: none;
+	color: #0055AD;
+}
+li {
+	list-style-type: disc;
+}
+h1 {
+	font-size: 1.5em;
+	width: 80%;
+}
+h2 {
+	font-size: 1.3em;
+	width: 95%;
+	margin-top: 40px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #666;
+}
+h3 {
+	font-size: 1.1em;
+	color: #305777;
+	width: 80%;
+	padding-left: 30px;
+}
+table {
+	font-size: 100%;
+}
+
+#pageHeader h1 a {
+	text-decoration: none;
+}
+#container { 
+	width: 90%;  /* this will create a container 80% of the browser width */
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+	margin-top: 15px;
+	margin-right: auto;
+	margin-bottom: 20;
+	margin-left: auto;
+} 
+#pageHeader {
+	background-color: #B9C7DE;  /* this padding matches the left alignment of the elements in the divs that appear beneath it. If an image is used in the #header instead of text, you may want to remove the padding. */
+	border-bottom-width: medium;
+	border-bottom-style: solid;
+	border-bottom-color: #369;
+	padding-top: 0;
+	padding-right: 10px;
+	padding-bottom: 5;
+	padding-left: 10px;
+} 
+#pageHeader h1 {
+	padding-top: 0px;
+	padding-right: 0;
+	padding-bottom: 0px;
+	padding-left: 0;
+	margin-top: -10;
+	margin-right: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+#pageHeader h2 {
+	color: #20253D;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #000;
+	font-size: 80%;
+	margin: 0px;
+}
+
+.tagline {
+	color: #20253D;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #000;
+}
+
+/* Tips for sidebar1:
+1. since we are working in percentages, it's best not to use padding on the sidebar. It will be added to the width for standards compliant browsers creating an unknown actual width. 
+2. Space between the side of the div and the elements within it can be created by placing a left and right margin on those elements as seen in the ".twoColLiqRtHdr #sidebar1 p" rule.
+3. Since Explorer calculates widths after the parent element is rendered, you may occasionally run into unexplained bugs with percentage-based columns. If you need more predictable results, you may choose to change to pixel sized columns.
+*/
+#linkList {
+	float: right; /* since this element is floated, a width must be given */
+	width: 24%;
+	background: #EBEBEB; /* the background color will be displayed for the length of the content in the column, but no further */
+	padding-top: 15px; /* top and bottom padding create visual space within this div  */
+	font-size: 90%;
+	padding-left: 10px;
+	padding-bottom: 20px;
+}
+#linkList h3, #linkList p {
+	margin-left: 10px; /* the left and right margin should be given to every element that will be placed in the side columns */
+	margin-right: 10px;
+}
+
+/* Tips for mainContent:
+1. the space between the mainContent and sidebar1 is created with the right margin on the mainContent div.  No matter how much content the sidebar1 div contains, the column space will remain. You can remove this right margin if you want the #mainContent div's text to fill the #sidebar1 space when the content in #sidebar1 ends.
+2. to avoid float drop at a supported minimum 800 x 600 resolution, elements within the mainContent div should be 430px or smaller (this includes images).
+3. in the Internet Explorer Conditional Comment below, the zoom property is used to give the mainContent "hasLayout." This avoids several IE-specific bugs.
+*/
+#mainContent { 
+	margin: 0 26% 0 10px; /* the left margin should mirror the margin on the header and footer for proper alignment. */
+	margin-left: 10px;
+} 
+
+#pageFooter {
+	padding-top: 10;
+	padding-right: 10px;
+	padding-bottom: 10;
+	padding-left: 10px;
+	font-size: 80%;
+	background-color: #CCC;
+} 
+#pageFooter p {
+	margin: 0; /* zeroing the margins of the first element in the footer will avoid the possibility of margin collapse - a space between divs */
+	padding: 10px 0; /* padding on this element will create space, just as the the margin would have, without the margin collapse issue */
+}
+
+
+#authStatus{
+	font-size: 80%;
+	text-align: right;
+	vertical-align: top;
+}
+
+#breadcrumbs {
+	font-size: 80%;
+	margin-left: 10px;
+}
+
+#authErrorMessage{
+
+}
+
+
+#bottomDocs{
+	
+}
+
+#contentFoot {
+	font-size: 80%;
+	margin-left: 10px;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #000;
+}
+
+#priorityOptions {
+	margin-bottom: 5px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #333; 
+}
+
+#availableGarments {
+	margin-bottom: 5px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #333;
+	padding-bottom: 10px;
+}
+
+#availableActions{
+
+}
+
+#nameSpace{
+
+}
+
+#nameSpaceReg{
+
+}
+
+#nameSpaceVariables{
+
+}
+
+#templateID{
+
+}
+
+#showSource{
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #000;
+	margin-left: 5px;
+	padding-left: 5px;
+}
+
+
+#validatePage{
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #000;
+	margin-left: 5px;
+	padding-left: 5px;
+}
+
+/* Miscellaneous classes for reuse */
+
+
+.fltrt { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page. The floated element must precede the element it should be next to on the page. */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
