@@ -718,8 +718,8 @@ class KB(FRAME,Programmable):
                               kb_local_only_p=0):    
         #print "create_frame_internal(",kb,name,")"
         if kb != current_kb():
-            if type(name) <> type(''):
-                print type(name),name.__class__,
+            #if type(name) <> type(''):
+            #    print type(name),name.__class__,
             if str(name) == "SamuelBeckett" :# and not (str(kb) in ('PeopleDatar')):
                 return None
             #print "noncurrent kb",kb,"for '%s'" % name
