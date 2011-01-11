@@ -1,4 +1,4 @@
-#!/usr/local/Zope-2.5.1/bin/python
+#!/usr/bin/env python
 
 import os
 import sys

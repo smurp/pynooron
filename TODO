@@ -2,8 +2,29 @@
 
 2010.12.30
 
+* documenation
+** where should the docs live?
+*** the nooron_faq?
+*** some other kb?
+*** a normal document?
+* BestPractices:
+** meditate on health motivators first thing each day
+** stock and have prepared raw snackables
+** exclude the empty starches
+* Meta to BestPractices:
+** categories:
+*** health
+*** work
+*** mind
+*** interpersonal
+*** money
+* BestPractice slots:
+** inCategory
+** description
 * EatTheDogFood milestone:
 ** embed svg in html (because graphviz on karaba has no bitmap support)
+** nooron_app_diagram
+*** show generic connections
 ** best_practices
 *** make a diagram 
 *** design an html display
@@ -21,13 +42,6 @@
 ** make KBAdapter for /etc/passwd (only for use when ssl used)
 ** implement special security restrictions when access is insecure
 *** eg. Can only manage packages, users and transformers via https
-** run_nooron.py
-*** accepts command line arguments and switches
-**** run_nooron.py [--localhost | [--ip_address xx.xx.xx.xx | --host_name HN]] 
-                   [--places DIRS:SEP:BY:COLONS] [--just_serve DIRS:COLONS]
-                   [--port 8000] [--site_front some_template.html]
-                   [--cache_dir PATH] [--config_file PATH]
-                   [--log_to FILE] 
 
 ** remove spurious printf cruft
 ** remove warnings
