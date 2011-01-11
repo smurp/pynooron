@@ -2,6 +2,7 @@
 <metal:block metal:fill-slot="main">
 // $Id: pert_chart.dot,v 1.4 2003/06/27 14:06:49 smurp Exp $
   size="7.5,10"
+  rankdir="LR"
 //  rotate=90
 //  ratio=compress
 subgraph cluster_legend {

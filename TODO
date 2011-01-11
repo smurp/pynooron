@@ -26,12 +26,9 @@
 ** nooron_app_diagram
 *** show generic connections
 ** best_practices
-*** make a diagram 
-*** design an html display
 *** add Description slot (and/or other slots in consultation with Tamsin and Wolf)
 *** smarten up nooron_app.html to show most specific image for kb as a whole
 ** nooron_project
-*** fix legend on .dot
 *** add "add Task" button to the .dot
 *** distinguish milestones from tasks in .dot and .html
 *** move these TODO entries into the nooron_project as needed

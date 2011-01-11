@@ -4,8 +4,6 @@
   size="6,6"   // bounding box in inches
   center=1
   rankdir="LR"
-  //  node[fontname="Courier";fontsize=10]
-
   URL="<tal:dummy replace="server_absolute_url"/>"
 
 

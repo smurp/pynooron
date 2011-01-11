@@ -1,0 +1,2 @@
+<!-- these italics just show we are getting the available_garments through this template -->
+<i><tal:dummy replace="structure container/available_garments"/></i>
