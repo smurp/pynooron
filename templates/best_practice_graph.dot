@@ -1,0 +1,30 @@
+<metal:block metal:use-macro="container/dotfile_master/macros/master">
+<metal:block metal:fill-slot="main">
+  mclimit=8    // run longer, do better
+  size="6,6"   // bounding box in inches
+  center=1
+  //  node[fontname="Courier";fontsize=10]
+
+  URL="<tal:dummy replace="server_absolute_url"/>"
+
+
+<tal:dummy 
+     condition="python:1" 
+     define="all_practices python:call_procedure(get_procedure('names_and_pretty_names'),
+                                                arguments=(get_class_instances('best_practice')[0],
+                                                           '\\n',this_kb))">
+  <tal:dummy tal:repeat="a_practice all_practices">
+	<tal:dummy replace="python:a_practice[0]"/> 
+	  [label="<tal:dummy replace="python:a_practice[1]"/>",
+           URL="<tal:dummy replace="python:request.object_request()+'/'+str(a_practice[0])"/>",
+           shape=plaintext];
+        <tal:dummy 
+          repeat="a_relative python:get_slot_values(a_practice[0],'MoreGeneralPractice')[0]">
+          <tal:dummy condition="python: a_relative != ''">
+          <hr tal:replace="python:a_practice[0]"/> -> <hr tal:replace="python:a_relative"/>;
+          </tal:dummy>
+        </tal:dummy>
+  </tal:dummy>
+</tal:dummy>
+</metal:block>
+</metal:block>
