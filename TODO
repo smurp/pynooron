@@ -26,10 +26,11 @@
 ** nooron_app_diagram
 *** show generic connections
 ** best_practices
-*** add Description slot (and/or other slots in consultation with Tamsin and Wolf)
 *** smarten up nooron_app.html to show most specific image for kb as a whole
+** general improvements:
+*** convenience procedure for sorted_instances_of_classes
+*** more knowledge-driven graph creation
 ** nooron_project
-*** add "add Task" button to the .dot
 *** distinguish milestones from tasks in .dot and .html
 *** move these TODO entries into the nooron_project as needed
 * prep for PublicReleaseOne milestone:
