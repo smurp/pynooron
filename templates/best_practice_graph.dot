@@ -11,7 +11,9 @@
      condition="python:1" 
      define="all_practices python:call_procedure(
                         get_procedure('names_and_pretty_names'),
-                        arguments=(get_class_instances('technique')[0] + get_class_instances('LifeDomain')[0],
+                        arguments=(get_class_instances('technique')[0] + 
+			           get_class_instances('best_practice')[0] + 
+                                   get_class_instances('LifeDomain')[0],
                                                            '\\n',this_kb))">
   <tal:dummy tal:repeat="a_practice all_practices">
 	<tal:dummy replace="python:a_practice[0]"/> 
