@@ -40,7 +40,7 @@ This knowledgebase merges together these others:
          tal:content="app_class"></a>&nbsp;instances</strong>
 
   </caption>
-  <tr tal:repeat="instance python:get_class_instances(app_class)[0]">
+  <tr tal:repeat="instance python:get_class_instances(app_class,inference_level=':direct')[0]">
     <td><a href="link"
            tal:define="url python:here.get_frame_name(instance)"
 	   tal:attributes="href url"
