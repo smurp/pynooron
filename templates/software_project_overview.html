@@ -12,6 +12,7 @@ This page summarizes the various aspects of this software project:
 <ul>
 
 <li><a href="#PERT_Chart">PERT Chart</a></li>
+<li><a href="#Milestones">The Milestones</a></li>
 <li><a href="#ActorTypes">The Actors</a></li>
 <li><a href="#UseCases">The Use Cases</a></li>
 <li><a href="#Tasks">The Tasks</a></li>
@@ -38,6 +39,32 @@ See PERT as:
 
 
 
+
+<tal:dummy define="app_class string:Milestone">
+
+  <h2><a name="Milestones" 
+           tal:attributes="href app_class">The Milestones</a></h2>
+  <p tal:content="python:get_slot_value(app_class,':DOCUMENTATION')[0] or ''"></p>
+
+  <tal:block
+    define="items python:get_class_instances(app_class)[0];
+            instances python:[get_frame_name(itm) for itm in items];
+            ignore python:instances.sort()"
+    condition="instances">
+
+  <table border="1">
+    <tr tal:repeat="instance instances">
+      <td><a href="link"
+             tal:define="url instance"
+             tal:attributes="href url"
+             tal:content="url">click me</a></td>
+      <td tal:content="structure python:get_slot_value(instance,'Status')[0] or '&nbsp;'">link</td>
+    </tr>
+  </table>
+  </tal:block>
+</tal:dummy>
+
+
 <tal:dummy
     define="app_class string:ActorType">
 
@@ -60,7 +87,6 @@ See PERT as:
   </tr>
 </table>
 </tal:block>
-
 </tal:dummy>
 
 
