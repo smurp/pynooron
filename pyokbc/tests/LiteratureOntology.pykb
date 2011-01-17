@@ -1,4 +1,7 @@
 
+create_class('Literature',direct_superclasses=[':THING'])
+create_class('Book',direct_superclasses=['Literature'])
+
 create_slot('WrittenBy',own_slots=[[':INVERSE','Wrote'],
                                    [':DOMAIN','Literature']])
 create_slot('Wrote',own_slots=[[':INVERSE','WrittenBy'],
@@ -9,5 +12,3 @@ create_slot('Penname',own_slots=[[':INVERSE','PennameOf'],
 create_slot('PennameOf',own_slots=[[':INVERSE','Penname'],
                                    [':DOMAIN','Agent']])
 
-create_class('Literature',direct_superclasses=[':THING'])
-create_class('Book',direct_superclasses=['Literature'])
