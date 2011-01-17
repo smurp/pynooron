@@ -21,9 +21,9 @@ this template is available to every KB, CLASS, INDIVIDUAL, SLOT, and FACET.
 
 <div metal:fill-slot="main">
 
-<h1 tal:content="python:get_frame_pretty_name(here) or 
-                        get_frame_name(here)"></h1>
-
+<h3 tal:content="python:get_frame_pretty_name(here) or 
+                        get_frame_name(here)"></h3>
+<font size="-2"><hr tal:replace="python: tuple(get_instance_types(here,inference_level=':direct')[0])"/></font>
 <dl tal:define="slots python:get_slot_values(here,'slot_display_order',
                                              slot_type=ALL)[0] 
                              or get_frame_slots(here,slot_type=ALL)[0]"
