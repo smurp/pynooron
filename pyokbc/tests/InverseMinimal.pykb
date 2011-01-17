@@ -1,0 +1,13 @@
+create_class('Human')
+create_class('Book')
+
+create_slot('WrittenBy',own_slots=[[':SLOT-INVERSE','Wrote'],
+                                   [':DOMAIN','Literature']])
+create_slot('Wrote',own_slots=[[':SLOT-INVERSE','WrittenBy'],
+                               [':DOMAIN','Agent']])
+
+create_individual('AliceInWonderland',
+                  direct_types=['Book'])
+create_individual('LewisCarroll',
+                  direct_types=['Human'],
+                  own_slots=[['Wrote','AliceInWonderland']])
