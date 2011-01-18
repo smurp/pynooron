@@ -308,15 +308,11 @@ class FRAME(Node):
                   }
         return (args,kwargs)
         
-    #@timed
     def __eq__(self,other):
         return self._name.__eq__(other)
     def __hash__(self):
         return id(self)
     
-    #__eq__ = __equal__
-
-
 #    def __cmp__(self,other):
 #        return str(self).__cmp__(str(other))
 

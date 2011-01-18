@@ -79,6 +79,11 @@ class PyKb(AbstractFileKb,CachingMixin):
         AbstractFileKb.__init__(self,name,connection=connection)
         CachingMixin.__init__(self)
 
+    #@timed
+    def __str__(self):
+        #print "__str__",self._name
+        return self._name.replace('.pykb','')
+
     @timed
     def open_kb_internal(self,
                          kb_type = None,

@@ -109,7 +109,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         
         self.failIf(not frame_found_p,'Cannot find :DOCUMENTATION frame')
 
-class Bogus:
+
     def test_0016_documentation(self):
         good = doc="You know, Alice!  With the restaraunt..."
         resp = get_slot_value('AliceLidell',
@@ -118,6 +118,7 @@ class Bogus:
         if not resp:
             print_frame('AliceLidell')
         self.assertEquals(good, str(resp))
+
 
     def test_0018_get_frame_pretty_name(self):
         good = 'Alice in Wonderland'
@@ -293,11 +294,10 @@ class Bogus:
         self.failIf(there_were_dupes,
                     'duplicates frames: ' + str(','.join(dupes.keys())))
 
-#class Bogus:
     def test_0110_get_kb_frames_klop(self):
         good = "[AliceInWonderland, AliceLidell," + \
                " CharlesLutwidgeDodgson, ChristopherRobin," + \
-               " LewisCarroll, SamuelBeckett]"
+               " DeathTime, LewisCarroll, SamuelBeckett]"
         resp = list(get_kb_frames(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -499,19 +499,4 @@ class Bogus:
 
 
 if __name__ == "__main__":
-
-    #pdb.set_trace()
-
-    #p.set_break('../PyOkbc.py',159,"str(frame) == 'AliceLidell'")
-    # b ../PyOkbc.py:159
-    # condition 1 "str(frame) == 'AliceLidell'"    
-
     unittest.main()
-    sys.exit()
-    os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
-    meta = meta_kb()
-    con = local_connection()
-    open_kb('LiteratureOntology')
-    sam = get_frame_in_kb('Wrote',kb_local_only_p=False)
-    dump_frame(sam)
-    get_frame_in_kb('SamuelBeckett')
