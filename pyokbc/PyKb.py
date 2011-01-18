@@ -6,6 +6,7 @@ from PyOkbc import *
 from CachingMixin import CachingMixin
 import string
 import os
+from debug_tools import timed
 
 """PyKb is a rather simple file-based PyOKBC backend which simply uses Python
 source code as its file format.  The peculiar decision to bootstrap development
@@ -78,7 +79,7 @@ class PyKb(AbstractFileKb,CachingMixin):
         AbstractFileKb.__init__(self,name,connection=connection)
         CachingMixin.__init__(self)
 
-
+    @timed
     def open_kb_internal(self,
                          kb_type = None,
                          error_p = True):
