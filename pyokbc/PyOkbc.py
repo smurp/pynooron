@@ -308,6 +308,15 @@ class FRAME(Node):
                   }
         return (args,kwargs)
         
+    #@timed
+    def __eq__(self,other):
+        return self._name.__eq__(other)
+    def __hash__(self):
+        return id(self)
+    
+    #__eq__ = __equal__
+
+
 #    def __cmp__(self,other):
 #        return str(self).__cmp__(str(other))
 
@@ -528,9 +537,21 @@ Node._behaviors = { # not in OKBC spec, but implied
                                      Node._none)}
 
 # see constraints.lisp
+Node._VALUE_TYPE == Node._VALUE_TYPE
+Node._SLOT_VALUE_TYPE == Node._SLOT_VALUE_TYPE
+Node._SLOT_VALUE_TYPE == Node._VALUE_TYPE
+
+print "id(Node)                 =",id(Node)
+print "hash(Node)               =",hash(Node)
+print "id(Node._SLOT_INVERSE)   =",id(Node._SLOT_INVERSE)
+print "hash(Node._SLOT_INVERSE) =",id(Node._SLOT_INVERSE)
+print "id(Node._INVERSE)        =",id(Node._INVERSE)
+print "hash(Node._INVERSE)      =",id(Node._INVERSE)
+
+
 Node._equivalent_constraint_facets = {
     Node._SLOT_INVERSE:             Node._INVERSE,
-    Node._SLOT_VALUE_TYPE :         Node._VALUE_TYPE,
+    Node._SLOT_VALUE_TYPE:          Node._VALUE_TYPE,
     Node._SLOT_CARDINALITY:         Node._CARDINALITY,
     Node._SLOT_MAXIMUM_CARDINALITY: Node._MAXIMUM_CARDINALITY,
     Node._SLOT_MINIMUM_CARDINALITY: Node._MINIMUM_CARDINALITY,
