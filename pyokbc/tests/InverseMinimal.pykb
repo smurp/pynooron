@@ -1,3 +1,4 @@
+# -*- mode: python -*-
 create_class('Human')
 create_class('Book')
 
@@ -8,6 +9,18 @@ create_slot('Wrote',own_slots=[[':SLOT-INVERSE','WrittenBy'],
 
 create_individual('AliceInWonderland',
                   direct_types=['Book'])
+create_individual('ThroughTheLookingGlass',
+                  direct_types=['Book'])
 create_individual('LewisCarroll',
                   direct_types=['Human'],
-                  own_slots=[['Wrote','AliceInWonderland']])
+                  own_slots=[['Wrote','AliceInWonderland',
+                              'ThroughTheLookingGlass'
+                              ]])
+
+
+create_individual('TheoryOfGamesandEconomicBehaviour', direct_types=['Book'])
+create_individual('JohnVonNeumann', direct_types=['Human'],
+                  own_slots=[['Wrote','TheoryOfGamesandEconomicBehaviour']])
+create_individual('OskarMorgenstern', direct_types=['Human'],
+                  own_slots=[['Wrote','TheoryOfGamesandEconomicBehaviour']]
+                  )

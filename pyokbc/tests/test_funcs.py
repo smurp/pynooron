@@ -9,6 +9,7 @@ import string
 import unittest
 sys.path.append('../..')
 from pyokbc import *
+from debug_tools import timed
 
 def str_sort(a,b):
     return cmp(str(a),str(b))
@@ -36,13 +37,9 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_0005_create_kb_locator(self):
         locator = create_kb_locator('PeopleData')
         meta = meta_kb()
-        
-        #print "meta    =",type(meta),   meta.__class__.__name__
-        #print "locator =",type(locator),locator.__class__.__name__
         #self.assertEquals(meta.get_instance_types(locator),[])
         #self.assertEquals(meta.instance_of_p(locator,':KB')[0],True)
         self.failIf(not kb_p(locator))
-
 
     def test_0006_find_kb_locator(self):
         #PyOkbc.DEBUG_METHODS.append('find_kb_locator')
@@ -61,8 +58,6 @@ class ReadOnlyTestCase(unittest.TestCase):
         mykb = open_kb(locator)
         self.failIf(not kb_p(mykb))
         self.failIf(not mykb._opened)
-        #print get_kb_frames(mykb)
-
 
     def test_0008_goto_kb(self):
         meta = meta_kb()
@@ -77,8 +72,35 @@ class ReadOnlyTestCase(unittest.TestCase):
         #print the_kb.get_frame_name()
 
 
+    def test_0202_get_slot_values_inverse(self):
+        mykb = find_kb('Addenda')
+        good = """['LewisCarroll']"""
+        resp = list(mykb.get_slot_values('AliceInWonderland','WrittenBy',
+                                         kb_local_only_p = 0)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def test_0203_get_slot_values_inverse(self):
+        mykb = find_kb('Addenda')
+        good = """['AliceInWonderland']"""
+        resp = list(mykb.get_slot_values('LewisCarroll','Wrote',
+                                         kb_local_only_p = 0)[0])
+        #resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
+
+    def BOGUS_test_0204_dump_inverse_details(self):
+        mykb = find_kb('Addenda')
+        good = """show everything"""
+        #print get_frame_in_kb('Wrote')
+        print dump_frame(get_frame_in_kb('Wrote'))
+        resp = list(mykb.get_slot_values('LewisCarroll','Wrote',
+                                         kb_local_only_p = 0)[0])
+        resp.sort(str_sort)
+        self.assertEquals(good, str(resp))
 
 
+
+class Bogus:
     def test_0009_get_kb_direct_parents(self):
         #peeps = find_kb('PeopleData')
         peeps = current_kb()
@@ -96,7 +118,6 @@ class ReadOnlyTestCase(unittest.TestCase):
         parent_names.sort()
         self.assertEquals(parent_names,
                           ['LiteratureOntology','PRIMORDIAL_KB','PeopleSchema'])
-
 
 
     def test_0014_get_frame_in_kb_documentation(self):
@@ -463,3 +484,11 @@ if __name__ == "__main__":
     # condition 1 "str(frame) == 'AliceLidell'"    
 
     unittest.main()
+    sys.exit()
+    os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
+    meta = meta_kb()
+    con = local_connection()
+    open_kb('LiteratureOntology')
+    sam = get_frame_in_kb('Wrote',kb_local_only_p=False)
+    dump_frame(sam)
+    get_frame_in_kb('SamuelBeckett')

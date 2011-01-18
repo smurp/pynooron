@@ -155,9 +155,10 @@ def set_inverse_for_a_slot_value(kb,frame_inverse,slot_inverse,value):
             inverse_cardinality == 1:
         kb.put_slot_value(frame_inverse,slot_inverse,value,
                           slot_type=Node._inverse)
-    else:
-        kb.add_slot_value(frame_inverse,slot_inverse,value,
-                          slot_type=Node._inverse)
+    
+#    else:
+#        kb.add_slot_value(frame_inverse,slot_inverse,value,
+#                          slot_type=Node._inverse)
     
 @timed
 def initialize_slots_and_facets(frame, kb,
@@ -244,7 +245,8 @@ class UNIT_SLOT:
         self._values = [value]
     def set_values(self,values):
         self._values = values
-
+    def __iter__(self):
+        return self.values().__iter__()
 class Symbol:
     __allow_access_to_unprotected_subobjects__ = 1 # for ZPT security    
     def __init__(self,name):
