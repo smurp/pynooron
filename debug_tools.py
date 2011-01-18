@@ -53,9 +53,24 @@ timing_groups = {
 
 """
 
-import time
+import os
+import re
+
 global wrapper_depth
 def timed(meth):
+
+    patt = re.compile(os.environ.get('TIMED','.*'))
+
+    try:
+        handle = str(meth.__class__.__name__) + "."
+    except:
+        handle = ""
+    handle += str(meth.func_name)
+    if not patt.match(handle):
+        return meth
+    else:
+        print "will time:",handle
+    import time
     def wrapper(*args,**kw):
         global wrapper_depth
         def make_argument_summary():
@@ -118,6 +133,9 @@ def timed(meth):
     return wrapper
 
 
-# uncomment to turn off TIMING/TIMED output
-#def timed(a):    return a
+if False:
+    if os.environ.get('TIMED',False):
+        pass # permit the @timed methods to run
+    else:
+        def timed(a):    return a
 
