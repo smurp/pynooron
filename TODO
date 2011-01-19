@@ -1,7 +1,14 @@
 -*-mode: outline -*-
 
-2010.12.30
+2011.01.19
+* pyokbc correctness
+** why are best_practice instances showing duplicated outgoing links?
+** why max recursion in:
+  http://localhost:8000/know/best_practices__entity_relationship.dot.svg
+** why duplicate link from best_practices_project to software_project_wardrobe in:
+  http://localhost:8000/know/best_practices_project__kb_ancestry.dot.svg
 
+2010.12.30
 * documenation
 ** where should the docs live?
 *** the nooron_faq?
