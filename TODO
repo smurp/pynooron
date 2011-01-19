@@ -43,7 +43,6 @@
 
 ** remove spurious printf cruft
 ** remove warnings
-** remove ZOBB support
 ** look for rough optimization
 ** add KBAdapter around pellet.sh
 
