@@ -6,6 +6,7 @@ __cvs_id__ ='$Id: FileSystemKb.py,v 1.17 2008/08/13 16:08:47 smurp Exp $'
 
 import string
 
+from debug_tools import timed
 from PyOkbc import *
 import string
 import os
@@ -19,17 +20,6 @@ import sys
 
 
 python_version = sys.version.split(' ')[0]
-zfskb_min_python_version = '2.1.3'
-
-if python_version > zfskb_min_python_version:
-    try:
-        from ZODBFileStorageKb import *
-    except Exception, e:
-        print  "skipping ZODBFileStorageKb because %s" % str(e)
-else:
-    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
-                                                                 zfskb_min_python_version)
-
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
 pyokbc_mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
@@ -54,7 +44,8 @@ class FileSystemKb(AbstractFileKb):
         kb._kb_types_by_extension = ktbe = {}
         for kb_type in kb._kb_types.values():
             ktbe[kb_type._kb_type_file_extension] = kb_type
-            
+
+    @timed
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
         frame_found_p = 1

@@ -1,26 +1,52 @@
 <metal:block metal:use-macro="container/dotfile_master/macros/master">
 <metal:block metal:fill-slot="main">
   mclimit=8    // run longer, do better
-  size="6,6"   // bounding box in inches
+  size="7,7"   // bounding box in inches
   center=1
   rankdir="LR"
-  URL="<tal:dummy replace="server_absolute_url"/>"
+  URL="<tal:dummy replace="python:request.object_request()"/>"
 
 
 <tal:dummy 
      condition="python:1" 
-     define="all_practices python:call_procedure(get_procedure('names_and_pretty_names'),
-                                                arguments=(get_class_instances('best_practice')[0],
+     define="all_practices python:call_procedure(
+                        get_procedure('names_and_pretty_names'),
+                        arguments=(get_class_instances('technique')[0] + 
+			           get_class_instances('best_practice')[0] + 
+                                   get_class_instances('LifeDomain')[0],
                                                            '\\n',this_kb))">
   <tal:dummy tal:repeat="a_practice all_practices">
 	<tal:dummy replace="python:a_practice[0]"/> 
 	  [label="<tal:dummy replace="python:a_practice[1]"/>",
            URL="<tal:dummy replace="python:request.object_request()+'/'+str(a_practice[0])"/>",
-           shape=plaintext];
+           shape=<tal:dummy replace="python:{'technique':'ellipse',
+                                             'best_practice':'box' , 
+                                             'LifeDomain':'triangle'}[
+                                            str(get_instance_types(a_practice[0],
+                                                                   inference_level=':direct')[0][0])]"/>",
+           style=filled,								   
+           fillcolor=<tal:dummy replace="python:{'technique':'gold',
+                                             'best_practice':'tomato' , 
+                                             'LifeDomain':'mediumslateblue'}[
+                                            str(get_instance_types(a_practice[0],
+                                                                   inference_level=':direct')[0][0])]"/>"
+           ];
         <tal:dummy 
           repeat="a_relative python:get_slot_values(a_practice[0],'MoreGeneralPractice')[0]">
           <tal:dummy condition="python: a_relative != ''">
           <hr tal:replace="python:a_practice[0]"/> -> <hr tal:replace="python:a_relative"/>;
+          </tal:dummy>
+        </tal:dummy>
+        <tal:dummy 
+          repeat="a_relative python:get_slot_values(a_practice[0],'isTechniqueForBestPractice')[0]">
+          <tal:dummy condition="python: a_relative != ''">
+          <hr tal:replace="python:a_practice[0]"/> -> <hr tal:replace="python:str(a_relative)"/>;
+          </tal:dummy>
+        </tal:dummy>
+        <tal:dummy 
+          repeat="a_relative python:get_slot_values(a_practice[0],'isApplicableInLifeDomain')[0]">
+          <tal:dummy condition="python: a_relative != ''">
+          <hr tal:replace="python:a_practice[0]"/> -> <hr tal:replace="python:str(a_relative)"/>;
           </tal:dummy>
         </tal:dummy>
   </tal:dummy>

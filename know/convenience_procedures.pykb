@@ -216,9 +216,9 @@ def npts_by_parentage(direct_types,transformations):
     # This fully expanded graph of transformations should be provided by
     # a cached okbc procedure call.
     if transformations == None:
-        transformations = {'ps':['pdf','jpg'],
-                           'dot':['ps','jpg','svg','gif',['pdf','ps.pdf']],
-                           'dbk':['rtf','pdf','tex']}
+        transformations = {'ps':['pdf','png'],
+                           'dot':['ps','png','svg',['pdf','ps.pdf']],
+                           'dbk':['rtf','pdf','tex','txt']}
     #                             txt,ps,dvi,tex,texi
 
     train = [] # filled with passengers and their luggage

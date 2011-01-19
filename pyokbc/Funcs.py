@@ -32,7 +32,27 @@ add_class_superclass.causes_side_effects_p=1
 
 # def add_facet_value
 # def add_instance_type
-# def add_slot_value
+def add_slot_value(frame, slot, value,
+                   kb = None,
+                   test=Node._equal,
+                   slot_type=Node._own,
+                   add_before = 0,
+                   value_selector = Node._known_true,
+                   kb_local_only_p = 0):
+    kb = _coerce_to_kb(kb)
+    return kb.add_slot_value(frame,slot,value,
+                             test = test,
+                             slot_type = slot_type,
+                             add_before = add_before,
+                             value_selector = value_selector,
+                             kb_local_only_p = kb_local_only_p)
+add_slot_value.enumerator=0
+add_slot_value.optional=1
+add_slot_value.read=0
+add_slot_value.mandatory=0
+add_slot_value.write=1
+add_slot_value.causes_side_effects_p=1
+
 # def all_connections
 # def allocate_frame_handle
 # def ask

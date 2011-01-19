@@ -15,7 +15,6 @@ TIMED:     20100505121116        0.05 sec \-------------------- OnSaleThisWeek.r
 
 
 Possible improvements to the formatting include:
-  - maybe only show the parameters on the TIMING line
   - show the actual parameters using proper python positional and named formatting
   - show self as the python object id (or repr?)
   - have more control over the summarizing of the return value (because sometimes they are obnoxiously long)
@@ -53,9 +52,22 @@ timing_groups = {
 
 """
 
-import time
 global wrapper_depth
 def timed(meth):
+    import os
+    import re
+    spec = os.environ.get('TIMED','')
+    patt = re.compile(spec)
+    try:
+        handle = str(meth.__class__.__name__) + "."
+    except:
+        handle = ""
+    handle += str(meth.func_name)
+    if not patt.match(handle) or spec == '':
+        return meth
+    else:
+        print "will time:",handle
+    import time
     def wrapper(*args,**kw):
         global wrapper_depth
         def make_argument_summary():
@@ -116,8 +128,4 @@ def timed(meth):
         print after + argument_summary, " ===> ",retval_summary
         return retval
     return wrapper
-
-
-# uncomment to turn off TIMING/TIMED output
-#def timed(a):    return a
 

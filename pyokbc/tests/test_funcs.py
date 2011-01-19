@@ -3,12 +3,24 @@
 __version__='$Revision: 1.25 $'[11:-2]
 __cvs_id__ ='$Id: test_funcs.py,v 1.25 2006/03/21 20:48:06 smurp Exp $'
 
+
+"""
+Most tests will use something like this:
+
+        self.perform_comparison(
+            msg    = "",
+            expect = set(),
+            got    = set())
+
+"""
+
 import os
 import sys
 import string
 import unittest
 sys.path.append('../..')
 from pyokbc import *
+from debug_tools import timed
 
 def str_sort(a,b):
     return cmp(str(a),str(b))
@@ -18,11 +30,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
         #addenda = open_kb(create_kb_locator('Addenda'))
-        print """
 
-
-
-        """
+    def perform_comparison(self,expect=None,got=None,msg=""):
+        msg += "\n  expected: %(expect)s\n   but got: %(got)s"
+        self.assertEquals(expect,got,msg % locals())
 
     def test_0003_connection(self):
         con = local_connection()
@@ -36,13 +47,9 @@ class ReadOnlyTestCase(unittest.TestCase):
     def test_0005_create_kb_locator(self):
         locator = create_kb_locator('PeopleData')
         meta = meta_kb()
-        
-        #print "meta    =",type(meta),   meta.__class__.__name__
-        #print "locator =",type(locator),locator.__class__.__name__
         #self.assertEquals(meta.get_instance_types(locator),[])
         #self.assertEquals(meta.instance_of_p(locator,':KB')[0],True)
         self.failIf(not kb_p(locator))
-
 
     def test_0006_find_kb_locator(self):
         #PyOkbc.DEBUG_METHODS.append('find_kb_locator')
@@ -52,19 +59,23 @@ class ReadOnlyTestCase(unittest.TestCase):
         locator = find_kb_locator('PeopleData')
         meta = meta_kb()
         self.failIf(not kb_p(locator))        
-        #self.assertEquals(meta.instance_of_p(locator,':KB_LOCATOR')[0],True)
-        #self.assertEquals(meta.get_slot_value(locator,'filename')[0],
-        #                  'PeopleData.pykb')
+
 
     def test_0007_open_kb(self):
         locator = find_kb_locator('PeopleData')
         mykb = open_kb(locator)
         self.failIf(not kb_p(mykb))
         self.failIf(not mykb._opened)
-        #print get_kb_frames(mykb)
 
-
-    def test_0008_goto_kb(self):
+    def test_0008_kb_name_is_without_pykb(self):
+        kb_name = 'PeopleData'
+        peep = find_kb(kb_name)
+        self.perform_comparison(
+            msg    = "the names of KBs should not get adorned with anything (esp. '.pykb'!)",
+            expect = kb_name,
+            got    = str(peep))
+        
+    def test_0009_goto_kb(self):
         meta = meta_kb()
         #simple_dump_kb(meta,skip=['SLOT','FACET','PrimordialKb','KLASS'])
         loc = find_kb_locator("PeopleData")
@@ -77,26 +88,20 @@ class ReadOnlyTestCase(unittest.TestCase):
         #print the_kb.get_frame_name()
 
 
+    def test_0010_get_kb_direct_parents(self):
+        peeps = find_kb('PeopleData')
+        self.perform_comparison(
+            msg    = "get_kb_direct_parents() not working, first see test_0008",
+            expect = set(['PeopleSchema', 'LiteratureOntology']),
+            got    = set(map(str,peeps.get_kb_direct_parents())))
 
-
-    def test_0009_get_kb_direct_parents(self):
-        #peeps = find_kb('PeopleData')
-        peeps = current_kb()
-        parents = peeps.get_kb_direct_parents()
-        parent_names = map(lambda x: str(x),parents)
-        parent_names.sort()
-        self.assertEquals(parent_names,
-                          ['LiteratureOntology', 'PeopleSchema'])
 
     def test_0011_get_kb_parents(self):
-        #peeps = find_kb('PeopleData')
-        peeps = current_kb()
-        parents = peeps.get_kb_parents()
-        parent_names = map(lambda x: str(x),parents)
-        parent_names.sort()
-        self.assertEquals(parent_names,
-                          ['LiteratureOntology','PRIMORDIAL_KB','PeopleSchema'])
-
+        peeps = find_kb('PeopleData')
+        self.perform_comparison(
+            msg    = "get_kb_parents() not working, first see test_0008",
+            expect = set(['PRIMORDIAL_KB', 'PeopleSchema', 'LiteratureOntology']),
+            got    = set(map(str,peeps.get_kb_parents())))
 
 
     def test_0014_get_frame_in_kb_documentation(self):
@@ -114,6 +119,7 @@ class ReadOnlyTestCase(unittest.TestCase):
             print_frame('AliceLidell')
         self.assertEquals(good, str(resp))
 
+
     def test_0018_get_frame_pretty_name(self):
         good = 'Alice in Wonderland'
         resp = get_frame_pretty_name('AliceInWonderland')
@@ -125,6 +131,45 @@ class ReadOnlyTestCase(unittest.TestCase):
         resp = list(get_class_instances('AdultHuman')[0])
         resp.sort(str_sort)
         self.assertEquals(good,str(resp))
+
+    def test_0025_inverse(self):
+        import pprint
+        mykb = find_kb('InverseMinimal')
+
+        alice = mykb.get_frame_in_kb('AliceInWonderland')[0]
+        lewis = mykb.get_frame_in_kb('LewisCarroll')[0]
+        glass = mykb.get_frame_in_kb('ThroughTheLookingGlass')[0]
+
+        self.perform_comparison(
+            msg    = "basic slot-value assertions disturbed by inverse",
+            expect = set([str(alice),str(glass)]),
+            got    = set(list(mykb.get_slot_values('LewisCarroll','Wrote', kb_local_only_p = 0)[0])))
+
+        self.perform_comparison(
+            msg    = "basic :SLOT-INVERSE functionality broken",
+            expect = set([lewis]),
+            got    = set(list(mykb.get_slot_values('AliceInWonderland','WrittenBy', kb_local_only_p = 0)[0])))
+
+        self.perform_comparison(
+            msg    = "perhaps there is a wrong number of _inverse_values stored?",
+            expect = set([lewis]),
+            got    = set(alice._inverse_slots.get('WrittenBy')))
+            
+        self.perform_comparison(
+            msg = "_inverse_slots do not merge right?",
+            expect = set([mykb.get_frame_in_kb('JohnVonNeumann')[0],
+                          mykb.get_frame_in_kb('OskarMorgenstern')[0]]),
+            got = set(mykb.get_slot_values('TheoryOfGamesandEconomicBehaviour','WrittenBy')[0]))
+                          
+        self.perform_comparison(
+            msg    = "Node should be __eq__ to their frame name as a string",
+            expect = 'AliceInWonderland',
+            got    = alice)
+        
+        self.perform_comparison(
+            msg    = "inverse values are not equal to forward values",
+            expect = set(map(str,[alice,glass])),
+            got    = set(list(mykb.get_slot_values('LewisCarroll','Wrote', kb_local_only_p = 0)[0])))
 
 
     def test_0030_get_class_superclasses(self):
@@ -249,11 +294,10 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.failIf(there_were_dupes,
                     'duplicates frames: ' + str(','.join(dupes.keys())))
 
-#class Bogus:
     def test_0110_get_kb_frames_klop(self):
         good = "[AliceInWonderland, AliceLidell," + \
                " CharlesLutwidgeDodgson, ChristopherRobin," + \
-               " LewisCarroll, SamuelBeckett]"
+               " DeathTime, LewisCarroll, SamuelBeckett]"
         resp = list(get_kb_frames(kb_local_only_p=1))
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -455,11 +499,4 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-
-    #pdb.set_trace()
-
-    #p.set_break('../PyOkbc.py',159,"str(frame) == 'AliceLidell'")
-    # b ../PyOkbc.py:159
-    # condition 1 "str(frame) == 'AliceLidell'"    
-
     unittest.main()

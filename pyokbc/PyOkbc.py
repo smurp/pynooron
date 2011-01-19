@@ -35,7 +35,7 @@ except:
 #    Debugging utils
 ##########################################
 
-DEBUG_METHODS =[]# ['get_slot_values_in_detail_recurse']
+DEBUG_METHODS =[]
 DEBUG = 0
 BREAK = 0
 WARNINGS = 2
@@ -147,6 +147,20 @@ def get_slot_specification(frame,slots,
         slot_specs.append(slot_spec)
     return (slot_specs,not inexact_p)
 
+@timed
+def set_inverse_for_a_slot_value(kb,frame_inverse,slot_inverse,value):
+    (inverse_cardinality,inverse_exact_p) = \
+        kb.get_slot_value(slot_inverse, Node._SLOT_CARDINALITY)
+    if inverse_exact_p and not inverse_cardinality and \
+            inverse_cardinality == 1:
+        kb.put_slot_value(frame_inverse,slot_inverse,value,
+                          slot_type=Node._inverse)
+    
+#    else:
+#        kb.add_slot_value(frame_inverse,slot_inverse,value,
+#                          slot_type=Node._inverse)
+    
+@timed
 def initialize_slots_and_facets(frame, kb,
                                 slot_specs, facet_specs,
                                 slot_type, kb_local_only_p,
@@ -155,21 +169,33 @@ def initialize_slots_and_facets(frame, kb,
     # FIXME initialize_slots_and_facets ignores facets
     # FIXME initialize_slots_and_facets ignores defaults
 
-    #if str(frame) == 'AliceLidell': import pdb; pdb.set_trace()
     for slot_spec in slot_specs:
         slot = slot_spec[0]
+        (slot_obj,slot_obj_found) = kb.get_frame_in_kb(slot)
+
+        if slot_obj_found and slot_obj._the_inverse_of_this_slot <> None:
+            slot_inverse = kb.get_frame_in_kb(slot_obj._the_inverse_of_this_slot)[0]
+        else:
+            slot_inverse = None
+        #if slot_obj_found: print "FOUND " * 20 , "the slot:",slot_obj, "and it's inverse:",slot_inverse,slot_obj._the_inverse_of_this_slot
         slot_values = []            
         for slot_value_spec in slot_spec[1:]:
-            if (type(slot_value_spec) in [type([]),type(())]):
+            if (type(slot_value_spec) in [type,tuple]):
                 if slot_value_spec[0] == Node._default:
                     pass #save a default value slot_value_spec[1]
                 else:
                     pass # we are in a list but first elem != default
             else:
                 slot_values.append(slot_value_spec)
+
+            if slot_inverse:
+                set_inverse_for_a_slot_value(kb,slot_value_spec,slot_inverse,frame)
+
         kb.put_slot_values(frame,slot,slot_values,
                            slot_type = slot_type,
                            kb_local_only_p=kb_local_only_p)
+
+
 
 
 
@@ -219,7 +245,8 @@ class UNIT_SLOT:
         self._values = [value]
     def set_values(self,values):
         self._values = values
-
+    def __iter__(self):
+        return self.values().__iter__()
 class Symbol:
     __allow_access_to_unprotected_subobjects__ = 1 # for ZPT security    
     def __init__(self,name):
@@ -255,6 +282,8 @@ class FRAME(Node):
             kb._add_frame_to_store(self)
         self._own_slots = {}
         self._template_slots = {}
+        self._inverse_slots = {} # not based on okbc-lisp
+        self._the_inverse_of_this_slot = None  # FIXME: redundant, already available in _template_slots? _own_slots?
         self._doc = None
         self._direct_superclasses = []        
 
@@ -279,6 +308,11 @@ class FRAME(Node):
                   }
         return (args,kwargs)
         
+    def __eq__(self,other):
+        return self._name.__eq__(other)
+    def __hash__(self):
+        return id(self)
+    
 #    def __cmp__(self,other):
 #        return str(self).__cmp__(str(other))
 
@@ -337,6 +371,8 @@ def primordialINDIVIDUAL(name):
 primordial = {}
 
 primordial['kwarg'] = (':all',':own',':template',':taxonomic',
+                       ':inverse',# smurp put this here 2011.01.16 to support :SLOT-INVERSE not knowing where else to put it
+                       ':equal',  # smurp put this here 2011.01.17 to support add_slot_value not knowing where else to put it
                        ':direct',':default-only',':known-true',
                        ':either',':more',':value',':frame',
                        ':system-default',':frames',':default',
@@ -462,7 +498,9 @@ Node._behaviors = { # not in OKBC spec, but implied
                                      Node._slot,
                                      Node._facet),
     Node._class_slot_types:         (Node._template,
-                                     Node._own),
+                                     Node._own,
+                                     Node._inverse, # not in OKBC spec, but smurp idea for :INVERSE_SLOT support
+                                     ),
     Node._collection_types:         (Node._list,
                                      Node._set,
                                      Node._bag,
@@ -495,9 +533,10 @@ Node._behaviors = { # not in OKBC spec, but implied
                                      Node._none)}
 
 # see constraints.lisp
+
 Node._equivalent_constraint_facets = {
     Node._SLOT_INVERSE:             Node._INVERSE,
-    Node._SLOT_VALUE_TYPE :         Node._VALUE_TYPE,
+    Node._SLOT_VALUE_TYPE:          Node._VALUE_TYPE,
     Node._SLOT_CARDINALITY:         Node._CARDINALITY,
     Node._SLOT_MAXIMUM_CARDINALITY: Node._MAXIMUM_CARDINALITY,
     Node._SLOT_MINIMUM_CARDINALITY: Node._MINIMUM_CARDINALITY,
@@ -508,6 +547,15 @@ Node._equivalent_constraint_facets = {
     Node._SLOT_NUMERIC_MAXIMUM:     Node._NUMERIC_MAXIMUM,
     Node._SLOT_SOME_VALUES:         Node._SOME_VALUES,
     Node._SLOT_COLLECTION_TYPE:     Node._COLLECTION_TYPE }
+
+# FIXME should this strange thing be eliminated? probably
+Node._SLOT_INVERSE.__doc__ ="""
+SLOT_INVERSE works by having a slot link to its inverse via the 
+.__inverse_slot attribute.  To get :INVERSE_SLOT to work it is 
+also necessary for the get_frames_with_slot_value method working.
+It (gfwsv) works by having slots equipped with an index on them
+called .__frames_using_this_slot_keyed_by_value
+"""
 
 # not in OKBC spec
 Node._selector_all             = (Node._all,Node._frames,Node._system_default)
@@ -588,6 +636,67 @@ class KB(FRAME,Programmable):
         self._cache_timestamp = time.clock()
         self._allow_caching_p = 1
         self._changes_register_as_modifications_p = 1
+
+    def get_collection_type(kb, frame, slot, slot_type, kb_local_only_p): # not a public method, ie not part of spec
+        return kb.get_slot_value(slot,":SLOT-COLLECTION-TYPE")
+        
+
+    def add_slot_value(kb,frame,slot, value,
+                       test=Node._equal,
+                       slot_type=Node._own,
+                       add_before = 0,
+                       value_selector = Node._known_true,
+                       kb_local_only_p = 0):
+        """
+        Value is added to the set of values of slot. If the
+        collection-type of slot is :set, then value is added only if slot
+        does not already contain value. Add-before, if supplied, should be
+        false or a nonnegative integer. If the collection-type of slot is
+        :list, value is added immediately before the value whose index is
+        add-before. For example, if add-before is 1, the new value will be
+        added between the first and second old values. If add-before is
+        greater than or equal to the current number of slot values, or is
+        false, and the collection-type of slot is :list, then value is
+        added after all other values. This operation may signal constraint
+        violation conditions (see Section 3.8). It is an error to provide
+        a nonpositive integer as a value for add-before. Returns no
+        values.
+        """
+        return kb.add_slot_value_internal(frame,slot,value,
+                                          test = test,
+                                          slot_type = slot_type,
+                                          value_selector = value_selector,
+                                          kb_local_only_p = kb_local_only_p)
+    @timed
+    def add_slot_value_internal(kb,frame,slot, value,
+                                test=Node._equal,
+                                slot_type=Node._own,
+                                add_before = 0,
+                                value_selector = Node._known_true,
+                                kb_local_only_p = 0):
+        values = kb.get_slot_values_internal(frame,slot,
+                                             # :all-inferable
+                                             slot_type = slot_type,
+                                             # :all
+                                             value_selector = value_selector,
+                                             kb_local_only_p = kb_local_only_p)[0]
+        collection_type = kb.get_collection_type(frame, slot, slot_type, kb_local_only_p)
+        
+        if not collection_type:
+            kb.put_slot_value_internal(frame,slot,value,
+                                       slot_type=slot_type,value_selector=value_selector,
+                                       kb_local_only_p=kb_local_only_p)
+        else:
+            # FIXME not sure if this is a faithful rendition of core-a-to-f.lisp add-slot-value
+            new_values_list = list(values)
+            #print "THE VALUE",value
+            new_values_list.insert(add_before,value)
+            #print "new_values_list",new_values_list
+            kb.put_slot_values_internal(frame, slot, new_values_list,
+                                        slot_type = slot_type,
+                                        value_selector = value_selector,
+                                        kb_local_only_p = kb_local_only_p)
+
 
     def open_kb_internal(self,*args,**kwargs):
         print "Warn open_kb_internal(%s,%s) should be overriden in subclasses of KB"\
@@ -704,6 +813,7 @@ class KB(FRAME,Programmable):
                                         pretty_name,
                                         kb_local_only_p)
 
+    @timed
     def create_frame_internal(kb,name,frame_type,
                               direct_types=[],
                               direct_superclasses=[],
@@ -751,7 +861,21 @@ class KB(FRAME,Programmable):
             if not (Node._SLOT in direct_types) and \
                not (':SLOT' in direct_types):
                 direct_types.append(Node._SLOT)
-            
+
+            # this assumes that there is only one inverse per slot, pretty safe
+            for inverse_slot_or_name in [inv[1] for inv in own_slots if len(inv)>1 and str(inv[0]) == ':SLOT-INVERSE']:
+                # what if the inverse_slot does not yet exist? should we make a placeholder of some sort instead?
+                resp = kb.get_frame_in_kb(inverse_slot_or_name,kb_local_only_p=1)
+                #print "about to link slots %s and %s as inverses" % (frame,inverse_slot_or_name)
+                if resp[0]:
+                    inverse_slot = resp[0]
+                else:
+                    inverse_slot = kb.create_slot(inverse_slot_or_name,kb_local_only_p=True)
+                frame._the_inverse_of_this_slot = inverse_slot
+                inverse_slot._the_inverse_of_this_slot = frame
+                # Q: At what point do we make the linkages supporting get_frames_with_slot_value()?
+                # A: Over in put_slot_values()
+
         if frame_type == Node._facet:
             if not (Node._facet in direct_types) and \
                not (':FACET' in direct_types):
@@ -774,22 +898,22 @@ class KB(FRAME,Programmable):
         kb.put_instance_types(frame,direct_types,
                               kb_local_only_p = kb_local_only_p)
 
-        initialize_slots_and_facets(frame, kb, own_slots, own_facets,
-                                    Node._own, kb_local_only_p)
+        if own_slots or own_facets:
+            initialize_slots_and_facets(frame, kb, own_slots, own_facets,
+                                        Node._own, kb_local_only_p)
 
-        initialize_slots_and_facets(frame, kb, template_slots, template_facets,
-                                    Node._template, kb_local_only_p)
+        if template_slots or template_facets:
+            initialize_slots_and_facets(frame, kb, template_slots, template_facets,
+                                        Node._template, kb_local_only_p)
+
 
         if doc: frame._doc = doc
         if doc:
             kb.put_slot_value(frame,Node._DOCUMENTATION,
                               doc,slot_type=Node._own,
                               kb_local_only_p=1)
-            #print kb
-            #print "and it is there:",kb.get_slot_value(frame,Node._DOCUMENTATION)
-        if pretty_name != None: frame._pretty_name = pretty_name
-        
-
+        if pretty_name != None: 
+            frame._pretty_name = pretty_name
         
         return frame
 
@@ -1189,6 +1313,7 @@ class KB(FRAME,Programmable):
         return (details,not inexact_p)
     get_frame_details_internal = get_frame_details
         
+    @timed
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
                         checked_kbs=None): # FIXME shouldn't add arg!
         (found_frame,
@@ -1620,6 +1745,7 @@ class KB(FRAME,Programmable):
                         list_of_facets.append(facet)
         return (list_of_facets,exact_p)
 
+    @timed
     def get_slot_value(kb,frame,slot,
                        inference_level = Node._taxonomic,
                        slot_type = Node._own,
@@ -1642,6 +1768,7 @@ class KB(FRAME,Programmable):
             value = list_of_values[0]
         return (value,exact_p)
 
+    @timed
     def get_slot_values(kb,frame,slot,
                         inference_level = Node._taxonomic,
                         slot_type = Node._own,
@@ -1704,6 +1831,7 @@ class KB(FRAME,Programmable):
                                                     checked_kbs,
                                                     checked_classes)
 
+    @timed
     def get_slot_values_in_detail_recurse(kb,frame,slot,
                                           inference_level = Node._taxonomic,
                                           slot_type = Node._own,
@@ -1722,11 +1850,11 @@ class KB(FRAME,Programmable):
         #if str(frame) == 'docbook2ps':
         #    print kb,"list_of_specs",list_of_specs
         #trayce((list_of_specs),indent='   ')
+
         if inference_level in [Node._taxonomic,Node._all] \
            and slot_type != Node._own:
             my_types = kb.get_instance_types(frame,
                               inference_level=inference_level)[0]
-            #print "all my_types",my_types
             for klass in my_types :
                 #print "checking klass",klass
                 if klass in checked_classes:
@@ -1740,28 +1868,43 @@ class KB(FRAME,Programmable):
                     continue
                 kb_gsvidr = kb.get_slot_values_in_detail_recurse
                 #trayce((klass),format=" still about to check %s",indent='')
+
                 for spec in kb_gsvidr(klass,
                                       slot,
-                                      inference_level,
-                                      Node._template,#slot_type
-                                      number_of_values,
-                                      value_selector,
-                                      kb_local_only_p,
-                                      checked_kbs,
-                                      checked_classes)[0]:
+                                      inference_level = inference_level,
+                                      slot_type = Node._template,
+                                      number_of_values = number_of_values,
+                                      value_selector = value_selector,
+                                      kb_local_only_p = kb_local_only_p,
+                                      checked_kbs = checked_kbs,
+                                      checked_classes = checked_classes)[0]:
                     #if DEBUG: print "  val =",val
                     #if not (spec in list_of_specs):
                     spec[1]=0
                     list_of_specs.append(spec)
 
+
+        if str(slot) <> ":SLOT-INVERSE":
+            (value_or_false, exact_p) = \
+                kb.get_slot_value(slot,':SLOT-INVERSE',inference_level=Node._direct,
+                                        kb_local_only_p = kb_local_only_p)
+            if value_or_false:
+                    #kb.get_slot_values_in_detail_recurse()
+                #print "%s is the inverse of %s" % (value_or_false, slot)
+                (list_of_inverse_specs, inverse_exact_p) = \
+                    kb.get_slot_value(slot,':SLOT-INVERSE',inference_level=inference_level)
+                #print "list_of_inverse_specs",list_of_inverse_specs
+
         if not kb_local_only_p:
             for kaybee in kb.get_kb_parents():
                 #trayce([kaybee],indent="  ")
                 kb_gsvidi = kaybee.get_slot_values_in_detail_internal
-                list_of_specs.extend(kb_gsvidi(frame,slot,inference_level,
-                                               slot_type,number_of_values,
-                                               value_selector,
-                                               kb_local_only_p)[0])
+                list_of_specs.extend(kb_gsvidi(frame,slot,
+                                               inference_level = inference_level,
+                                               slot_type = slot_type,
+                                               number_of_values = number_of_values,
+                                               value_selector = value_selector,
+                                               kb_local_only_p = kb_local_only_p)[0])
 
         uniquify_specs(list_of_specs)
         return (list_of_specs,exact_p,more_status,default_p)        
@@ -2062,14 +2205,16 @@ class TupleKb(KB,Constrainable):
         else:
             return 0
 
+    @timed
     def get_instance_types_internal(kb,frame,
                                    inference_level = Node._taxonomic,
                                    number_of_values = Node._all,
                                    kb_local_only_p = 0):
         #if str(kb) == "common_transformers": print "we are in ",kb
-        frame=kb.get_frame_in_kb_internal(str(frame))[0]
+        if type(frame) == str:
+            frame=kb.get_frame_in_kb_internal(str(frame))[0]
         if frame:
-            return (copy.copy(frame._direct_types),1,0)
+            return (frame._direct_types,1,0)
         return ([],1,0)
 
     
@@ -2151,6 +2296,7 @@ class TupleKb(KB,Constrainable):
                     retarray.append(facet_name)
         return (retarray,1)
 
+    @timed
     def get_slot_values_in_detail_internal(kb,frame,slot,
                                           inference_level = Node._taxonomic,
                                           slot_type = Node._own,
@@ -2158,26 +2304,13 @@ class TupleKb(KB,Constrainable):
                                           value_selector = Node._either,
                                           kb_local_only_p = 0,
                                           checked_kbs=[],checked_classes=[]):
-        #trayce((kb,frame,slot,type(slot),slot_type))
         orig_frame = frame
         (list_of_specs,exact_p,more_status,default_p) = ([],1,0,0)
         frame = kb.coerce_to_frame_internal(str(frame))
         if not frame:
-            #print "bailing on",orig_frame,"in",kb
             return [[],1,0,1]
-#        print "gsvidi(",kb,frame,")"
-#        if str(kb) == 'nooron_pattern_language_data' and \
-#           str(frame) == 'DontRepeat':
-#            raise youch, booger
-        slot_key = str(slot)
-        
-        #print "gsvidi",frame,frame.__class__.__bases__,slot
-        #if 'KB' in frame.__class__.__bases__:
-        #    print "get_slot_values_in_detail_internal",frame
-        #print str(frame)
-        #if str(frame) == 'smurp_web_log.pykb':
-        #    print "get_slot_values_in_detail_internal",frame
 
+        slot_key = str(slot)        
         if slot_type in [Node._own,Node._all]:
             if frame._own_slots.has_key(slot_key):
                 for v in frame._own_slots[slot_key].values():
@@ -2186,7 +2319,10 @@ class TupleKb(KB,Constrainable):
             if frame._template_slots.has_key(slot_key):
                 for v in frame._template_slots[slot_key].values():
                     list_of_specs.append([v,1,0])
-        #print "get_slot_values_in_detail",frame,slot,list_of_specs
+        if slot_type in [Node._inverse,Node._all,Node._own]:
+            if frame._inverse_slots.has_key(slot_key):
+                for v in frame._inverse_slots[slot_key].values():
+                    list_of_specs.append([v,1,0])
         return (list_of_specs,exact_p,more_status,default_p)
 
     def OLD_get_slot_values_internal(kb,frame,slot,
@@ -2203,11 +2339,8 @@ class TupleKb(KB,Constrainable):
                                             number_of_values,
                                             value_selector,
                                             kb_local_only_p)
-        print "  list_of_specs",list_of_specs
         list_of_values = map(lambda x:x[0],list_of_specs)
-        #print list_of_values,list_of_specs
         return (list_of_values,exact_p,more_status)
-
 
     def OOOLD_get_slot_values_internal(kb,frame,slot,
                                  inference_level = Node._taxonomic,
@@ -2323,8 +2456,13 @@ class TupleKb(KB,Constrainable):
                 frame._template_slots[slot_key].set_value(value)
             else:
                 frame._template_slots[slot_key] = UNIT_SLOT(slot,value)
+        elif slot_type == Node._inverse:
+            if frame._inverse_slots.has_key(slot_key):
+                frame._inverse_slots[slot_key].set_value(value)
+            else:
+                frame._inverse_slots[slot_key] = UNIT_SLOT(slot,value)
         
-
+    @timed
     def put_slot_values(kb,frame,slot, values,
                         slot_type=Node._own,
                         value_selector = Node._known_true,
@@ -2337,6 +2475,12 @@ class TupleKb(KB,Constrainable):
 
         if type(values) != type([]): raise CardinalityViolation(values)
         slot_key = str(slot)
+        if type(slot) == str:
+            slot_obj = kb.get_frame_in_kb(slot)[0]
+            if not slot_obj:
+                slot_obj = kb.create_slot(slot)
+        else:
+            slot_obj = slot
 
         kb_get_behave = kb.get_behavior_values_internal
         if Node._immediate in kb_get_behave(Node._constraint_checking_time):
@@ -2355,19 +2499,42 @@ class TupleKb(KB,Constrainable):
                                                  kb_local_only_p = 0)
             if len(orig_values) <> len(values):
                 print "We got shortened."
-
-        #if 'snargle' in values:
-        #    print "put_slot_values(",kb,frame,slot,values,")"            
+        #print "put_slot_values(%s,%s,%s,slot_type=%s)" % (frame,slot,values,slot_type)
         if slot_type == Node._own:
             if frame._own_slots.has_key(slot_key):
                 frame._own_slots[slot_key].set_values(values)
             else:
                 frame._own_slots[slot_key] = UNIT_SLOT(slot,values)
+            if slot_obj._the_inverse_of_this_slot <> None:
+                inverse_slot = slot_obj._the_inverse_of_this_slot
+                # Since we are dealing with a slot with an inverse it can be
+                # assumed that the domain and range are both class instances 
+                # rather than data types
+                for value in values:
+                    (inverse_frame,inverse_frame_found_p) = kb.get_frame_in_kb(value,kb_local_only_p=False)
+                    if inverse_frame_found_p:
+                        (inverse_cardinality,inverse_exact_p) = \
+                            kb.get_slot_value(inverse_slot,
+                                              Node._SLOT_CARDINALITY)
+                        if inverse_exact_p and not inverse_cardinality and \
+                                inverse_cardinality == 1:
+                            kb.put_slot_value(inverse_frame,inverse_slot,frame,
+                                              slot_type=Node._inverse)
+                        else:
+                            kb.add_slot_value(inverse_frame,inverse_slot,frame,
+                                              slot_type=Node._inverse)
+
         elif slot_type == Node._template:
             if frame._template_slots.has_key(slot_key):
                 frame._template_slots[slot_key].set_values(values)
             else:
                 frame._template_slots[slot_key] = UNIT_SLOT(slot,values)
+        elif slot_type == Node._inverse:
+            if frame._inverse_slots.has_key(slot_key):
+                frame._inverse_slots[slot_key].set_values(values)
+            else:
+                frame._inverse_slots[slot_key] = UNIT_SLOT(slot,values)
+    put_slot_values_internal = put_slot_values
 
     def subclass_of_p(kb,subclass,superclass,
                       inference_level=Node._taxonomic,
@@ -2668,6 +2835,7 @@ class Connection: #abstract
     def meta_kb(connection):
         return connection._meta_kb
 
+    @timed
     def open_kb(connection, name_or_kb_locator, kb_type = None, error_p = 1):
         """Convert a KB from mere KB_LOCATOR status to full-fledged open status.
         """
@@ -2786,9 +2954,9 @@ def dump_frame(frame,kb=None):
               str(get_slot_values(frame,slot,
                                   inference_level = Node._all,
                                   slot_type=Node._all)[0])
-    #print "own_slots:",frame._own_slots        
-    #print "template_slots:",frame._template_slots
-
+    print "  own_slots:",frame._own_slots        
+    print "  template_slots:",frame._template_slots
+    print "  inverse_slots:",frame._inverse_slots
 
 def get_doc_for(thing):
     link_text = "docs for "+str(thing)
