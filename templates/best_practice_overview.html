@@ -1,0 +1,42 @@
+<tal:block metal:use-macro="container/standard_master/macros/master">
+
+<div metal:fill-slot="available_garments">
+  <tal:dummy replace="structure container/best_practice_available_garments"/>
+</div>
+
+<div metal:fill-slot="available_actions">
+  <tal:dummy replace="structure container/best_practice_available_actions"/>
+</div>
+
+<div metal:fill-slot="main">
+<h1 tal:content="python:get_frame_pretty_name(here) or get_frame_name(here)"></h1>
+
+<p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
+
+<a tal:attributes="href python:request.object_request()+'__best_practice_graph.dot.svg'">
+<img alt="best practices graph"
+  tal:attributes="src python:request.object_request()+'__best_practice_graph.dot.png'"/></a>
+
+
+<dl tal:define="items python:call_procedure(get_procedure('sort_frames'),
+                                  arguments=([get_class_instances('best_practice')[0]]))" 
+       tal:condition="items">
+  <tal:block tal:repeat="item items">
+    <dt><a href="link"
+        	   tal:define="url python:get_frame_name(item)"
+		   tal:attributes="href url"
+           	   tal:content="python: get_frame_pretty_name(item) or get_frame_name(item)">click me</a></dt>
+    <tal:dummy define="intent python:get_slot_value(item,':DOCUMENTATION')[0]">
+    <dd tal:content="python:intent and intent[0] or ''"></dd>
+    </tal:dummy>
+	
+  </tal:block>
+</dl>
+
+
+
+<hr/>
+$Id: best_practice_overview.html,v 1.0 2011/01/08 10:07:00 smurp Exp $
+</div>
+
+</tal:block>
