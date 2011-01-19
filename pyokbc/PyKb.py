@@ -81,7 +81,7 @@ class PyKb(AbstractFileKb,CachingMixin):
 
     #@timed
     def __str__(self):
-        return self._name
+        #return self._name
         return self._name.replace('.pykb','')
 
     @timed
