@@ -25,6 +25,10 @@ from debug_tools import timed
 def str_sort(a,b):
     return cmp(str(a),str(b))
 
+def set_of_strings(a_list):
+    """Turn an interable into a set of the contents converted to strings."""
+    return set(map(str,list(a_list)))
+
 class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
@@ -33,6 +37,13 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def perform_comparison(self,expect=None,got=None,msg=""):
         msg += "\n  expected: %(expect)s\n   but got: %(got)s"
+        if type(expect) == set and type(got) == set:
+            missing = expect.difference(got)
+            extra   = got.difference(expect)
+            if missing:
+                msg += "\n   missing: %(missing)s"
+            if extra:
+                msg += "\n    extra: %(extra)s"
         self.assertEquals(expect,got,msg % locals())
 
     def test_0003_connection(self):
@@ -93,7 +104,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.perform_comparison(
             msg    = "get_kb_direct_parents() not working, first see test_0008",
             expect = set(['PeopleSchema', 'LiteratureOntology']),
-            got    = set(map(str,peeps.get_kb_direct_parents())))
+            got    = set_of_strings(peeps.get_kb_direct_parents()))
 
 
     def test_0011_get_kb_parents(self):
@@ -101,7 +112,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.perform_comparison(
             msg    = "get_kb_parents() not working, first see test_0008",
             expect = set(['PRIMORDIAL_KB', 'PeopleSchema', 'LiteratureOntology']),
-            got    = set(map(str,peeps.get_kb_parents())))
+            got    = set_of_strings(peeps.get_kb_parents()))
 
 
     def test_0014_get_frame_in_kb_documentation(self):
@@ -168,7 +179,7 @@ class ReadOnlyTestCase(unittest.TestCase):
         
         self.perform_comparison(
             msg    = "inverse values are not equal to forward values",
-            expect = set(map(str,[alice,glass])),
+            expect = set_of_strings([alice,glass]),
             got    = set(list(mykb.get_slot_values('LewisCarroll','Wrote', kb_local_only_p = 0)[0])))
 
 
@@ -215,10 +226,8 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_0060_get_frame_slots_direct(self):
         good = "['Age', 'BirthTime', 'Eats', 'Wrote']"
-        #print_frame('SamuelBeckett')
         fs = get_frame_slots('SamuelBeckett',
                              inference_level=Node._direct)[0]
-        #print 'SamuelBeckett.get_frame_slots(direct)  =',fs        
         resp = list(fs)
         resp.sort(str_sort)
         self.assertEquals(good, str(resp))
@@ -320,7 +329,15 @@ class ReadOnlyTestCase(unittest.TestCase):
 
     def test_0133_get_kbs(self):
         kbs = meta_kb().get_kbs()
-        self.assertEquals(kbs,'not sure yet')
+        expect = str("Addenda InverseMinimal LiteratureOntology MergeKB " +\
+                         "OtherPeople PeopleData PeopleSchema SillyChild " +\
+                         "PRIMORDIAL_KB").split()
+        self.perform_comparison(
+            msg    = "kbs differ from previously",
+            expect = set(expect),
+            got    = set_of_strings(meta_kb().get_kbs()))
+
+
 
     def test_0135_get_kb_parents(self):
         peeps = find_kb('PeopleData')
