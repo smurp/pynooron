@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.1
+#!/usr/bin/env python
 
 __version__='$Revision: 1.1 $'[11:-2]
 __cvs_id__ ='$Id: test_okbcop.py,v 1.1 2003/06/19 21:47:21 smurp Exp $'

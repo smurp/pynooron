@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.1
+#!/usr/bin/env python
 
 __version__='$Revision: 1.2 $'[11:-2]
 __cvs_id__ ='$Id: test_CachingPipeliningProducer.py,v 1.2 2003/04/01 19:19:08 smurp Exp $'
@@ -13,9 +13,8 @@ from CachingPipeliningProducer import *
 def str_sort(a,b):
     return cmp(str(a),str(b))
 
-
-cache_path = '/tmp/nooron_cache'
-#cache_path = None
+home_dir  = os.path.expanduser("~")
+cache_path = '%(home_dir)s/tmp/nooron_cache' % locals()
 
 canonical = "/know/somekb/someframe__dets.dot.ps.pdf\n" +\
             "kbdatestamp=1038939824\n" +\
@@ -76,13 +75,6 @@ class dbk_producer(tedious_producer):
  </article>
     """ % a_pat % pattern
 
-
-       
-
-
-    
-    
-
 class CacheBehaviour(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
@@ -109,19 +101,12 @@ class CacheBehaviour(unittest.TestCase):
                 pass
                 #print path
         
-
-
-
-
     def prepare_dot(self):
         cp = CachingPipeliningProducer(canonical_request=canonical)
-
         cp.append_pipe(PipeSection(producer=dot_producer(),
                                    extension='dot',
                                    mimetype ='application/x-graphviz'))
-        
         cp.set_cachedir(cache_path)
-
         self.cp = cp
 
     def prepare_pdf(self):
@@ -130,40 +115,31 @@ class CacheBehaviour(unittest.TestCase):
         cp.append_pipe(PipeSection(producer=dot_producer(),
                                    extension='dot',
                                    mimetype ='application/x-graphviz'))
-
         cp.append_pipe(PipeSection(command='dot -Tps ',
                                    extension='ps',
                                    mimetype = 'application/ps'))
-        
         cp.append_pipe(PipeSection(command='ps2pdf - - ',
                                    extension='pdf',
                                    mimetype = 'application/pdf'))
 
-
-
     def prepare_dbk(self):
         cp = CachingPipeliningProducer(canonical_request=canonical)
-
         cp.append_pipe(PipeSection(producer=dbk_producer(),
                                    extension='dbk',
                                    mimetype ='text/xml'))
-
         cp.append_pipe(PipeSection(extension='ps',
                                    readsfrom='file',
                                    writesto='file',
                                    command='docbook2ps --output %(cache_dir)s %(precursor)s',
                                    mimetype ='application/postscript'))
-
 ##        cp.append_pipe(PipeSection(command='sort ',
 ##                                   extension='sorted',
 ##                                   mimetype = 'application/sorted'))
-
+##
 ##        cp.append_pipe(PipeSection(command='uniq ',
 ##                                   extension='uniq',
 ##                                   mimetype = 'text/plain'))
-
         cp.set_cachedir(cache_path)
-
         self.cp = cp
 
 
@@ -225,18 +201,10 @@ class CacheBehaviour(unittest.TestCase):
         out = self.cp.more() # drain it 
         self.assertEquals('from-cache',prime_type)
 
-
-    
-
-
 if __name__ == "__main__":
     unittest.main()
-
     print cp.mimetype()
     print cp.producer_and_commands()
-
-
-
 
 hairy_dot_eg = """digraph test123 {
        a -> b -> c;

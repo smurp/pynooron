@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.1
+#!/usr/bin/env python
 
 __version__='$Revision: 1.18 $'[11:-2]
 __cvs_id__ ='$Id: test_pyokbc.py,v 1.18 2003/05/22 20:28:39 smurp Exp $'
@@ -34,8 +34,10 @@ class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
 
+        home_dir  = os.path.expanduser("~")
+        cache_path = '%(home_dir)s/tmp/nooron_cache' % locals()
         cwd = os.getcwd()
-        kr_root = '/home/smurp/knowledge/'
+        kr_root = '%(home_dir)s/knowledge/' % locals()
         places = [kr_root+'apps_of/nooron',
                   kr_root+'apps_of/smurp',          
                   kr_root+'apps_of/givingspace',
