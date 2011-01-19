@@ -533,17 +533,6 @@ Node._behaviors = { # not in OKBC spec, but implied
                                      Node._none)}
 
 # see constraints.lisp
-Node._VALUE_TYPE == Node._VALUE_TYPE
-Node._SLOT_VALUE_TYPE == Node._SLOT_VALUE_TYPE
-Node._SLOT_VALUE_TYPE == Node._VALUE_TYPE
-
-print "id(Node)                 =",id(Node)
-print "hash(Node)               =",hash(Node)
-print "id(Node._SLOT_INVERSE)   =",id(Node._SLOT_INVERSE)
-print "hash(Node._SLOT_INVERSE) =",id(Node._SLOT_INVERSE)
-print "id(Node._INVERSE)        =",id(Node._INVERSE)
-print "hash(Node._INVERSE)      =",id(Node._INVERSE)
-
 
 Node._equivalent_constraint_facets = {
     Node._SLOT_INVERSE:             Node._INVERSE,
@@ -1324,6 +1313,7 @@ class KB(FRAME,Programmable):
         return (details,not inexact_p)
     get_frame_details_internal = get_frame_details
         
+    @timed
     def get_frame_in_kb(kb,thing,error_p=1,kb_local_only_p=0,
                         checked_kbs=None): # FIXME shouldn't add arg!
         (found_frame,
@@ -2215,14 +2205,16 @@ class TupleKb(KB,Constrainable):
         else:
             return 0
 
+    @timed
     def get_instance_types_internal(kb,frame,
                                    inference_level = Node._taxonomic,
                                    number_of_values = Node._all,
                                    kb_local_only_p = 0):
         #if str(kb) == "common_transformers": print "we are in ",kb
-        frame=kb.get_frame_in_kb_internal(str(frame))[0]
+        if type(frame) == str:
+            frame=kb.get_frame_in_kb_internal(str(frame))[0]
         if frame:
-            return (copy.copy(frame._direct_types),1,0)
+            return (frame._direct_types,1,0)
         return ([],1,0)
 
     
