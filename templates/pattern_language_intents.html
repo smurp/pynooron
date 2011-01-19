@@ -7,9 +7,9 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
-<img 
+<a tal:attributes="href python:request.object_request()+'__pattern_language_graph.dot.svg'"><img 
   alt="pattern language graph"
-  tal:attributes="src python:request.object_request()+'__pattern_language_graph.dot.jpg'"/>
+  tal:attributes="src python:request.object_request()+'__pattern_language_graph.dot.jpg'"/></a>
 
 <dl tal:define="items python:get_class_instances('pattern')[0]" 
        tal:condition="items">
