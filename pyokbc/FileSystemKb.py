@@ -6,6 +6,7 @@ __cvs_id__ ='$Id: FileSystemKb.py,v 1.17 2008/08/13 16:08:47 smurp Exp $'
 
 import string
 
+from debug_tools import timed
 from PyOkbc import *
 import string
 import os
@@ -54,7 +55,8 @@ class FileSystemKb(AbstractFileKb):
         kb._kb_types_by_extension = ktbe = {}
         for kb_type in kb._kb_types.values():
             ktbe[kb_type._kb_type_file_extension] = kb_type
-            
+
+    @timed
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
         conn = kb._connection
         frame_found_p = 1
