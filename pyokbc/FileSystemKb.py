@@ -20,17 +20,6 @@ import sys
 
 
 python_version = sys.version.split(' ')[0]
-zfskb_min_python_version = '2.1.3'
-
-if python_version > zfskb_min_python_version:
-    try:
-        from ZODBFileStorageKb import *
-    except Exception, e:
-        print  "skipping ZODBFileStorageKb because %s" % str(e)
-else:
-    print "skipping ZODBFileStorageKb because python %s < %s" % (python_version,
-                                                                 zfskb_min_python_version)
-
 pyokbc_mimetype_file = os.path.join(os.path.dirname(__file__),'mime.types')
 mimetypes.init([pyokbc_mimetype_file])
 pyokbc_mimetypes = mimetypes.read_mime_types(pyokbc_mimetype_file)
