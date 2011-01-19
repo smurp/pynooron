@@ -1,4 +1,4 @@
-#!/usr/bin/python2.1 -i
+#!/usr/bin/env python -i
 
 """
 TODO moved to pyokbc/TODO
@@ -24,8 +24,8 @@ if 0:
         print "Not found"
 
 if 1:
-    mykb = open_kb("PeopleData.pykb")
-    mykb = open_kb("Addenda.pykb")
+    mykb = open_kb("PeopleData")
+    mykb = open_kb("Addenda")
     goto_kb(mykb)
 
 if 0:

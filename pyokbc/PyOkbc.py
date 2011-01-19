@@ -11,6 +11,7 @@ import sys
 import copy
 import os
 import time
+from warnings import warn
 try:
     import logging
 except Exception,e:
@@ -112,10 +113,6 @@ def trayce(args=[],format=None,indent=None):
     if BREAK:
         import pdb;        pdb.set_trace()
 
-                
-def warn(mess,level=10):
-    if WARNINGS >= level:
-        print mess
 
 def get_slot_specification(frame,slots,
                            slot_type,kb,
@@ -699,8 +696,7 @@ class KB(FRAME,Programmable):
 
 
     def open_kb_internal(self,*args,**kwargs):
-        print "Warn open_kb_internal(%s,%s) should be overriden in subclasses of KB"\
-              % (args,kwargs)
+        warn("Warn open_kb_internal(%s,%s) should be overriden in subclasses of KB" % (args,kwargs))
 
     def changes_register_as_modifications_p(self):
         return self._changes_register_as_modifications_p
@@ -720,7 +716,7 @@ class KB(FRAME,Programmable):
     def close_kb_internal(kb,save_p = 0):
         if save_p:
             kb.save_kb()
-        logging.warn('close_kb_internal should remove the kb from meta_kb')
+        warn('close_kb_internal should remove the kb from meta_kb')
 
     def coerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
         klop = kb_local_only_p
@@ -1098,8 +1094,8 @@ class KB(FRAME,Programmable):
         
         (klass,class_found_p) = kb.coerce_to_class(klass)
         #checked_kbs.append(kb)
-        if inference_level != Node._direct:
-            warn('get_class_subclasses ignores inference_level > direct')
+        #if inference_level != Node._direct:
+        #    warn('get_class_subclasses ignores inference_level > direct')
         (subs,
          exact_p,
          more_status) = kb.get_class_subclasses_internal(klass,
@@ -1126,8 +1122,8 @@ class KB(FRAME,Programmable):
                              kb_local_only_p = 0):
         (klass,class_found_p) = kb.coerce_to_class(klass)
         #checked_kbs.append(kb)
-        if inference_level != Node._direct:
-            warn('get_class_subclasses ignores inference_level > direct')
+        #if inference_level != Node._direct:
+        #    warn('get_class_subclasses ignores inference_level > direct')
         (subs,
          exact_p,
          more_status) = kb.get_class_subclasses_internal(klass,
@@ -1411,7 +1407,7 @@ class KB(FRAME,Programmable):
             if not some:
                 tel(['template-slot-of',slot,frame_name])
 
-        warn("get-frame-sentences skips prettyname, facets")
+        #warn("get-frame-sentences skips prettyname, facets")
         pretty_name = kb.get_frame_pretty_name(frame)
 
         return (lines,exact_p,more_status)
@@ -2060,7 +2056,7 @@ class TupleKb(KB,Constrainable):
             kb._typed_cache[frame_type].append(frame)
             #print kb._name,kb._typed_cache
         else:
-            warn("_add_frame_to_store duplicate call for "+frame_name)
+            #warn("_add_frame_to_store duplicate call for "+frame_name)
             # silently pass over any attempted duplication
             pass
 
@@ -2438,8 +2434,8 @@ class TupleKb(KB,Constrainable):
         consisting of a single element: value.  This operation may
         signal constraint violation conditions (see Section 3.8).
         Returns no values. """
-        if str(slot) == 'ModificationTime':      ## REMOVE
-            warn('get_class_subclasses ignores inference_level > direct')
+        #if str(slot) == 'ModificationTime':      ## REMOVE
+        #    warn('get_class_subclasses ignores inference_level > direct')
         if type(value) == type([]): raise CardinalityViolation,str(value)
         (frame,frame_found_p) = kb.get_frame_in_kb(frame)
         slot_key = str(slot)

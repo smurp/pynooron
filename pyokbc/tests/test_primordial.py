@@ -48,7 +48,7 @@ class PrimordialTestCase(unittest.TestCase):
         resp = list(get_frame_slots(':THING')[0])
         resp.sort(str_sort)
         self.assertEquals(good,str(resp))
-class Bogus:
+
     def test_get_slot_value_of_THING_DOCUMENTATION(self):
         good = "[':DOCUMENTATION-LINK']"
         resp = get_slot_value(':THING',':DOCUMENTATION-LINK')[0]
