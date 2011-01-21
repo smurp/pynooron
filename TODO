@@ -61,7 +61,6 @@
 *** clean out crud and sensitive information
 *** clean up tests so they are as clean as possible
 ** make release usable for something
-*** fix editing
 *** set up default authorization
 *** write/update docs for installation and initial use
 ** convert from docbook 3.1 to 4.1.2

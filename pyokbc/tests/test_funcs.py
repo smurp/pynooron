@@ -21,30 +21,16 @@ import unittest
 sys.path.append('../..')
 from pyokbc import *
 from debug_tools import timed
-
+from test_enhancements import *
 def str_sort(a,b):
     return cmp(str(a),str(b))
 
-def set_of_strings(a_list):
-    """Turn an interable into a set of the contents converted to strings."""
-    return set(map(str,list(a_list)))
 
-class ReadOnlyTestCase(unittest.TestCase):
+class ReadOnlyTestCase(unittest.TestCase,TestEnhancements):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
         os.environ["LOCAL_CONNECTION_PLACE"] = os.getcwd()
         #addenda = open_kb(create_kb_locator('Addenda'))
-
-    def perform_comparison(self,expect=None,got=None,msg=""):
-        msg += "\n  expected: %(expect)s\n   but got: %(got)s"
-        if type(expect) == set and type(got) == set:
-            missing = expect.difference(got)
-            extra   = got.difference(expect)
-            if missing:
-                msg += "\n   missing: %(missing)s"
-            if extra:
-                msg += "\n    extra: %(extra)s"
-        self.assertEquals(expect,got,msg % locals())
 
     def test_0003_connection(self):
         con = local_connection()
@@ -100,11 +86,10 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
     def test_0010_get_kb_direct_parents(self):
-        peeps = find_kb('PeopleData')
         self.perform_comparison(
             msg    = "get_kb_direct_parents() not working, first see test_0008",
             expect = set(['PeopleSchema', 'LiteratureOntology']),
-            got    = set_of_strings(peeps.get_kb_direct_parents()))
+            got    = set_of_strings(find_kb('PeopleData').get_kb_direct_parents()))
 
 
     def test_0011_get_kb_parents(self):
@@ -516,4 +501,7 @@ class ReadOnlyTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main() #verbosity=os.environ.get('VERBOSE',0))
+    print "to see details:"
+    print "   VERBOSE=1 ./run.py"
+
