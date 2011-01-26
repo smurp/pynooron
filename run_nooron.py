@@ -11,7 +11,6 @@ import sys
 import asyncore
 import string
 import os
-
 cwd       = os.getcwd()
 home_dir  = os.path.expanduser("~")
 UID       = 'nooron'
@@ -67,7 +66,6 @@ def start_nooron(options,args):
     security_engine = AuthenticatedUserAuthorizer()
 
     import __main__
-    __main__.__builtins__.wedge_string = '__'
     __main__.__builtins__.nooron_root = \
              NooronRoot(publishing_root = cwd,
                         #server_name = 'crusty',

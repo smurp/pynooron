@@ -5,7 +5,7 @@ __cvs_id__ ='$Id: http_request_mixin.py,v 1.16 2003/04/24 11:07:36 smurp Exp $'
 
 """Augment medusa.http_server.http_request with convenience functions.
 """
-
+from settings import *
 import re, string, sys
 import traceback
 import cgi
