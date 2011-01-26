@@ -43,7 +43,7 @@ class ReadOnlyTestCase(unittest.TestCase):
                   kr_root+'apps_of/smurp',          
                   kr_root+'apps_of/givingspace',
                   kr_root+'apps_of/demo',
-                  kr_root+'apps_of/kaliya',
+                  kr_root+'apps_of/pod',
                   kr_root+'nooron_apps',
                   kr_root+'nooron_foundations',
                   cwd+'/../../know']
@@ -53,6 +53,16 @@ class ReadOnlyTestCase(unittest.TestCase):
         mykb = open_kb(meta_kb())
         goto_kb(mykb)
 
+    def perform_comparison(self,expect=None,got=None,msg=""):
+        msg += "\n  expected: %(expect)s\n   but got: %(got)s"
+        if type(expect) == set and type(got) == set:
+            missing = expect.difference(got)
+            extra   = got.difference(expect)
+            if missing:
+                msg += "\n   missing: %(missing)s"
+            if extra:
+                msg += "\n    extra: %(extra)s"
+        self.assertEquals(expect,got,msg % locals())
 
     def perform_comparison(self,expect=None,got=None,msg=""):
         msg += "\n  expected: %(expect)s\n   but got: %(got)s"
@@ -84,15 +94,19 @@ class ReadOnlyTestCase(unittest.TestCase):
             self.assertNotEquals(type(inst),str,"'%s' should not be a %s" % (inst,type(inst)))
         self.assertNotEquals(0,0,"oh, there were no instances of 'nooron_app_class'")
 
-    def test_0002_test_traceback(self):
-        try:
-            a = 1/0
-        except Exception,e:
-            import traceback
-            print "V" * 80
-            traceback.print_tb(sys.exc_traceback)
-            print "^" * 80
-            print dir(e)
+    def test_0020_doubled_links_in_best_practices(self):
+        bp = open_kb('best_practices')
+        
+        self.perform_comparison(
+            msg    = "wrong values for BeEfficient.MoreGeneralPractice",
+            expect = set(['StayInFlow']),
+            got    = set(bp.get_slot_values('BeEfficient','MoreGeneralPractice')[0]),)
+        self.perform_comparison(
+            msg    = "wrong values for BeEfficient.MoreSpecificPractice",
+            expect = set(['BeEfficient']),
+            got    = set(bp.get_slot_values('StayInFlow','MoreSpecificPractice')[0]),)
+
+
 
         
 

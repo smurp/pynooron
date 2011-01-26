@@ -6,16 +6,15 @@ create_slot('WrittenBy',own_slots=[[':SLOT-INVERSE','Wrote'],
                                    [':DOMAIN','Literature']])
 create_slot('Wrote',own_slots=[[':SLOT-INVERSE','WrittenBy'],
                                [':DOMAIN','Agent']])
-
-create_individual('AliceInWonderland',
-                  direct_types=['Book'])
-create_individual('ThroughTheLookingGlass',
-                  direct_types=['Book'])
+create_individual('AliceInWonderland',      direct_types=['Book'])
+create_individual('ThroughTheLookingGlass', direct_types=['Book'])
 create_individual('LewisCarroll',
                   direct_types=['Human'],
                   own_slots=[['Wrote','AliceInWonderland',
                               'ThroughTheLookingGlass'
                               ]])
+create_individual('TheHuntingOfTheSnark',   direct_types=['Book'],
+                  own_slots=[['WrittenBy','LewisCarroll']])
 
 
 create_individual('TheoryOfGamesandEconomicBehaviour', direct_types=['Book'])
