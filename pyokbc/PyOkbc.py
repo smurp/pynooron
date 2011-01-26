@@ -701,6 +701,7 @@ class KB(FRAME,Programmable):
     def changes_register_as_modifications_p(self):
         return self._changes_register_as_modifications_p
 
+    @timed
     def allow_caching_p(kb):
         return kb._allow_caching_p
     
@@ -1030,15 +1031,18 @@ class KB(FRAME,Programmable):
         if kb.allow_caching_p(): kb._cache[cache_key] = retval
         return retval
 
+    @timed
     def get_class_instances(kb,klass,
                             inference_level=Node._taxonomic,
                             number_of_values=Node._all,
                             kb_local_only_p=0):
         return kb.get_class_instances_recurse(klass,
-                                              inference_level,
-                                              number_of_values,
-                                              kb_local_only_p,[])
+                                              inference_level = inference_level,
+                                              number_of_values = number_of_values,
+                                              kb_local_only_p = kb_local_only_p,
+                                              checked_kbs = [])
 
+    @timed
     def get_class_instances_recurse(kb,klass,
                                     inference_level=Node._taxonomic,
                                     number_of_values=Node._all,
@@ -1047,8 +1051,8 @@ class KB(FRAME,Programmable):
         (klass,class_found_p) = kb.coerce_to_class(klass)
         checked_kbs.append(kb)
         rets = kb.get_class_instances_internal(klass,
-                                               inference_level,
-                                               number_of_values,
+                                               inference_level = inference_level,
+                                               number_of_values = number_of_values,
                                                kb_local_only_p=1)
         (list_of_instances,exact_p,more_status) = rets
         list_of_instance_names = map(lambda x:str(x),list_of_instances)
@@ -1067,6 +1071,7 @@ class KB(FRAME,Programmable):
                             list_of_instances.append(inst)
         return (list_of_instances,exact_p,more_status)
 
+    @timed
     def get_class_instances_internal(kb,klass,
                                      inference_level=Node._taxonomic,
                                      number_of_values=Node._all,
