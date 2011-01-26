@@ -68,7 +68,7 @@ class FileSystemConnection(Connection):
 
     def openable_kbs(connection,kb_type,place=None):
         if not place: place = connection._default_place
-        warn("openable_kbs doing listdir of "+place)
+        #warn("openable_kbs doing listdir of "+place)
 
         rets = ['PRIMORDIAL_KB']
         for place in connection._path:

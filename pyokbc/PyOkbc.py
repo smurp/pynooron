@@ -784,6 +784,7 @@ class KB(FRAME,Programmable):
                                         pretty_name = pretty_name,
                                         kb_local_only_p = kb_local_only_p)
     
+    @timed
     def create_frame(kb,name,frame_type,
                      direct_types=[],
                      direct_superclasses=[],

@@ -242,10 +242,18 @@ class TALInterpreter:
             else:
                 for (opcode, args) in program:
                     # smurp finds this interesting
-                    #print "TALInterpreter.py line 244 " + "=" * 80
-                    #print opcode, args
-
-                    handlers[opcode](self, args)
+                    try:
+                        handlers[opcode](self, args)
+                    except Exception,e:
+                        import pprint
+                        import traceback
+                        import sys
+                        msg = "during TAL opcode=%s" % (opcode)
+                        traceback.print_last()
+                        #msg += "\n" + "\n".join(traceback.format_tb(sys.exc_traceback))
+                        #print msg
+                        #print "TAL ERROR:",opcode,e,type(args),[type(i) for i in args],args
+                        raise
         finally:
             self.level = oldlevel
 

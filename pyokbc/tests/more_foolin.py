@@ -84,7 +84,17 @@ class ReadOnlyTestCase(unittest.TestCase):
             self.assertNotEquals(type(inst),str,"'%s' should not be a %s" % (inst,type(inst)))
         self.assertNotEquals(0,0,"oh, there were no instances of 'nooron_app_class'")
 
+    def test_0002_test_traceback(self):
+        try:
+            a = 1/0
+        except Exception,e:
+            import traceback
+            print "V" * 80
+            traceback.print_tb(sys.exc_traceback)
+            print "^" * 80
+            print dir(e)
 
+        
 
 if __name__ == "__main__":
     unittest.main()

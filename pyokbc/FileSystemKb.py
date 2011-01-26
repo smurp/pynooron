@@ -90,9 +90,7 @@ class FileSystemKb(AbstractFileKb):
 
             for (ext,mime_type) in pyokbc_mimetypes.items():
                 #possible_kb_filename = os.path.join(place,filename+ext)
-
-                #print "thing =",str(thing),type(thing),type(ext)
-                possible_kb_filename = thing + ext
+                possible_kb_filename = str(thing) + ext
                 if possible_kb_filename in os.listdir(place):
                     kb_type = kb._kb_types.get(mime_type)
                     if kb_type:
