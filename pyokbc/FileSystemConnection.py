@@ -21,13 +21,18 @@ def _make_allowed_fname(allowed_place,kb_locator):
               "%s not in %s" % (normpath,allowed_place)
     return normpath
 
+def canonicalize_path(a_path_string):
+    retlist = []
+    for a_dir in a_path_string.split(':'):
+        retlist.append(os.path.abspath(os.path.realpath(os.path.normpath(a_dir))))
+    return retlist
 
 class FileSystemConnection(Connection):
     def __init__(connection,initargs=None):
         connection._initargs = initargs
         connection._default_place = initargs['default_place']
-        connection._path = string.split(connection._default_place,
-                                                ':')
+        connection._path = canonicalize_path(connection._default_place)
+
         connection._meta_kb = None
         #Connection.__init__(connection,initargs)
         connection._meta_kb = FileSystemKb(connection._default_place,
@@ -114,3 +119,15 @@ class FileSystemConnection(Connection):
         stats['CreationTime'] =     stats['CTIME']
         stats['AccessTime'] =       stats['ATIME']
         return stats
+
+    def __str__(self):
+        """
+        return results like "/home/smurp/knowledge/{one,two,three}"
+        """
+        common = os.path.commonprefix(self._path)
+        if len(self._path) > 1:
+            return common + '{' + ','.join([p[len(common):] for p in self._path]) + '}'
+        elif len(self._path) == 1:
+            return self._path[0]
+        else:
+            return None
