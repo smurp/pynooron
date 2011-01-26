@@ -3,7 +3,7 @@
 __version__='$Revision: 1.23 $'[11:-2]
 __cvs_id__ ='$Id: okbc_handler.py,v 1.23 2008/08/13 16:08:47 smurp Exp $'
 
-
+from settings import *
 from pyokbc import *
 
 import NooronApp
