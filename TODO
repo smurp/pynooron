@@ -59,8 +59,6 @@
 *** distinguish milestones from tasks in .dot and .html
 *** move these TODO entries into the nooron_project as needed
 * prep for PublicReleaseOne milestone:
-** add htpasswd support
-*** using http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
 ** make KBAdapter for htpasswd
 ** make KBAdapter for /etc/passwd (only for use when ssl used)
 ** implement special security restrictions when access is insecure
