@@ -3,7 +3,7 @@ __version__='$Revision: 1.57 $'[11:-2]
 __cvs_id__ ='$Id: PyOkbc.py,v 1.57 2008/08/13 16:08:47 smurp Exp $'
 
 PRIMORDIAL_KB = ()
-OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
+OKBC_SPEC_BASE_URL =  "/docs/okbc2.html#"
 
 from debug_tools import timed
 import string
@@ -257,7 +257,7 @@ class Symbol:
         return str(self)
         return "<"+str(self)+">"
     def __doc__(self):
-        return "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"+self.name
+        return OKBC_SPEC_BASE_URL + self.name
 
 class Node(Symbol):
     pass
@@ -2596,16 +2596,12 @@ class AbstractPersistentKb(TupleKb):
     to.
     """
     def save_kb(kb,error_p = 1):
-        filename = kb.get_frame_name(kb)
-        ext = kb._kb_type_file_extension
+        filename = kb._file_name()
         if 0: # save safety 
             deleteme = 'DELETEME_'
             if len(filename) < len(deleteme) or \
                    filename[0:len(deleteme)] != deleteme:
-                filename = 'DELETEME_' + filename
-        
-        #if ext != None and ext:
-        #    filename = filename + '.' + ext
+                filename = 'DELETEME_' + filename        
         kb._save_to_storage(filename,error_p=error_p)
 
     def save_kb_as(kb,new_name_or_locator,error_p = 1):
@@ -2676,7 +2672,7 @@ class AbstractPersistentKb(TupleKb):
     
 class AbstractFileKb(AbstractPersistentKb):
     def _file_name(kb):
-        return kb._name + '.' + kb._kb_type_file_extension
+        return kb._name #+ '.' + kb._kb_type_file_extension
 
     make_backups = 1
     via_temp = 1
@@ -2714,7 +2710,11 @@ class AbstractFileKb(AbstractPersistentKb):
                     items.sort(lambda a,b: cmp(a[0],b[0]))
                     for pair in items:
                         print "%-20s = %s" % pair
-                os.rename(real_path,backup_path)
+                try:
+                    os.rename(real_path,backup_path)
+                except Exception,e:
+                    print "while doing os.rename(%s,%s)" % (real_path,backup_path)
+                    raise
             if via_temp:
                 #print "finally saving %s" % real_path
                 os.rename(path,real_path)
