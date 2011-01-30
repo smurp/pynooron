@@ -107,7 +107,7 @@ class login_handler:
                                                 auth_info[0]),
                                      '%s=%s' % (self.the_user_pw_name,
                                                 auth_info[1])]
-
+            
     def set_cookies_for_logout(self,request):
         request['Set-Cookie'] = '%s=; %s' % \
                                 (self.the_user_pw_name,
@@ -240,6 +240,25 @@ class dictionary_authenticator:
         except:
             pass 
         return dude
+
+import htpasswd
+class htpasswd_authenticator:
+    def __init__(self,htpasswd_filename):
+        self.htpasswd_filename = htpasswd_filename
+        self.htpasswd_obj = htpasswd.HtpasswdFile(self.htpasswd_filename)
+    def authenticate(self, auth_info):
+        dude = AnonymousUser
+        try:
+            [username, password] = auth_info
+            resp = self.htpasswd_obj.authenticate(username,password)
+            if resp:
+                return AuthenticatedUser(username)
+                
+        except:
+            pass 
+        return dude
+
+            
 
 import xmlrpclib
 

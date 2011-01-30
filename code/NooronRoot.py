@@ -20,13 +20,23 @@ from TemplateManager import TemplateManager
 #import topicmap_handler
 import okbc_handler
 import login_handler
-from code_handler import code_handler
+from code_handler import code_handler, path_handler
 #import PipeLineFactory
 
 from pyokbc import *
 import NooronApp
 import os
 
+
+
+##################################################### for debugging only
+from debug_tools import timed
+default_handler.default_handler.__str__ = lambda obj: "%s(%s)" % (obj.__class__.__name__,obj.filesystem)
+default_handler.default_handler.match = timed(default_handler.default_handler.match)
+#path_handler.match = timed(code_handler.match)
+import medusa
+medusa.http_server.http_request.__str__ = lambda obj: "%s(%s)" % (obj.__class__.__name__,obj.uri)
+##################################################### end of debugging stuff
 
 def npts_for_self_and_instances(here):
     npt_for_self = get_slot_values(here,'npt_for_self',
@@ -152,22 +162,25 @@ class NooronRoot:
             #self.pipeline_factory = None #PipeLineFactory.PipeLineFactory()
             #statusable_handlers.append(self.pipeline_factory)
 
-            for fs_loc in just_serve:
-                #fs_obj = filesys.os_filesystem(fs_loc['fs_path'],)
-                fs_obj = filesys.os_filesystem(fs_loc)
-                fs_handler = default_handler.default_handler(fs_obj,)
-                hs.install_handler(fs_handler)
-                statusable_handlers.append(hs)
-
-            
             if publishing_root:
                 self.fsroot = publishing_root
                 fs = filesys.os_filesystem(self.fsroot)
                 ch = code_handler(fs,list_directories = 1,
                                   serve=['/code','/templates','/pyokbc'],
                                   skip=['code/CVS','templates/CVS'])
+                print "install %s" % ch
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                
+
+            for fs_loc in just_serve:
+                fs_obj = filesys.os_filesystem(fs_loc)
+                fs_handler = path_handler(fs_obj,list_directories=1,
+                                          serve=['/media','/docs'])
+                print "install %s" % fs_handler
+                hs.install_handler(fs_handler)
+                statusable_handlers.append(hs)
+
+            
 
             kbh = okbc_handler.okbc_handler(self._knowledge_under,
                                             connection = self._connection)
@@ -194,9 +207,11 @@ class NooronRoot:
             #else:
             #    hs.install_handler(kbh)
 
+
             sh = status_handler.status_extension(statusable_handlers)
             hs.install_handler(sh)            
             hs.install_handler(self)
+
 
     def security_engine(self):
         return self._security_engine
