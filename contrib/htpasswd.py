@@ -1,6 +1,7 @@
 #!/usr/bin/python
 """Replacement for htpasswd"""
 # Original author: Eli Carter
+# authenticate added by Shawn Murphy <smurp@smurp.com>
 
 import os
 import sys
@@ -69,6 +70,15 @@ class HtpasswdFile:
         self.entries = [entry for entry in self.entries
                         if entry[0] != username]
 
+    def authenticate(self, username, password):
+        for entry in self.entries:
+            if entry[0] == username:
+                salt = entry[1][:2]
+                if crypt.crypt(password,salt) == entry[1]:
+                    return True
+                else:
+                    return False # ie password incorrect
+        return None # ie username not present
 
 def main():
     """%prog [-c] -b filename username password
@@ -82,6 +92,8 @@ def main():
         help='Create a new htpasswd file, overwriting any existing file.')
     parser.add_option('-D', action='store_true', dest='delete_user',
         default=False, help='Remove the given user from the password file.')
+    parser.add_option('-a', action='store_true', dest='authenticate',
+        default=False, help='Confirm that the username:password combo is present.')
 
     options, args = parser.parse_args()
 
@@ -93,26 +105,41 @@ def main():
         sys.stderr.write(parser.get_usage())
         sys.exit(1)
 
+
     if not options.batch:
-        syntax_error("Only batch mode is supported\n")
+        required_number_of_arguments = 1
+    else:
+        required_number_of_arguments = 2
 
     # Non-option arguments
-    if len(args) < 2:
+    if len(args) < required_number_of_arguments:
         syntax_error("Insufficient number of arguments.\n")
     filename, username = args[:2]
     if options.delete_user:
-        if len(args) != 2:
+        if len(args) != required_number_of_arguments:
             syntax_error("Incorrect number of arguments.\n")
         password = None
     else:
-        if len(args) != 3:
+        if len(args) != required_number_of_arguments + 1:
             syntax_error("Incorrect number of arguments.\n")
-        password = args[2]
+        if options.batch:
+            password = args[2]
+        else:
+            password = raw_input('password: ')
 
     passwdfile = HtpasswdFile(filename, create=options.create)
 
     if options.delete_user:
         passwdfile.delete(username)
+    elif options.authenticate:
+        resp = passwdfile.authenticate(username, password)
+        if resp:
+            print "Authenticated"
+        elif resp == None:
+            print "User %s not present" % username
+        else:
+            print "Wrong password"
+        
     else:
         passwdfile.update(username, password)
 
