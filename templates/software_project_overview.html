@@ -8,6 +8,21 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 
+<a name="PERT_Chart"><h2>PERT Chart</h2></a>
+<embed tal:attributes="src python:request.object_request()+'__pert_chart.dot.svg'" width="750" height="452"/>
+
+
+<br />
+See PERT as: 
+<tal:block repeat="extension python:[['ps','ps'],
+                                     ['svg','svg'],
+                                     ['png','png']]">
+  <a tal:attributes="href 
+                     python:request.object_request()+
+                            '__pert_chart.dot.'+extension[1];"
+     tal:content="python:extension[0]"></a>
+</tal:block>
+<br />
 This page summarizes the various aspects of this software project:
 <ul>
 
@@ -18,24 +33,6 @@ This page summarizes the various aspects of this software project:
 <li><a href="#Tasks">The Tasks</a></li>
 
 </ul>
-
-<a name="PERT_Chart"><h2>PERT Chart</h2></a>
-See PERT as: 
-<tal:block repeat="extension python:[['ps','ps'],
-                                     ['svg','svg'],
-                                     ['png','png']]">
-  <a tal:attributes="href 
-                     python:request.object_request()+
-                            '__pert_chart.dot.'+extension[1];"
-     tal:content="python:extension[0]"></a>
-</tal:block>
-
-<a tal:attributes="href python:request.object_request()+'__pert_chart.dot.svg'"><img 
-   tal:attributes="src python:request.object_request()+'__pert_chart.dot.png';
-                   alt python:(get_frame_pretty_name(here) 
-                               or get_frame_name(here))
-                              + ' PERT Chart'"/>
-</a>
 
 
 
