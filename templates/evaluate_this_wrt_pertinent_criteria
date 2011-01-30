@@ -5,7 +5,7 @@
 
 
 <tal:dummy
-     define="criteria python:get_slot_values(here,'PertinentCriteria')[0]">
+     define="criteria python:get_slot_values(here,'hasPertinentCriteria')[0]">
   <table tal:condition="criteria">
     <tdata>
       <tr tal:repeat="criterion criteria">
@@ -24,7 +24,7 @@
     </tdata>
   </table>
 
-  <p tal:condition="python:not criteria"><em>No Pertinent Criteria</em></p>
+  <p tal:condition="python:not criteria"><em>No Pertinent Criteria for <b><hr tal:replace="here" /></b> </em></p>
 
   <form method="GET"
         action="Criterion__create_individual.html">

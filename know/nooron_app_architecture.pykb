@@ -81,13 +81,22 @@ create_slot('slot_display_order',
             frame_as_html but not required by it.  In other words,
             slot_display_order is optional on any nooron_app_class.""")
 
-#create_slot('kb_owner',
-#            own_slots=[[':DOMAIN',':KB'],
-#                       [':SLOT-VALUE-TYPE','nooron_user']],
-#            doc="""The KB Owner is the Person who has administrative control over the KB.""")
-#create_class('nooron_user',
-#             doc="""A nooron_user is the identifier for a person (or bot presumably) who uses Nooron.  A UserID.""")
-
+create_slot('frame_created_by',
+            own_slots=[[':DOMAIN',':FRAME'],
+                       [':SLOT-VALUE-TYPE','nooron_user_or_group']],
+            doc="""The entity (person or group) who created the frame 
+            (kb,class,slot,facet or instance).  This value should be set
+            automatically by something or other -- ideally something deep
+            so it can not be routed around by a prodedure which happens to
+            create a frame.""")
+create_class('nooron_user_or_group',
+             doc="""A person_or_group is either a person or a group (or bot acting on behalf of same) who uses Nooron.""")
+create_class('nooron_user',
+             direct_superclasses=['nooron_user_or_group'],
+             doc = """A nooron_user is an entity who can authenticate and who is a particular person.""")
+create_class('nooron_group',
+             direct_superclasses=['nooron_user_or_group'],
+             doc = """A nooron_group is an entity which contains nooron_users.""")
 
 create_class('nooron_app_component',
              direct_superclasses=[':KB'],
@@ -213,6 +222,16 @@ create_class(':HREF',
 
 create_class(':DOCUMENTATION',
              direct_types=['BookKeepingSlot'])
+create_slot(':REGEX',
+             #direct_superclasses=[':STRING'],
+             doc="""A :STRING containing a regular expresson.""")
+create_slot(':VALIDATION-REGEX',
+             #direct_superclasses=[':REGEX'],
+             doc="""A :REGEX which is used for field validation.""")
+create_class(':URI',
+             own_slots=[[':VALIDATION-REGEX','^{http|ftp|mailto|wais|telnet|gopher|https}:.*']],
+             doc = """URIs are generally thought of as URLs.  FIXME!""")
+
 
 # Following is the ontology for Criteria through to Worldviews
 
@@ -275,12 +294,15 @@ create_slot('DomainOfCriterion',
             to self-organize by noting how criteria are used.
             """)
 
-create_slot('PertinentCriteria',
-            pretty_name='Pertinent Criteria',
+create_slot("hasPertinentCriteria",
+            pretty_name = "has pertinent criteria",
             own_slots=[[':DOMAIN',':THING'],
-                       [':INVERSE',':DomainOfCriterion']],
-            doc="""The PertinentCriteria for a class are those which
-            have that class as a value on their DomainOfCriterion slot.""")
+                       [":SLOT-INVERSE","DomainOfCriterion"]])
+
+create_slot("hasEvaluations",
+            own_slots=[[':DOMAIN',':THING'],
+                       [":SLOT-INVERSE","SubjectOfEvaluation"]])
+
 
 
 create_slot('QuestionCriterionAsks',
@@ -478,19 +500,18 @@ create_individual('No',direct_types=['YesNo'])
 ### ClarityOfExpression, Quality, Interest, Accuracy, Brevity, Humourousness
 
 
-create_individual('ClarityOfExpression',
+create_individual('ClarityOfExpression', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','How clearly is this expressed?'],
                              ['DomainOfCriterion',':THING'],
-                             ['CriterionAnswersAre','ClarityOfExpressionRange']],
-                  direct_types=['Criterion'])
+                             ['CriterionAnswersAre','ClarityOfExpressionRange']])
 
 
-create_individual('Critique',direct_types=['Criterion'],
+create_individual('Critique', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','What is the problem with this?'],
                              ['DomainOfCriterion',':THING'],
                              ['CriterionAnswersAre',':PARAGRAPH']])
 
-create_individual('Endorsement',direct_types=['Criterion'],
+create_individual('Endorsement', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','What is good about this?'],
                              ['DomainOfCriterion',':THING'],
                              ['CriterionAnswersAre',':PARAGRAPH']])

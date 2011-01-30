@@ -14,23 +14,6 @@ PyOkbc.DEBUG=0
 def str_sort(a,b):
     return cmp(str(a),str(b))
 
-def copy_same_as_original(self,src_kb,loc):
-    mykb = open_kb(src_kb)
-    #goto_kb(mykb)
-    print "======================",src_kb,mykb.__class__    
-    src_fname = mykb._file_name()
-    prefix = 'DELETEME_Copy_of_'
-    mykb.save_kb_as(prefix+src_kb)
-    a = open(loc+src_fname)
-    #b = open(loc+'DELETEME_'+src_fname)
-    b = open(prefix+src_kb)
-    a_all = string.join(a.readlines(),"\n")
-    b_all = string.join(b.readlines(),"\n")
-    a.close()
-    b.close()
-    self.assertEquals(a_all,b_all)
-
-
 class ReadOnlyTestCase(unittest.TestCase):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
@@ -61,40 +44,33 @@ class ReadOnlyTestCase(unittest.TestCase):
             if missing:
                 msg += "\n   missing: %(missing)s"
             if extra:
-                msg += "\n    extra: %(extra)s"
+                msg += "\n     extra: %(extra)s"
         self.assertEquals(expect,got,msg % locals())
 
-    def perform_comparison(self,expect=None,got=None,msg=""):
-        msg += "\n  expected: %(expect)s\n   but got: %(got)s"
-        if type(expect) == set and type(got) == set:
-            missing = expect.difference(got)
-            extra   = got.difference(expect)
-            if missing:
-                msg += "\n   missing: %(missing)s"
-            if extra:
-                msg += "\n    extra: %(extra)s"
-        self.assertEquals(expect,got,msg % locals())
-
-    def test_0001_what_is_breaking_auto_create_links(self):
+    def SKIP_test_0001_what_is_breaking_auto_create_links(self):
         goto_kb(meta_kb())
         ckb = current_kb()
         self.assertEquals(meta_kb(),ckb,"%s should really be %s" % (ckb,meta_kb()))
         self.assertNotEquals(type(ckb),str,
-                             'the meta_kb should not be of type %s for gods sake' % type(ckb))
+                             'the meta_kb should not be of type %s for gods sake' % \
+                                 type(ckb))
         self.assertEquals(str(ckb),'doh')
         count = 0
         nooron_app_classes = get_class_instances('nooron_app_class')[0]
-        self.assertNotEquals(nooron_app_classes,[],'nooron_app_classes should not be []')
+        self.assertNotEquals(nooron_app_classes,[],
+                             'nooron_app_classes should not be []')
         for inst in nooron_app_classes:
             count += 1
-            self.assertNotEquals(type(inst),str,"'%s' should not be a %s" % (inst,type(inst)))
+            self.assertNotEquals(type(inst),str,
+                                 "'%s' should not be a %s" % (inst,type(inst)))
         self.assertNotEquals(0,0,"oh, there were no instances of 'nooron_app_class'")
         for inst in get_class_instances('nooron_app_class')[0]:
             count += 1
-            self.assertNotEquals(type(inst),str,"'%s' should not be a %s" % (inst,type(inst)))
+            self.assertNotEquals(type(inst),str,
+                                 "'%s' should not be a %s" % (inst,type(inst)))
         self.assertNotEquals(0,0,"oh, there were no instances of 'nooron_app_class'")
 
-    def test_0020_doubled_links_in_best_practices(self):
+    def SKIP_test_0020_doubled_links_in_best_practices(self):
         bp = open_kb('best_practices')
         
         self.perform_comparison(
@@ -106,9 +82,46 @@ class ReadOnlyTestCase(unittest.TestCase):
             expect = set(['BeEfficient']),
             got    = set(bp.get_slot_values('StayInFlow','MoreSpecificPractice')[0]),)
 
+    def test_0030_pattern_language_criteria(self):
+        #npl = open_kb('nooron_pattern_language')
+        npl = open_kb('nooron_app_architecture')
 
+        universal_criteria = set(['Critique', 'ClarityOfExpression', 'Endorsement'])
+        dom_of_pert = npl.get_slot_value('hasPertinentCriteria',':DOMAIN')[0]
+        self.perform_comparison(
+            msg    = "Why does %(dom_of_pert)s have no criteria" % locals(),
+            expect = universal_criteria,
+            got    = set(map(str,list(npl.get_slot_values(dom_of_pert,
+                                                          'hasPertinentCriteria',)[0]),)))
 
-        
+        sub_of_dom_of_pert = ":KB"
+        self.perform_comparison(
+            msg    = "Hmm.  I thought %(sub_of_dom_of_pert)s was a subclass of %(dom_of_pert)s" % locals(),
+            expect = set([str(dom_of_pert)]),
+            got    = set(map(str,list(npl.get_class_superclasses(sub_of_dom_of_pert)[0]),)))
+
+        self.perform_comparison(
+            msg    = str("%(sub_of_dom_of_pert)s is a subclass of %(dom_of_pert)s " +\
+                             "then why does %(sub_of_dom_of_pert)s not have %(dom_of_pert)s's criteria?") % locals(),
+            expect = universal_criteria,
+            got    = set(map(str,list(npl.get_slot_values(sub_of_dom_of_pert,
+                                                          'hasPertinentCriteria',)[0]),)))
+
+    def test_0040_universal_evaluations(self):
+        naa = open_kb('nooron_app_architecture')
+        dom_of_pert = naa.get_slot_value('hasPertinentCriteria',':DOMAIN')[0]
+        the_eval = naa.get_class_instances('Evaluation')[0][0]
+
+        self.perform_comparison(
+            msg    = "What is the subject of %(the_eval)s" % locals(),
+            expect = set(['HasVisibility_Critique_ShawnFrancisMurphy']),
+            got    = set([str(the_eval)]))
+
+        self.perform_comparison(
+            msg    = "What is the subject of %(the_eval)s" % locals(),
+            expect = set(['HasVisibility']),
+            got    = set(get_slot_value(the_eval,'SubjectOfEvaluation')[0]),)
+                
 
 if __name__ == "__main__":
     unittest.main()
