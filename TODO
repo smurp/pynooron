@@ -1,5 +1,23 @@
 -*-mode: outline -*-
 
+2011.01.28
+0) add_slot_value(nooron_app_architecture,FRAME,isVisibleTo,"create")
+1) when a user logs in then their 'home' is /id/USERNAME
+2) create /id/USERNAME url support in Nooron which
+   * the following is SO NOT SET IN STONE
+   * is the base identity page for each user
+   * /id/USERNAME is a page about them which is public
+   * /id/USERNAME/subset/SUBSET_NAME 
+     * eg /id/smurp/subset/facebook
+     * is a limited set of knowledge about smurp which facebook is allowed to know
+   * /ANONYMOUS/subset/123412342344
+     * is a limited set of knowledge about someone not traceable to a real identity but controlled by one
+   
+* add notsobasic_authenticator which:
+** accepts a url as username
+* create a 
+* 
+
 2011.01.19
 * pyokbc correctness
 ** why are best_practice instances showing duplicated outgoing links?
