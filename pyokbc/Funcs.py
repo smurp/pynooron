@@ -10,6 +10,7 @@ LOCAL_CONNECTION = None
 __allow_access_to_unprotected_subobjects__ = 1
 
 
+@timed
 def _coerce_to_kb(kb):
     #print "  coercing",kb
     if not kb:
@@ -369,6 +370,7 @@ frame_in_kb_p.write=0
 # def get_behaviour_supported_values
 # def get_behaviour_values
 
+@timed
 def get_class_instances(klass,kb=None,inference_level=Node._taxonomic,
                         number_of_values = Node._all, kb_local_only_p=0):
     kb = _coerce_to_kb(kb)

@@ -1,26 +1,13 @@
 
 """
 
-At the moment we just decorate methods with @timed to time them.
+Usage:
+  Put @timed as a decorator before methods you want to time.
+  Then run your code with and environment variable TIMED containing
+  a regex which matches the ClassName.MethodName of the methods you
+  want to show timing for.  For example:
 
-Methods so decorated are wrapped with a method which when results in
-a TIMING line being produced when the method is called and a TIMED line
-appearing when it returns along with the number of seconds and the return value.
-The line art "/---" is meant to show the nestedness of the calls.
-
-TIMING:    20100505121116                 /-------------------- OnSaleThisWeek.run_when_store_object_recreated
-TIMING:    20100505121116                 |/------------------- ProductInStore.set_on_special_price_using_directive
-TIMED:     20100505121116        0.04 sec |\------------------- ProductInStore.set_on_special_price_using_directive( ["<type 'str'>"] ) ===>  None
-TIMED:     20100505121116        0.05 sec \-------------------- OnSaleThisWeek.run_when_store_object_recreated( [] ) ===>  None
-
-
-Possible improvements to the formatting include:
-  - show the actual parameters using proper python positional and named formatting
-  - show self as the python object id (or repr?)
-  - have more control over the summarizing of the return value (because sometimes they are obnoxiously long)
-
-Maybe it should look like this:
-
+$ TIMED=.* python myscript.py
 TIMING:    20100505121116                 /-------------------- OnSaleThisWeek.run_when_store_object_recreated()
 TIMING:    20100505121116                 | /-------------------- ProductInStore.set_on_special_price_using_directive('20%')
 TIMED:     20100505121116        0.04 sec | \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
@@ -29,26 +16,6 @@ TIMING:    20100505121116                 /-------------------- OnSaleThisWeek.r
 TIMING:    20100505121116                 | /-------------------- ProductInStore.set_on_special_price_using_directive('30%')
 TIMED:     20100505121116        0.04 sec | \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
 TIMED:     20100505121116        0.05 sec \-------------------- OnSaleThisWeek.run_when_store_object_recreated( [] ) ===>  None
-
-
-In the future we want a way to easily turn this stuff on with great precision.
-With features such as:
-  - named patterns (called 'Timing Groups') of classes and methods to perform 'timing' on
-  - the ability to set which Timing Group to use during a "./manage.py runserver" execution:
-      DO_TIMING_ON=PaymentSystem ./manage.py runserver mbest
-  - the ability to control how to summarize the parameters and return values from methods
-  - the timing groups would be defined in a file __timing_conf__.py with contents like:
-
-timing_groups = {
- 'EveryThing':              {'matches': ['*.*'],                        # every method on every class
-                             'skip'   : ['*.__getattribute__']},        # except __getattribute__()
- 'CheckOut':                {'matches': ['CheckOut*.*']},               # every class starting with 'CheckOut'
- 'call_to_generate_a_view': {'matches': ['*.call_to_generate_a_view']}, # ctgav on every class
- 'Wizard':                  {'matches': ['Wizard.*',                    # all methods on Wizard
-                                         'WizardStep.*'                 # and WizardStep
-                                         ]},
-}
-
 
 """
 
@@ -66,7 +33,7 @@ def timed(meth):
     if not patt.match(handle) or spec == '':
         return meth
     else:
-        print "will time:",handle
+        print "debug_tools.timed() will time:",handle
     import time
     def wrapper(*args,**kw):
         global wrapper_depth

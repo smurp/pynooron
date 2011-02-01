@@ -6,32 +6,6 @@ __doc__ = """
   using media to suit the user.
 """
 
-
-import sys
-import asyncore
-import string
-import os
-
-cwd       = os.getcwd()
-home_dir  = os.path.expanduser("~")
-UID       = 'nooron'
-kr_root   = '%(home_dir)s/knowledge/' % locals()
-cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
-default_port = '8000'
-default_ip_address = '127.0.0.1'
-default_media_path = cwd + "/media"
-default_site_front = "dogfood_front.html"
-know_list = [kr_root+'apps_of/nooron',
-             kr_root+'apps_of/smurp',          
-             #kr_root+'apps_of/givingspace',
-             #kr_root+'apps_of/idcommons',
-             kr_root+'apps_of/demo',
-             #kr_root+'apps_of/kaliya',
-             kr_root+'apps_of/pod',
-             kr_root+'nooron_apps',
-             kr_root+'nooron_foundations',
-             cwd+'/know']
-
 def path_to_list(path):
     """ 
     >>> p = "a:b:c"
@@ -46,8 +20,34 @@ def path_to_list(path):
 def list_to_path(lst):
     return ":".join(lst)
 
+import sys
+import asyncore
+import string
+import os
+cwd       = os.getcwd()
+home_dir  = os.path.expanduser("~")
+UID       = 'nooron'
+kr_root   = '%(home_dir)s/knowledge/' % locals()
+cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
+default_port = '8000'
+default_ip_address = '127.0.0.1'
+default_media_path = list_to_path([cwd + "/media", cwd +"/docs" ])
+default_site_front = "dogfood_front.html"
+know_list = [kr_root+'apps_of/nooron',
+             kr_root+'apps_of/smurp',          
+             #kr_root+'apps_of/givingspace',
+             #kr_root+'apps_of/idcommons',
+             kr_root+'apps_of/demo',
+             #kr_root+'apps_of/kaliya',
+             kr_root+'apps_of/pod',
+             kr_root+'nooron_apps',
+             kr_root+'nooron_foundations',
+             cwd+'/know']
+
+
 def start_nooron(options,args):
     sys.path.append('code')
+    sys.path.append('contrib')
     from NooronRoot import NooronRoot
 
     if options.cache_dir:
@@ -60,14 +60,20 @@ def start_nooron(options,args):
 
     import login_handler
 
-    from users import dict_of_users
-    use_auth = login_handler.dictionary_authenticator(dict_of_users)
+
+    if options.htpasswd:
+        if os.path.exists(options.htpasswd):
+            use_auth = login_handler.htpasswd_authenticator(options.htpasswd)
+        else:
+            raise ValueError('htpasswd file %s does not exist, try:\n%s' % (
+                    options.htpasswd,
+                    "  contrib/htpasswd.py -c %s USER1 PW1" % options.htpasswd))
 
     from AuthenticatedUserAuthorizer import AuthenticatedUserAuthorizer
     security_engine = AuthenticatedUserAuthorizer()
 
+
     import __main__
-    __main__.__builtins__.wedge_string = '__'
     __main__.__builtins__.nooron_root = \
              NooronRoot(publishing_root = cwd,
                         #server_name = 'crusty',
@@ -151,7 +157,10 @@ if __name__ == "__main__":
                       type="str",
                       default = cache_dir,
                       help = "the directory to use as cache, default: %s" % cache_dir)
-
+    parser.add_option("--htpasswd",
+                      type="str",
+                      default = ".htpasswd",
+                      help = "path to htpasswd file to use for authentication, default: %(default_htpassword)s")
     parser.add_option("--knowledge_path",
                       type="str",
                       default = list_to_path(know_list),

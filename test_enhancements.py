@@ -31,6 +31,9 @@ class TestEnhancements:
             extra   = got.difference(expect) or None
             a = expect
             b = got
+        else:
+            a = expect
+            b = got
         for variable in 'expect contains got missing extra'.split():
             if locals().get(variable) <> None:
                 var_val = locals()[variable]

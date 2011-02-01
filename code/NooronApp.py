@@ -2,7 +2,7 @@
 __version__='$Revision: 1.37 $'[11:-2]
 __cvs_id__ ='$Id: NooronApp.py,v 1.37 2003/04/28 16:20:53 smurp Exp $'
 
-
+from settings import *
 from pyokbc import *
 import NooronRoot
 from CachingPipeliningProducer import PipeSection, CachingPipeliningProducer

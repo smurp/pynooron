@@ -214,7 +214,15 @@ class Context:
             expression = self._compiler.compile(expression)
         __traceback_supplement__ = (
             TALESTracebackSupplement, self, expression)
-        return expression(self)
+        try:
+            return expression(self)
+        except Exception,e:
+            import traceback
+            import sys
+            traceback.print_tb(sys.exc_traceback)
+            print str("evalute(%s)" % expression), e
+
+            raise
 
     evaluateValue = evaluate
     evaluateBoolean = evaluate

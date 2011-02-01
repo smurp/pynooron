@@ -138,13 +138,16 @@ class ReadOnlyTestCase(unittest.TestCase,TestEnhancements):
 
         self.perform_comparison(
             msg    = "basic slot-value assertions disturbed by inverse",
-            expect = set([str(alice),str(glass)]),
-            got    = set(list(mykb.get_slot_values('LewisCarroll','Wrote', kb_local_only_p = 0)[0])))
+            expect = set([str(alice),str(glass),'TheHuntingOfTheSnark']),
+            got    = set(map(str,list(mykb.get_slot_values('LewisCarroll','Wrote', 
+                                                   kb_local_only_p = 0)[0]))))
 
         self.perform_comparison(
             msg    = "basic :SLOT-INVERSE functionality broken",
             expect = set([lewis]),
-            got    = set(list(mykb.get_slot_values('AliceInWonderland','WrittenBy', kb_local_only_p = 0)[0])))
+            got    = set(list(mykb.get_slot_values('AliceInWonderland',
+                                                   'WrittenBy', 
+                                                   kb_local_only_p = 0)[0])))
 
         self.perform_comparison(
             msg    = "perhaps there is a wrong number of _inverse_values stored?",
@@ -155,7 +158,8 @@ class ReadOnlyTestCase(unittest.TestCase,TestEnhancements):
             msg = "_inverse_slots do not merge right?",
             expect = set([mykb.get_frame_in_kb('JohnVonNeumann')[0],
                           mykb.get_frame_in_kb('OskarMorgenstern')[0]]),
-            got = set(mykb.get_slot_values('TheoryOfGamesandEconomicBehaviour','WrittenBy')[0]))
+            got = set(mykb.get_slot_values('TheoryOfGamesandEconomicBehaviour',
+                                           'WrittenBy')[0]))
                           
         self.perform_comparison(
             msg    = "Node should be __eq__ to their frame name as a string",
@@ -164,8 +168,9 @@ class ReadOnlyTestCase(unittest.TestCase,TestEnhancements):
         
         self.perform_comparison(
             msg    = "inverse values are not equal to forward values",
-            expect = set_of_strings([alice,glass]),
-            got    = set(list(mykb.get_slot_values('LewisCarroll','Wrote', kb_local_only_p = 0)[0])))
+            expect = set_of_strings([alice,glass,'TheHuntingOfTheSnark']),
+            got    = set(map(str,list(mykb.get_slot_values('LewisCarroll','Wrote', 
+                                                   kb_local_only_p = 0)[0]))))
 
 
     def test_0030_get_class_superclasses(self):

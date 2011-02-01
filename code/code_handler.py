@@ -17,8 +17,9 @@ import NooronRoot
 from DirectoryFacade import DirectoryFacade
 
 import transformers
+from debug_tools import timed
 
-class code_handler(default_handler.default_handler):
+class path_handler(default_handler.default_handler):
     def __init__ (self, filesystem, list_directories = 0,serve=[],skip=[]):
         self.filesystem = filesystem
         # count total hits
@@ -31,6 +32,7 @@ class code_handler(default_handler.default_handler):
         self.serve = serve
         self.skip = skip
 
+    @timed
     def match(self,request):
         path = request.split_uri()[0]
         indx = self.allowable(path) and \
@@ -58,7 +60,7 @@ class code_handler(default_handler.default_handler):
         return allowed
 
 
-    def handle_request(self,request):
+    def IGNORE_handle_request(self,request):
         if request.command not in self.valid_commands:
             request.error(400) # bad request
             return
@@ -90,3 +92,8 @@ class code_handler(default_handler.default_handler):
         request['Content-Type'] = 'text/plain'
         request.push(obj)
         request.done()
+
+
+class code_handler(path_handler):
+    def set_content_type (self, path, request):
+        request['Content-Type'] = 'text/plain'

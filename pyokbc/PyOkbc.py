@@ -3,7 +3,7 @@ __version__='$Revision: 1.57 $'[11:-2]
 __cvs_id__ ='$Id: PyOkbc.py,v 1.57 2008/08/13 16:08:47 smurp Exp $'
 
 PRIMORDIAL_KB = ()
-OKBC_SPEC_BASE_URL =  "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"
+OKBC_SPEC_BASE_URL =  "/docs/okbc2.html#"
 
 from debug_tools import timed
 import string
@@ -257,7 +257,7 @@ class Symbol:
         return str(self)
         return "<"+str(self)+">"
     def __doc__(self):
-        return "http://www.ai.sri.com/~okbc/spec/okbc2/okbc2.html#"+self.name
+        return OKBC_SPEC_BASE_URL + self.name
 
 class Node(Symbol):
     pass
@@ -701,6 +701,7 @@ class KB(FRAME,Programmable):
     def changes_register_as_modifications_p(self):
         return self._changes_register_as_modifications_p
 
+    @timed
     def allow_caching_p(kb):
         return kb._allow_caching_p
     
@@ -783,6 +784,7 @@ class KB(FRAME,Programmable):
                                         pretty_name = pretty_name,
                                         kb_local_only_p = kb_local_only_p)
     
+    @timed
     def create_frame(kb,name,frame_type,
                      direct_types=[],
                      direct_superclasses=[],
@@ -1030,15 +1032,18 @@ class KB(FRAME,Programmable):
         if kb.allow_caching_p(): kb._cache[cache_key] = retval
         return retval
 
+    @timed
     def get_class_instances(kb,klass,
                             inference_level=Node._taxonomic,
                             number_of_values=Node._all,
                             kb_local_only_p=0):
         return kb.get_class_instances_recurse(klass,
-                                              inference_level,
-                                              number_of_values,
-                                              kb_local_only_p,[])
+                                              inference_level = inference_level,
+                                              number_of_values = number_of_values,
+                                              kb_local_only_p = kb_local_only_p,
+                                              checked_kbs = [])
 
+    @timed
     def get_class_instances_recurse(kb,klass,
                                     inference_level=Node._taxonomic,
                                     number_of_values=Node._all,
@@ -1047,8 +1052,8 @@ class KB(FRAME,Programmable):
         (klass,class_found_p) = kb.coerce_to_class(klass)
         checked_kbs.append(kb)
         rets = kb.get_class_instances_internal(klass,
-                                               inference_level,
-                                               number_of_values,
+                                               inference_level = inference_level,
+                                               number_of_values = number_of_values,
                                                kb_local_only_p=1)
         (list_of_instances,exact_p,more_status) = rets
         list_of_instance_names = map(lambda x:str(x),list_of_instances)
@@ -1067,6 +1072,7 @@ class KB(FRAME,Programmable):
                             list_of_instances.append(inst)
         return (list_of_instances,exact_p,more_status)
 
+    @timed
     def get_class_instances_internal(kb,klass,
                                      inference_level=Node._taxonomic,
                                      number_of_values=Node._all,
@@ -2590,16 +2596,12 @@ class AbstractPersistentKb(TupleKb):
     to.
     """
     def save_kb(kb,error_p = 1):
-        filename = kb.get_frame_name(kb)
-        ext = kb._kb_type_file_extension
+        filename = kb._file_name()
         if 0: # save safety 
             deleteme = 'DELETEME_'
             if len(filename) < len(deleteme) or \
                    filename[0:len(deleteme)] != deleteme:
-                filename = 'DELETEME_' + filename
-        
-        #if ext != None and ext:
-        #    filename = filename + '.' + ext
+                filename = 'DELETEME_' + filename        
         kb._save_to_storage(filename,error_p=error_p)
 
     def save_kb_as(kb,new_name_or_locator,error_p = 1):
@@ -2670,7 +2672,7 @@ class AbstractPersistentKb(TupleKb):
     
 class AbstractFileKb(AbstractPersistentKb):
     def _file_name(kb):
-        return kb._name + '.' + kb._kb_type_file_extension
+        return kb._name #+ '.' + kb._kb_type_file_extension
 
     make_backups = 1
     via_temp = 1
@@ -2708,7 +2710,11 @@ class AbstractFileKb(AbstractPersistentKb):
                     items.sort(lambda a,b: cmp(a[0],b[0]))
                     for pair in items:
                         print "%-20s = %s" % pair
-                os.rename(real_path,backup_path)
+                try:
+                    os.rename(real_path,backup_path)
+                except Exception,e:
+                    print "while doing os.rename(%s,%s)" % (real_path,backup_path)
+                    raise
             if via_temp:
                 #print "finally saving %s" % real_path
                 os.rename(path,real_path)

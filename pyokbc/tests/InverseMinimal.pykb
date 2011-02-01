@@ -1,21 +1,22 @@
 # -*- mode: python -*-
-create_class('Human')
-create_class('Book')
+create_class('CreativeEntity')
+create_class('Human', direct_superclasses=['CreativeEntity'])
+create_class('LiteraryWork')
+create_class('Book', direct_superclasses=['LiteraryWork'])
 
 create_slot('WrittenBy',own_slots=[[':SLOT-INVERSE','Wrote'],
-                                   [':DOMAIN','Literature']])
+                                   [':DOMAIN','LiteraryWork']])
 create_slot('Wrote',own_slots=[[':SLOT-INVERSE','WrittenBy'],
-                               [':DOMAIN','Agent']])
-
-create_individual('AliceInWonderland',
-                  direct_types=['Book'])
-create_individual('ThroughTheLookingGlass',
-                  direct_types=['Book'])
+                               [':DOMAIN','CreativeEntity']])
+create_individual('AliceInWonderland',      direct_types=['Book'])
+create_individual('ThroughTheLookingGlass', direct_types=['Book'])
 create_individual('LewisCarroll',
                   direct_types=['Human'],
                   own_slots=[['Wrote','AliceInWonderland',
                               'ThroughTheLookingGlass'
                               ]])
+create_individual('TheHuntingOfTheSnark',   direct_types=['Book'],
+                  own_slots=[['WrittenBy','LewisCarroll']])
 
 
 create_individual('TheoryOfGamesandEconomicBehaviour', direct_types=['Book'])
