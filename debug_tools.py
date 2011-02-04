@@ -17,6 +17,13 @@ TIMING:    20100505121116                 | /-------------------- ProductInStore
 TIMED:     20100505121116        0.04 sec | \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
 TIMED:     20100505121116        0.05 sec \-------------------- OnSaleThisWeek.run_when_store_object_recreated( [] ) ===>  None
 
+$ TIMED=.*using.* python myscript.py
+TIMING:    20100505121116                 /-------------------- ProductInStore.set_on_special_price_using_directive('20%')
+TIMED:     20100505121116        0.04 sec \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
+TIMING:    20100505121116                 /-------------------- ProductInStore.set_on_special_price_using_directive('30%')
+TIMED:     20100505121116        0.04 sec \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
+
+
 """
 
 global wrapper_depth
