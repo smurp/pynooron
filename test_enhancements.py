@@ -7,13 +7,19 @@ def set_of_strings(a_list):
 class TestEnhancements:
     def perform_comparison(self,expect=None,got=None,contains=None,msg=""):
         """
-        eg:
-        self.perform_comparison(
-            msg    = "get_kb_direct_parents() not working, first see test_0008",
-            expect = set(['PeopleSchema', 'LiteratureOntology']),
-            got    = set_of_strings(find_kb('PeopleData').get_kb_direct_parents()))
-        
+        examples
+            # report a failure if 'got' does not equal 'expect'
+            self.perform_comparison(
+                msg    = "get_kb_direct_parents() not working, first see test_0008",
+                expect = set(['PeopleSchema', 'LiteratureOntology']),
+                got    = set_of_strings(find_kb('PeopleData').get_kb_direct_parents()))
 
+            # report a failure if 'got' does not contain 'contains'
+            self.perform_comparison(
+                msg      = "get_kb_direct_parents() not working, first see test_0008",
+                contains = set(['PeopleSchema', 'LiteratureOntology']),
+                got      = set_of_strings(find_kb('PeopleData').get_kb_direct_parents()))
+        
         BOILERPLATE:
         self.perform_comparison(
             msg    = "",
