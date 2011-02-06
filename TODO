@@ -1,13 +1,71 @@
 -*-mode: outline -*-
 
 2011.02.04
+
+Candidate technologies (to consider for use by Nooron):
+* http://en.wikipedia.org/wiki/RTSP
+* http://10k.aneventapart.com/Uploads/303/
+** a way to add nooron_app_class instances
+* SQLite
+** add tree-friendly SQL commands, such as: CONNECT BY or WITH RECURSION(sp?)
+** add custom commands to SQLite that are VERY tuned to Nooron's needs
+** use SQLite as a triple store, or use it at a low level as such (ie, without SQL interface)
+** talk at opcode level to db
+** figure out a knowledge schema for SQLite
+
+# naive notion
+create table frame_slot_value (
+  frame ???,
+  slot  ???,
+  value ???);
+
+create table frame_slot_values (
+  frame ???,
+  slot  ???,
+  value ???,
+  value_order int);
+
+create table frame_slot_values__typed (
+  -- Have different fields for values of different types, only one of which
+  -- would be used; which one, indicated by the val_type field.  This has
+  -- the advantage of permitting type-specific sorting and range operations
+  -- to be performed in the SQL engine.  SQLite is agnostic about such things
+  -- in truth, 
+  frame       ???,
+  slot        ???,
+  value_order int, -- -1 for single-valued or set-valued slots, otherwise 0 thru n for lists
+  val_type    char(4), -- str,int,date,real to indicate which value_????
+  value_str   ???,
+  value_int   ???,
+  value_date  ???,
+  value_real  ???,
+  value_order int);
+
+create table frame_slot_values__typed_owned (
+  frame       ???,
+  slot        ???,
+  value_order int, -- -1 for single-valued or set-valued slots, otherwise 0 thru n for lists
+  val_type    char(4), -- str,int,date,real to indicate which value_????
+  value_str   ???,
+  value_int   ???,
+  value_date  ???,
+  value_real  ???,
+  creator     ???,
+  creation_time timestamp,
+  modifier    ???,
+  modification_time timestamp
+);
+
+
+
+2011.02.04
 *               1) CRITERIA for evaluating NEXT STEPS, scale: AgreeStrongly(5)--DisagreeStrongly(1)
-   /----------- unblocks other work
-   | /--------- makes nooron more useful dogfood
-   | | /------- unblocks whitepaper
-   | | | /----- is good demo-fodder
-   | | | | /--- teaches smurp important things
-   | | | | | /- is uniquely nooron-esque
+   +----------- unblocks other work
+   | +--------- makes nooron more useful dogfood
+   | | +------- unblocks whitepaper
+   | | | +----- is good demo-fodder
+   | | | | +--- teaches smurp important things
+   | | | | | +- is uniquely nooron-esque
    | | | | | |
    V V V V V V
 *               2) NEXT STEPS
@@ -27,7 +85,7 @@
 ** make Nooron a safe thing to host
 ** protect knowledge in Nooron from abuse by scamps
 ** get these NEXT STEPS into /know/nooron_project
-
+** improve output caching: invalidation, aging, etc.  Hmm. memcached OR SQLite?
 
 2011.02.02
 * make a bookmarking nooron_app
