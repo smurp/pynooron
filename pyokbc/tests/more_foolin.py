@@ -91,21 +91,20 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.perform_comparison(
             msg    = "Why does %(dom_of_pert)s have no criteria" % locals(),
             expect = universal_criteria,
-            got    = set(map(str,list(npl.get_slot_values(dom_of_pert,
-                                                          'hasPertinentCriteria',)[0]),)))
+            got    = set_of_strings(npl.get_slot_values(dom_of_pert,
+                                                        'hasPertinentCriteria',)[0]))
 
         sub_of_dom_of_pert = ":KB"
         self.perform_comparison(
             msg    = "Hmm.  I thought %(sub_of_dom_of_pert)s was a subclass of %(dom_of_pert)s" % locals(),
             expect = set([str(dom_of_pert)]),
-            got    = set(map(str,list(npl.get_class_superclasses(sub_of_dom_of_pert)[0]),)))
-
+            got    = set_of_strings(npl.get_class_superclasses(sub_of_dom_of_pert)[0]))
         self.perform_comparison(
             msg    = str("%(sub_of_dom_of_pert)s is a subclass of %(dom_of_pert)s " +\
                              "then why does %(sub_of_dom_of_pert)s not have %(dom_of_pert)s's criteria?") % locals(),
             expect = universal_criteria,
-            got    = set(map(str,list(npl.get_slot_values(sub_of_dom_of_pert,
-                                                          'hasPertinentCriteria',)[0]),)))
+            got    = set_of_strings(npl.get_slot_values(sub_of_dom_of_pert,
+                                                          'hasPertinentCriteria',)[0]))
 
     def test_0040_universal_evaluations(self):
         naa = open_kb('nooron_app_architecture')
