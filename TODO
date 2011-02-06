@@ -1,5 +1,9 @@
 -*-mode: outline -*-
 
+2011.01.31
+* why does SLOT-INVERSE work for alice and lewis but not :THING and :KB
+
+
 2011.01.28
 0) add_slot_value(nooron_app_architecture,FRAME,isVisibleTo,"create")
 1) when a user logs in then their 'home' is /id/USERNAME

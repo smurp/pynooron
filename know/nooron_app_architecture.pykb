@@ -294,13 +294,15 @@ create_slot('DomainOfCriterion',
             to self-organize by noting how criteria are used.
             """)
 
+
+dom_of_pert = "nooron_app_class"
 create_slot("hasPertinentCriteria",
             pretty_name = "has pertinent criteria",
-            own_slots=[[':DOMAIN',':THING'],
+            own_slots=[[':DOMAIN',dom_of_pert],
                        [":SLOT-INVERSE","DomainOfCriterion"]])
 
 create_slot("hasEvaluations",
-            own_slots=[[':DOMAIN',':THING'],
+            own_slots=[[':DOMAIN',dom_of_pert],
                        [":SLOT-INVERSE","SubjectOfEvaluation"]])
 
 
@@ -502,18 +504,18 @@ create_individual('No',direct_types=['YesNo'])
 
 create_individual('ClarityOfExpression', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','How clearly is this expressed?'],
-                             ['DomainOfCriterion',':THING'],
+                             ['DomainOfCriterion',dom_of_pert],
                              ['CriterionAnswersAre','ClarityOfExpressionRange']])
 
 
 create_individual('Critique', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','What is the problem with this?'],
-                             ['DomainOfCriterion',':THING'],
+                             ['DomainOfCriterion',dom_of_pert],
                              ['CriterionAnswersAre',':PARAGRAPH']])
 
 create_individual('Endorsement', direct_types=['Criterion'],
                   own_slots=[['QuestionCriterionAsks','What is good about this?'],
-                             ['DomainOfCriterion',':THING'],
+                             ['DomainOfCriterion',dom_of_pert],
                              ['CriterionAnswersAre',':PARAGRAPH']])
                   
 create_individual('HasVisibility_Critique_ShawnFrancisMurphy',
