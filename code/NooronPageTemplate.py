@@ -59,6 +59,19 @@ Warning: NooronPageTemplate.SAFETY is OFF
 SecureModuleImporter = _SecureModuleImporter()
 from AuthenticatedUser import AnonymousUser
 
+def bookmarklet(server_absolute_url):
+    return """
+        javascript:(
+            function(){
+               window.open(
+                 '%s/know/nooron_project__make_bookmark.html?bookmarklet_version=1&url=' 
+                   + encodeURIComponent(location.href)
+                   + '&title='
+                   + encodeURIComponent(document.title));}
+        )();
+          """.replace(' ','') % server_absolute_url
+
+
 class NooronPageTemplate(PageTemplate):
     request = None
     obj = None
@@ -84,12 +97,13 @@ class NooronPageTemplate(PageTemplate):
              'server_absolute_url':nooron_root.http_server.absolute_url(),
              'textarea_threshold':nooron_root.textarea_threshold,
              'field_path_delim':nooron_root.field_path_delim,
+             'bookmarklet':bookmarklet(nooron_root.http_server.absolute_url()),
              'request': self.request,
              #'user': self.request.user(), # FIXME why is user absent?
              'modules': SecureModuleImporter,
              'document_title':
              get_frame_pretty_name(self.obj) or get_frame_name(self.obj),
-             'Node': Node
+             'Node': Node,
              }
         try:
             c['error_message'] = self.request._error_message

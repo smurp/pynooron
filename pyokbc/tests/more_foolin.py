@@ -13,8 +13,9 @@ from pyokbc import *
 PyOkbc.DEBUG=0
 def str_sort(a,b):
     return cmp(str(a),str(b))
+from test_enhancements import *
 
-class ReadOnlyTestCase(unittest.TestCase):
+class ReadOnlyTestCase(unittest.TestCase,TestEnhancements):
     def __init__(self,hunh):
         unittest.TestCase.__init__(self,hunh)
 
@@ -36,16 +37,6 @@ class ReadOnlyTestCase(unittest.TestCase):
         mykb = open_kb(meta_kb())
         goto_kb(mykb)
 
-    def perform_comparison(self,expect=None,got=None,msg=""):
-        msg += "\n  expected: %(expect)s\n   but got: %(got)s"
-        if type(expect) == set and type(got) == set:
-            missing = expect.difference(got)
-            extra   = got.difference(expect)
-            if missing:
-                msg += "\n   missing: %(missing)s"
-            if extra:
-                msg += "\n     extra: %(extra)s"
-        self.assertEquals(expect,got,msg % locals())
 
     def SKIP_test_0001_what_is_breaking_auto_create_links(self):
         goto_kb(meta_kb())
@@ -91,21 +82,20 @@ class ReadOnlyTestCase(unittest.TestCase):
         self.perform_comparison(
             msg    = "Why does %(dom_of_pert)s have no criteria" % locals(),
             expect = universal_criteria,
-            got    = set(map(str,list(npl.get_slot_values(dom_of_pert,
-                                                          'hasPertinentCriteria',)[0]),)))
+            got    = set_of_strings(npl.get_slot_values(dom_of_pert,
+                                                        'hasPertinentCriteria',)[0]))
 
         sub_of_dom_of_pert = ":KB"
         self.perform_comparison(
             msg    = "Hmm.  I thought %(sub_of_dom_of_pert)s was a subclass of %(dom_of_pert)s" % locals(),
             expect = set([str(dom_of_pert)]),
-            got    = set(map(str,list(npl.get_class_superclasses(sub_of_dom_of_pert)[0]),)))
-
+            got    = set_of_strings(npl.get_class_superclasses(sub_of_dom_of_pert)[0]))
         self.perform_comparison(
             msg    = str("%(sub_of_dom_of_pert)s is a subclass of %(dom_of_pert)s " +\
                              "then why does %(sub_of_dom_of_pert)s not have %(dom_of_pert)s's criteria?") % locals(),
             expect = universal_criteria,
-            got    = set(map(str,list(npl.get_slot_values(sub_of_dom_of_pert,
-                                                          'hasPertinentCriteria',)[0]),)))
+            got    = set_of_strings(npl.get_slot_values(sub_of_dom_of_pert,
+                                                          'hasPertinentCriteria',)[0]))
 
     def test_0040_universal_evaluations(self):
         naa = open_kb('nooron_app_architecture')

@@ -3,7 +3,6 @@
 <tal:block
      condition="python:AUTHENTICATED_USER != AnonymousUser">
 
-
 <tal:dummy
      define="app_classes python:get_class_instances('nooron_app_class')[0]"
      condition="python:app_classes and (instance_of_p(this_kb,'nooron_app_instance')[0])">
@@ -11,7 +10,6 @@
        repeat="app_class app_classes">
     <tal:dummy
          condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
-
 
 <form method="GET"
       action=""
@@ -30,7 +28,7 @@
 
 <tal:dummy condition="python:here != meta_kb()">
 <form method="get"
-      tal:attributes="action python:request.object_request()+
+      tal:attributes="action python:str(request.object_request())+
                              '__put_frame_details.html'">
  <input 
     type="submit" 
@@ -45,7 +43,7 @@
 
     <form 
        method="get"
-       tal:attributes="action python:request.kb_request()+
+       tal:attributes="action python:str(request.kb_request())+
                                 '__save_kb'">
 
       <input type="hidden" name="OnSuccessRedirectTo" 
@@ -57,6 +55,7 @@
 
   </tal:block>
 </tal:block>
+
  
 </tal:block>
 <!-- /auto_create_links -->
