@@ -56,6 +56,22 @@ create table frame_slot_values__typed_owned (
   modification_time timestamp
 );
 
+create table kb_frame_slot_values__typed_owned (
+  kb          ???,
+  frame       ???,
+  slot        ???,
+  value_order int, -- -1 for single-valued or set-valued slots, otherwise 0 thru n for lists
+  val_type    char(4), -- str,int,date,real to indicate which value_????
+  value_str   ???,
+  value_int   ???,
+  value_date  ???,
+  value_real  ???,
+  creator     ???,
+  creation_time timestamp,
+  modifier    ???,
+  modification_time timestamp
+);
+
 
 
 2011.02.04
