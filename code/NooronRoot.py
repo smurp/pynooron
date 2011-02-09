@@ -167,18 +167,10 @@ class NooronRoot:
                 fs = filesys.os_filesystem(self.fsroot)
                 ch = code_handler(fs,list_directories = 1,
                                   serve=['/code','/templates','/pyokbc'],
+                                  just_serve = just_serve,
                                   skip=['code/CVS','templates/CVS'])
-                print "install %s" % ch
                 hs.install_handler(ch)
                 statusable_handlers.append(ch)                
-
-            for fs_loc in just_serve:
-                fs_obj = filesys.os_filesystem(fs_loc)
-                fs_handler = path_handler(fs_obj,list_directories=1,
-                                          serve=['/media','/docs'])
-                print "install %s" % fs_handler
-                hs.install_handler(fs_handler)
-                statusable_handlers.append(hs)
 
             
 

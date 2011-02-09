@@ -31,7 +31,7 @@ kr_root   = '%(home_dir)s/knowledge/' % locals()
 cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
 default_port = '8000'
 default_ip_address = '127.0.0.1'
-default_media_path = list_to_path([cwd + "/media", cwd +"/docs" ])
+default_media_path = list_to_path(["media","docs"])
 default_site_front = "dogfood_front.html"
 know_list = [kr_root+'apps_of/nooron',
              kr_root+'apps_of/smurp',          

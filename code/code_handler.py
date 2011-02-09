@@ -20,7 +20,8 @@ import transformers
 from debug_tools import timed
 
 class path_handler(default_handler.default_handler):
-    def __init__ (self, filesystem, list_directories = 0,serve=[],skip=[]):
+    def __init__ (self, filesystem, list_directories = 0,serve=[],skip=[],
+                  just_serve = []):
         self.filesystem = filesystem
         # count total hits
         self.hit_counter = counter()
@@ -30,11 +31,12 @@ class path_handler(default_handler.default_handler):
         self.cache_counter = counter()
         self.list_directories = list_directories 
         self.serve = serve
+        self.just_serve = just_serve # ie, do not set content-type to text/plain
         self.skip = skip
 
     @timed
     def match(self,request):
-        path = request.split_uri()[0]
+        path = request.split_uri()[0][1:]
         indx = self.allowable(path) and \
                self.filesystem.isdir(path) or self.filesystem.isfile(path)
         if DEBUG: print path, self.filesystem.wd,indx
@@ -60,40 +62,12 @@ class path_handler(default_handler.default_handler):
         return allowed
 
 
-    def IGNORE_handle_request(self,request):
-        if request.command not in self.valid_commands:
-            request.error(400) # bad request
-            return
-
-        self.hit_counter.increment()
-
-        
-        path, params, query, fragment = request.split_uri()
-
-        if '%' in path:
-            path = unquote (path)
-
-        # strip off all leading slashes
-        while path and path[0] == '/':
-            path = path[1:]
-
-        if self.filesystem.isdir(path):
-            if path and path[-1] != '/':
-                request['Location'] = '/%s/' % (path)
-                request.error (301) # moved permanently
-                return
-            obj = DirectoryFacade(path)
-        elif self.filesystem.isfile(path):
-            obj = transformers.typed_file_producer(open(path,'ro'))
-        else:
-            request.error(401)
-            return
-
-        request['Content-Type'] = 'text/plain'
-        request.push(obj)
-        request.done()
-
 
 class code_handler(path_handler):
     def set_content_type (self, path, request):
+        for js in self.just_serve:
+            if path.startswith(js):
+                default_handler.default_handler.set_content_type(self,path,request)
+                return
         request['Content-Type'] = 'text/plain'
+
