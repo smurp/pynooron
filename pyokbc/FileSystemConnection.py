@@ -66,6 +66,7 @@ class FileSystemConnection(Connection):
                     rets.append(e)
         return rets
 
+    @timed
     def openable_kbs(connection,kb_type,place=None):
         if not place: place = connection._default_place
         #warn("openable_kbs doing listdir of "+place)

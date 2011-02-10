@@ -1914,6 +1914,7 @@ class KB(FRAME,Programmable):
     def individual_p(kb,thing,kb_local_only_p = 0):
         return isinstance(thing,INDIVIDUAL)
 
+    @timed
     def instance_of_p(kb,thing,klass,
                       inference_level=Node._taxonomic,
                       kb_local_only_p=0):
@@ -2755,11 +2756,14 @@ class Connection: #abstract
     def __init__(connection,initargs=None):
         # This code never gets called (because Connection is abstract)
         # but in subclasses it should do something like the following:
+        raise(NotImplementedError(
+                "Connection.__init__() should be overridden by subclasses"))
         connection._meta_kb = META_KB('DefaultMetaKb',
                                       connection = connection)
         from PyKb import PyKb
         connection._default_kb_type = PyKb
 
+    @timed
     def create_kb(connection,
                   name,
                   kb_type=None,
@@ -2782,6 +2786,7 @@ class Connection: #abstract
         metakb._add_frame_to_store(kb)
         return kb
 
+    @timed
     def create_kb_locator(connection,
                           thing,
                           kb_type = None):
@@ -2793,12 +2798,11 @@ class Connection: #abstract
         #print connection
         return thing
 
+    @timed
     def find_kb(connection,name_or_kb_or_kb_locator):
-        #trayce([name_or_kb_or_kb_locator])
         if isinstance(name_or_kb_or_kb_locator,KB):
             return name_or_kb_or_kb_locator
         meta = connection.meta_kb()
-        
         
         #locator,frame_found_p = meta.get_frame_in_kb(name_or_kb_or_kb_locator)
         locator = connection.find_kb_locator(name_or_kb_or_kb_locator)
@@ -2806,8 +2810,7 @@ class Connection: #abstract
             locator.open_kb_internal()
         return locator
 
-
-
+    @timed
     def find_kb_locator(connection,thing,kb_type=None):
         #trayce([thing,kb_type])
         preface = "find_kb_locator(%s)" % thing
@@ -2897,7 +2900,7 @@ class Connection: #abstract
 ##                 my_meta_kb._add_frame_to_store(kb)
 ##         return kb
 
-
+    @timed
     def openable_kbs(connection, kb_type = None, place = None):
         warn("Connection.openable_kbs is abstract",20)
         return []
