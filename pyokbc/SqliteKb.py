@@ -10,14 +10,16 @@ There are several ways to go wrt the use of sqlite for kb storage.
 >>> set(openable_kbs(SqliteKb))
 set([u'PRIMORDIAL_KB'])
 >>> test_kb = create_kb('TestKB')
->>> test_kb
-TestKB
 >>> set(openable_kbs(SqliteKb))
 set([u'PRIMORDIAL_KB',u'TestKB'])
 >>> create_class('TestKB','Person',doc='homo habilis and up',pretty_name="")
 >>> put_slot_value('TestKB','TheAnswer','hasValue',42)
 >>> get_slot_value('TestKB','TheAnswer','hasValue')[0]
 [42]
+>>> sql_get_many(local_connection().conn,"select * from kb_frame_slot_values;")
+'onk'
+>>> local_connection().dump()
+adsf
 """
 
 import sys
@@ -57,6 +59,9 @@ class SqliteConnection(Connection):
         name = SqliteMetaKb.name
         connection._meta_kb = SqliteMetaKb(name,name=name,connection=connection)
         connection._default_kb_type = SqliteKb
+
+    def __del__(self):
+        sql_execute(self.conn,"commit;")
     
     def __str__(self):
         return "%s(initargs={'place':'%s'})" % (self.__class__.__name__,
@@ -65,9 +70,7 @@ class SqliteConnection(Connection):
         return conn._meta_kb
 
     def dump(self):
-        cursor = self.conn.execute("select * from kb_frame_slot_values")
-        import pprint
-        return pprint.pprint(cursor.fetchall())
+        return sql_dump(self.conn.cursor(),"select * from kb_frame_slot_values")
 
     def _is_initialized(conn):
         try:
@@ -166,6 +169,8 @@ class SqliteKb(AbstractFileKb):
                                       sql,
                                       (str(kb),str(thing),kb._type_slot_name))
         #print "frame_type_name",frame_type_name
+        assert(frame_type_name <> None,
+               "frame_type_name should not be '%s'" % frame_type_name)
         if frame_type_name <> None:
             found_frame = globals()[frame_type_name](str(thing))
 
@@ -220,7 +225,10 @@ class SqliteKb(AbstractFileKb):
            (kb,frame,slot,value_type,value_order,value_str) values 
            (?, ?,    ?,   'str',   0,          ?        )
         """
-        frame_name = str(frame)
+        try:
+            frame_name = str(frame)
+        except:
+            frame_name = frame._name
         curs = sql_execute(kb._cursor(),
                            sql, 
                            (kb.name,

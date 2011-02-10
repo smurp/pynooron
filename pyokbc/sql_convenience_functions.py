@@ -12,6 +12,8 @@ def sql_get_one(cursor,sql_str, params = []):
         return resp[0]
     else:
         return None
+
+
 @timed
 def sql_get_row(cursor,sql_str, params = []):
     cursor.execute(sql_str,params)
@@ -20,10 +22,20 @@ def sql_get_row(cursor,sql_str, params = []):
     except:
         return None
 @timed
-def sql_get_many(cursor, sql_str,description=[], params = []):
+def sql_get_many(cursor, sql_str,description=[],params = []):
     cursor.execute(sql_str,params)
     description.extend(cursor.description)
     return cursor.fetchall()
+
+@timed
+def sql_dump(cursor,sql_str, description=[],params = []):
+    cursor.execute(sql_str,params)
+    description.extend(cursor.description)
+    import pprint
+    return pprint.pformat(list(cursor.fetchall()))
+
+
+
 @timed
 def sql_get_as_dict(cursor,sql_str, params=[]):
     """Perform an sql query for two columns and return a dictionary

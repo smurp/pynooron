@@ -57,7 +57,10 @@ def timed(meth):
             for arg in summary_args:
                 if str(type(arg)).count('WSGIRequest'):
                     arg = 'request'
-                summary_args2.append(str(arg))
+                try:
+                    summary_args2.append(str(arg))
+                except Exception,e:
+                    summary_args2.append('None')
             summary_args2 = tuple(summary_args2)
 
             return str(str(summary_args2))
@@ -100,7 +103,13 @@ def timed(meth):
             elif str(type(retval)).count('HttpResponse'):
                 retval_summary = str(type(retval))
             else:
-                retval_summary = str(retval)
+                try:
+                    retval_summary = str(retval)
+                except Exception,e:
+                    if str(e).count('NoneType'):
+                        retval_summary = 'None'
+                    else:
+                        raise
 
         if len(summary_args):
             #self = summary_args.pop(0)
