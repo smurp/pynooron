@@ -5,7 +5,12 @@ Usage:
   Put @timed as a decorator before methods you want to time.
   Then run your code with and environment variable TIMED containing
   a regex which matches the ClassName.MethodName of the methods you
-  want to show timing for.  For example:
+  want to show timing for.  
+  The envar TIME_QUIETLY turns off lines like:
+    debug_tools.timed() will time: function.get_frame_in_kb
+
+
+For example:
 
 $ TIMED=.* python myscript.py
 TIMING:    20100505121116                 /-------------------- OnSaleThisWeek.run_when_store_object_recreated()
@@ -24,6 +29,8 @@ TIMING:    20100505121116                 /-------------------- ProductInStore.s
 TIMED:     20100505121116        0.04 sec \-------------------- ProductInStore.set_on_special_price_using_directive(...) ===>  None
 
 
+
+
 """
 
 global wrapper_depth
@@ -40,7 +47,8 @@ def timed(meth):
     if not patt.match(handle) or spec == '':
         return meth
     else:
-        print "debug_tools.timed() will time:",handle
+        if not os.environ.has_key('TIME_QUIETLY'):
+            print "debug_tools.timed() will time:",handle
     import time
     def wrapper(*args,**kw):
         global wrapper_depth
@@ -68,14 +76,14 @@ def timed(meth):
             classname = ''
             methname = ''
         before_time = time.time()
-        wrapper_depth_max = 20
+        wrapper_depth_max = 10
         wrapper_depth = wrapper_depth + 1
         pipes  = str("| " *  wrapper_depth  )
         dashes = str("-" * (wrapper_depth_max - wrapper_depth))
         dashes = str("-" * wrapper_depth_max)
         before_lines = pipes + "/" + dashes
         after_lines =  pipes + "\\" + dashes
-        before = "TIMING: %17s %15s %-20s %s.%s" % (n,'',before_lines,classname,methname)
+        before = "TIMING: %17s %15s %-10s %s.%s" % (n,'',before_lines,classname,methname)
         summary_args = list(args)
         argument_summary = make_argument_summary()
         print before + argument_summary
@@ -84,7 +92,7 @@ def timed(meth):
         wrapper_depth = wrapper_depth - 1
         after_time = time.time()
         elapsed = "%*.*f sec" % (10,2,after_time - before_time)
-        after  = "TIMED:  %17s %15s %-20s %s.%s" % (n,elapsed,after_lines,classname,methname)
+        after  = "TIMED:  %17s %15s %-10s %s.%s" % (n,elapsed,after_lines,classname,methname)
 
         if 1:
             if type(retval) == dict and len(retval) > 5:
