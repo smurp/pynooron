@@ -4,6 +4,7 @@ __cvs_id__ ='$Id: Funcs.py,v 1.24 2006/03/21 20:48:06 smurp Exp $'
 
 
 from PyOkbc import *
+
 CURRENT_KB = None
 LOCAL_CONNECTION = None
 
@@ -721,11 +722,20 @@ kb_p.write=0
 def local_connection():
     global LOCAL_CONNECTION
     if not LOCAL_CONNECTION:
-        place = os.environ.get('LOCAL_CONNECTION_PLACE')
+        place = os.environ.get('LOCAL_CONNECTION_PLACE',"SQLITE")
         if place != None:
-            from FileSystemConnection import FileSystemConnection
-            LOCAL_CONNECTION = establish_connection(FileSystemConnection,
-                                                    {'default_place':place})
+            if place.startswith('SQLITE'):
+                from SqliteKb import SqliteConnection
+                if place.count('='):
+                    (ignore,fname)   = place.split('=')
+                    LOCAL_CONNECTION = establish_connection(SqliteConnection,
+                                                            dict(place=fname))
+                else:
+                    LOCAL_CONNECTION = establish_connection(SqliteConnection)
+            else:
+                from FileSystemConnection import FileSystemConnection
+                LOCAL_CONNECTION = establish_connection(FileSystemConnection,
+                                                        {'default_place':place})
         else:
             LOCAL_CONNECTION = Connection()
     return LOCAL_CONNECTION
