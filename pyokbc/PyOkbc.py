@@ -2776,6 +2776,8 @@ class Connection: #abstract
             #print possible_kb_type
             if possible_kb_type:
                 kb_type = possible_kb_type
+        else:
+            kb_locator = name
         if not kb_type:
             kb_type = connection._default_kb_type
 
@@ -2783,7 +2785,7 @@ class Connection: #abstract
         kb = kb_type(kb_locator, connection=connection,
                      name=name,
                      initargs=initargs)
-        metakb._add_frame_to_store(kb)
+        #metakb._add_frame_to_store(kb)
         return kb
 
     @timed

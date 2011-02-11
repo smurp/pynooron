@@ -7,19 +7,21 @@ There are several ways to go wrt the use of sqlite for kb storage.
 
 >>> str(local_connection())
 "SqliteConnection(initargs={'place':':memory'})"
->>> set(openable_kbs(SqliteKb))
-set([u'PRIMORDIAL_KB'])
+>>> set(openable_kbs(SqliteKb)) == set([u'DefaultMetaKb', u'PRIMORDIAL_KB'])
+True
 >>> test_kb = create_kb('TestKB')
->>> set(openable_kbs(SqliteKb))
-set([u'PRIMORDIAL_KB',u'TestKB'])
->>> create_class('TestKB','Person',doc='homo habilis and up',pretty_name="")
->>> put_slot_value('TestKB','TheAnswer','hasValue',42)
->>> get_slot_value('TestKB','TheAnswer','hasValue')[0]
-[42]
->>> sql_get_many(local_connection().conn,"select * from kb_frame_slot_values;")
-'onk'
+>>> set(openable_kbs(SqliteKb)) == set([u'TestKB', u'DefaultMetaKb', u'PRIMORDIAL_KB'])
+True
+>>> goto_kb(test_kb)
+>>> put_slot_value('TheAnswer','hasValue',42)
+>>> get_slot_value('TheAnswer','hasValue')[0]
+42
 >>> local_connection().dump()
-adsf
+                  kb |                frame |                 slot | order | value
+-------------------- | -------------------- | -------------------- | ----- | ---------------
+       DefaultMetaKb |        DefaultMetaKb |           isKbOfType |     0 | SqliteMetaKb
+       DefaultMetaKb |               TestKB |           isKbOfType |     0 | SqliteKb
+
 """
 
 import sys
@@ -34,6 +36,11 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
+
+def simplify_row(dct):
+    dct = dict(dct)
+    dct['value'] = dct['value_'+dct['value_type']]
+    return dct
 
 class SqliteConnection(Connection):
     default_initargs = {'place':':memory'}
@@ -54,7 +61,7 @@ class SqliteConnection(Connection):
         if globals().get('LOCAL_CONNECTION',None) == None:
             global LOCAL_CONNECTION
             LOCAL_CONNECTION = connection
-
+        sql_execute(connection.conn,"begin;")
 
         name = SqliteMetaKb.name
         connection._meta_kb = SqliteMetaKb(name,name=name,connection=connection)
@@ -70,7 +77,19 @@ class SqliteConnection(Connection):
         return conn._meta_kb
 
     def dump(self):
-        return sql_dump(self.conn.cursor(),"select * from kb_frame_slot_values")
+        tmpl = "%(kb)20s | %(frame)20s | %(slot)20s | %(value_order)5s | %(value)s" 
+        header_printed = False
+        for row in sql_get_many(self.conn.cursor(),
+                                "select * from kb_frame_slot_values"):
+            if not header_printed:
+                header_printed = True
+                print tmpl % dict(kb='kb',frame='frame', slot='slot', 
+                                  value_order='order', value = 'value')
+                print tmpl % dict(kb='-'*20,frame='-'*20, slot='-'*20, 
+                                  value_order='-'*5, value='-'*15)
+            simple_row = simplify_row(row)
+            print tmpl % simple_row
+        
 
     def _is_initialized(conn):
         try:
@@ -89,7 +108,7 @@ class SqliteConnection(Connection):
             kb             varchar,
             frame          varchar,
             slot           varchar,
-            value_order    int, -- -1 for single-valued or set-valued slots, otherwise 0 thru n for lists
+            value_order    int default -1, -- 0 thru n for lists
             value_type     char(5), -- str,int,date,float to indicate which value_????
             value_str      varchar,
             value_int      integer,
@@ -98,8 +117,8 @@ class SqliteConnection(Connection):
             creator        varchar,
             creation_time  timestamp,
             modifier       varchar,
-            modification_time timestamp,
-            primary key (kb,frame,slot,value_order)
+            modification_time timestamp
+            --,primary key (kb,frame,slot,value_order)
           );
         """
         sql_execute(conn.conn.cursor(),create_sql)
@@ -120,8 +139,8 @@ class SqliteConnection(Connection):
         return connection.create_kb_locator(thing,kb_type=kb_type)
 
     def openable_kbs(conn,kb_type,place=None):
-        return conn.meta_kb().get_slot_values(SqliteMetaKb.name,
-                                              'isKbOfType')[0] + [u'PRIMORDIAL_KB']
+        #return conn.meta_kb().get_slot_values(SqliteMetaKb.name,
+        #                                      'isKbOfType')[0] + [u'PRIMORDIAL_KB']
         return sql_get_column(
                 conn.conn.cursor(),
                 """select 'PRIMORDIAL_KB' 
@@ -135,7 +154,8 @@ class SqliteConnection(Connection):
         return rets
 
 
-class SqliteKb(AbstractFileKb):
+class SqliteKb(TupleKb):
+#class SqliteKb(AbstractFileKb):
     """There are several ways to go with this."""
     _type_slot_name = "_isFrameOfType" # :SLOT,:INDIVIDUAL,:CLASS,:FACET [,:KB](?)
 
@@ -145,12 +165,11 @@ class SqliteKb(AbstractFileKb):
                  initargs = {}):
         self._connection = connection
         metakb = self._get_meta_kb()
-        name = filename_or_kb_locator
-        assert(name != None,"name should not equal '%s'" % name)
+        name = filename_or_kb_locator or name
+        self._name = name
         node_kb = Node.__dict__.get('_kb')
         FRAME.__init__(self,name,frame_type=node_kb,kb=metakb)
         self.kb_locator = filename_or_kb_locator
-        self._name = name
         self.initargs = initargs
         self._the_parent_kbs = []
 
@@ -160,19 +179,29 @@ class SqliteKb(AbstractFileKb):
     def _cursor(kb):
         return kb._connection.conn.cursor()
 
+
+    @timed
+    def _get_frame_type(kb,thing):
+        sql = """select value_str from kb_frame_slot_values 
+                 where kb='%s' and frame='%s' and slot='%s'"""
+        args = (str(kb),str(thing),kb._type_slot_name)
+        sql = sql % args
+        frame_type_name = sql_get_one(kb._cursor(),
+                                      sql)
+        try:
+            return locals()[frame_type_name]
+        except KeyError,e:
+            raise(KeyError("No class named '%s' found. using query %s" % (
+                        frame_type_name, sql)))
+        
+
     @timed
     def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
-        sql = """select value_str from kb_frame_slot_values 
-                 where kb=? and frame=? and slot=?"""
-        found_frame = None
-        frame_type_name = sql_get_one(kb._cursor(),
-                                      sql,
-                                      (str(kb),str(thing),kb._type_slot_name))
-        #print "frame_type_name",frame_type_name
-        assert(frame_type_name <> None,
-               "frame_type_name should not be '%s'" % frame_type_name)
-        if frame_type_name <> None:
-            found_frame = globals()[frame_type_name](str(thing))
+        try:
+            frame_type = kb._get_frame_type(thing)
+        except KeyError,e:
+            return (None,None)
+        found_frame = frame_type(str(thing))
 
         if found_frame == None:
             if thing == kb or str(thing) == str(kb):
@@ -209,21 +238,61 @@ class SqliteKb(AbstractFileKb):
             list_of_specs.append([rsv[str('value_'+rsv['value_type'])],1,0])
         return (list_of_specs,exact_p,more_status,default_p)
 
+    def put_slot_value_internal(kb,frame_name,slot, value,
+                                slot_type=Node._own,
+                                value_selector = Node._known_true,
+                                kb_local_only_p = 0):
+        """Sets the values of slot in frame to be a singleton set
+        consisting of a single element: value.  This operation may
+        signal constraint violation conditions (see Section 3.8).
+        Returns no values. """
+        #if str(slot) == 'ModificationTime':      ## REMOVE
+        #    warn('get_class_subclasses ignores inference_level > direct')
+        if type(value) == type([]): raise CardinalityViolation,str(value)
+        (frame,frame_found_p) = kb.get_frame_in_kb(frame_name)
+        slot_key = str(slot)
+        (slot,slot_found_p) = kb.get_frame_in_kb(slot)
+        #if not slot_found_p and str(
+        if slot_type == Node._own:
+            # FIXME NO DISTINCTION BETWEEN own and template
+            sql = "select count(*) as cnt from kb_frame_slot_values where kb=? and frame=? and slot=?"
+            prm = (str(kb),str(frame_name),str(slot))
+            count = sql_get_one(kb._cursor(),sql,prm)['cnt']
+            if count == 1:
+                sql = "update kb_frame_slot_values set "
+            elif count > 1:
+                raise ValueError("Too many values for put_slot_values_internal COUNT:%s SQL:%s" %(sql,count))
+            else: # no records
+                value_type = str(type(value))
+                if not value_type in ('int','float'):
+                    value_type = 'str'
+                    value = str(value)
+                # FIXME value_type 'date' not handled
+                sql = "insert into kb_frame_slot_values (kb,frame,slot,value_%s,value_type) values (?,?,?,?,'%s')" % (
+                    value_type,value_type)
+                prm = (str(kb),str(frame_name),str(slot_key),value)
+                curs = sql_execute(kb._cursor(),sql,prm)
 
-    
-    def BOGUS_add_frame_to_store(self,frame):
-        sql = """
-        insert into kb_frame_slot_values 
-           (kb,frame,slot,value_type,value_order,value_str) values 
-           (?, ?,    ?,   'str',   0,          ?        )
-        """ % ()
+            # if frame has the own_slot then write to it
+            # otherwise insert it
+
+        elif slot_type == Node._template:
+            if frame._template_slots.has_key(slot_key):
+                frame._template_slots[slot_key].set_value(value)
+            else:
+                frame._template_slots[slot_key] = UNIT_SLOT(slot,value)
+        elif slot_type == Node._inverse:
+            if frame._inverse_slots.has_key(slot_key):
+                frame._inverse_slots[slot_key].set_value(value)
+            else:
+                frame._inverse_slots[slot_key] = UNIT_SLOT(slot,value)
     
     @timed
     def _add_frame_to_store(kb,frame):
         sql = """
         insert into kb_frame_slot_values 
-           (kb,frame,slot,value_type,value_order,value_str) values 
-           (?, ?,    ?,   'str',   0,          ?        )
+           (kb,frame,slot,value_type,value_order,value_str,creation_time) values 
+           (?, ?,    ?,   'str',     0,          ?        ,datetime('now'))
         """
         try:
             frame_name = str(frame)
@@ -234,7 +303,7 @@ class SqliteKb(AbstractFileKb):
                            (kb.name,
                             frame_name,
                             'isKbOfType',
-                            str(kb.__class__.__name__)))
+                            str(frame.__class__.__name__)))
         return curs
 
 class SqliteMetaKb(SqliteKb):
@@ -250,6 +319,32 @@ class SqliteMetaKb(SqliteKb):
 
     def _get_meta_kb(self):
         return self
+
+    @timed
+    def _get_kb_type(kb,thing):
+        sql = """select value_str from kb_frame_slot_values 
+                 where kb='%s' and frame='%s' and slot='%s' OKNK"""
+        args = (str(kb),str(thing),kb._type_slot_name)
+        sql = sql % args
+        frame_type_name = sql_get_one(kb._cursor(),
+                                      sql)
+        #print frame_type_name,locals(),globals()
+        return locals()[frame_type_name]
+        
+
+    @timed
+    def get_frame_in_kb_internal(kb,thing,error_p=1,kb_local_only_p=0):
+        frame_type = kb._get_kb_type(thing)
+        found_frame = frame_type(str(thing))
+
+        if found_frame == None:
+            if thing == kb or str(thing) == str(kb):
+                found_frame = kb
+        # FIXME the whole coercibility issue is ignored
+        if found_frame:
+            return (found_frame,found_frame != None)
+        else:
+            return (None,None)
         
 if __name__ == "__main__":
     import doctest

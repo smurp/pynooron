@@ -7,7 +7,7 @@ def sql_quote(s):
 def sql_get_one(cursor,sql_str, params = []):
     cursor = sql_execute(cursor,sql_str,params)
     resp = cursor.fetchone()
-    return str(type(resp))
+    return resp
     if len(resp):
         return resp[0]
     else:
@@ -22,9 +22,8 @@ def sql_get_row(cursor,sql_str, params = []):
     except:
         return None
 @timed
-def sql_get_many(cursor, sql_str,description=[],params = []):
+def sql_get_many(cursor, sql_str,params = []):
     cursor.execute(sql_str,params)
-    description.extend(cursor.description)
     return cursor.fetchall()
 
 @timed
@@ -32,7 +31,7 @@ def sql_dump(cursor,sql_str, description=[],params = []):
     cursor.execute(sql_str,params)
     description.extend(cursor.description)
     import pprint
-    return pprint.pformat(list(cursor.fetchall()))
+    pprint.pprint([list(rec) for rec in cursor.fetchall()])
 
 
 
@@ -57,5 +56,12 @@ def sql_get_column(cursor, sql_str, params = []):
     return retlist
 @timed    
 def sql_execute(cursor,sql_str,params=[]):
-    return cursor.execute(sql_str,params)
+    try:
+        return cursor.execute(sql_str,params)
+    except Exception,e:
+        if params:
+            raise ValueError(str(e) + " "+ sql_str + " when params = " + str(params))
+        else:
+            raise ValueError(str(e) + " "+ sql_str )            
+            raise
 
