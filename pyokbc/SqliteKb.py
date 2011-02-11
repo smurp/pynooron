@@ -21,6 +21,7 @@ True
 -------------------- | -------------------- | -------------------- | ----- | ---------------
        DefaultMetaKb |        DefaultMetaKb |           isKbOfType |     0 | SqliteMetaKb
        DefaultMetaKb |               TestKB |           isKbOfType |     0 | SqliteKb
+              TestKB |            TheAnswer |             hasValue |     0 | 42
 
 """
 
@@ -102,13 +103,14 @@ class SqliteConnection(Connection):
             else:
                 raise
         
+    @timed
     def _initialize(conn):
         create_sql = """
           create table kb_frame_slot_values (
             kb             varchar,
             frame          varchar,
             slot           varchar,
-            value_order    int default -1, -- 0 thru n for lists
+            value_order    int default 0, -- 0 thru n for lists
             value_type     char(5), -- str,int,date,float to indicate which value_????
             value_str      varchar,
             value_int      integer,
@@ -118,10 +120,11 @@ class SqliteConnection(Connection):
             creation_time  timestamp,
             modifier       varchar,
             modification_time timestamp
-            --,primary key (kb,frame,slot,value_order)
+            ,primary key (kb,frame,slot,value_order)
           );
         """
         sql_execute(conn.conn.cursor(),create_sql)
+        return create_sql
 
     @timed
     def find_kb_locator(connection,thing,kb_type=None):
@@ -212,6 +215,7 @@ class SqliteKb(TupleKb):
         else:
             return (None,None)
 
+    @timed
     def get_slot_values_in_detail_internal(
         kb,frame,slot,
         inference_level = Node._taxonomic,
@@ -221,19 +225,23 @@ class SqliteKb(TupleKb):
         kb_local_only_p = 0,
         checked_kbs=[],checked_classes=[]):
 
+        #raise(ValueError([type(slot),slot]))
         (list_of_specs,exact_p,more_status,default_p) = ([],1,0,0)
         frame = kb.coerce_to_frame_internal(str(frame))
         if frame == None:
             return [[],1,0,1]
+        params = (str(kb),str(frame),str(slot))
+        sql = """select *
+               from kb_frame_slot_values 
+               where kb='%s'
+                     and frame='%s'
+                     and slot='%s'
+               order by value_order""" % params
+        #raise(ValueError(sql))
         raw_slot_values = sql_get_many(
             kb._cursor(),
-            """select *
-               from kb_frame_slot_values 
-               where kb=? 
-                     and frame=?
-                     and slot=? 
-               order by value_order""",
-            params = (SqliteMetaKb.name,str(frame),str(slot)))
+            sql)
+
         for rsv in raw_slot_values:
             list_of_specs.append([rsv[str('value_'+rsv['value_type'])],1,0])
         return (list_of_specs,exact_p,more_status,default_p)
@@ -268,7 +276,7 @@ class SqliteKb(TupleKb):
                     value_type = 'str'
                     value = str(value)
                 # FIXME value_type 'date' not handled
-                sql = "insert into kb_frame_slot_values (kb,frame,slot,value_%s,value_type) values (?,?,?,?,'%s')" % (
+                sql = "insert into kb_frame_slot_values (kb,frame,slot,value_%s,value_type,value_order) values (?,?,?,?,'%s',0)" % (
                     value_type,value_type)
                 prm = (str(kb),str(frame_name),str(slot_key),value)
                 curs = sql_execute(kb._cursor(),sql,prm)
@@ -305,6 +313,12 @@ class SqliteKb(TupleKb):
                             'isKbOfType',
                             str(frame.__class__.__name__)))
         return curs
+
+    def coerce_to_frame_internal(kb,frame):
+        if str(kb) == str(frame):
+            return kb
+        return str(frame)
+
 
 class SqliteMetaKb(SqliteKb):
     name = "DefaultMetaKb"
