@@ -23,12 +23,14 @@ True
        DefaultMetaKb |               TestKB |       :own |             isOfType |     0 |   str | SqliteKb
               TestKB |            TheAnswer |       :own |             hasValue |     0 |   int | 42
 
->>> put_slot_values('DeckOfCards','hasSuits',['Clubs','Hearts','Diamonds','Spades'])
->>> get_slot_values('DeckOfCards','hasSuits')[0]
+>>> DoC = create_individual('DeckOfCards',own_slots=[['hasSuits','Clubs','Hearts','Diamonds','Spades']])
+>>> set(get_slot_values('DeckOfCards','hasSuits')[0]) == set(u'Clubs Hearts Diamonds Spades'.split(' '))
 True
 >>> person = create_class('Person',template_slots=[['eatsFoods','Fruit','Vegetables','Meat']],doc="homo habilis and up")
->>> local_connection().dump(frame='Person')
-wha?
+
+#>>> alice = create_individual('Alice',direct_types = ['Person'], own_slots=[['eatsFoods','Potions']])
+#>>> set(get_slot_values('Alice','eatsFoods')[0]) # == set(u'Fruit Vegetables Meat Potions'.split(' '))
+#True
 """
 
 import sys
@@ -322,6 +324,102 @@ class SqliteKb(TupleKb):
         #elif slot_type == Node._template:    pass
         #elif slot_type == Node._inverse:     pass
 
+    @timed
+    def put_slot_values(kb,frame_or_name,slot, values,
+                        slot_type=Node._own,
+                        value_selector = Node._known_true,
+                        kb_local_only_p = 0):
+        (frame,
+         frame_found_p) = kb.get_frame_in_kb(frame_or_name,
+                                             kb_local_only_p=0)
+        if not frame:
+            frame = frame_or_name
+
+        frame_name = str(frame)
+
+        if type(values) != type([]): raise CardinalityViolation(values)
+        slot_key = str(slot)
+        if type(slot) == str:
+            slot_obj = kb.get_frame_in_kb(slot)[0]
+            if not slot_obj:
+                slot_obj = kb.create_slot(slot)
+        else:
+            slot_obj = slot
+
+        kb_get_behave = kb.get_behavior_values_internal
+        if Node._immediate in kb_get_behave(Node._constraint_checking_time):
+            current_values = kb.get_slot_values(frame,slot,
+                                                inference_level = Node._all,
+                                                slot_type = Node._own,
+                                                number_of_values = Node._all,
+                                                value_selector = Node._either,
+                                                kb_local_only_p = 0)
+            orig_values = copy.copy(values)
+            values = kb.enforce_slot_constraints(frame,slot,
+                                                 current_values = current_values,
+                                                 future_values = values,
+                                                 inference_level = Node._all,
+                                                 slot_type = Node._either,
+                                                 kb_local_only_p = 0)
+            if len(orig_values) <> len(values):
+                print "We got shortened."
+        #print "put_slot_values(%s,%s,%s,slot_type=%s)" % (frame,slot,values,slot_type)
+
+        del_sql = "delete from kb_frame_slot_values where kb=? and frame=? and slot_type=? and slot=?"
+        del_prm = (str(kb),str(frame_name),str(slot_type),str(slot_key))
+        cursor = kb._cursor()
+        sql_execute(cursor,"begin transaction;")
+        sql_execute(cursor,del_sql,del_prm)
+        order = 0
+        for value in values:
+            # All very straight forward but for one piece: we permit
+            # different values to be of different types (though almost
+            # universally they would be of one type) on the judgement
+            # that due to polymorphism it would be possible for
+            # different values to have different types.  I suspect
+            # though that a slot's range is either a datatype 
+            # (ie, int|float|date|str) or is a frame (in which case 
+            # the frame name is inserted into the value_str column.
+            # The polymorphism should really be contained to the latter
+            # case, that is frames, hence value_str would be universally
+            # used in that situation.  So: supporting different value_types
+            # for the same slot is not ontologically grounded unless a slot
+            # can be specifically defined as having a range of EITHER INT or FLOAT
+            # for example.  Despite all this I will leave this as it is
+            # so we don't have type conversion problems as in some situation where
+            # the first value has a non-str type but some subsequent value can not
+            # be converted to that non-str type.
+            order += 1            
+            value_type = get_value_type(value)
+            ins_sql = str("insert into kb_frame_slot_values " + \
+                              "(kb,frame,slot_type,slot,value_%s,value_type,value_order) " +\
+                              "values (?,?,?,?,?,'%s',?)") % (value_type,value_type)
+            ins_prm = (str(kb),str(frame_name),str(slot_type),str(slot_key),value,order)
+            sql_execute(cursor,ins_sql,ins_prm)
+
+        sql_execute(cursor,"commit;")
+
+        if slot_type == Node._own:
+            if slot_obj._the_inverse_of_this_slot <> None:
+                inverse_slot = slot_obj._the_inverse_of_this_slot
+                # Since we are dealing with a slot with an inverse it can be
+                # assumed that the domain and range are both class instances 
+                # rather than data types
+                for value in values:
+                    (inverse_frame,inverse_frame_found_p) = kb.get_frame_in_kb(value,kb_local_only_p=False)
+                    if inverse_frame_found_p:
+                        (inverse_cardinality,inverse_exact_p) = \
+                            kb.get_slot_value(inverse_slot,
+                                              Node._SLOT_CARDINALITY)
+                        if inverse_exact_p and not inverse_cardinality and \
+                                inverse_cardinality == 1:
+                            kb.put_slot_value(inverse_frame,inverse_slot,frame,
+                                              slot_type=Node._inverse)
+                        else:
+                            kb.add_slot_value(inverse_frame,inverse_slot,frame,
+                                              slot_type=Node._inverse)
+
+    put_slot_values_internal = put_slot_values
 
     @timed
     def _add_frame_to_store(kb,frame):
