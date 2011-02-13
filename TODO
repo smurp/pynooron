@@ -1,5 +1,19 @@
 -*-mode: outline -*-
 
+2011.02.13
+
+Plan:
+* ponderate in Nooron
+** bookmarklets --> save BookMark instances
+** criteria and evaluations of BookMarks
+** storage in SqliteKb
+** evaluation storage in a subclass of SqliteKb that does aggregation
+** fold bookmarking_app into other apps to bookmarkify them
+** release Ponderate
+** sell services:
+*** hosting closed workgroup ponderation
+*** creating custom ontologies for bookmarking integration (blogging, patlang not enough for you?...)
+
 2011.02.05
 
 Candidate technologies (to consider for use by Nooron):
