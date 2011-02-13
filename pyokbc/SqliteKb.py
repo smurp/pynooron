@@ -81,7 +81,7 @@ class SqliteConnection(Connection):
             initargs.update(connection.default_initargs)
 
         connection.place = initargs['place']
-        connection.conn = sqlite3.connect(connection.place)
+        connection.conn = sqlite3.connect(connection.place,isolation_level=None)
         #connection.conn.row_factory = dict_factory
         connection.conn.row_factory = sqlite3.Row
         connection._initargs = initargs
@@ -321,6 +321,7 @@ class SqliteKb(TupleKb):
         #if slot_type == Node._own:           pass
         #elif slot_type == Node._template:    pass
         #elif slot_type == Node._inverse:     pass
+
 
     @timed
     def _add_frame_to_store(kb,frame):
