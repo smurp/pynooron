@@ -6,7 +6,7 @@ There are several ways to go wrt the use of sqlite for kb storage.
 2) have one kb in an sqlite db and find them using FileSystemConnection
 
 >>> str(local_connection())
-"SqliteConnection(initargs={'place':':memory'})"
+"SqliteConnection(initargs={'place':':memory:'})"
 >>> set(openable_kbs(SqliteKb)) == set([u'DefaultMetaKb', u'PRIMORDIAL_KB'])
 True
 >>> test_kb = create_kb('TestKB')
@@ -18,11 +18,11 @@ True
 42
 >>> #person = create_class('Person',kb=test_kb,template_slots=[['eatsFoods','Fruit','Vegetables','Meat']])
 >>> local_connection().dump()
-                  kb |                frame |                 slot | order |  type | value
--------------------- | -------------------- | -------------------- | ----- | ----- | ---------------
-       DefaultMetaKb |        DefaultMetaKb |           isKbOfType |     0 |   str | SqliteMetaKb
-       DefaultMetaKb |               TestKB |           isKbOfType |     0 |   str | SqliteKb
-              TestKB |            TheAnswer |             hasValue |     0 |   int | 42
+                  kb |                frame |  slot_type |                 slot | order |  type | value
+-------------------- | -------------------- | ---------- | -------------------- | ----- | ----- | ---------------
+       DefaultMetaKb |        DefaultMetaKb |       :own |           isKbOfType |     0 |   str | SqliteMetaKb
+       DefaultMetaKb |               TestKB |       :own |           isKbOfType |     0 |   str | SqliteKb
+              TestKB |            TheAnswer |       :own |             hasValue |     0 |   int | 42
 
 """
 
@@ -68,7 +68,7 @@ def simplify_row(dct):
     return dct
 
 class SqliteConnection(Connection):
-    default_initargs = {'place':':memory'}
+    default_initargs = {'place':':memory:'}
     def __init__(connection,initargs={}):
         if initargs == None:
             initargs = connection.default_initargs
