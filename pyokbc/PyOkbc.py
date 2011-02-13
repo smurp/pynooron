@@ -824,13 +824,6 @@ class KB(FRAME,Programmable):
                               handle=None,
                               pretty_name=None,
                               kb_local_only_p=0):    
-        #print "create_frame_internal(",kb,name,")"
-        if kb != current_kb():
-            #if type(name) <> type(''):
-            #    print type(name),name.__class__,
-            if str(name) == "SamuelBeckett" :# and not (str(kb) in ('PeopleDatar')):
-                return None
-            #print "noncurrent kb",kb,"for '%s'" % name
         klop = kb_local_only_p
         is_name = type(name) == type('')
         if is_name:
@@ -844,7 +837,6 @@ class KB(FRAME,Programmable):
                 frame = FACET(name,kb,frame_type=frame_type)
             else:
                 raise GenericError()
-        #elif not isinstance(name,FRAME):
         else:
             # name is neither a string nor an existing FRAME
             # We permit FRAMEs because of possible circularities when
@@ -852,14 +844,12 @@ class KB(FRAME,Programmable):
             name_type = str(type(name))
             if type(name) == type(kb): # ie instance
                 return name
-            raise 'Name is not a string','kb=%s name=%s frame_type=%s type(name)=%s' % \
-                  (str(kb),str(name),str(frame_type),name_type)
-
+            raise(ValueError('Name is not a string','kb=%s name=%s frame_type=%s type(name)=%s' % \
+                                 (str(kb),str(name),str(frame_type),name_type)))
         if frame_type == Node._slot:
             if not (Node._SLOT in direct_types) and \
                not (':SLOT' in direct_types):
                 direct_types.append(Node._SLOT)
-
             # this assumes that there is only one inverse per slot, pretty safe
             for inverse_slot_or_name in [inv[1] for inv in own_slots if len(inv)>1 and str(inv[0]) == ':SLOT-INVERSE']:
                 # what if the inverse_slot does not yet exist? should we make a placeholder of some sort instead?
@@ -873,12 +863,10 @@ class KB(FRAME,Programmable):
                 inverse_slot._the_inverse_of_this_slot = frame
                 # Q: At what point do we make the linkages supporting get_frames_with_slot_value()?
                 # A: Over in put_slot_values()
-
         if frame_type == Node._facet:
             if not (Node._facet in direct_types) and \
                not (':FACET' in direct_types):
                 direct_types.append(Node._FACET)
-
         if frame_type == Node._class:
             if not (Node._CLASS in direct_types) and \
                not (':CLASS' in direct_types):
@@ -892,27 +880,21 @@ class KB(FRAME,Programmable):
             if not (Node._INDIVIDUAL in direct_types) and \
                not (':INDIVIDUAL' in direct_types):
                 direct_types.append(Node._INDIVIDUAL)
-
         kb.put_instance_types(frame,direct_types,
                               kb_local_only_p = kb_local_only_p)
-
         if own_slots or own_facets:
             initialize_slots_and_facets(frame, kb, own_slots, own_facets,
                                         Node._own, kb_local_only_p)
-
         if template_slots or template_facets:
             initialize_slots_and_facets(frame, kb, template_slots, template_facets,
                                         Node._template, kb_local_only_p)
-
-
-        if doc: frame._doc = doc
         if doc:
+            frame._doc = doc
             kb.put_slot_value(frame,Node._DOCUMENTATION,
                               doc,slot_type=Node._own,
                               kb_local_only_p=1)
         if pretty_name != None: 
             frame._pretty_name = pretty_name
-        
         return frame
 
     def create_individual(kb,name,
