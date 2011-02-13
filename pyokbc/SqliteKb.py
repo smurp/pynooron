@@ -16,14 +16,19 @@ True
 >>> put_slot_value('TheAnswer','hasValue',42)
 >>> get_slot_value('TheAnswer','hasValue')[0]
 42
->>> #person = create_class('Person',kb=test_kb,template_slots=[['eatsFoods','Fruit','Vegetables','Meat']])
 >>> local_connection().dump()
                   kb |                frame |  slot_type |                 slot | order |  type | value
 -------------------- | -------------------- | ---------- | -------------------- | ----- | ----- | ---------------
-       DefaultMetaKb |        DefaultMetaKb |       :own |           isKbOfType |     0 |   str | SqliteMetaKb
-       DefaultMetaKb |               TestKB |       :own |           isKbOfType |     0 |   str | SqliteKb
+       DefaultMetaKb |        DefaultMetaKb |       :own |             isOfType |     0 |   str | SqliteMetaKb
+       DefaultMetaKb |               TestKB |       :own |             isOfType |     0 |   str | SqliteKb
               TestKB |            TheAnswer |       :own |             hasValue |     0 |   int | 42
 
+>>> put_slot_values('DeckOfCards','hasSuits',['Clubs','Hearts','Diamonds','Spades'])
+>>> get_slot_values('DeckOfCards','hasSuits')[0]
+True
+>>> person = create_class('Person',template_slots=[['eatsFoods','Fruit','Vegetables','Meat']],doc="homo habilis and up")
+>>> local_connection().dump(frame='Person')
+wha?
 """
 
 import sys
@@ -88,7 +93,7 @@ class SqliteConnection(Connection):
             LOCAL_CONNECTION = connection
         #sql_execute(connection.conn,"begin transaction;")
 
-        name = SqliteMetaKb.name
+        name = SqliteMetaKb._name
         connection._meta_kb = SqliteMetaKb(name,name=name,connection=connection)
         connection._default_kb_type = SqliteKb
 
@@ -102,11 +107,18 @@ class SqliteConnection(Connection):
     def meta_kb(conn):
         return conn._meta_kb
 
-    def dump(self):
+    def dump(self,**kwargs):
         tmpl = "%(kb)20s | %(frame)20s | %(slot_type)10s | %(slot)20s | %(value_order)5s | %(value_type)5s | %(value)s" 
         header_printed = False
-        for row in sql_get_many(self.conn.cursor(),
-                                "select * from kb_frame_slot_values"):
+        sql = "select * from kb_frame_slot_values"
+        params = []
+        for field,value in kwargs.items():
+            if not locals().has_key('where_added'):
+                sql += ' where '
+                where_added = True
+            sql += ' %s=? ' % field
+            params.append(value)
+        for row in sql_get_many(self.conn.cursor(),sql,params):
             if not header_printed:
                 header_printed = True
                 print tmpl % dict(kb='kb',frame='frame', slot_type="slot_type", slot='slot', value_type="type",
@@ -168,8 +180,8 @@ class SqliteConnection(Connection):
         return connection.create_kb_locator(thing,kb_type=kb_type)
 
     def openable_kbs(conn,kb_type,place=None):
-        #return conn.meta_kb().get_slot_values(SqliteMetaKb.name,
-        #                                      'isKbOfType')[0] + [u'PRIMORDIAL_KB']
+        #return conn.meta_kb().get_slot_values(SqliteMetaKb._name,
+        #                                      'isOfType')[0] + [u'PRIMORDIAL_KB']
         return sql_get_column(
                 conn.conn.cursor(),
                 """select 'PRIMORDIAL_KB' 
@@ -177,9 +189,9 @@ class SqliteConnection(Connection):
                    select frame 
                    from kb_frame_slot_values 
                    where kb=? and 
-                         slot='isKbOfType' 
+                         slot='isOfType' 
                          and value_order = 0""",
-                (SqliteMetaKb.name,))
+                (SqliteMetaKb._name,))
         return rets
 
 
@@ -298,20 +310,18 @@ class SqliteKb(TupleKb):
                 raise ValueError("Too many values for put_slot_values_internal COUNT:%s SQL:%s" %(sql,count))
             else: # no records
                 value_type = get_value_type(value)
-                #print "VALUE_TYPE",value_type,type(value),typ_map
                 # FIXME value_type 'date' not handled
-                sql = str("insert into kb_frame_slot_values (kb,frame,slot_type,slot,value_%s,value_type,value_order) " +\
+                sql = str("insert into kb_frame_slot_values " + \
+                              "(kb,frame,slot_type,slot,value_%s,value_type,value_order) " +\
                               "values (?,?,?,?,?,'%s',0)") % (
                     value_type,value_type)
                 prm = (str(kb),str(frame_name),str(slot_type),str(slot_key),value)
                 curs = sql_execute(kb._cursor(),sql,prm)
 
-            # if frame has the own_slot then write to it
-            # otherwise insert it
-        if slot_type == Node._own:           pass
-        elif slot_type == Node._template:    pass
-        elif slot_type == Node._inverse:     pass
-    
+        #if slot_type == Node._own:           pass
+        #elif slot_type == Node._template:    pass
+        #elif slot_type == Node._inverse:     pass
+
     @timed
     def _add_frame_to_store(kb,frame):
         sql = """
@@ -325,9 +335,9 @@ class SqliteKb(TupleKb):
             frame_name = frame._name
         curs = sql_execute(kb._cursor(),
                            sql, 
-                           (kb.name,
+                           (kb._name,
                             frame_name,
-                            'isKbOfType',
+                            'isOfType',
                             str(frame.__class__.__name__)))
         return curs
 
@@ -338,7 +348,7 @@ class SqliteKb(TupleKb):
 
 
 class SqliteMetaKb(SqliteKb):
-    name = "DefaultMetaKb"
+    _name = "DefaultMetaKb"
 
     def coerce_to_frame_internal(kb,frame):
         sql = """select count(*) from kb_frame_slot_values 
