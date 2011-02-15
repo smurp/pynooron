@@ -52,7 +52,7 @@ def timed(meth):
     import time
     def wrapper(*args,**kw):
         global wrapper_depth
-        def make_argument_summary():
+        def make_argument_summary(summary_args,kw):
             summary_args2 = []
             for arg in summary_args:
                 if str(type(arg)).count('WSGIRequest'):
@@ -62,8 +62,10 @@ def timed(meth):
                 except Exception,e:
                     summary_args2.append('None')
             summary_args2 = tuple(summary_args2)
-
-            return str(str(summary_args2))
+            retval = str(str(summary_args2))
+            if kw:
+                retval += ", ".join(["%s=%s" % pair for pair in kw.items()])
+            return retval
 
         if not globals().has_key('wrapper_depth'):
             wrapper_depth = -1
@@ -88,7 +90,7 @@ def timed(meth):
         after_lines =  pipes + "\\" + dashes
         before = "TIMING: %17s %15s %-10s %s.%s" % (n,'',before_lines,classname,methname)
         summary_args = list(args)
-        argument_summary = make_argument_summary()
+        argument_summary = make_argument_summary(summary_args,kw)
         print before + argument_summary
         #raise ValueError('yikes')
         retval = meth(*args,**kw)

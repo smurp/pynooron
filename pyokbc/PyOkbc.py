@@ -719,12 +719,14 @@ class KB(FRAME,Programmable):
             kb.save_kb()
         warn('close_kb_internal should remove the kb from meta_kb')
 
+    @timed
     def coerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
         klop = kb_local_only_p
         if kb.class_p(thing):
             return (thing,1)
         (found_class,class_found_p) = kb.get_frame_in_kb(thing,
                                                          kb_local_only_p=klop)
+        #if thing == ""
         if found_class:
             return (found_class,class_found_p)
         #print str( thing)+" being coerced to class in "+str(kb)

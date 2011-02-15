@@ -28,7 +28,7 @@ True
 True
 >>> person = create_class('Person',template_slots=[['eatsFoods','Fruit','Vegetables','Meat']],doc="homo habilis and up")
 
-#>>> alice = create_individual('Alice',direct_types = ['Person'], own_slots=[['eatsFoods','Potions']])
+>>> alice = create_individual('Alice',direct_types = ['Person'], own_slots=[['eatsFoods','Potions']])
 #>>> set(get_slot_values('Alice','eatsFoods')[0]) # == set(u'Fruit Vegetables Meat Potions'.split(' '))
 #True
 """
@@ -221,6 +221,23 @@ class SqliteKb(TupleKb):
 
     def _cursor(kb):
         return kb._connection.conn.cursor()
+
+    @timed
+    def XXcoerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
+        klop = kb_local_only_p
+        if kb.class_p(thing):
+            return (thing,1)
+        (found_class,class_found_p) = kb.get_frame_in_kb(thing,
+                                                         kb_local_only_p=klop)
+        if found_class:
+            return (found_class,class_found_p)
+        #print str( thing)+" being coerced to class in "+str(kb)
+        found_class = kb.create_frame_internal(thing,Node._class)
+        class_found_p = found_class
+        if not class_found_p and error_p:
+            raise ClassNotFound,(thing,kb)
+        return (found_class,class_found_p)
+
 
 
     @timed
