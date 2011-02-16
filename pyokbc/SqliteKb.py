@@ -28,9 +28,10 @@ True
 True
 >>> person = create_class('Person',template_slots=[['eatsFoods','Fruit','Vegetables','Meat']],doc="homo habilis and up")
 
->>> alice = create_individual('Alice',direct_types = ['Person'], own_slots=[['eatsFoods','Potions']])
-#>>> set(get_slot_values('Alice','eatsFoods')[0]) # == set(u'Fruit Vegetables Meat Potions'.split(' '))
-#True
+>>> alice = create_individual('Alice',direct_types = [person], own_slots=[['eatsFoods','Potions']])
+>>> set(get_slot_values('Alice','eatsFoods')[0]) # == set(u'Fruit Vegetables Meat Potions'.split(' '))
+True
+
 """
 
 import sys
@@ -196,7 +197,6 @@ class SqliteConnection(Connection):
                 (SqliteMetaKb._name,))
         return rets
 
-
 class SqliteKb(TupleKb):
 #class SqliteKb(AbstractFileKb):
     """There are several ways to go with this."""
@@ -223,22 +223,27 @@ class SqliteKb(TupleKb):
         return kb._connection.conn.cursor()
 
     @timed
-    def XXcoerce_to_class(kb,thing,error_p = 1,kb_local_only_p = 0):
-        klop = kb_local_only_p
-        if kb.class_p(thing):
-            return (thing,1)
-        (found_class,class_found_p) = kb.get_frame_in_kb(thing,
-                                                         kb_local_only_p=klop)
-        if found_class:
-            return (found_class,class_found_p)
-        #print str( thing)+" being coerced to class in "+str(kb)
-        found_class = kb.create_frame_internal(thing,Node._class)
-        class_found_p = found_class
-        if not class_found_p and error_p:
-            raise ClassNotFound,(thing,kb)
-        return (found_class,class_found_p)
+    def put_instance_types(kb,frame,new_types,kb_local_only_p = False):
+        slot_name = ':direct_types'
+        frame_name = str(frame)
+        slot_type = ':own'
+        del_sql = "delete from kb_frame_slot_values where kb=? and frame=? and slot_type=? and slot=?"
+        del_prm = (str(kb),str(frame_name),slot_type,slot_name)
+        cursor = kb._cursor()
+        sql_execute(cursor,"begin transaction;")
+        sql_execute(cursor,del_sql,del_prm)
+        order = 0
+        for klass in new_types:
+            value = str(klass)
+            order += 1
+            value_type = 'str'
+            ins_sql = str("insert into kb_frame_slot_values " + \
+                              "(kb,frame,slot_type,slot,value_%s,value_type,value_order) " +\
+                              "values (?,?,?,?,?,'%s',?)") % (value_type,value_type)
+            ins_prm = (str(kb),str(frame_name),str(slot_type),slot_name,value,order)
+            sql_execute(cursor,ins_sql,ins_prm)
 
-
+        sql_execute(cursor,"commit;")
 
     @timed
     def _get_frame_type(kb,thing):
@@ -262,13 +267,15 @@ class SqliteKb(TupleKb):
         except KeyError,e:
             return (None,None)
         found_frame = frame_type(str(thing))
+        if str(thing) == 'eatsFoods':
+            raise(ValueError(("frame_type =", frame_type)))
 
         if found_frame == None:
             if thing == kb or str(thing) == str(kb):
                 found_frame = kb
         # FIXME the whole coercibility issue is ignored
         if found_frame:
-            return (found_frame,found_frame != None)
+            return (found_frame,True)
         else:
             return (None,None)
 
@@ -356,13 +363,14 @@ class SqliteKb(TupleKb):
 
         if type(values) != type([]): raise CardinalityViolation(values)
         slot_key = str(slot)
-        if type(slot) == str:
-            slot_obj = kb.get_frame_in_kb(slot)[0]
-            if not slot_obj:
-                slot_obj = kb.create_slot(slot)
-        else:
-            slot_obj = slot
-
+        if False:
+            if type(slot) == str:
+                slot_obj = kb.get_frame_in_kb(slot)[0]
+                if not slot_obj:
+                    slot_obj = kb.create_slot(slot)
+            else:
+                slot_obj = slot
+        slot_obj = str(slot)
         kb_get_behave = kb.get_behavior_values_internal
         if Node._immediate in kb_get_behave(Node._constraint_checking_time):
             current_values = kb.get_slot_values(frame,slot,
@@ -417,7 +425,7 @@ class SqliteKb(TupleKb):
         sql_execute(cursor,"commit;")
 
         if slot_type == Node._own:
-            if slot_obj._the_inverse_of_this_slot <> None:
+            if False and slot_obj._the_inverse_of_this_slot <> None:
                 inverse_slot = slot_obj._the_inverse_of_this_slot
                 # Since we are dealing with a slot with an inverse it can be
                 # assumed that the domain and range are both class instances 
@@ -457,6 +465,7 @@ class SqliteKb(TupleKb):
                             str(frame.__class__.__name__)))
         return curs
 
+    @timed
     def coerce_to_frame_internal(kb,frame):
         if str(kb) == str(frame):
             return kb
