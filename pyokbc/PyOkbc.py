@@ -266,7 +266,8 @@ class Node(Symbol):
 class FRAME(Node):
     __allow_access_to_unprotected_subobjects__ = 1
         
-    def __init__(self,frame_name,kb=None,frame_type=None):
+    def __init__(self,frame_name,kb=None,frame_type=None,_store=True):
+        # _store added so SqliteKb can turn off add_frame_to_store during coerce_to_* 
         self._name = frame_name
         #self._frame_type = frame_type
         #if not frame_type :
@@ -275,7 +276,7 @@ class FRAME(Node):
         self._direct_types = []
         self._frame_in_cache_p = 0
         self._pretty_name = None
-        if kb:
+        if kb and _store:
             kb._add_frame_to_store(self)
         self._own_slots = {}
         self._template_slots = {}
@@ -827,7 +828,9 @@ class KB(FRAME,Programmable):
                               pretty_name=None,
                               kb_local_only_p=0):    
         klop = kb_local_only_p
-        is_name = type(name) == type('')
+        is_name = type(name) in (type(''),type(u''))
+        if type(name) == type(u''):
+            name = str(name)
         if is_name:
             if frame_type == Node._class:
                 frame = KLASS(name,kb,frame_type=frame_type)
