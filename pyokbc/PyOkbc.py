@@ -266,7 +266,7 @@ class Node(Symbol):
 class FRAME(Node):
     __allow_access_to_unprotected_subobjects__ = 1
         
-    def __init__(self,frame_name,kb=None,frame_type=None,_store=True):
+    def __init__(self,frame_name,kb=None,frame_type=None,_add_frame_to_store=True):
         # _store added so SqliteKb can turn off add_frame_to_store during coerce_to_* 
         self._name = frame_name
         #self._frame_type = frame_type
@@ -276,7 +276,7 @@ class FRAME(Node):
         self._direct_types = []
         self._frame_in_cache_p = 0
         self._pretty_name = None
-        if kb and _store:
+        if kb and _add_frame_to_store:
             kb._add_frame_to_store(self)
         self._own_slots = {}
         self._template_slots = {}
@@ -1517,6 +1517,7 @@ class KB(FRAME,Programmable):
             kb._cached_get_instance_types[cache_key] = cached_types
         return cached_types
 
+    @timed
     def get_instance_types(kb,frame,
                            inference_level = Node._taxonomic,
                            number_of_values = Node._all,
@@ -1527,6 +1528,7 @@ class KB(FRAME,Programmable):
                                              kb_local_only_p,
                                              checked_kbs)
 
+    @timed
     def get_instance_types_recurse(kb,frame,
                                    inference_level = Node._taxonomic,
                                    number_of_values = Node._all,
@@ -1544,7 +1546,8 @@ class KB(FRAME,Programmable):
                                                       inference_level,
                                                       number_of_values,
                                                       kb_local_only_p)[0]
-
+        #return ([], 1, 0)
+        #raise(ValueError("%s.get_instance_types_internal(%s,%s,%s,%s) ==> %s"%(str(kb),str(frame),str(inference_level),str(number_of_values),str(kb_local_only_p),str(direct_types))))
         if not kb_local_only_p:
             all_parents = kb.get_kb_parents()
             #print "all_parents",all_parents

@@ -64,7 +64,8 @@ def timed(meth):
             summary_args2 = tuple(summary_args2)
             retval = str(str(summary_args2))
             if kw:
-                retval += ", ".join(["%s=%s" % pair for pair in kw.items()])
+                retval = retval[:-1] + ", " \
+                    + str(", ".join(["%s=%s" % pair for pair in kw.items()])) + ")"
             return retval
 
         if not globals().has_key('wrapper_depth'):

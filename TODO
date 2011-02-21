@@ -1,5 +1,56 @@
 -*-mode: outline -*-
 
+
+2011.02.17
+
+technologies to consider:
+  http://www.ibm.com/developerworks/aix/library/au-sqlalchemy/
+  http://www.rabbitmq.com/
+
+2011.02.15
+
+Given the "ponderate in Nooron" plan of 2011.02.13 what are the CRITERIA and NEXT STEPS?
+
+*               1) CRITERIA for evaluating NEXT STEPS, scale: AgreeStrongly(5)--DisagreeStrongly(1)
+ +------------- gets PonderateN out the door
+ | +----------- unblocks other work
+ | | +--------- makes nooron more useful dogfood
+ | | | +------- unblocks whitepaper
+ | | | | +----- is good demo-fodder
+ | | | | | +--- teaches smurp important things
+ | | | | | | +- is uniquely nooron-esque
+ | | | | | | |
+ V V V V V V V
+*               2) NEXT STEPS
+
+ 5 5 5 4 4 3 3  implement SqliteKB backend
+ 5 3 3 3 3 4 3  stress-test SqliteKB backend: reads and writes per second
+   4 5 4 5 5 5     get criteria and evaluations working in nooron
+   4 5 4 4 3 4     bookmarking app in nooron
+   4 4 3 1 3 1     getting createdBy slot working
+
+
+
+
+
+
+** 4 5 3 5 5 5     dynamic graphs using canvas/javascript like java graph layout example
+** 4 4 5 4 5 5     figure out knowledge versioning
+** 4 4 3 1 3 1     getting createdBy slot working
+** 3 5 3 5 3 4     improved embedding of SVG in HTML
+** 3 3 5 1 5 3     learn owl [hmm, really? shouldn't I code something?]
+** generic test suite for verifying KBAdapters
+** OwlKBAdapter based on pellet or librdf or something
+** Identities in Noorn, ie /id part of url space
+** NotSoBasicAuthentication, ie login via URL
+** a KBAdapter for massive data (SQLite?, cloud?)
+** CriteriaAndEvaluationKBAdapter (in SQLite probably)
+** get knowledge-based security working
+** make Nooron a safe thing to host
+** protect knowledge in Nooron from abuse by scamps
+** get these NEXT STEPS into /know/nooron_project
+** improve output caching: invalidation, aging, etc.  Hmm. memcached OR SQLite?
+
 2011.02.14
 
 python modules to investigate:

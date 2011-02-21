@@ -16,6 +16,8 @@ True
 >>> put_slot_value('TheAnswer','hasValue',42)
 >>> get_slot_value('TheAnswer','hasValue')[0]
 42
+
+>>> the_answer = get_frame_in_kb('TheAnswer')
 >>> local_connection().dump()
                   kb |                frame |  slot_type |                 slot | order |  type | value
 -------------------- | -------------------- | ---------- | -------------------- | ----- | ----- | ---------------
@@ -23,14 +25,40 @@ True
        DefaultMetaKb |               TestKB |       :own |             isOfType |     0 |   str | SqliteKb
               TestKB |            TheAnswer |       :own |             hasValue |     0 |   int | 42
 
+
+>>> meta_kb()._frame_of_type_exists('TestKB')
+1
+
 >>> DoC = create_individual('DeckOfCards',own_slots=[['hasSuits','Clubs','Hearts','Diamonds','Spades']])
 >>> set(get_slot_values('DeckOfCards','hasSuits')[0]) == set(u'Clubs Hearts Diamonds Spades'.split(' '))
 True
 >>> person = create_class('Person',template_slots=[['eatsFoods','Fruit','Vegetables','Meat']],doc="homo habilis and up")
 
 >>> alice = create_individual('Alice',direct_types = [person], own_slots=[['eatsFoods','Potions']])
+>>> test_kb._add_frame_to_store(alice) # frame already exists, no need to make it again
+False
+
+>>> set(test_kb._get_instance_types_internal_raw('Alice')) == set(u':INDIVIDUAL Person'.split(' '))
+True
+
+>>> set(test_kb.get_instance_types_internal('Alice',_coerce_to_classes=False)[0]) == set(u':INDIVIDUAL Person'.split(' '))
+True
+>>> set([str(pair[0]) for pair in test_kb.get_instance_types_internal('Alice')[0]]) == set(':INDIVIDUAL Person'.split(' '))
+True
+>>> set(get_instance_types('Alice',kb_local_only_p=True)[0]) == set(u':INDIVIDUAL Person'.split(' '))
+True
+>>> set(get_instance_types('Alice')[0]) == set(u':INDIVIDUAL Person'.split(' '))
+True
 >>> set(get_slot_values('Alice','eatsFoods')[0]) # == set(u'Fruit Vegetables Meat Potions'.split(' '))
 True
+
+
+>>> local_connection().dump(frame='Alice')
+what?
+>>> local_connection().dump(frame='Person')
+what?
+>>> local_connection().dump(kb='TestKB')
+what?
 
 """
 
@@ -245,6 +273,46 @@ class SqliteKb(TupleKb):
 
         sql_execute(cursor,"commit;")
 
+
+    def _get_instance_types_internal_raw(kb,frame,
+                                    inference_level = Node._taxonomic,
+                                    number_of_values = Node._all,
+                                    kb_local_only_p = 0):
+        
+        slot = ':direct_types'
+        params = (str(kb),str(frame),str(slot))
+        sql = """select value_str
+               from kb_frame_slot_values 
+               where kb=?
+                     and frame=?
+                     and slot=?
+                     and slot_type = ':own'
+               order by value_order"""
+        #raise(ValueError(sql))
+        if number_of_values <> Node._all and type(number_of_values) == int:
+            sql += "\n limit %s" % number_of_values
+        return list(sql_get_column(kb._cursor(), sql, params))
+        
+
+    @timed
+    def get_instance_types_internal(kb,frame,
+                                    inference_level = Node._taxonomic,
+                                    number_of_values = Node._all,
+                                    kb_local_only_p = 0,
+                                    _coerce_to_classes = True):
+        direct_type_names = kb._get_instance_types_internal_raw(frame,inference_level,number_of_values,kb_local_only_p)
+        direct_types = []
+        if _coerce_to_classes:
+            for class_name in direct_type_names:
+                direct_types.append(kb.coerce_to_class(class_name,_add_frame_to_store=True))
+        else:
+            direct_types = direct_type_names
+        if frame:
+            return (direct_types,1,0)
+        return ([],1,0)
+
+
+
     @timed
     def _get_frame_type(kb,thing):
         sql = """select value_str from kb_frame_slot_values 
@@ -329,7 +397,7 @@ class SqliteKb(TupleKb):
             # FIXME NO DISTINCTION BETWEEN own and template
             sql = "select count(*) as cnt from kb_frame_slot_values where kb=? and frame=? and slot=?"
             prm = (str(kb),str(frame_name),str(slot))
-            count = sql_get_one(kb._cursor(),sql,prm)['cnt']
+            count = sql_get_one(kb._cursor(),sql,prm)
             if count == 1:
                 sql = "update kb_frame_slot_values set "
             elif count > 1:
@@ -447,29 +515,57 @@ class SqliteKb(TupleKb):
     put_slot_values_internal = put_slot_values
 
     @timed
-    def _add_frame_to_store(kb,frame):
-        sql = """
-        insert into kb_frame_slot_values 
-           (kb,frame,slot_type,slot,value_type,value_order,value_str,creation_time) values 
-           (?, ?,    ':own',   ?,   'str',     0,          ?        ,datetime('now'))
-        """
+    def _add_frame_to_store(kb,frame,_check=True):
+        cursor = kb._cursor()
         try:
             frame_name = str(frame)
         except:
             frame_name = frame._name
-        curs = sql_execute(kb._cursor(),
-                           sql, 
-                           (kb._name,
-                            frame_name,
-                            'isOfType',
-                            str(frame.__class__.__name__)))
-        return curs
+        prm = (kb._name,
+               frame_name,
+               'isOfType',
+               str(frame.__class__.__name__))
+
+        policy__check_for_collision = _check
+        if policy__check_for_collision:
+            cnt_sql = """select count(*) from kb_frame_slot_values 
+                     where kb=? and frame=? and slot_type=':own' and slot=? and value_order=0 and value_str=? """
+            insert = sql_get_one(cursor,cnt_sql,prm) == 0
+        else:
+            insert = True
+        if insert: 
+            ins_sql = """
+            insert into kb_frame_slot_values 
+               (kb,frame,slot_type,slot,value_type,value_order,value_str,creation_time) values 
+               (?, ?,    ':own',   ?,   'str',     0,          ?        ,datetime('now'))
+            """
+
+            curs = sql_execute(cursor, ins_sql, prm)
+            return True
+        return False
 
     @timed
-    def coerce_to_frame_internal(kb,frame):
+    def coerce_to_class(kb,name,error_p=True,_add_frame_to_store=True):
+        if kb._frame_of_type_exists(name):
+            return [KLASS(name,kb=kb, _add_frame_to_store=_add_frame_to_store), True]
+        if error_p:
+            raise(ClassNotFound(name,kb))
+        else:
+            return (False,False)
+
+    @timed
+    def coerce_to_frame_internal(kb,frame,error_p = True):
         if str(kb) == str(frame):
             return kb
         return str(frame)
+
+
+    def _frame_of_type_exists(kb,frame,typ=None):
+        sql = """select count(*) from kb_frame_slot_values 
+                 where kb=? and frame=? and slot=?"""
+        return sql_get_one(kb._cursor(),sql,
+                           (str(kb),str(frame),'isOfType'))
+        
 
 
 class SqliteMetaKb(SqliteKb):
@@ -480,7 +576,7 @@ class SqliteMetaKb(SqliteKb):
                  where kb=? and frame=?"""
         if sql_get_one(kb._cursor(),sql,
                        (str(kb),str(frame))):
-            return frame
+            return FRAME(frame,kb=kb,_add_frame_to_store=False)
         return None
 
     def _get_meta_kb(self):

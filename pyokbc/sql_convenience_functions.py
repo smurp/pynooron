@@ -7,7 +7,10 @@ def sql_quote(s):
 def sql_get_one(cursor,sql_str, params = []):
     cursor = sql_execute(cursor,sql_str,params)
     resp = cursor.fetchone()
-    return resp
+    try:
+        return resp[0]
+    except:
+        return None
     if len(resp):
         return resp[0]
     else:
