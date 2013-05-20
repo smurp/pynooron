@@ -23,9 +23,10 @@ http_request.__allow_access_to_unprotected_subobjects__ = 1
 
 
 def absolute_url(server):
-    retval = 'http://'+(server.server_name or str(server.ip))
+    default_name = str(server.ip)
     if server.port != 80:
-        retval = retval + ':' + str(server.port)
+        default_name += ':' + str(server.port)
+    retval = 'http://'+(server.server_name or default_name)
     return retval
 http_server.absolute_url = absolute_url
 

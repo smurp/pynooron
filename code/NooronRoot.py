@@ -151,7 +151,9 @@ class NooronRoot:
                 lg = logger.file_logger(log_to)
                 hs = http_server.http_server(server_ip,server_port,
                                              logger_object = lg)
-                http_server.fqdn = server_name
+                hs.fqdn = server_name
+                if server_name:
+                    hs.server_name = server_name
                 self.http_server = hs
                 #print dir(hs)
                 statusable_handlers.append(hs)                

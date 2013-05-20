@@ -29,10 +29,13 @@ home_dir  = os.path.expanduser("~")
 UID       = 'nooron'
 kr_root   = '%(home_dir)s/knowledge/' % locals()
 cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
+fqdn_and_port = "nooron.org" # or "nooron.org:8000"
 default_port = '8000'
 default_ip_address = '127.0.0.1'
 default_media_path = list_to_path(["media","docs"])
 default_site_front = "dogfood_front.html"
+default_site_front = "www_nooron_org_front.html"
+default_site_front = "simple_skin.html"
 know_list = [kr_root+'apps_of/nooron',
              kr_root+'apps_of/smurp',          
              #kr_root+'apps_of/givingspace',
@@ -77,7 +80,7 @@ def start_nooron(options,args):
     import __main__
     __main__.__builtins__.nooron_root = \
              NooronRoot(publishing_root = cwd,
-                        #server_name = 'crusty',
+                        server_name = options.fqdn_and_port,
                         server_ip = options.ip_address,
                         site_front = options.site_front,
                         just_serve = path_to_list(options.media_path),
@@ -158,6 +161,10 @@ if __name__ == "__main__":
                       type="str",
                       default = cache_dir,
                       help = "the directory to use as cache, default: %s" % cache_dir)
+    parser.add_option("--fqdn_and_port",
+                      type="str",
+                      default = fqdn_and_port,
+                      help = "the canonical url for the server, default: %(fqdn_and_port)s")
     parser.add_option("--htpasswd",
                       type="str",
                       default = ".htpasswd",
