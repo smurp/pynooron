@@ -26,7 +26,7 @@ def absolute_url(server):
     default_name = str(server.ip)
     if server.port != 80:
         default_name += ':' + str(server.port)
-    retval = 'http://'+(server.server_name or default_name)
+    retval = '://'+(server.server_name or default_name)
     return retval
 http_server.absolute_url = absolute_url
 
