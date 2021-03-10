@@ -31,8 +31,9 @@ kr_root   = '%(home_dir)s/knowledge/' % locals()
 cache_dir = '%(home_dir)s/tmp/nooron_cache' % locals()
 fqdn_and_port = "nooron.org" # or "nooron.org:8000"
 #fqdn_and_port = "pynooron.dev.semandra.com"
-default_port = '8000'
-default_ip_address = '127.0.0.1'
+default_port = os.getenv('PORT') or '8000'
+default_ip_address = os.getenv('IP') or '127.0.0.1'
+default_protocol = os.getenv('PROTOCOL') or 'https'
 default_media_path = list_to_path(["media","docs"])
 default_site_front = "dogfood_front.html"
 default_site_front = "www_nooron_org_front.html"
@@ -50,7 +51,7 @@ know_list = [kr_root+'apps_of/nooron',
              cwd+'/know']
 
 
-def start_nooron(options,args):
+def start_nooron(options, args):
     sys.path.append('code')
     sys.path.append('contrib')
     from NooronRoot import NooronRoot
@@ -86,6 +87,7 @@ def start_nooron(options,args):
                         site_front = options.site_front,
                         just_serve = path_to_list(options.media_path),
                         server_port = options.port,
+                        server_protocol = options.protocol,
                         log_to = sys.stdout,
                         use_auth = use_auth,
                         #initargs = {'default_place':string.join(places,':')},
@@ -158,6 +160,10 @@ if __name__ == "__main__":
                       type="str",
                       default = default_ip_address,
                       help = "dotted quad ip address to serve, default: %s" % default_ip_address)
+    parser.add_option("--protocol",
+                      type="str",
+                      default = default_protocol,
+                      help = "protocol http vs https, default: %s" % default_protocol)
     parser.add_option("--cache_dir",
                       type="str",
                       default = cache_dir,

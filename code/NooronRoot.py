@@ -74,6 +74,7 @@ class NooronRoot:
                  server_ip = None,
                  server_name=None,
                  server_port=None,
+                 server_protocol=None,
                  log_to=None,
                  use_auth = None,
                  initargs = {},
@@ -154,6 +155,8 @@ class NooronRoot:
                 hs.fqdn = server_name
                 if server_name:
                     hs.server_name = server_name
+                if server_protocol:
+                    hs.protocol = server_protocol
                 self.http_server = hs
                 #print dir(hs)
                 statusable_handlers.append(hs)                
