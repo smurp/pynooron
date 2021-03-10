@@ -2,10 +2,10 @@
 <!DOCTYPE html 
          PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title tal:content="python:document_title or here">template/title</title>
-    <link REL="shortcut icon" HREF="/media/favicon.ico" TYPE="image/x-icon">
+    <link REL="shortcut icon" HREF="/media/favicon.ico" TYPE="image/x-icon"/>
     <base href="" tal:attributes="href python:server_absolute_url+request.kb_request()+'/'"/>
     <STYLE TYPE="text/css">
     <!--
