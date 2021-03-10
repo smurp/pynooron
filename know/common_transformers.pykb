@@ -270,3 +270,13 @@ create_individual('transform_any_2_linenum',
                               "awk '{print NR,$0}'"
                               ]])
 
+create_individual('transform_any_2_txt',
+                  direct_types=['NooronTransformer','ExternalCommand'],
+                  own_slots=[['EmitsExtension','linenum_extension'],
+                             ['RequiresProgram','awk'],
+                             ['ReadsFrom','pipe'],
+                             ['WritesTo','pipe'],
+                             ['LiteralExternalCommand',
+                              "awk '{print $0}'"
+                              ]])
+
