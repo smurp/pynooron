@@ -11,7 +11,7 @@
 <article>
     <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
     <articleinfo>
-       <title tal:content="python:get_frame_pretty_name(here) or 
+       <title tal:content="python:get_frame_pretty_name(here) or
                                   get_frame_name(here)"></title>
 
 	<tal:dummy condition="string:">
@@ -27,7 +27,7 @@
                  tal:define="url python:server_absolute_url+request.object_request()"
                  tal:attributes="url url"
                  tal:content="url"></ulink></para>
-        <para 
+        <para
            tal:content="python:get_slot_value(here,
                                               ':DOCUMENTATION')[0] or ''">
         </para>
@@ -38,7 +38,7 @@
 
 
   <tal:dummy
-       define="global app_classes 
+       define="global app_classes
                       python:get_class_instances('nooron_app_class')[0]"/>
 
   <tal:dummy
@@ -53,11 +53,11 @@
        condition="python:not instance_of_p(app_class,'AbstractClass')[0]">
 
     <!--
-      One section per class of thing to be portrayed 
+      One section per class of thing to be portrayed
      -->
     <section tal:attributes="id python:app_class">
 
-       <title 
+       <title
           tal:content="python:'The '+str(get_frame_pretty_name(app_class) or
                               get_frame_name(app_class))+'s'">app_class</title>
        <para
@@ -65,26 +65,26 @@
                                              ':DOCUMENTATION')[0][0]"></para>
 
 
-    <tal:dummy 
-         define="class_instances 
+    <tal:dummy
+         define="class_instances
                        python:call_procedure(sort_frames,
                                              arguments=([get_class_instances(app_class)[0]]))">
        <tal:block repeat="class_instance class_instances">
          <section tal:attributes="id python:str(app_class)+'-'+str(class_instance)">
-            <title 
+            <title
                tal:content="python:get_frame_pretty_name(class_instance) or
                                    get_frame_name(class_instance)">class_instance</title>
             <para></para>
             <tal:dummy repeat="class_slot class_slots">
               <tal:dummy define="global skip_dummy_para string:"/>
-	      <section id="" 
+	      <section id=""
                      tal:define="vals python:get_slot_values(class_instance,class_slot)[0]"
                      tal:condition="python: vals and not (len(vals) == 1 and vals[0] == ' ' or vals[0] =='')"
                      tal:attributes="id python:str(class_instance)+'-'+str(class_slot)">
 
                 <title tal:content="class_slot">class_slot</title>
                 <tal:dummy tal:repeat="val vals">
-                   <para 
+                   <para
                      tal:define="isin   python:frame_in_kb_p(val);
                                  ishref python:0 == str(val).find('http')">
                      <tal:dummy define="global skip_dummy_para string:1"/>
@@ -96,10 +96,10 @@
                                              get_frame_name(val)"
                         tal:attributes="url val">
                      </ulink>
-	             <tal:dummy replace="val" 
+	             <tal:dummy replace="val"
                                 tal:condition="isin"/>
                    </para>
-                   
+
                 </tal:dummy>
 
               </section>
@@ -118,4 +118,3 @@
   </tal:dummy>
 
 </article>
-

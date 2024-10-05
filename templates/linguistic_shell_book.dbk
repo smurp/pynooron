@@ -10,7 +10,7 @@
 
 <book>
 <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
-<tal:block 
+<tal:block
      define="me here;
              honai  python:get_procedure('hierarchy_of_nooron_app_instances');
              branch python:call_procedure(honai,arguments=[here])">

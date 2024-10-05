@@ -11,7 +11,7 @@
  <article>
     <tal:dummy define="global baseurl python:request.split_uri()[0]"/>
     <articleinfo>
-       <title tal:content="python:get_frame_pretty_name(here) or 
+       <title tal:content="python:get_frame_pretty_name(here) or
                                   get_frame_name(here)"></title>
 
 	<tal:dummy condition="string:">
@@ -36,7 +36,7 @@
 
 
 
-    <tal:dummy 
+    <tal:dummy
          define="global pat_slots python:get_slot_values('pattern',
                                                          'slot_display_order',
                                                          slot_type=ALL)[0];
@@ -51,7 +51,7 @@
             <para></para>
             <tal:dummy repeat="pat_slot pat_slots">
               <tal:dummy define="global skip_dummy_para string:"/>
-	      <sect2 id="" 
+	      <sect2 id=""
                      tal:define="vals python:get_slot_values(pattern,pat_slot)[0]"
                      tal:condition="python: vals and not (len(vals) == 1 and vals[0] == ' ' or vals[0] =='')"
                      tal:attributes="id python:str(pattern)+'-'+str(pat_slot)">
@@ -60,7 +60,7 @@
 
 
                 <tal:dummy tal:repeat="val vals">
-                   <para 
+                   <para
                      tal:define="isin   python:frame_in_kb_p(val);
                                  ishref python:0 == str(val).find('http')">
                      <tal:dummy define="global skip_dummy_para string:1"/>
@@ -72,10 +72,10 @@
                                              get_frame_name(val)"
                         tal:attributes="url val">
                      </ulink>
-	             <tal:dummy replace="val" 
+	             <tal:dummy replace="val"
                                 tal:condition="isin"/>
                    </para>
-                   
+
                 </tal:dummy>
 
               </sect2>
@@ -98,7 +98,7 @@ http://newbiedoc.sourceforge.net/metadoc/docbook-guide.html
       <title>introductory graphic</title>
 <mediaobject>
    <imageobject>
-      <tal:dummy replace="structure string:<imagedata fileref=&quot;/tmp/nooron_cache/2f8e9920a0fb4e93baebb7f9cbf75f2.ps&quot; 
+      <tal:dummy replace="structure string:<imagedata fileref=&quot;/tmp/nooron_cache/2f8e9920a0fb4e93baebb7f9cbf75f2.ps&quot;
                                            format=&quot;ps&quot;>"/>
    </imageobject>
 </mediaobject>
@@ -109,16 +109,16 @@ http://newbiedoc.sourceforge.net/metadoc/docbook-guide.html
 	<date tal:content="python:get_slot_value(here,'ModificationTime')[0]"></date>
   The following code is what I wanted to use
   to make links from one pattern to another
-  within a docbook instance.  But... ZPT raised 
+  within a docbook instance.  But... ZPT raised
   some zany error about:
     "Close tag link should be removed"
   This looks like a bug/mangled feature
   in ZPT where it tries to do some automagic
   stuff with the HTML unary LINK tag.
    (link linkend="booger")youch(/link)
-   (link linkend="" 
-         tal:condition="isin" 
-         tal:content="val" 
+   (link linkend=""
+         tal:condition="isin"
+         tal:content="val"
          tal:attributes="linkend val")(/link)
 
 </metal:block>
