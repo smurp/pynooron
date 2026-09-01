@@ -9,7 +9,11 @@
 
 
 <h2><a name="PERT_Chart">PERT Chart</a></h2>
-<embed tal:attributes="src python:request.object_request()+'__pert_chart.dot.png'" width="750" height="452"/>
+<object type="image/svg+xml" style="max-width:100%"
+        tal:attributes="data python:request.object_request()+'__pert_chart.dot.svg'">
+<img alt="PERT chart" width="750" height="452"
+     tal:attributes="src python:request.object_request()+'__pert_chart.dot.png'"/>
+</object>
 
 
 <br />
