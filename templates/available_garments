@@ -26,8 +26,7 @@
                                    repeat="adornment python:len(garmie_set) > 1 and garmie_set[1] or []"
                 ><tal:dummy 
                       define="current_garmie_p 
-                              python:template_title==adornment[1]"
-                      condition="python:adornment[1][-3:] != '.ps' and adornment[1][-4:] != '.dvi'"><tal:dummy
+                              python:template_title==adornment[1]"><tal:dummy
 	          condition="python: not current_garmie_p"><a href="" 
                  tal:attributes="href python:baseurl +'__'+ adornment[1]"
                  tal:content="python:adornment[0]"></a></tal:dummy><tal:dummy
