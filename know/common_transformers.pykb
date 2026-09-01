@@ -218,9 +218,11 @@ create_individual('transform_dbk_2_pdf',
                              ['RequiresProgram','dblatex'],
                              ['ReadsFrom','file'],
                              ['WritesTo','file'],
-                             # jadetex (docbook2pdf's engine) was dropped from Debian; render DocBook XML
-                             # -> PDF with dblatex instead. -o writes cache_dir/<precursor-stem>.pdf, matching
-                             # what docbook2pdf --output cache_dir produced, so the cache framework is unchanged.
+                             # Rendered with dblatex (clean LaTeX output). docbook2pdf/ps/dvi ALSO work now
+                             # that docbook-xml (the DocBook XML DTDs) is installed — the earlier failures were
+                             # unresolved DTD ("element undefined"), NOT a missing engine (jadetex is present,
+                             # via texlive-formats-extra). -o writes cache_dir/<precursor-stem>.pdf, matching
+                             # docbook2pdf --output, so the cache framework is unchanged.
                              ['LiteralExternalCommand',
                               'dblatex -q -o %(cache_dir)s/$(basename %(precursor)s .dbk).pdf %(precursor)s'
                               ]])
