@@ -23,13 +23,13 @@
                                              'best_practice':'box' , 
                                              'LifeDomain':'triangle'}[
                                             str(get_instance_types(a_practice[0],
-                                                                   inference_level=':direct')[0][0])]"/>",
+                                                                   inference_level=':direct')[0][0])]"/>,
            style=filled,								   
            fillcolor=<tal:dummy replace="python:{'technique':'gold',
                                              'best_practice':'tomato' , 
                                              'LifeDomain':'mediumslateblue'}[
                                             str(get_instance_types(a_practice[0],
-                                                                   inference_level=':direct')[0][0])]"/>"
+                                                                   inference_level=':direct')[0][0])]"/>
            ];
         <tal:dummy 
           repeat="a_relative python:get_slot_values(a_practice[0],'MoreGeneralPractice')[0]">
