@@ -81,7 +81,7 @@ create_individual('transform_dot_2_png',
                              ['RequiresProgram','dot'],
                              ['ReadsFrom','pipe'],
                              ['WritesTo','pipe'],
-                             ['LiteralExternalCommand','dot -Tpng']])
+                             ['LiteralExternalCommand','dot -Tpng -Gdpi=192']])
 create_individual('transform_dot_2_gif',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','gif_extension'],

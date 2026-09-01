@@ -14,7 +14,7 @@
 <p><em tal:content="python:get_slot_value(here,':DOCUMENTATION')[0] or ''"></em></p>
 
 <a tal:attributes="href python:request.object_request()+'__best_practice_graph.dot.svg'">
-<img alt="best practices graph"
+<img alt="best practices graph" style="max-width:750px;height:auto"
   tal:attributes="src python:request.object_request()+'__best_practice_graph.dot.png'"/></a>
 
 
