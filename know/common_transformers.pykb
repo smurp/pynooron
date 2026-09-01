@@ -215,11 +215,14 @@ create_individual('transform_dbk_2_ps',
 create_individual('transform_dbk_2_pdf',
                   direct_types=['NooronTransformer','ExternalCommand'],
                   own_slots=[['EmitsExtension','pdf_extension'],
-                             ['RequiresProgram','docbook2pdf'],
+                             ['RequiresProgram','dblatex'],
                              ['ReadsFrom','file'],
                              ['WritesTo','file'],
+                             # jadetex (docbook2pdf's engine) was dropped from Debian; render DocBook XML
+                             # -> PDF with dblatex instead. -o writes cache_dir/<precursor-stem>.pdf, matching
+                             # what docbook2pdf --output cache_dir produced, so the cache framework is unchanged.
                              ['LiteralExternalCommand',
-                              'docbook2pdf --output %(cache_dir)s %(precursor)s'
+                              'dblatex -q -o %(cache_dir)s/$(basename %(precursor)s .dbk).pdf %(precursor)s'
                               ]])
 create_individual('transform_dbk_2_rtf',
                   direct_types=['NooronTransformer','ExternalCommand'],
