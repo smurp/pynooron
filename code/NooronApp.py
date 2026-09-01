@@ -177,7 +177,13 @@ class GenericFrame(AbstractApp):
             if not command:
                 continue
             readsfrom=get_slot_value(transformer_frame,'ReadsFrom')[0]
+            if not readsfrom:
+                raise "ExtensionHandlerNotSupported", 'ext = "%s"' % to_ext
+            
             writesto=get_slot_value(transformer_frame,'WritesTo')[0]
+            
+            if not writesto:
+                raise "ExtensionHandlerNotSupported", 'ext = "%s"' % to_ext
             break
         return PipeSection(command=command,
                            extension=to_ext,
